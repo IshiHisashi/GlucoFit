@@ -5,7 +5,7 @@ import Test from './src/components/Test';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Test />
+      <Test type="tsx" name="Aki" date={21}/>
     </View>
   );
 }

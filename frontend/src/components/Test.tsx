@@ -1,8 +1,16 @@
 import { Text } from "react-native";
 
-const Test = () => {
+type TestProps = {
+  type: string,
+  name: string, 
+  date: number,
+}
+
+const Test = (props: TestProps) => {
+  const {type, name, date} = props
+
   return (
-    <Text>This is test for tsx file</Text>
+    <Text>This is test for {type} file done by {name} on Sept/{date}</Text>
   )
 }
 
