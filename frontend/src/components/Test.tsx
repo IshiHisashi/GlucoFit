@@ -1,3 +1,4 @@
+import React from 'react';
 import { Text } from "react-native";
 
 type TestProps = {
@@ -6,8 +7,7 @@ type TestProps = {
   date: number,
 }
 
-const Test = (props: TestProps) => {
-  const {type, name, date} = props
+const Test: React.FC<TestProps> = ({type, name, date}) => {
 
   return (
     <Text>This is test for {type} file done by {name} on Sept/{date}</Text>
