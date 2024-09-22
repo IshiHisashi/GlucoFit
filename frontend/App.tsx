@@ -1,22 +1,21 @@
+import { GluestackUIProvider } from '@gluestack-ui/themed';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import Test from './src/components/Test';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { config } from '@gluestack-ui/config';
+
+import Test from './src/components/testPages/Test';
+import AppStack from './src/components/stacks/AppStack';
 
 const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Test type="tsx" name="Aki" date={21}/>
-    </View>
+    <SafeAreaProvider>
+      <GluestackUIProvider config={config}>
+        <StatusBar style="auto" />
+        <AppStack />
+      </GluestackUIProvider>
+    </SafeAreaProvider>
   );
 }
 
 export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
