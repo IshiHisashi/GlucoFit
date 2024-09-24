@@ -1,32 +1,62 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
+import { ApolloServer } from "apollo-server-express";
+import { typeDefs } from "./schema/typeDefs";
+import resolvers from "./schema/resolvers/resolvers";
 
 dotenv.config();
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
+const startServer = async () => {
+  const app: Express = express();
+  const port = process.env.PORT || 3000;
 
-// MongoDB connection
-const mongoURI = process.env.MONGODB_URI;
-
-if (mongoURI) {
-  mongoose
-    .connect(mongoURI)
-    .then(() => {
-      console.log("Connected to MongoDB successfully");
+  // Middleware
+  app.use(
+    cors({
+      origin: "*",
     })
-    .catch((err) => {
-      console.error("Failed to connect to MongoDB", err);
-    });
-} else {
-  console.error("MONGODB_URI is not defined in the .env file");
-}
+  );
+  app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript + MongoDB Server");
-});
+  // MongoDB connection
+  const mongoURI = process.env.MONGODB_URI;
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  if (mongoURI) {
+    mongoose
+      .connect(mongoURI)
+      .then(() => {
+        console.log("Connected to MongoDB successfully");
+      })
+      .catch((err) => {
+        console.error("Failed to connect to MongoDB", err);
+      });
+  } else {
+    console.error("MONGODB_URI is not defined in the .env file");
+  }
+
+  // Initialize Apollo Server
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => ({ req }),
+  });
+
+  await server.start();
+  server.applyMiddleware({ app: app as any, path: "/graphql" });
+
+  app.get("/", (req: Request, res: Response) => {
+    res.send("Express + TypeScript + MongoDB Server");
+  });
+
+  app.listen(port, () => {
+    console.log(
+      `[server]: Server is running at http://localhost:${port}${server.graphqlPath}`
+    );
+  });
+};
+
+startServer().catch((error) => {
+  console.error("Server failed to start", error);
 });
