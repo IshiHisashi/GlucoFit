@@ -11,8 +11,6 @@ const port = process.env.PORT || 3000;
 const mongoURI = process.env.MONGODB_URI;
 
 if (mongoURI) {
-
-  console.log("MongoDB URI: ", mongoURI);
   mongoose
     .connect(mongoURI)
     .then(() => {
