@@ -1,16 +1,12 @@
 import React from "react";
 import { Box, Button, ButtonText, Center, Text } from "@gluestack-ui/themed";
 
-type RootStackParamList = {
-  Another: undefined; // Define your other screen(s) here
-};
-
 type TestProps = {
-  type: string;
-  name: string;
-  date: number;
-  navigation: undefined;
-};
+  navigation: any,
+  type: string,
+  name: string,
+  date: number,
+}
 
 const Test: React.FC<TestProps> = ({ navigation, type, name, date }) => {
   return (
@@ -24,7 +20,6 @@ const Test: React.FC<TestProps> = ({ navigation, type, name, date }) => {
             onPress={() => {
               navigation.navigate("Another");
             }}
-            variant="link"
           >
             To another test page
           </ButtonText>
