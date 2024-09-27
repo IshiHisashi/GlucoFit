@@ -1,0 +1,18 @@
+# Ignore node_modules and build directories
+node_modules/
+build/
+dist/
+
+# Ignore Expo-specific files
+.expo/
+.expo-shared/
+
+# Ignore environment files
+.env
+
+# Ignore TypeScript declaration files
+*.d.ts
+
+# Ignore Babel and Metro config files if needed
+babel.config.js
+metro.config.js

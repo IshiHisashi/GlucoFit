@@ -1,13 +1,18 @@
-import React from 'react';
-import { Box, Center, Text, ExternalLinkIcon, Icon } from '@gluestack-ui/themed';
-import { useLayoutEffect } from 'react'
+import React from "react";
+import {
+  Box,
+  Center,
+  Text,
+  ExternalLinkIcon,
+  Icon,
+} from "@gluestack-ui/themed";
+import { useLayoutEffect } from "react";
 
 type TestProps = {
-  navigation: undefined,
-}
+  navigation: undefined;
+};
 
-const AnotherTest: React.FC<TestProps> = ({navigation}) => {
-
+const AnotherTest: React.FC<TestProps> = ({ navigation }) => {
   // useLayoutEffect(() => {
   //   navigation.setOptions({
   //     headerRight: () => <Icon as={ExternalLinkIcon} />
@@ -18,10 +23,10 @@ const AnotherTest: React.FC<TestProps> = ({navigation}) => {
   return (
     <Box>
       <Center>
-        <Text >Just another test page. Nothing to do here.</Text>
+        <Text>Just another test page. Nothing to do here.</Text>
       </Center>
     </Box>
-  )
-}
+  );
+};
 
 export default AnotherTest;
