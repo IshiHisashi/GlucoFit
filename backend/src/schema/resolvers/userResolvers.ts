@@ -10,31 +10,17 @@ const userResolvers = {
     },
   },
   Mutation: {
-    createUser: async (
-      _: any,
-      {
-        name,
-      }: {
-        name: string;
-      }
-    ): Promise<IUser> => {
-      const newUser = new User({
-        name,
-      });
+    createUser: async (_: any, args: IUser): Promise<IUser> => {
+      const newUser = new User(args);
       return await newUser.save();
     },
     updateUser: async (
       _: any,
-      {
-        id,
-        name,
-      }: {
-        id: string;
-        name: string;
-      }
+      { id, ...args }: { id: string } & Partial<IUser>
     ): Promise<IUser | null> => {
-      return await User.findByIdAndUpdate(id, { name }, { new: true });
+      return await User.findByIdAndUpdate(id, args, { new: true });
     },
+
     deleteUser: async (_: any, { id }: { id: string }): Promise<string> => {
       await User.findByIdAndDelete(id);
       return "User deleted successfully";
