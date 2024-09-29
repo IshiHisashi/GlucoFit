@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 import GraphQLJSON from "graphql-type-json";
 
-export const typeDefs = gql`
+export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 

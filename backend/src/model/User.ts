@@ -1,4 +1,4 @@
-import { Schema, model, Document, ObjectId } from "mongoose";
+import { Schema, model, Document, ObjectId, Decimal128 } from "mongoose";
 
 interface Badges {
   [key: string]: boolean;

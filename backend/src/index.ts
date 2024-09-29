@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
-import { typeDefs } from "./schema/typeDefs";
+import { typeDefs } from "./schema/typedefs/typeDefs";
 import resolvers from "./schema/resolvers/resolvers";
 
 dotenv.config();
