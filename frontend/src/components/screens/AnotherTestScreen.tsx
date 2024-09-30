@@ -1,10 +1,10 @@
 import AnotherTest from "../testPages/AnotherTest";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types";
 
-type TestScreenProps = {
-  navigation: undefined;
-};
+type AnotherScreenProps = NativeStackScreenProps<RootStackParamList, 'Another'>;
 
-const AnotherTestScreen: React.FC<TestScreenProps> = ({ navigation }) => (
+const AnotherTestScreen: React.FC<AnotherScreenProps> = ({ navigation }) => (
   <AnotherTest navigation={navigation} />
 );
 
