@@ -3,7 +3,6 @@ import { gql } from "apollo-server-express";
 export const articlesTypeDefs = gql`
   type Articles {
     id: ID!
-    article_id: String!
     article_name: String!
     article_thumbnail_address: String!
     article_desc: String!
@@ -19,7 +18,6 @@ export const articlesTypeDefs = gql`
 
   extend type Mutation {
     createArticle(
-      article_id: String!
       article_name: String!
       article_thumbnail_address: String!
       article_desc: String!
@@ -30,7 +28,6 @@ export const articlesTypeDefs = gql`
 
     updateArticle(
       id: ID!
-      article_id: String
       article_name: String
       article_thumbnail_address: String
       article_desc: String

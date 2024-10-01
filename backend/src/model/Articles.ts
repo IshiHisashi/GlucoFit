@@ -1,7 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
 export interface IArticles extends Document {
-  article_id: string;
   article_name: string;
   article_thumbnail_address: string;
   article_desc: string;
@@ -11,7 +10,6 @@ export interface IArticles extends Document {
 }
 
 const articlesSchema = new Schema<IArticles>({
-  article_id: { type: String, required: true, unique: true },
   article_name: { type: String, required: true },
   article_thumbnail_address: { type: String, required: true },
   article_desc: { type: String, required: true },
