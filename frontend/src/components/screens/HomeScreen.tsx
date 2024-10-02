@@ -8,12 +8,18 @@ import {
   FlatList,
   Heading,
   HStack,
+  Pressable,
   Text,
   VStack,
 } from "@gluestack-ui/themed";
 import React from "react";
+import { NavigationProp } from "@react-navigation/native";
 
-const HomeScreen: React.FC = () => {
+interface HomeScreenProps {
+  navigation: NavigationProp<{}>;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // dummy data
   const data = [
     {
@@ -22,6 +28,13 @@ const HomeScreen: React.FC = () => {
       logCategory: "Blood Glucose",
       time: "10:00 AM",
       result: "120 mg/dL",
+    },
+    {
+      id: "2",
+      avatarUrl: "https://randomuser",
+      logCategory: "Activity",
+      time: "10:00 AM",
+      result: "30 min",
     },
   ];
 
@@ -39,7 +52,7 @@ const HomeScreen: React.FC = () => {
       <Box>
         <HStack>
           <Heading>Detailed logs for today here</Heading>
-          <Button>
+          <Button onPress={() => navigation.navigate("Logs")}>
             <ButtonText>See other logs</ButtonText>
           </Button>
         </HStack>
@@ -59,33 +72,35 @@ const HomeScreen: React.FC = () => {
               // $sm-pr="$5"
               // py="$2"
               >
-                <HStack space="md" justifyContent="space-between">
-                  <HStack>
-                    <Avatar size="md">
-                      <AvatarImage source={{ uri: item.avatarUrl }} />
-                    </Avatar>
-                    <VStack>
-                      <Text
-                        color="$coolGray800"
-                        fontWeight="$bold"
-                        $dark-color="$warmGray100"
-                      >
-                        {item.logCategory}
-                      </Text>
-                      <Text color="$coolGray600" $dark-color="$warmGray200">
-                        {item.time}
-                      </Text>
-                    </VStack>
+                <Pressable onPress={() => navigation.navigate("Logs")}>
+                  <HStack space="md" justifyContent="space-between">
+                    <HStack>
+                      <Avatar size="md">
+                        <AvatarImage source={{ uri: item.avatarUrl }} />
+                      </Avatar>
+                      <VStack>
+                        <Text
+                          color="$coolGray800"
+                          fontWeight="$bold"
+                          $dark-color="$warmGray100"
+                        >
+                          {item.logCategory}
+                        </Text>
+                        <Text color="$coolGray600" $dark-color="$warmGray200">
+                          {item.time}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                    <Text
+                      fontSize="$xs"
+                      color="$coolGray800"
+                      alignSelf="flex-start"
+                      $dark-color="$warmGray100"
+                    >
+                      {item.result}
+                    </Text>
                   </HStack>
-                  <Text
-                    fontSize="$xs"
-                    color="$coolGray800"
-                    alignSelf="flex-start"
-                    $dark-color="$warmGray100"
-                  >
-                    {item.result}
-                  </Text>
-                </HStack>
+                </Pressable>
               </Box>
             )}
             keyExtractor={(item) => item.id}
