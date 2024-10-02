@@ -1,12 +1,12 @@
 import { Center, Text } from "@gluestack-ui/themed";
 import React from "react";
 
-const InsightsScreen: React.FC = () => {
+const LogsScreen: React.FC = () => {
   return (
     <Center>
-      <Text>This is insights screen.</Text>
+      <Text>This is logs screen.</Text>
     </Center>
   );
 };
 
-export default InsightsScreen;
+export default LogsScreen;

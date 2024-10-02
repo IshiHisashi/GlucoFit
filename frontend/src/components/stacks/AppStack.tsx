@@ -19,6 +19,7 @@ import TestScreen from "../screens/TestScreen";
 import AnotherTestScreen from "../screens/AnotherTestScreen";
 import HomeScreen from "../screens/HomeScreen";
 import InsightsScreen from "../screens/InsightsScreen";
+import LogsScreen from "../screens/LogsScreen";
 import { RootStackParamList } from "../types";
 
 ///////////////////////////////
@@ -140,7 +141,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
   );
 };
 
-const TestStack = () => (
+const TestStack: React.FC = () => (
   <Stack.Navigator>
     <Stack.Screen
       name="Test"
@@ -215,9 +216,9 @@ const AppStack: React.FC = () => (
         options={{ title: "Test" }}
       />
       <Tab.Screen
-        name="Another"
-        component={AnotherTestScreen}
-        options={{ title: "Another" }}
+        name="Logs"
+        component={LogsScreen}
+        options={{ title: "Logs" }}
       />
     </Tab.Navigator>
   </NavigationContainer>
