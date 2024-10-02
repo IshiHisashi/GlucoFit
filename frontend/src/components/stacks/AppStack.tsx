@@ -20,6 +20,10 @@ import AnotherTestScreen from "../screens/AnotherTestScreen";
 import HomeScreen from "../screens/HomeScreen";
 import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
+import CarbsLogScreen from "../screens/logScreens/CarbsLogScreen";
+import ActivityLogScreen from "../screens/logScreens/ActivityLogScreen";
+import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
+import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
 import { RootStackParamList } from "../types";
 
 ///////////////////////////////
@@ -29,10 +33,11 @@ import { RootStackParamList } from "../types";
 // - Change the sub menu styling and content overall
 // - OnClose for sub menu
 // - Solve some type issues
-// - and so on!
+// - and so on~~~
 ///////////////////////////////
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const LogScreensStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
@@ -113,26 +118,35 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
           <Modal.Body>
             <Button
               onPress={() => {
-                // Handle sub-menu item action
                 setIsSubMenuOpen(false);
+                navigation.navigate("CarbsLog");
               }}
             >
-              <ButtonText>Sub Menu 1</ButtonText>
-            </Button>
-            <Button
-              onPress={() => {
-                // Handle sub-menu item action
-                setIsSubMenuOpen(false);
-              }}
-            >
-              <ButtonText>Sub Menu 2</ButtonText>
+              <ButtonText>Food/Carbs</ButtonText>
             </Button>
             <Button
               onPress={() => {
                 setIsSubMenuOpen(false);
+                navigation.navigate("MedicineLog");
               }}
             >
-              <ButtonText>Cancel</ButtonText>
+              <ButtonText>Medicine</ButtonText>
+            </Button>
+            <Button
+              onPress={() => {
+                setIsSubMenuOpen(false);
+                navigation.navigate("ActivityLog");
+              }}
+            >
+              <ButtonText>Activity</ButtonText>
+            </Button>
+            <Button
+              onPress={() => {
+                setIsSubMenuOpen(false);
+                navigation.navigate("GlucoseLog");
+              }}
+            >
+              <ButtonText>Blood Glucose</ButtonText>
             </Button>
           </Modal.Body>
         </Modal.Content>
@@ -174,54 +188,68 @@ const TestStack: React.FC = () => (
 
 const AppStack: React.FC = () => (
   <NavigationContainer>
-    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: "Home",
-          tabBarIcon: ({ focused, color, size }) => (
-            <Icon
-              // as={focused ? "CircleIcon" : "home"}
-              size="sm"
-              color={color}
-            />
-          ),
-        }}
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Tabs"
+        component={TabNavigator}
+        options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="Insights"
-        component={InsightsScreen}
-        options={{
-          title: "Insights",
-          tabBarIcon: ({ focused, color, size }) => (
-            <Icon
-              // as={focused ? "CircleIcon" : "home"}
-              size="sm"
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="FAB"
-        component={View} // Placeholder component
-        options={{
-          tabBarButton: () => null, // Hide the default tab button
-        }}
-      />
-      <Tab.Screen
-        name="TestStack"
-        component={TestStack}
-        options={{ title: "Test" }}
-      />
-      <Tab.Screen
-        name="Logs"
-        component={LogsScreen}
-        options={{ title: "Logs" }}
-      />
-    </Tab.Navigator>
+      <Stack.Screen name="CarbsLog" component={CarbsLogScreen} />
+      <Stack.Screen name="ActivityLog" component={ActivityLogScreen} />
+      <Stack.Screen name="MedicineLog" component={MedicineLogScreen} />
+      <Stack.Screen name="GlucoseLog" component={GlucoseLogScreen} />
+    </Stack.Navigator>
   </NavigationContainer>
+);
+
+const TabNavigator: React.FC = () => (
+  <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+    <Tab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        title: "Home",
+        tabBarIcon: ({ focused, color, size }) => (
+          <Icon
+            // as={focused ? "CircleIcon" : "home"}
+            size="sm"
+            color={color}
+          />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Insights"
+      component={InsightsScreen}
+      options={{
+        title: "Insights",
+        tabBarIcon: ({ focused, color, size }) => (
+          <Icon
+            // as={focused ? "CircleIcon" : "home"}
+            size="sm"
+            color={color}
+          />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="FAB"
+      component={View} // Placeholder component
+      options={{
+        tabBarButton: () => null, // Hide the default tab button
+      }}
+    />
+    <Tab.Screen
+      name="TestStack"
+      component={TestStack}
+      options={{ title: "Test" }}
+    />
+    <Tab.Screen
+      name="Logs"
+      component={LogsScreen}
+      options={{ title: "Logs" }}
+    />
+  </Tab.Navigator>
 );
 
 const styles = StyleSheet.create({
