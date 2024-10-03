@@ -49,7 +49,7 @@ jobs:
       #  run: npm test
 
       - name: Deploy to EC2
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' # && github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
