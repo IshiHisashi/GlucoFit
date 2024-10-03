@@ -8,6 +8,10 @@ const userResolvers = {
     getUsers: async (): Promise<IUser[]> => {
       return await User.find();
     },
+    // this is for testing github actions. we can remove this later
+    getUsers2: async (): Promise<IUser[]> => {
+      return await User.find();
+    },
   },
   Mutation: {
     createUser: async (_: any, args: IUser): Promise<IUser> => {
