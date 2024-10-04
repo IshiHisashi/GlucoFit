@@ -5,6 +5,7 @@ import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/typedefs/typeDefs";
 import resolvers from "./schema/resolvers/resolvers";
+import { verifyToken } from "./auth/auth";
 
 dotenv.config();
 
@@ -40,7 +41,19 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req }) => ({ req }),
+    context: ({ req }) => {
+      const token = req.headers.authorization || "";
+      let user = null;
+
+      if (token) {
+        try {
+          user = verifyToken(token.replace("Bearer ", ""));
+        } catch (error) {
+          console.warn("Invalid or expired token");
+        }
+      }
+      return { user };
+    },
   });
 
   await server.start();

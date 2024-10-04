@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import GraphQLJSON from "graphql-type-json";
+import { DirectiveLocation } from "graphql";
 
 export const userTypeDefs = gql`
   scalar Date
@@ -12,7 +12,7 @@ export const userTypeDefs = gql`
     diabates_type: Int
     email: String
     phone_number: String
-    password_token: String
+    password: String
     maximum_bsl: Float
     bsl_goal: Float
     footsteps_goal: Int
@@ -32,19 +32,27 @@ export const userTypeDefs = gql`
     active_status: Boolean
   }
 
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
   type Query {
     getUser(id: ID!): User
     getUsers: [User!]!
   }
 
   type Mutation {
+    signUp(email: String!, password: String!): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
+
     createUser(
       name: String!
       age: Int
       diabates_type: Int
       email: String
       phone_number: String
-      password_token: String
+      password: String
       maximum_bsl: Float
       bsl_goal: Float
       footsteps_goal: Int
@@ -71,7 +79,7 @@ export const userTypeDefs = gql`
       diabates_type: Int
       email: String
       phone_number: String
-      password_token: String
+      password: String
       maximum_bsl: Float
       bsl_goal: Float
       footsteps_goal: Int

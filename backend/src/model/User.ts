@@ -1,16 +1,18 @@
 import { Schema, model, Document, ObjectId, Decimal128 } from "mongoose";
+import bcrypt from "bcrypt";
 
 interface Badges {
   [key: string]: boolean;
 }
 
 export interface IUser extends Document {
+  _id: ObjectId;
   name: string;
   age: number;
   diabates_type: number;
   email: string;
   phone_number: string;
-  password_token: string;
+  password: string;
   maximum_bsl: number;
   bsl_goal: number;
   footsteps_goal: number;
@@ -28,12 +30,13 @@ export interface IUser extends Document {
   badges: Badges;
   recently_read_articles_array: string[];
   active_status: boolean;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>({
   name: {
     type: String,
-    required: true,
+    // required: true,
   },
   age: {
     type: Number,
@@ -41,7 +44,7 @@ const userSchema = new Schema<IUser>({
   diabates_type: { type: Number },
   email: { type: String },
   phone_number: { type: String },
-  password_token: { type: String },
+  password: { type: String },
   maximum_bsl: { type: Number },
   bsl_goal: { type: Number },
   footsteps_goal: { type: Number },
@@ -60,5 +63,20 @@ const userSchema = new Schema<IUser>({
   recently_read_articles_array: { type: [String] },
   active_status: { type: Boolean },
 });
+
+// For signing up | hash the password before saving the user
+userSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.methods.comparePassword = async function (
+  password: string
+): Promise<boolean> {
+  return await bcrypt.compare(password, this.password);
+};
 
 export const User = model<IUser>("User", userSchema);
