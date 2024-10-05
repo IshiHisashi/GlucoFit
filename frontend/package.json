@@ -10,6 +10,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "@gluestack-style/react": "^1.0.57",
     "@gluestack-ui/config": "^1.1.20",
     "@gluestack-ui/themed": "^1.1.52",
@@ -20,6 +21,7 @@
     "axios": "^1.7.7",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
+    "graphql": "^15.8.0",
     "qs": "^6.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
