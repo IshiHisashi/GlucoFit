@@ -13,6 +13,8 @@ export const activityLogsTypeDefs = gql`
     getActivityLog(id: ID!): ActivityLogs
     getActivityLogs: [ActivityLogs!]!
     getActivityLogsByUser(user_id: ID!): [ActivityLogs!]!
+    getTotalStepsForToday(user_id: ID!): Int!
+
   }
 
   extend type Mutation {
