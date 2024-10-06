@@ -48,12 +48,12 @@ export const setupIHealthRoutes = (app: Express) => {
       );
 
       const { AccessToken, RefreshToken, UserID } = response.data;
-      // await userResolvers.Mutation.updateUser(null, {
-      //   id: "670202f50b3e86123bd741e4",
-      //   iHealth_access_token: AccessToken,
-      //   iHealth_refresh_token: RefreshToken,
-      //   iHealth_user_id: UserID,
-      // });
+      await userResolvers.Mutation.updateUser(null, {
+        id: "670202f50b3e86123bd741e4",
+        iHealth_access_token: AccessToken,
+        iHealth_refresh_token: RefreshToken,
+        iHealth_user_id: UserID,
+      });
       // console.log(response.data);
 
       // Store tokens (in-memory or in database)
@@ -69,6 +69,8 @@ export const setupIHealthRoutes = (app: Express) => {
 
   // API route to fetch blood glucose data using the stored access token
   app.get("/api/blood-glucose", async (req, res) => {
+    // Load ihealth info from mongoDB
+
     const token = accessTokenStore["user"]?.AccessToken;
     if (!token) {
       return res.status(401).send("User not authenticated");
