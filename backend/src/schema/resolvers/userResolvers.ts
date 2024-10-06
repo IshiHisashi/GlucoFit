@@ -17,9 +17,9 @@ const userResolvers = {
       return await User.find();
     },
     // this is for testing github actions. we can remove this later
-    getUsers2: async (): Promise<IUser[]> => {
-      return await User.find();
-    },
+    // getUsers2: async (): Promise<IUser[]> => {
+    //   return await User.find();
+    // },
   },
   Mutation: {
     signUp: async (_: any, { email, password }: any) => {

@@ -6,6 +6,7 @@ import { ApolloServer } from "apollo-server-express";
 import { typeDefs } from "./schema/typedefs/typeDefs";
 import resolvers from "./schema/resolvers/resolvers";
 import { verifyToken } from "./auth/auth";
+import { setupIHealthRoutes } from "./ihealth/ihealth";
 
 dotenv.config();
 
@@ -58,6 +59,9 @@ const startServer = async () => {
 
   await server.start();
   server.applyMiddleware({ app: app as any, path: "/graphql" });
+
+  // Setup iHealth routes
+  setupIHealthRoutes(app);
 
   app.get("/", (req: Request, res: Response) => {
     res.send("Express + TypeScript + MongoDB Server");
