@@ -15,8 +15,11 @@ export const setupIHealthRoutes = (app: Express) => {
   const sv = process.env.IHEALTH_SYSTEM_SV;
   const api_scope = "OpenApiBG";
 
+  let userIdAuth: any = null;
+
   // iHealth OAuth2 flow
   app.get("/auth/ihealth", (req: Request, res: Response) => {
+    userIdAuth = req.query.id;
     const authUrl = `https://api.ihealthlabs.com:8443/OpenApiV2/OAuthv2/userauthorization/`;
     const params = qs.stringify({
       client_id,
@@ -48,8 +51,10 @@ export const setupIHealthRoutes = (app: Express) => {
       );
 
       const { AccessToken, RefreshToken, UserID } = response.data;
+      console.log(userIdAuth);
+      console.log(AccessToken, RefreshToken);
       await userResolvers.Mutation.updateUser(null, {
-        id: "670202f50b3e86123bd741e4",
+        id: userIdAuth,
         iHealth_access_token: AccessToken,
         iHealth_refresh_token: RefreshToken,
         iHealth_user_id: UserID,
@@ -69,17 +74,20 @@ export const setupIHealthRoutes = (app: Express) => {
 
   // API route to fetch blood glucose data using the stored access token
   app.get("/api/blood-glucose", async (req, res) => {
+    const userId: any = req.query.id;
     // Load ihealth info from mongoDB
-
-    const token = accessTokenStore["user"]?.AccessToken;
+    const userDoc = await userResolvers.Query.getUser(null, {
+      id: userId,
+    });
+    // const token = accessTokenStore["user"]?.AccessToken;
+    const token = userDoc?.iHealth_access_token;
     if (!token) {
       return res.status(401).send("User not authenticated");
     }
 
     try {
       const response = await axios.get(
-        "https://api.ihealthlabs.com:8443/openapiv2/application/glucose.json",
-
+        `https://api.ihealthlabs.com:8443/openapiv2/user/${userDoc.iHealth_user_id}/glucose.json`,
         {
           params: {
             client_id,
