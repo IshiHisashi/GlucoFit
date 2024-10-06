@@ -18,6 +18,7 @@ export const testResultsTypeDefs = gql`
     getTestResult(id: ID!): TestResults
     getTestResults: [TestResults!]!
     getTestResultsByUser(user_id: ID!): [TestResults!]!
+    getUnconfirmedTestResults(user_id: ID!): [TestResults!]!
   }
 
   extend type Mutation {
