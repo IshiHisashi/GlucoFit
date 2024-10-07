@@ -15,7 +15,18 @@ const testResultsResolvers = {
     getTestResultsByUser: async (_: any, { user_id }: { user_id: string }) => {
       return await TestResults.find({ user_id }).populate("user_id");
     },
-
+      getUnconfirmedTestResults: async (_: any, { user_id }: { user_id: string }): Promise<ITestResults[]> => {
+        try {
+          const unconfirmedResults = await TestResults.find({
+            user_id,        
+            confirmed: false 
+          });
+          return unconfirmedResults;
+        } catch (error) {
+          console.error("Error fetching unconfirmed test results for user:", error);
+          throw new Error("Failed to fetch unconfirmed test results for the user");
+        }
+      },
     getAverageBslForToday: async (_: any, { user_id }: { user_id: string }): Promise<number | null> => {
       try {
         const startOfDay = new Date();
