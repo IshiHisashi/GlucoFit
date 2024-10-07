@@ -19,6 +19,7 @@ export const testResultsTypeDefs = gql`
     getTestResults: [TestResults!]!
     getTestResultsByUser(user_id: ID!): [TestResults!]!
     getUnconfirmedTestResults(user_id: ID!): [TestResults!]!
+    getAverageBslForToday(user_id: ID!): Float
   }
 
   extend type Mutation {
