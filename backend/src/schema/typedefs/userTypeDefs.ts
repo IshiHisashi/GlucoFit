@@ -21,6 +21,7 @@ export const userTypeDefs = gql`
     notification: Boolean
     latest_log_timestamp: Date
     last_insulin_intake: Date
+    iHealth_user_id: String
     iHealth_access_token: String
     ihealth_device_iD: String
     apple_health_token: String
@@ -61,7 +62,9 @@ export const userTypeDefs = gql`
       notification: Boolean
       latest_log_timestamp: Date
       last_insulin_intake: Date
+      iHealth_user_id: String
       iHealth_access_token: String
+      iHealth_refresh_token: String
       ihealth_device_iD: String
       apple_health_token: String
       apple_health_id: String
@@ -88,7 +91,9 @@ export const userTypeDefs = gql`
       notification: Boolean
       latest_log_timestamp: Date
       last_insulin_intake: Date
+      iHealth_user_id: String
       iHealth_access_token: String
+      iHealth_refresh_token: String
       ihealth_device_iD: String
       apple_health_token: String
       apple_health_id: String

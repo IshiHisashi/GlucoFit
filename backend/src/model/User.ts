@@ -21,8 +21,10 @@ export interface IUser extends Document {
   notification: boolean;
   latest_log_timestamp: Date;
   last_insulin_intake: Date;
+  iHealth_user_id: string;
   iHealth_access_token: string;
-  ihealth_device_iD: string;
+  iHealth_refresh_token: String;
+  ihealth_device_id: string;
   apple_health_token: string;
   apple_health_id: string;
   android_health_token: string;
@@ -53,8 +55,10 @@ const userSchema = new Schema<IUser>({
   notification: { type: Boolean },
   latest_log_timestamp: { type: Date },
   last_insulin_intake: { type: Date },
+  iHealth_user_id: { type: String },
   iHealth_access_token: { type: String },
-  ihealth_device_iD: { type: String },
+  iHealth_refresh_token: { type: String },
+  ihealth_device_id: { type: String },
   apple_health_token: { type: String },
   apple_health_id: { type: String },
   android_health_token: { type: String },

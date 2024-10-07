@@ -5,21 +5,21 @@ const userResolvers = {
   Query: {
     getUser: async (
       _: any,
-      { id }: { id: string },
-      { user }: any
+      { id }: { id: string }
+      // { user }: any
     ): Promise<IUser | null> => {
-      if (!user) {
-        throw new Error("You must be logged in to view this data");
-      }
+      // if (!user) {
+      //   throw new Error("You must be logged in to view this data");
+      // }
       return await User.findById(id);
     },
     getUsers: async (): Promise<IUser[]> => {
       return await User.find();
     },
     // this is for testing github actions. we can remove this later
-    getUsers2: async (): Promise<IUser[]> => {
-      return await User.find();
-    },
+    // getUsers2: async (): Promise<IUser[]> => {
+    //   return await User.find();
+    // },
   },
   Mutation: {
     signUp: async (_: any, { email, password }: any) => {
