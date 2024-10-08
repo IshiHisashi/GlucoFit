@@ -1,15 +1,11 @@
 import {
   ButtonText,
-  Center,
-  ChevronRightIcon,
   FormControl,
-  FormControlLabelText,
   HStack,
   Icon,
   Image,
   Input,
   InputField,
-  InputIcon,
   Pressable,
   Text,
   VStack,
@@ -17,16 +13,14 @@ import {
   InputSlot,
   AddIcon,
 } from "@gluestack-ui/themed";
-import React, { useState } from "react";
-import { FormControlLabel } from "@gluestack-ui/themed";
-import { Textarea } from "@gluestack-ui/themed";
-import { TextareaInput } from "@gluestack-ui/themed";
-// import { Button } from "@gluestack-ui/themed";
-// import { InputSlot } from "@gluestack-ui/themed";
+import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { Animated, Modal, Platform, StyleSheet, View } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
+import Sheet from "../../organisms/Sheet";
 
 const GET_TEST_RESULTS = gql`
   query GetTestResults {
@@ -96,9 +90,15 @@ const UPDATE_TEST_RESULT = gql`
 
 const GlucoseLogScreen: React.FC = () => {
   const [glucoseLevel, setGlucoseLevel] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
   const [timePeriod, setTimePeriod] = useState("");
+  const timePeriods = ["After breakfast", "After lunch", "After dinner"];
+  const [note, setNote] = useState("");
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
+  const [isNoteOpen, setIsNoteOpen] = useState(false);
 
   const [
     createTestResult,
@@ -109,6 +109,28 @@ const GlucoseLogScreen: React.FC = () => {
     updateTestResult,
     { data: updateData, loading: updateLoading, error: updateError },
   ] = useMutation(UPDATE_TEST_RESULT);
+
+  const onChangeDate = (selectedDate: Date) => {
+    const currentDate = selectedDate || date;
+    setIsDatePickerOpen(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const onChangeTime = (selectedTime: Date) => {
+    const currentTime = selectedTime || time;
+    setIsTimePickerOpen(Platform.OS === "ios");
+    setTime(currentTime);
+  };
+
+  const handleDateConfirm = (date: Date) => {
+    setDate(date);
+    setIsDatePickerOpen(false);
+  };
+
+  const handleTimeConfirm = (time: Date) => {
+    setTime(time);
+    setIsTimePickerOpen(false);
+  };
 
   const handleSubmitCreate = async () => {
     try {
@@ -153,6 +175,57 @@ const GlucoseLogScreen: React.FC = () => {
   // if (error) return `Error! ${error.message}`;
   // console.log(data);
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  const showSheet = (sheetType: "timePeriod" | "note") => {
+    sheetType === "timePeriod" && setIsTimePeriodPickerOpen(true);
+    sheetType === "note" && setIsNoteOpen(true);
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      // Animated.spring(translateY, {
+      //   toValue: 0,
+      //   tension: 65,
+      //   friction: 11,
+      //   useNativeDriver: true,
+      // }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 300,
+        // easing: Animated.Easing.Out(Animated.Easing.Cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const closeSheet = (sheetType: "timePeriod" | "note") => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 100,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      // Animated.spring(translateY, {
+      //   toValue: 0,
+      //   tension: 65,
+      //   friction: 11,
+      //   useNativeDriver: true,
+      // }),
+    ]).start(() => {
+      sheetType === "timePeriod" && setIsTimePeriodPickerOpen(false);
+      sheetType === "note" && setIsNoteOpen(false);
+    });
+  };
+
   return (
     <VStack>
       <VStack space="sm" alignItems="center">
@@ -187,10 +260,18 @@ const GlucoseLogScreen: React.FC = () => {
           Schedule
         </Text>
 
-        <PickerOpenerRow onPress={() => {}} text="Date" value={date} />
-        <PickerOpenerRow onPress={() => {}} text="Time" value={time} />
         <PickerOpenerRow
-          onPress={() => {}}
+          setShowPicker={setIsDatePickerOpen}
+          text="Date"
+          value={date}
+        />
+        <PickerOpenerRow
+          setShowPicker={setIsTimePickerOpen}
+          text="Time"
+          value={time}
+        />
+        <PickerOpenerRow
+          setShowPicker={() => showSheet("timePeriod")}
           text="Time Period"
           value={timePeriod}
         />
@@ -207,7 +288,9 @@ const GlucoseLogScreen: React.FC = () => {
           <Text fontSize="$lg" fontWeight="$bold">
             Add Notes
           </Text>
-          <Icon as={AddIcon} size="sm" mr="$2" />
+          <Pressable onPress={() => showSheet("note")}>
+            <Icon as={AddIcon} size="sm" mr="$2" />
+          </Pressable>
         </HStack>
         <Pressable
           onPress={() => {
@@ -217,16 +300,64 @@ const GlucoseLogScreen: React.FC = () => {
           borderTopColor="$borderLight200"
         >
           <HStack alignItems="center" p="$3">
-            <Text color="$textLight400">No notes to display</Text>
+            <Text color="$textLight400">{note || "No notes to display"}</Text>
           </HStack>
         </Pressable>
       </VStack>
 
       <FormControl>
-        <Button mt="$8" onPress={handleSubmitUpdate}>
+        <Button
+          mt="$8"
+          onPress={handleSubmitUpdate}
+          isDisabled={!(glucoseLevel && date && time && timePeriod)}
+        >
           <ButtonText>Save</ButtonText>
         </Button>
       </FormControl>
+
+      {/* picker modals --------------------- */}
+
+      <DateTimePickerModal
+        isVisible={isDatePickerOpen}
+        mode="date"
+        onConfirm={handleDateConfirm}
+        onCancel={() => setIsDatePickerOpen(false)}
+        // testID="dateTimePicker"
+        // date={date}
+        // is24Hour={true}
+        // display="default"
+        // onChange={onChangeDate}
+      />
+
+      <DateTimePickerModal
+        isVisible={isTimePickerOpen}
+        mode="time"
+        onConfirm={handleTimeConfirm}
+        onCancel={() => setIsTimePickerOpen(false)}
+        // testID="dateTimePicker"
+        // time={time}
+        is24Hour={true}
+        // display="default"
+        // onChange={onChangeTime}
+      />
+
+      <Sheet
+        isSheetOpen={isTimePeriodPickerOpen}
+        closeSheet={() => closeSheet("timePeriod")}
+        setValue={setTimePeriod}
+        translateY={translateY}
+        sheetContentType="picker"
+        optionsArray={timePeriods}
+      />
+
+      <Sheet
+        isSheetOpen={isNoteOpen}
+        closeSheet={() => closeSheet("note")}
+        setValue={setNote}
+        translateY={translateY}
+        sheetContentType="note"
+        value={note}
+      />
     </VStack>
   );
 };

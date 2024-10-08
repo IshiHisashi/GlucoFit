@@ -5,20 +5,20 @@ import {
   Pressable,
   Text,
 } from "@gluestack-ui/themed";
-import React, { FC } from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 
 interface PickerOpenerRowProps {
-  onPress(): void;
+  setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
-  value: string;
+  value: Date | string;
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { onPress, text, value } = props;
+  const { setShowPicker, text, value } = props;
   return (
     <Pressable
       onPress={() => {
-        /* Open date picker */
+        setShowPicker(true);
       }}
     >
       <HStack
@@ -29,7 +29,13 @@ const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
       >
         <Text>{text}</Text>
         <HStack alignItems="center">
-          <Text mr="$2">{value}</Text>
+          <Text mr="$2">
+            {typeof value === "string"
+              ? value
+              : text === "Date"
+                ? value.toDateString()
+                : value.toTimeString()}
+          </Text>
           <Icon as={ChevronRightIcon} size="sm" />
         </HStack>
       </HStack>
