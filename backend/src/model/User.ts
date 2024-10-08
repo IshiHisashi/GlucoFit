@@ -30,8 +30,10 @@ export interface IUser extends Document {
   android_health_token: string;
   android_health_id: string;
   badges: Badges;
+  read_article_history_array: string[];
   recently_read_articles_array: string[];
   active_status: boolean;
+  favourite_articles: string[];
   comparePassword: (password: string) => Promise<boolean>;
 }
 
@@ -64,8 +66,10 @@ const userSchema = new Schema<IUser>({
   android_health_token: { type: String },
   android_health_id: { type: String },
   badges: { type: Object },
+  read_article_history_array: {type: [String]},
   recently_read_articles_array: { type: [String] },
   active_status: { type: Boolean },
+  favourite_articles: {type: [String]}
 });
 
 // For signing up | hash the password before saving the user

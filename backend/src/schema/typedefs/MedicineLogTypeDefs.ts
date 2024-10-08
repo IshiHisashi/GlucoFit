@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 
-export const insulinLogTypeDefs = gql`
-  type InsulinLog {
+export const medicineLogTypeDefs = gql`
+  type MedicineLog {
     id: ID!
     user_id: User!  # Linked to User
     amount: Float!
@@ -9,24 +9,24 @@ export const insulinLogTypeDefs = gql`
   }
 
   extend type Query {
-    getInsulinLog(id: ID!): InsulinLog
-    getInsulinLogs: [InsulinLog!]!
-    getInsulinLogsByUser(user_id: ID!): [InsulinLog!]!
+    getMedicineLog(id: ID!): MedicineLog
+    getMedicineLogs: [MedicineLog!]!
+    getMedicineLogsByUser(user_id: ID!): [MedicineLog!]!
   }
 
   extend type Mutation {
-    createInsulinLog(
+    createMedicineLog(
       user_id: ID!
       amount: Float!
       injection_time: Date!
-    ): InsulinLog!
+    ): MedicineLog!
 
-    updateInsulinLog(
+    updateMedicineLog(
       id: ID!
       amount: Float
       injection_time: Date
-    ): InsulinLog!
+    ): MedicineLog!
 
-    deleteInsulinLog(id: ID!): String!
+    deleteMedicineLog(id: ID!): String!
   }
 `;

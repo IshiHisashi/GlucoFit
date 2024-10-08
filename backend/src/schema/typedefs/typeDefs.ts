@@ -3,9 +3,10 @@ import { gql } from "apollo-server-express";
 import { userTypeDefs } from "./userTypeDefs";
 import { testResultsTypeDefs } from "./testResultTypeDefs";
 import { activityLogsTypeDefs } from "./ActivityLogsTypeDefs";
-import { insulinLogTypeDefs } from "./InsulinLogTypeDefs";
+import { medicineLogTypeDefs } from "./MedicineLogTypeDefs";
 import { badgesTypeDefs } from "./BadgesTypeDefs";
 import { articlesTypeDefs } from "./ArticleTypeDefs";
+import { dietLogsTypeDefs } from "./DietLogsTypeDefs";
 // Import more typeDefs as needed...
 
 const rootTypeDefs = gql`
@@ -21,7 +22,8 @@ export const typeDefs = mergeTypeDefs([
   userTypeDefs,
   testResultsTypeDefs,
   activityLogsTypeDefs,
-  insulinLogTypeDefs,
+  medicineLogTypeDefs,
   badgesTypeDefs,
-  articlesTypeDefs
+  articlesTypeDefs,
+  dietLogsTypeDefs
 ]);

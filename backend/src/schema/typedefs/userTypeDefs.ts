@@ -71,8 +71,10 @@ export const userTypeDefs = gql`
       android_health_token: String
       android_health_id: String
       badges: JSON
+      read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
+      favourite_articles: [String]
     ): User!
 
     updateUser(
@@ -100,8 +102,10 @@ export const userTypeDefs = gql`
       android_health_token: String
       android_health_id: String
       badges: JSON
+      read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
+      favourite_articles: [String]
     ): User!
 
     deleteUser(id: ID!): String!
