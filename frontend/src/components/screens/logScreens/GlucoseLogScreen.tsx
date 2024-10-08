@@ -1,25 +1,32 @@
 import {
   ButtonText,
   Center,
+  ChevronRightIcon,
   FormControl,
   FormControlLabelText,
   HStack,
+  Icon,
   Image,
   Input,
   InputField,
   InputIcon,
+  Pressable,
   Text,
   VStack,
+  Button,
+  InputSlot,
+  AddIcon,
 } from "@gluestack-ui/themed";
-import React from "react";
+import React, { useState } from "react";
 import { FormControlLabel } from "@gluestack-ui/themed";
 import { Textarea } from "@gluestack-ui/themed";
 import { TextareaInput } from "@gluestack-ui/themed";
-import { Button } from "@gluestack-ui/themed";
-import { InputSlot } from "@gluestack-ui/themed";
+// import { Button } from "@gluestack-ui/themed";
+// import { InputSlot } from "@gluestack-ui/themed";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
+import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 
 const GET_TEST_RESULTS = gql`
   query GetTestResults {
@@ -61,11 +68,49 @@ const CREATE_TEST_RESULT = gql`
   }
 `;
 
-const GlucoseLogScreen: React.FC = () => {
-  const [createTestResult, { data, loading, error }] =
-    useMutation(CREATE_TEST_RESULT);
+const UPDATE_TEST_RESULT = gql`
+  mutation UpdateTestResult(
+    $updateTestResultId: ID!
+    $bsl: Float
+    $note: NoteInput
+    $log_timestamp: Date
+    $confirmed: Boolean
+  ) {
+    updateTestResult(
+      id: $updateTestResultId
+      bsl: $bsl
+      note: $note
+      log_timestamp: $log_timestamp
+      confirmed: $confirmed
+    ) {
+      id
+      bsl
+      note {
+        note_description
+      }
+      log_timestamp
+      confirmed
+    }
+  }
+`;
 
-  const handleSubmit = async () => {
+const GlucoseLogScreen: React.FC = () => {
+  const [glucoseLevel, setGlucoseLevel] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [timePeriod, setTimePeriod] = useState("");
+
+  const [
+    createTestResult,
+    { data: createData, loading: createLoading, error: createError },
+  ] = useMutation(CREATE_TEST_RESULT);
+
+  const [
+    updateTestResult,
+    { data: updateData, loading: updateLoading, error: updateError },
+  ] = useMutation(UPDATE_TEST_RESULT);
+
+  const handleSubmitCreate = async () => {
     try {
       const result = await createTestResult({
         variables: {
@@ -84,6 +129,25 @@ const GlucoseLogScreen: React.FC = () => {
     }
   };
 
+  const handleSubmitUpdate = async () => {
+    try {
+      const result = await updateTestResult({
+        variables: {
+          updateTestResultId: "6700bdd5049f25c81a7787b2", // result doc id hardcode for now
+          bsl: 100,
+          note: {
+            note_description: "Updated!",
+          },
+          log_timestamp: new Date().toISOString(),
+          confirmed: true,
+        },
+      });
+      console.log("Update result:", result);
+    } catch (error) {
+      console.error("Error updating test result", error);
+    }
+  };
+
   // const { loading, error, data } = useQuery(GET_TEST_RESULTS);
   // if (loading) return "Loading...";
   // if (error) return `Error! ${error.message}`;
@@ -91,81 +155,75 @@ const GlucoseLogScreen: React.FC = () => {
 
   return (
     <VStack>
-      <Center>
-        <Text>This is glucose log screen.</Text>
-      </Center>
+      <VStack space="sm" alignItems="center">
+        <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
-      <Center>
-        <Image source={GlucoFitFaceSample} alt="GlucoFit face" />
-      </Center>
-
-      <FormControl isRequired>
-        <Input>
-          <InputField
-            type="text"
-            placeholder="Input your glucose level..."
-            onChangeText={() => {}}
-            // value={}
-          />
-          <InputSlot pr="$3" onPress={() => {}}>
-            <Text>mg/dL</Text>
-          </InputSlot>
-        </Input>
-      </FormControl>
-
-      <FormControl isRequired>
-        <HStack>
-          <FormControlLabel>
-            <FormControlLabelText>Time</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
+        <FormControl isRequired>
+          <Input variant="outline" size="md" w="$56">
             <InputField
-              type="text"
-              placeholder="date..."
-              onChangeText={() => {}}
-              // value={}
+              value={glucoseLevel}
+              onChangeText={setGlucoseLevel}
+              keyboardType="numeric"
+              // placeholder="Input your glucose level..."
+              // w="$full"
+              // textAlign="center"
+              fontSize="$2xl"
             />
+            <InputSlot pr="$3">
+              <Text>mmol/L</Text>
+            </InputSlot>
           </Input>
-          <Input>
-            <InputField
-              type="text"
-              placeholder="time..."
-              onChangeText={() => {}}
-              // value={}
-            />
-          </Input>
+        </FormControl>
+      </VStack>
+
+      <VStack
+        space="sm"
+        mt="$8"
+        borderWidth={1}
+        borderColor="$borderLight200"
+        borderRadius="$md"
+      >
+        <Text fontSize="$lg" fontWeight="$bold" p="$3">
+          Schedule
+        </Text>
+
+        <PickerOpenerRow onPress={() => {}} text="Date" value={date} />
+        <PickerOpenerRow onPress={() => {}} text="Time" value={time} />
+        <PickerOpenerRow
+          onPress={() => {}}
+          text="Time Period"
+          value={timePeriod}
+        />
+      </VStack>
+
+      <VStack
+        space="sm"
+        mt="$8"
+        borderWidth={1}
+        borderColor="$borderLight200"
+        borderRadius="$md"
+      >
+        <HStack alignItems="center" justifyContent="space-between" p="$3">
+          <Text fontSize="$lg" fontWeight="$bold">
+            Add Notes
+          </Text>
+          <Icon as={AddIcon} size="sm" mr="$2" />
         </HStack>
-      </FormControl>
-
-      <FormControl isRequired>
-        <HStack>
-          <FormControlLabel>
-            <FormControlLabelText>Time Period</FormControlLabelText>
-          </FormControlLabel>
-          <Input>
-            <InputField
-              type="text"
-              placeholder="time period..."
-              onChangeText={() => {}}
-              // value={}
-            />
-          </Input>
-        </HStack>
-      </FormControl>
-
-      <FormControl isRequired>
-        <VStack>
-          <FormControlLabel>
-            <FormControlLabelText>Additional Notes</FormControlLabelText>
-          </FormControlLabel>
-          <Textarea>
-            <TextareaInput placeholder="Additional Notes Here" />
-          </Textarea>
-        </VStack>
-      </FormControl>
+        <Pressable
+          onPress={() => {
+            /* Open notes input */
+          }}
+          borderTopWidth={1}
+          borderTopColor="$borderLight200"
+        >
+          <HStack alignItems="center" p="$3">
+            <Text color="$textLight400">No notes to display</Text>
+          </HStack>
+        </Pressable>
+      </VStack>
 
       <FormControl>
-        <Button onPress={handleSubmit}>
+        <Button mt="$8" onPress={handleSubmitUpdate}>
           <ButtonText>Save</ButtonText>
         </Button>
       </FormControl>
