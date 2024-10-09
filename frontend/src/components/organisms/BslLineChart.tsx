@@ -1,12 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
 import {
   VictoryChart,
   VictoryArea,
   VictoryScatter,
   VictoryAxis,
 } from "victory-native";
-import { View } from "react-native";
+import { Center, View } from "@gluestack-ui/themed";
 
+// dummy data
 const data = [
   { time: new Date(2024, 9, 9, 1), value: 110 },
   { time: new Date(2024, 9, 9, 5), value: 120 },
@@ -16,7 +17,7 @@ const data = [
   // { time: new Date(2024, 9, 9, 23), value: 100 },
 ];
 
-// Define the tick values for the X-axis
+// tick values for the X-axis
 const ticks = [
   new Date(2024, 9, 9, 0), // 12am
   new Date(2024, 9, 9, 6), // 6am
@@ -25,24 +26,36 @@ const ticks = [
   new Date(2024, 9, 10, 0), // 12am (next day)
 ];
 
-const BslLineChart = () => {
+interface BslLineChartProps {
+  width: number;
+}
+
+const BslLineChart: FC<BslLineChartProps> = ({ width }) => {
   return (
-    <View>
-      <VictoryChart scale={{ x: "time" }}>
-        {/* Custom X-axis tick values and formatting */}
+    <Center>
+      {/*  style={{ borderColor: "#000000", borderWidth: 1 }} */}
+      <VictoryChart
+        scale={{ x: "time" }}
+        width={width * 0.9}
+        padding={{ top: 20, bottom: 40, left: 50, right: 30 }}
+      >
+        {/* X-axis for time */}
         <VictoryAxis
           tickValues={ticks}
           tickFormat={(t) =>
             `${t.getHours() === 0 ? "12am" : t.getHours() === 12 ? "12pm" : t.getHours() + "am"}`
           }
         />
+
+        {/* Y-axis */}
         <VictoryAxis dependentAxis />
-        {/* Area chart instead of line chart */}
+
+        {/* Area chart */}
         <VictoryArea
           data={data}
           x="time"
           y="value"
-          interpolation="natural" // Makes the area smooth
+          interpolation="natural"
           style={{
             data: {
               fill: "#c43a31",
@@ -51,8 +64,9 @@ const BslLineChart = () => {
               strokeWidth: 2,
               strokeLinecap: "round",
             },
-          }} // Set opacity for the area
+          }}
         />
+
         {/* Scatter plot for data points */}
         <VictoryScatter
           data={data}
@@ -62,7 +76,7 @@ const BslLineChart = () => {
           style={{ data: { fill: "#c43a31" } }}
         />
       </VictoryChart>
-    </View>
+    </Center>
   );
 };
 

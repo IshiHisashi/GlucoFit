@@ -1,12 +1,8 @@
 import {
-  Avatar,
-  AvatarImage,
   Box,
   Button,
   ButtonText,
   Center,
-  FlatList,
-  Heading,
   HStack,
   Icon,
   MoonIcon,
@@ -15,11 +11,10 @@ import {
   VStack,
   ChevronRightIcon,
   ScrollView,
-  View,
 } from "@gluestack-ui/themed";
 import React from "react";
 import { NavigationProp } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
@@ -29,54 +24,7 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  // dummy data
-  // const lineData = [
-  //   { value: 120, dataPointText: "120" },
-  //   { value: 140, dataPointText: "140" },
-  //   { value: 145, dataPointText: "145" },
-  //   { value: 158, dataPointText: "158" },
-  //   { value: null, dataPointText: null },
-  // ];
-
-  const lineDataRaw = [
-    { value: 120, date: new Date("2023-10-09T02:30:00") },
-    { value: 140, date: new Date("2023-10-09T08:45:00") },
-    { value: 130, date: new Date("2023-10-09T14:15:00") },
-    { value: 158, date: new Date("2023-10-09T19:30:00") },
-    { value: 158, date: new Date("2023-10-09T23:30:00") },
-  ];
-
-  const xAxisLabels = ["12am", "6am", "12pm", "6pm", "12am"];
-
-  const normalizeXValue = (date) => {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(startOfDay);
-    endOfDay.setDate(endOfDay.getDate() + 1);
-
-    return (date - startOfDay) / (endOfDay - startOfDay);
-  };
-
-  const lineData = lineDataRaw.map((item) => ({
-    value: item.value,
-    dataPointText: `${item.value}`,
-    date: item.date,
-    xValue: normalizeXValue(item.date),
-  }));
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const barData = [
-    { value: 150, label: "W" },
-    { value: 140, label: "T" },
-    { value: 160, label: "F" },
-    { value: 130, label: "S" },
-    { value: 140, label: "S" },
-    { value: 150, label: "M" },
-    { value: 120, label: "T" },
-  ];
+  const { width } = useWindowDimensions();
 
   return (
     <ScrollView>
@@ -101,9 +49,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <Text>500 Steps</Text>
           </HStack>
 
-          <Box>
-            <BslLineChart />
-          </Box>
+          <BslLineChart width={width} />
         </VStack>
 
         <VStack
@@ -176,7 +122,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </Pressable>
           </HStack>
 
-          <HStack alignItems="center">
+          <HStack alignItems="center" justifyContent="space-between" space="sm">
             <Center>
               <Text size="3xl" fontWeight="$bold">
                 150
@@ -184,7 +130,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <Text>mg/dL</Text>
               <Text>Average</Text>
             </Center>
-            <BslWeeklyBarChart />
+            <BslWeeklyBarChart width={width} />
           </HStack>
         </VStack>
       </VStack>
