@@ -55,7 +55,9 @@ const Sheet: FC<SheetProps> = (props) => {
             <Pressable onPress={closeSheet}>
               <Icon as={ArrowLeftIcon} size="sm" />
             </Pressable>
-            <Text style={styles.modalTitle}>Time period</Text>
+            <Text style={styles.modalTitle}>
+              {sheetContentType === "note" ? "Add Notes" : "Time period"}
+            </Text>
             <Box width={24} />
           </HStack>
 
