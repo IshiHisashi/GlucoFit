@@ -17,10 +17,13 @@ import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Animated, Modal, Platform, StyleSheet, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import Sheet from "../../organisms/Sheet";
+import { AppStackParamList } from "../../../types/navigation";
 
 const GET_TEST_RESULTS = gql`
   query GetTestResults {
@@ -88,6 +91,11 @@ const UPDATE_TEST_RESULT = gql`
   }
 `;
 
+type GlucoseLogScreenNavigationProp = NativeStackNavigationProp<
+  AppStackParamList,
+  "GlucoseLog"
+>;
+
 const GlucoseLogScreen: React.FC = () => {
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
@@ -99,6 +107,8 @@ const GlucoseLogScreen: React.FC = () => {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
+
+  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
 
   const [
     createTestResult,
@@ -134,18 +144,26 @@ const GlucoseLogScreen: React.FC = () => {
 
   const handleSubmitCreate = async () => {
     try {
+      const combinedDateTime = new Date(date);
+      combinedDateTime.setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds()
+      );
+
       const result = await createTestResult({
         variables: {
           user_id: "60d8f33e7f3f83479cbf5b4f", // hardcode for now
-          bsl: 95.4,
+          bsl: Number(glucoseLevel),
           note: {
-            note_description: "Fasting blood sugar before breakfast",
+            note_description: note,
           },
-          log_timestamp: new Date().toISOString(),
+          log_timestamp: combinedDateTime,
           confirmed: true,
         },
       });
       console.log("Mutation result:", result);
+      navigation.navigate("Tabs", { screen: "Home" });
     } catch (e) {
       console.error("Error creating test result:", e);
     }
@@ -293,9 +311,7 @@ const GlucoseLogScreen: React.FC = () => {
           </Pressable>
         </HStack>
         <Pressable
-          onPress={() => {
-            /* Open notes input */
-          }}
+          onPress={() => {}}
           borderTopWidth={1}
           borderTopColor="$borderLight200"
         >
@@ -308,7 +324,7 @@ const GlucoseLogScreen: React.FC = () => {
       <FormControl>
         <Button
           mt="$8"
-          onPress={handleSubmitUpdate}
+          onPress={handleSubmitCreate}
           isDisabled={!(glucoseLevel && date && time && timePeriod)}
         >
           <ButtonText>Save</ButtonText>
