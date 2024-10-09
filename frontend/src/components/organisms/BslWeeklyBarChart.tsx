@@ -4,17 +4,16 @@ import { View } from "@gluestack-ui/themed";
 
 // dummy data
 const data = [
-  { day: "Wed", value: 80 },
-  { day: "Thu", value: 40 },
+  { day: "Wed", value: 180 },
+  { day: "Thu", value: 140 },
   { day: "Fri", value: 100 },
-  { day: "Sat", value: 20 },
-  { day: "Sun", value: 60 },
-  { day: "Mon", value: 50 },
-  { day: "Tue", value: 30 },
+  { day: "Sat", value: 120 },
+  { day: "Sun", value: 160 },
+  { day: "Mon", value: 150 },
+  { day: "Tue", value: 130 },
 ];
 
-// Calculate the average value
-const average = data.reduce((acc, cur) => acc + cur.value, 0) / data.length;
+const bslBorder = 140;
 
 interface BslWeeklyBarChartProps {
   width: number;
@@ -43,7 +42,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({ width }) => {
         {/* Y-axis for values, will be deleted */}
         {/* <VictoryAxis
           dependentAxis
-          tickFormat={(t) => `${Math.round(t + average)}`}
+          tickFormat={(t) => `${Math.round(t + bslBorder)}`}
           offsetX={50}
           style={{
             axis: { stroke: "#000" },
@@ -55,12 +54,13 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({ width }) => {
         <VictoryBar
           data={data}
           x="day"
-          y={(d) => d.value - average}
+          y={(d) => d.value - bslBorder}
           barWidth={20}
           barRatio={0.1}
           style={{
             data: {
-              fill: ({ datum }) => (datum.value < average ? "#FF5733" : "#888"),
+              fill: ({ datum }) =>
+                datum.value < bslBorder ? "#FF5733" : "#888",
               opacity: 0.7,
             },
           }}
