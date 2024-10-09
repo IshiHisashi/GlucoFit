@@ -15,11 +15,14 @@ import {
   VStack,
   ChevronRightIcon,
   ScrollView,
+  View,
 } from "@gluestack-ui/themed";
 import React from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
-import { BarChart, LineChart } from "react-native-gifted-charts";
+
+import BslLineChart from "../organisms/BslLineChart";
+import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 
 interface HomeScreenProps {
   navigation: NavigationProp<{}>;
@@ -27,13 +30,43 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // dummy data
-  const lineData = [
-    { value: 120, dataPointText: "120" },
-    { value: 140, dataPointText: "140" },
-    { value: 145, dataPointText: "145" },
-    { value: 158, dataPointText: "158" },
-    { value: null, dataPointText: null },
+  // const lineData = [
+  //   { value: 120, dataPointText: "120" },
+  //   { value: 140, dataPointText: "140" },
+  //   { value: 145, dataPointText: "145" },
+  //   { value: 158, dataPointText: "158" },
+  //   { value: null, dataPointText: null },
+  // ];
+
+  const lineDataRaw = [
+    { value: 120, date: new Date("2023-10-09T02:30:00") },
+    { value: 140, date: new Date("2023-10-09T08:45:00") },
+    { value: 130, date: new Date("2023-10-09T14:15:00") },
+    { value: 158, date: new Date("2023-10-09T19:30:00") },
+    { value: 158, date: new Date("2023-10-09T23:30:00") },
   ];
+
+  const xAxisLabels = ["12am", "6am", "12pm", "6pm", "12am"];
+
+  const normalizeXValue = (date) => {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+
+    return (date - startOfDay) / (endOfDay - startOfDay);
+  };
+
+  const lineData = lineDataRaw.map((item) => ({
+    value: item.value,
+    dataPointText: `${item.value}`,
+    date: item.date,
+    xValue: normalizeXValue(item.date),
+  }));
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
 
   const barData = [
     { value: 150, label: "W" },
@@ -69,30 +102,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </HStack>
 
           <Box>
-            <LineChart
-              data={lineData}
-              // width={width - 40}
-              width={300}
-              height={200}
-              spacing={50}
-              color="#000000"
-              thickness={2}
-              startFillColor="rgba(0,0,0,0.1)"
-              endFillColor="rgba(0,0,0,0.01)"
-              initialSpacing={0}
-              noOfSections={3}
-              maxValue={200}
-              // yAxisLabel="mg/dL"
-              yAxisLabelWidth={40}
-              xAxisLabelTexts={["12am", "6am", "12pm", "6pm", "12am"]}
-              hideRules
-              hideYAxisText
-              focusedDataPointColor="#000000"
-              focusedDataPointRadius={6}
-              dataPointsHeight={20}
-              dataPointsWidth={20}
-              curved
-            />
+            <BslLineChart />
           </Box>
         </VStack>
 
@@ -148,12 +158,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </HStack>
           </Pressable>
         </VStack>
+        {/* ---------------------------------------------------------------------- */}
 
         <VStack
           borderWidth={1}
           borderColor="$borderLight200"
           borderRadius="$md"
-          p="$4"
+          p="$2"
         >
           <HStack alignItems="center" justifyContent="space-between" p="$2">
             <Text>Sep 24 - 0ct 30, 2024</Text>
@@ -165,17 +176,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </Pressable>
           </HStack>
 
-          <BarChart
-            data={barData}
-            // width={width - 40}
-            height={150}
-            barWidth={30}
-            spacing={20}
-            barBorderRadius={4}
-            frontColor="rgba(0,0,0,0.3)"
-            yAxisThickness={0}
-            xAxisThickness={0}
-          />
+          <HStack alignItems="center">
+            <Center>
+              <Text size="3xl" fontWeight="$bold">
+                150
+              </Text>
+              <Text>mg/dL</Text>
+              <Text>Average</Text>
+            </Center>
+            <BslWeeklyBarChart />
+          </HStack>
         </VStack>
       </VStack>
     </ScrollView>
