@@ -5,12 +5,12 @@ const userResolvers = {
   Query: {
     getUser: async (
       _: any,
-      { id }: { id: string },
-      { user }: any
+      { id }: { id: string }
+      // { user }: any
     ): Promise<IUser | null> => {
-      if (!user) {
-        throw new Error("You must be logged in to view this data");
-      }
+      // if (!user) {
+      //   throw new Error("You must be logged in to view this data");
+      // }
       return await User.findById(id);
     },
     getUsers: async (): Promise<IUser[]> => {

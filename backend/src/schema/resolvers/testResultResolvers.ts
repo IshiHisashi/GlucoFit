@@ -15,6 +15,51 @@ const testResultsResolvers = {
     getTestResultsByUser: async (_: any, { user_id }: { user_id: string }) => {
       return await TestResults.find({ user_id }).populate("user_id");
     },
+      getUnconfirmedTestResults: async (_: any, { user_id }: { user_id: string }): Promise<ITestResults[]> => {
+        try {
+          const unconfirmedResults = await TestResults.find({
+            user_id,        
+            confirmed: false 
+          });
+          return unconfirmedResults;
+        } catch (error) {
+          console.error("Error fetching unconfirmed test results for user:", error);
+          throw new Error("Failed to fetch unconfirmed test results for the user");
+        }
+      },
+    getAverageBslForToday: async (_: any, { user_id }: { user_id: string }): Promise<number | null> => {
+      try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0); 
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999); 
+
+        const result = await TestResults.aggregate([
+          {
+            $match: {
+              user_id: new Types.ObjectId(user_id),  
+              log_timestamp: { $gte: startOfDay, $lte: endOfDay },  
+            },
+          },
+          {
+            $group: {
+              _id: null,  
+              averageBsl: { $avg: "$bsl" },
+            },
+          },
+        ]);
+
+        if (result.length === 0) {
+          return null;
+        }
+
+        return result[0].averageBsl;
+      } catch (error) {
+        console.error("Error calculating average BSL for today:", error);
+        throw new Error("Failed to calculate average BSL for today");
+      }
+    },
   },
   Mutation: {
     createTestResult: async (
