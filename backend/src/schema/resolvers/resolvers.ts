@@ -1,28 +1,30 @@
 // src/schema/resolvers/index.ts
-
 import userResolvers from "./userResolvers";
 import testResultsResolvers from "./testResultResolvers";
 import activityLogsResolvers from "./ActivityLogsResolvers";
-import insulinLogResolvers from "./InsulinLogResolvers";
+import medicineLogResolvers from "./MedicineLogResolvers";
 import badgesResolvers from "./BadgesResolvers";
 import articlesResolvers from "./ArticlesResolvers";
+import dietLogsResolvers from "./DietLogsResolvers";
 
 const resolvers = {
   Query: {
     ...userResolvers.Query,
     ...testResultsResolvers.Query,
     ...activityLogsResolvers.Query,
-    ...insulinLogResolvers.Query,
+    ...medicineLogResolvers.Query,
     ...badgesResolvers.Query,
-    ...articlesResolvers.Query
+    ...articlesResolvers.Query,
+    ...dietLogsResolvers.Query
   },
   Mutation: {
     ...userResolvers.Mutation,
     ...testResultsResolvers.Mutation,
     ...activityLogsResolvers.Mutation,
-    ...insulinLogResolvers.Mutation,
+    ...medicineLogResolvers.Mutation,
     ...badgesResolvers.Mutation,
-    ...articlesResolvers.Mutation
+    ...articlesResolvers.Mutation,
+    ...dietLogsResolvers.Mutation
   },
 };
 
