@@ -19,14 +19,16 @@
     "@types/react-navigation": "^3.0.8",
     "axios": "^1.7.7",
     "expo": "~51.0.28",
+    "expo-linear-gradient": "~13.0.2",
     "expo-status-bar": "~1.12.1",
     "qs": "^6.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-native": "^0.75.3",
+    "react-native-gifted-charts": "^1.4.43",
     "react-native-safe-area-context": "^4.11.0",
     "react-native-screens": "^3.34.0",
-    "react-native-svg": "^13.4.0",
+    "react-native-svg": "15.2.0",
     "react-native-webview": "^13.12.2"
   },
   "devDependencies": {
