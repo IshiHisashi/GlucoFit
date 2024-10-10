@@ -9,28 +9,64 @@ import { Center, View } from "@gluestack-ui/themed";
 
 // dummy data
 const data = [
-  { time: new Date(2024, 9, 9, 1), value: 110 },
-  { time: new Date(2024, 9, 9, 5), value: 120 },
-  { time: new Date(2024, 9, 9, 9), value: 150 },
-  { time: new Date(2024, 9, 9, 14), value: 130 },
-  { time: new Date(2024, 9, 9, 18), value: 140 },
-  // { time: new Date(2024, 9, 9, 23), value: 100 },
+  // { log_timestamp: new Date(2024, 9, 10, 1), bsl: 110 },
+  { log_timestamp: new Date(2024, 9, 10, 5), bsl: 120 },
+  { log_timestamp: new Date(2024, 9, 10, 9), bsl: 150 },
+  // { log_timestamp: new Date(2024, 9, 10, 14), bsl: 130 },
+  // { log_timestamp: new Date(2024, 9, 10, 18), bsl: 140 },
+  { log_timestamp: new Date(2024, 9, 10, 23), bsl: 100 },
 ];
 
 // tick values for the X-axis
 const ticks = [
-  new Date(2024, 9, 9, 0), // 12am
-  new Date(2024, 9, 9, 6), // 6am
-  new Date(2024, 9, 9, 12), // 12pm
-  new Date(2024, 9, 9, 18), // 6pm
-  new Date(2024, 9, 10, 0), // 12am (next day)
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    0
+  ),
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    6
+  ),
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    12
+  ),
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate(),
+    18
+  ),
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDate() + 1,
+    0
+  ),
 ];
 
 interface BslLineChartProps {
   width: number;
+  data: {
+    bsl: string;
+    log_timestamp: Date;
+  }[];
 }
 
-const BslLineChart: FC<BslLineChartProps> = ({ width }) => {
+const BslLineChart: FC<BslLineChartProps> = ({ width, data }) => {
+  const convertedData = data.map((obj) => {
+    return {
+      bsl: obj.bsl,
+      log_timestamp: new Date(obj.log_timestamp),
+    };
+  });
+
   return (
     <Center>
       {/*  style={{ borderColor: "#000000", borderWidth: 1 }} */}
@@ -42,9 +78,16 @@ const BslLineChart: FC<BslLineChartProps> = ({ width }) => {
         {/* X-axis for time */}
         <VictoryAxis
           tickValues={ticks}
-          tickFormat={(t) =>
-            `${t.getHours() === 0 ? "12am" : t.getHours() === 12 ? "12pm" : t.getHours() + "am"}`
-          }
+          tickFormat={(t) => {
+            const tDate = new Date(t);
+            return tDate.getHours() === 0
+              ? "12am"
+              : tDate.getHours() === 12
+                ? "12pm"
+                : tDate.getHours() > 12
+                  ? `${tDate.getHours() - 12}pm`
+                  : `${tDate.getHours()}am`;
+          }}
         />
 
         {/* Y-axis */}
@@ -52,9 +95,9 @@ const BslLineChart: FC<BslLineChartProps> = ({ width }) => {
 
         {/* Area chart */}
         <VictoryArea
-          data={data}
-          x="time"
-          y="value"
+          data={convertedData}
+          x="log_timestamp"
+          y="bsl"
           interpolation="natural"
           style={{
             data: {
@@ -69,9 +112,9 @@ const BslLineChart: FC<BslLineChartProps> = ({ width }) => {
 
         {/* Scatter plot for data points */}
         <VictoryScatter
-          data={data}
-          x="time"
-          y="value"
+          data={convertedData}
+          x="log_timestamp"
+          y="bsl"
           size={5}
           style={{ data: { fill: "#c43a31" } }}
         />

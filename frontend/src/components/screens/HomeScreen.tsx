@@ -12,7 +12,7 @@ import {
   ChevronRightIcon,
   ScrollView,
 } from "@gluestack-ui/themed";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import { useNavigation } from "@react-navigation/native";
@@ -25,13 +25,13 @@ import { AppStackParamList } from "../../types/navigation";
 // hardcode for now
 const userId = "60d8f33e7f3f83479cbf5b4f";
 
-const GET_TOTAL_STEPS_FOR_TODAY = gql`
-  query GetTotalStepsForToday($userId: ID!) {
-    getTotalStepsForToday(user_id: $userId)
-  }
-`;
-
 const TotalSteps = () => {
+  const GET_TOTAL_STEPS_FOR_TODAY = gql`
+    query GetTotalStepsForToday($userId: ID!) {
+      getTotalStepsForToday(user_id: $userId)
+    }
+  `;
+
   const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
     variables: { userId },
   });
@@ -42,12 +42,46 @@ const TotalSteps = () => {
   return <Text>{data.getTotalStepsForToday} Steps</Text>;
 };
 
+const GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY = gql`
+  query GetBslResultsAndAverageForToday($userId: ID!) {
+    getTestResultsAndAverageForToday(user_id: $userId) {
+      averageBsl
+      testResults {
+        bsl
+        log_timestamp
+      }
+    }
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
+  const [averageBslToday, setAverageBslToday] = useState(0);
+
+  type BslResult = {
+    bsl: string;
+    log_timestamp: Date;
+  };
+  const [bslResultsTodayArray, setBslResultsTodayArray] = useState<BslResult[]>(
+    []
+  );
+
   const { width } = useWindowDimensions();
+
+  const {
+    data: bslResultsAndAverageData,
+    loading: bslResultsAndAverageLoading,
+    error: bslResultsAndAverageError,
+    refetch: bslResultsAndAverageRefetch,
+  } = useQuery(GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY, {
+    variables: { userId: userId },
+  });
+
+  // bslResultsAndAverageData &&
+  //   console.log(bslResultsAndAverageData.getTestResultsAndAverageForToday);
 
   return (
     <ScrollView>
@@ -60,19 +94,32 @@ const HomeScreen: React.FC = () => {
           p="$4"
         >
           <HStack alignItems="center" justifyContent="space-between">
-            <VStack>
-              <HStack alignItems="center" space="xs">
-                <Text fontSize="$4xl" fontWeight="$bold">
-                  150
-                </Text>
-                <Text>mg/dL</Text>
-              </HStack>
-              <Text>6:00pm</Text>
-            </VStack>
+            {bslResultsAndAverageData && (
+              <VStack>
+                <HStack alignItems="center" space="xs">
+                  <Text fontSize="$4xl" fontWeight="$bold">
+                    {
+                      bslResultsAndAverageData.getTestResultsAndAverageForToday
+                        .averageBsl
+                    }
+                  </Text>
+                  <Text>mmol/L</Text>
+                </HStack>
+                <Text>6:00pm what kind of time is this?</Text>
+              </VStack>
+            )}
             <TotalSteps />
           </HStack>
 
-          <BslLineChart width={width} />
+          {bslResultsAndAverageData && (
+            <BslLineChart
+              width={width}
+              data={
+                bslResultsAndAverageData.getTestResultsAndAverageForToday
+                  .testResults
+              }
+            />
+          )}
         </VStack>
 
         <VStack
