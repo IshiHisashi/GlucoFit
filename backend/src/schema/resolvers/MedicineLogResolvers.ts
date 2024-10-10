@@ -15,6 +15,26 @@ const medicineLogResolvers = {
     getMedicineLogsByUser: async (_: any, { user_id }: { user_id: string }) => {
       return await MedicineLog.find({ user_id }).populate("user_id");
     },
+   // Get today's medicine logs for a specific user
+   getTodayMedicineLogs: async (_: any, { user_id }: { user_id: string }): Promise<IMedicineLog[]> => {
+    try {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0); // Start of today
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999); // End of today
+
+      // Fetch all medicine logs for today
+      return await MedicineLog.find({
+        user_id: new Types.ObjectId(user_id),
+        injection_time: { $gte: startOfDay, $lte: endOfDay },
+      });
+    } catch (error) {
+      console.error("Error fetching today's medicine logs:", error);
+      throw new Error("Failed to fetch today's medicine logs");
+    }
+  },
+    
   },
   Mutation: {
     createMedicineLog: async (

@@ -34,6 +34,7 @@ export interface IUser extends Document {
   recently_read_articles_array: string[];
   active_status: boolean;
   favourite_articles: string[];
+  create_day: string;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
@@ -69,8 +70,20 @@ const userSchema = new Schema<IUser>({
   read_article_history_array: {type: [String]},
   recently_read_articles_array: { type: [String] },
   active_status: { type: Boolean },
-  favourite_articles: {type: [String]}
+  favourite_articles: {type: [String]},
+  create_day: {type: String },
 });
+
+const dayMapping: { [key: number]: string } = {
+  0: "Sun",
+  1: "Mon",
+  2: "Tue",
+  3: "Wed",
+  4: "Thu",
+  5: "Fri",
+  6: "Sat",
+};
+
 
 // For signing up | hash the password before saving the user
 userSchema.pre<IUser>("save", async function (next) {
@@ -78,6 +91,12 @@ userSchema.pre<IUser>("save", async function (next) {
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+
+  // Calculate the creation day (e.g., "Wed")
+  const currentDate = new Date();
+  const dayOfWeek = currentDate.getDay(); // Get the numeric day of the week
+  this.create_day = dayMapping[dayOfWeek];
+
   next();
 });
 

@@ -8,6 +8,26 @@ const dietLogsResolvers = {
     getDietLogs: async (_: any, { userID }: { userID: string }): Promise<IDietLogs[]> => {
       return await DietLogs.find({ userID });
     },
+    getTodayDietLogs: async (_: any, { userID }: { userID: string }): Promise<IDietLogs[]> => {
+      try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0); // Set to start of today
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999); // Set to end of today
+
+        // Fetch all diet logs for today
+        const todayDietLogs = await DietLogs.find({
+          userID: userID,
+          logDateTime: { $gte: startOfDay, $lte: endOfDay },
+        });
+
+        return todayDietLogs;
+      } catch (error) {
+        console.error("Error fetching today's diet logs:", error);
+        throw new Error("Failed to fetch today's diet logs");
+      }
+    },
   },
   Mutation: {
     createDietLog: async (_: any, args: IDietLogs): Promise<IDietLogs> => {

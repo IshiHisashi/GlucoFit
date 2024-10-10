@@ -5,7 +5,7 @@ export const activityLogsTypeDefs = gql`
     id: ID!
     user_id: User!  # Linked to User
     footsteps: Int!
-    calorie_burnt: Int!
+    duration: Int!
     log_date: Date!
   }
 
@@ -14,21 +14,21 @@ export const activityLogsTypeDefs = gql`
     getActivityLogs: [ActivityLogs!]!
     getActivityLogsByUser(user_id: ID!): [ActivityLogs!]!
     getTotalStepsForToday(user_id: ID!): Int!
-
+    getTodayActivityLogs(user_id: ID!): [ActivityLogs!]!
   }
 
   extend type Mutation {
     createActivityLog(
       user_id: ID!
       footsteps: Int!
-      calorie_burnt: Int!
+      duration: Int!
       log_date: Date!
     ): ActivityLogs!
 
     updateActivityLog(
       id: ID!
       footsteps: Int
-      calorie_burnt: Int
+      duration: Int
       log_date: Date
     ): ActivityLogs!
 
