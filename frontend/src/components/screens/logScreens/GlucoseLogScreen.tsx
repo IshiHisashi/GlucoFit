@@ -168,7 +168,7 @@ const GlucoseLogScreen: React.FC = () => {
           note: {
             note_description: note,
           },
-          log_timestamp: "2024-10-09T22:38:22.981Z",
+          log_timestamp: combinedDateTime,
           confirmed: true,
         },
       });
@@ -183,7 +183,7 @@ const GlucoseLogScreen: React.FC = () => {
     try {
       const result = await updateTestResult({
         variables: {
-          updateTestResultId: "6700bdd5049f25c81a7787b2", // result doc id hardcode for now
+          updateTestResultId: userId,
           bsl: 100,
           note: {
             note_description: "Updated!",

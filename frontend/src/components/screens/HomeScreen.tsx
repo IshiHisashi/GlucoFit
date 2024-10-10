@@ -54,20 +54,28 @@ const GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY = gql`
   }
 `;
 
+const GET_ACTIVITIES_FOR_TODAY = gql`
+  query GetActivitiesForToday($userId: ID!) {
+    getTodayActivityLogs(user_id: $userId) {
+      duration
+      log_date
+    }
+  }
+`;
+
+const GET_MEDICINES_FOR_TODAY = gql`
+  query GetMedicinesForToday($userId: ID!) {
+    getTodayMedicineLogs(user_id: $userId) {
+      injection_time
+      amount
+    }
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-
-  const [averageBslToday, setAverageBslToday] = useState(0);
-
-  type BslResult = {
-    bsl: string;
-    log_timestamp: Date;
-  };
-  const [bslResultsTodayArray, setBslResultsTodayArray] = useState<BslResult[]>(
-    []
-  );
 
   const { width } = useWindowDimensions();
 
@@ -79,9 +87,49 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY, {
     variables: { userId: userId },
   });
-
   // bslResultsAndAverageData &&
   //   console.log(bslResultsAndAverageData.getTestResultsAndAverageForToday);
+
+  const {
+    data: activitiesData,
+    loading: activitiesLoading,
+    error: activitiesError,
+    refetch: activitiesRefetch,
+  } = useQuery(GET_ACTIVITIES_FOR_TODAY, {
+    variables: { userId: userId },
+  });
+  activitiesData && console.log(activitiesData.getTodayActivityLogs);
+
+  const {
+    data: medicinesData,
+    loading: medicinesLoading,
+    error: medicinesError,
+    refetch: medicinesRefetch,
+  } = useQuery(GET_MEDICINES_FOR_TODAY, {
+    variables: { userId: userId },
+  });
+  medicinesData && console.log(medicinesData.getTodayMedicineLogs);
+
+  let logsForToday;
+  if (bslResultsAndAverageData && activitiesData && medicinesData) {
+    logsForToday = [
+      ...bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults,
+      ...activitiesData.getTodayActivityLogs,
+      ...medicinesData.getTodayMedicineLogs,
+    ];
+    // if we need to sort... but we need to have consistent nameing convention for timestamp.
+    // logsForToday.length > 1 &&
+    //   logsForToday.sort((obj1, obj2) => {
+    //     if (obj1.log_timestamp < obj2.log_timestamp) {
+    //       return -1;
+    //     } else if (obj1.log_timestamp > obj2.log_timestamp) {
+    //       return 1;
+    //     } else {
+    //       return 0;
+    //     }
+    //   });
+    console.log("sorted:", logsForToday);
+  }
 
   return (
     <ScrollView>
@@ -156,25 +204,49 @@ const HomeScreen: React.FC = () => {
             </Pressable>
           </HStack>
 
-          <Pressable onPress={() => {}}>
-            <HStack justifyContent="space-between" p="$2">
-              <HStack alignItems="center" space="xs">
-                <Box style={styles.iconContainer}>
-                  <Icon as={MoonIcon} marginRight="$2" />
-                </Box>
-                <VStack space="xs">
-                  <Text fontWeight="$bold">Blood Glucose</Text>
-                  <Text>6:00 PM</Text>
-                </VStack>
-              </HStack>
-              <HStack alignItems="center" space="xs">
-                <Text size="3xl" fontWeight="$bold">
-                  150
-                </Text>
-                <Text>mg/dL</Text>
-              </HStack>
-            </HStack>
-          </Pressable>
+          {logsForToday &&
+            logsForToday.map((obj, index) => (
+              <Pressable onPress={() => {}} key={index}>
+                <HStack justifyContent="space-between" p="$2">
+                  <HStack alignItems="center" space="xs">
+                    <Box style={styles.iconContainer}>
+                      <Icon as={MoonIcon} marginRight="$2" />
+                    </Box>
+                    <VStack space="xs">
+                      <Text fontWeight="$bold">
+                        {obj.__typename === "TestResults"
+                          ? "Blood Glucose"
+                          : "else"}
+                      </Text>
+                      <Text>
+                        {new Date(obj.log_timestamp).toLocaleString("en-US", {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        })}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                  <HStack alignItems="center" space="xs">
+                    {obj.__typename === "TestResults" ? (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.bsl}
+                        </Text>
+                        <Text>mmol/L</Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          30
+                        </Text>
+                        <Text>min</Text>
+                      </>
+                    )}
+                  </HStack>
+                </HStack>
+              </Pressable>
+            ))}
         </VStack>
         {/* ---------------------------------------------------------------------- */}
 
