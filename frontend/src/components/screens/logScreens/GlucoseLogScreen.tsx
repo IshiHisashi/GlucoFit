@@ -173,7 +173,10 @@ const GlucoseLogScreen: React.FC = () => {
         },
       });
       console.log("Mutation result:", result);
-      navigation.navigate("Tabs", { screen: "Home" });
+      navigation.navigate("Tabs", {
+        screen: "Home",
+        params: { mutatedLog: "bsl" },
+      });
     } catch (e) {
       console.error("Error creating test result:", e);
     }

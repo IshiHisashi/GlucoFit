@@ -12,10 +12,14 @@ import {
   ChevronRightIcon,
   ScrollView,
 } from "@gluestack-ui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import BslLineChart from "../organisms/BslLineChart";
@@ -74,8 +78,13 @@ const GET_MEDICINES_FOR_TODAY = gql`
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
+type RouteParams = {
+  mutatedLog?: string;
+};
+
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const route = useRoute<{ key: string; name: string; params: RouteParams }>();
 
   const { width } = useWindowDimensions();
 
@@ -109,6 +118,25 @@ const HomeScreen: React.FC = () => {
     variables: { userId: userId },
   });
   medicinesData && console.log(medicinesData.getTodayMedicineLogs);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.mutatedLog === "bsl") {
+        bslResultsAndAverageRefetch();
+      }
+      if (route.params?.mutatedLog === "activity") {
+        activitiesRefetch();
+      }
+      if (route.params?.mutatedLog === "medicine") {
+        medicinesRefetch();
+      }
+    }, [
+      route.params?.mutatedLog,
+      bslResultsAndAverageRefetch,
+      activitiesRefetch,
+      medicinesRefetch,
+    ])
+  );
 
   let logsForToday;
   if (bslResultsAndAverageData && activitiesData && medicinesData) {

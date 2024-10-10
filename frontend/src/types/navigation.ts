@@ -7,9 +7,9 @@ export type TabParamList = {
 };
 
 export type AppStackParamList = {
-  Tabs: { screen?: keyof TabParamList };
-  CarbsLog: undefined;
-  ActivityLog: undefined;
-  MedicineLog: undefined;
-  GlucoseLog: undefined;
+  Tabs: { screen?: keyof TabParamList; mutatedLog?: string };
+  CarbsLog: { mutatedLog?: string };
+  ActivityLog: { mutatedLog?: string };
+  MedicineLog: { mutatedLog?: string };
+  GlucoseLog: { mutatedLog?: string };
 };
