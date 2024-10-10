@@ -13,12 +13,14 @@ import {
   ScrollView,
 } from "@gluestack-ui/themed";
 import React from "react";
-import { NavigationProp } from "@react-navigation/native";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
+import { AppStackParamList } from "../../types/navigation";
 
 // hardcode for now
 const userId = "60d8f33e7f3f83479cbf5b4f";
@@ -28,10 +30,6 @@ const GET_TOTAL_STEPS_FOR_TODAY = gql`
     getTotalStepsForToday(user_id: $userId)
   }
 `;
-
-interface HomeScreenProps {
-  navigation: NavigationProp<{}>;
-}
 
 const TotalSteps = () => {
   const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
@@ -44,7 +42,11 @@ const TotalSteps = () => {
   return <Text>{data.getTotalStepsForToday} Steps</Text>;
 };
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
+
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
   const { width } = useWindowDimensions();
 
   return (
@@ -97,7 +99,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <Text fontSize="$lg" fontWeight="$bold">
               Logs for today
             </Text>
-            <Pressable onPress={() => navigation.navigate("Logs")}>
+            <Pressable
+              onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
+            >
               <HStack alignItems="center" space="xs">
                 <Text>See more</Text>
                 <Icon as={ChevronRightIcon} size="sm" mr="$2" />
@@ -135,7 +139,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         >
           <HStack alignItems="center" justifyContent="space-between" p="$2">
             <Text>Sep 24 - 0ct 30, 2024</Text>
-            <Pressable onPress={() => navigation.navigate("Logs")}>
+            <Pressable
+              onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
+            >
               <HStack alignItems="center" space="xs">
                 <Text>See more</Text>
                 <Icon as={ChevronRightIcon} size="sm" mr="$2" />

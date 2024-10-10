@@ -25,6 +25,9 @@ import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import Sheet from "../../organisms/Sheet";
 import { AppStackParamList } from "../../../types/navigation";
 
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
 const GET_TEST_RESULTS = gql`
   query GetTestResults {
     getTestResults {
@@ -97,6 +100,8 @@ type GlucoseLogScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 const GlucoseLogScreen: React.FC = () => {
+  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
+
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
@@ -107,8 +112,6 @@ const GlucoseLogScreen: React.FC = () => {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
-
-  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
 
   const [
     createTestResult,
@@ -153,7 +156,7 @@ const GlucoseLogScreen: React.FC = () => {
 
       const result = await createTestResult({
         variables: {
-          user_id: "60d8f33e7f3f83479cbf5b4f", // hardcode for now
+          user_id: userId,
           bsl: Number(glucoseLevel),
           note: {
             note_description: note,
