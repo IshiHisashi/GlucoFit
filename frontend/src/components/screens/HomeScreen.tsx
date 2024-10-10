@@ -15,13 +15,34 @@ import {
 import React from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { StyleSheet, useWindowDimensions } from "react-native";
+import { gql, useQuery } from "@apollo/client";
 
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
+const GET_TOTAL_STEPS_FOR_TODAY = gql`
+  query GetTotalStepsForToday($userId: ID!) {
+    getTotalStepsForToday(user_id: $userId)
+  }
+`;
+
 interface HomeScreenProps {
   navigation: NavigationProp<{}>;
 }
+
+const TotalSteps = () => {
+  const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
+    variables: { userId },
+  });
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>N/A Steps</Text>;
+
+  return <Text>{data.getTotalStepsForToday} Steps</Text>;
+};
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { width } = useWindowDimensions();
@@ -46,7 +67,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </HStack>
               <Text>6:00pm</Text>
             </VStack>
-            <Text>500 Steps</Text>
+            <TotalSteps />
           </HStack>
 
           <BslLineChart width={width} />

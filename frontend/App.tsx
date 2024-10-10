@@ -3,6 +3,8 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { config } from "@gluestack-ui/config";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./apollo";
 
 import Test from "./src/components/testPages/Test";
 import AppStack from "./src/components/stacks/AppStack";
@@ -11,8 +13,10 @@ const App: React.FC = () => {
   return (
     <SafeAreaProvider>
       <GluestackUIProvider config={config}>
-        <StatusBar style="auto" />
-        <AppStack />
+        <ApolloProvider client={client}>
+          <StatusBar style="auto" />
+          <AppStack />
+        </ApolloProvider>
       </GluestackUIProvider>
     </SafeAreaProvider>
   );
