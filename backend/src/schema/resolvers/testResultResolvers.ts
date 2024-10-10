@@ -1,5 +1,9 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
+import { User } from "../../model/User";
 import { Types, ObjectId } from "mongoose";
+
+// Day mapping to convert index to day
+const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const testResultsResolvers = {
   Query: {
@@ -27,39 +31,135 @@ const testResultsResolvers = {
           throw new Error("Failed to fetch unconfirmed test results for the user");
         }
       },
-    getAverageBslForToday: async (_: any, { user_id }: { user_id: string }): Promise<number | null> => {
-      try {
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0); 
-
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999); 
-
-        const result = await TestResults.aggregate([
-          {
-            $match: {
-              user_id: new Types.ObjectId(user_id),  
-              log_timestamp: { $gte: startOfDay, $lte: endOfDay },  
-            },
+      getTestResultsAndAverageForToday: async (
+        _: any,
+        { user_id }: { user_id: string }
+      ): Promise<{ testResults: ITestResults[], averageBsl: number | null }> => {
+        try {
+          const startOfDay = new Date();
+          startOfDay.setHours(0, 0, 0, 0); // Start of today
+      
+          const endOfDay = new Date();
+          endOfDay.setHours(23, 59, 59, 999); // End of today
+      
+          // Fetch all test results for today
+          const testResults = await TestResults.find({
+            user_id: new Types.ObjectId(user_id),
+            log_timestamp: { $gte: startOfDay, $lte: endOfDay },
           },
-          {
-            $group: {
-              _id: null,  
-              averageBsl: { $avg: "$bsl" },
+        );
+      
+          // Calculate average BSL
+          const result = await TestResults.aggregate([
+            {
+              $match: {
+                user_id: new Types.ObjectId(user_id),
+                log_timestamp: { $gte: startOfDay, $lte: endOfDay },
+              },
             },
-          },
-        ]);
-
-        if (result.length === 0) {
-          return null;
+            {
+              $group: {
+                _id: null,
+                averageBsl: { $avg: "$bsl" },
+              },
+            },
+          ]);
+      
+          const averageBsl = result.length > 0 ? result[0].averageBsl : null;
+      
+          return { testResults, averageBsl };
+        } catch (error) {
+          console.error("Error fetching test results and average BSL for today:", error);
+          throw new Error("Failed to fetch test results and average BSL for today");
         }
-
-        return result[0].averageBsl;
-      } catch (error) {
-        console.error("Error calculating average BSL for today:", error);
-        throw new Error("Failed to calculate average BSL for today");
-      }
-    },
+      },
+      getWeeklyBSLData: async (_: any, { user_id }: { user_id: string }) => {
+        try {
+          // Fetch the user and retrieve their create_day
+          const user = await User.findById(user_id);
+          if (!user || !user.create_day) {
+            throw new Error("User not found or create_day is missing");
+          }
+  
+          // Get the user's create day (e.g., "Wed")
+          const startDayIndex = dayMapping.indexOf(user.create_day);
+          if (startDayIndex === -1) {
+            throw new Error("Invalid create_day");
+          }
+  
+          // Get current date and calculate the start and end of the week
+          const currentDate = new Date();
+          const currentDayIndex = currentDate.getDay();
+          const dayDifference = (currentDayIndex - startDayIndex + 7) % 7;
+  
+          const startOfWeek = new Date();
+          startOfWeek.setDate(currentDate.getDate() - dayDifference);
+          startOfWeek.setHours(0, 0, 0, 0);
+  
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 6); // End of the week
+          endOfWeek.setHours(23, 59, 59, 999);
+  
+          // Fetch BSL test results for this week
+          const results = await TestResults.aggregate([
+            {
+              $match: {
+                user_id: new Types.ObjectId(user_id),
+                log_timestamp: { $gte: startOfWeek, $lte: endOfWeek },
+              },
+            },
+            {
+              $addFields: {
+                localTimestamp: {
+                  $dateToString: {
+                    format: "%Y-%m-%dT%H:%M:%S",
+                    date: "$log_timestamp",
+                    timezone: "America/Vancouver", // <-- Set the timezone to Vancouver
+                  },
+                },
+              },
+            },
+           
+            {
+              $group: {
+                _id: { $dayOfWeek: { $toDate: "$localTimestamp" } },  // <-- Adjust to local time
+                averageBsl: { $avg: "$bsl" },
+              },
+            },
+          ]);
+  
+          // Map results based on day of the week
+          const resultMap = new Map<number, number>();
+          results.forEach((dayData) => {
+            // Convert MongoDB $dayOfWeek (1 = Sunday) to JS getDay() (0 = Sunday)
+            const dayIndex = (dayData._id % 7); // Convert to match day index (Sun = 0, Mon = 1, etc.)
+            resultMap.set(dayIndex-1, dayData.averageBsl);
+          });
+  
+          // Prepare the weekly data with defaults for missing days
+          const formattedData = [];
+          for (let i = 0; i < 7; i++) {
+            const dayIndex = (startDayIndex + i) % 7;
+            formattedData.push({
+              day: dayMapping[dayIndex], // Day of the week
+              value: resultMap.get(dayIndex) || 0, // Default to 0 if no data
+            });
+          }
+  
+          // Calculate the weekly average
+          const totalBSL = results.reduce((acc, curr) => acc + curr.averageBsl, 0);
+          const weeklyAverage = totalBSL / results.length || 0;
+  
+          return {
+            weeklyData: formattedData,
+            weeklyAverage,
+          };
+        } catch (error) {
+          console.error("Error fetching weekly BSL data:", error);
+          throw new Error("Failed to fetch weekly BSL data");
+        }
+      },
+      
   },
   Mutation: {
     createTestResult: async (

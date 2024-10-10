@@ -39,7 +39,28 @@ const activityLogsResolvers = {
 
       // If no activity logs exist for today, return 0
       return result.length > 0 ? result[0].totalFootsteps : 0;
-    }
+    },
+
+    getTodayActivityLogs: async (_: any, { user_id }: { user_id: string }): Promise<IActivityLogs[]> => {
+      try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0); // Set to start of today
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999); // Set to end of today
+
+        // Fetch all activity logs for today
+        const todayActivityLogs = await ActivityLogs.find({
+          user_id: new Types.ObjectId(user_id),
+          log_date: { $gte: startOfDay, $lte: endOfDay },
+        });
+
+        return todayActivityLogs;
+      } catch (error) {
+        console.error("Error fetching today's activity logs:", error);
+        throw new Error("Failed to fetch today's activity logs");
+      }
+    },
   },
 
   Mutation: {
