@@ -113,6 +113,10 @@ const GlucoseLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
 
+  // GMT
+  console.log(date);
+  console.log(new Date().toLocaleString());
+
   const [
     createTestResult,
     { data: createData, loading: createLoading, error: createError },
@@ -147,12 +151,15 @@ const GlucoseLogScreen: React.FC = () => {
 
   const handleSubmitCreate = async () => {
     try {
+      console.log(date);
       const combinedDateTime = new Date(date);
+      console.log(combinedDateTime);
       combinedDateTime.setHours(
         time.getHours(),
         time.getMinutes(),
         time.getSeconds()
       );
+      console.log("date being sent:", combinedDateTime);
 
       const result = await createTestResult({
         variables: {
@@ -161,7 +168,7 @@ const GlucoseLogScreen: React.FC = () => {
           note: {
             note_description: note,
           },
-          log_timestamp: combinedDateTime,
+          log_timestamp: "2024-10-09T22:38:22.981Z",
           confirmed: true,
         },
       });
