@@ -91,7 +91,7 @@ const UPDATE_TEST_RESULT = gql`
   }
 `;
 
-type GlucoseLogScreenNavigationProp = NativeStackNavigationProp<
+type GlucoseLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
   "GlucoseLog"
 >;
@@ -108,7 +108,7 @@ const GlucoseLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
 
-  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
+  const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
 
   const [
     createTestResult,

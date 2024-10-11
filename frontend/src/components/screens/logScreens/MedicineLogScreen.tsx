@@ -10,7 +10,11 @@ import {
   Box,
 } from "@gluestack-ui/themed";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import ListCard from "../../molcules/ListCard";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AppStackParamList } from "../../../types/navigation";
 
 // dummy data
 const medicines = [
@@ -25,8 +29,15 @@ const medicines = [
   { name: "Advil7", dosage: "16mg", frequency: "Everyday" },
 ];
 
+type MedicineLogScreenProps = NativeStackNavigationProp<
+  AppStackParamList,
+  "MedicineLog"
+>;
+
 const MedicineLogScreen: React.FC = () => {
   const [selectedMeds, setSelectedMeds] = useState<string[]>([]);
+
+  const navigation = useNavigation<MedicineLogScreenProps>();
 
   const toggleMedSelection = (name: string) => {
     setSelectedMeds((prev) => {
@@ -38,6 +49,7 @@ const MedicineLogScreen: React.FC = () => {
 
   const handleSave = () => {
     console.log(selectedMeds);
+    navigation.navigate("Tabs", { screen: "Home" });
   };
 
   return (
