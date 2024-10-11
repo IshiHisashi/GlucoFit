@@ -236,9 +236,16 @@ const HomeScreen: React.FC = () => {
             logsForToday.map((obj, index) => (
               <Pressable onPress={() => {}} key={index}>
                 <HStack justifyContent="space-between" p="$2">
-                  <HStack alignItems="center" space="xs">
-                    <Box style={styles.iconContainer}>
-                      <Icon as={MoonIcon} marginRight="$2" />
+                  <HStack alignItems="center" space="sm">
+                    <Box
+                      width={40}
+                      height={40}
+                      borderRadius="$full"
+                      bg="#E0E0E0"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <Icon as={MoonIcon} size="md" />
                     </Box>
                     <VStack space="xs">
                       <Text fontWeight="$bold">
@@ -311,18 +318,5 @@ const HomeScreen: React.FC = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#E0E0E0",
-    marginRight: 15,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default HomeScreen;
