@@ -12,6 +12,7 @@ export const medicineLogTypeDefs = gql`
     getMedicineLog(id: ID!): MedicineLog
     getMedicineLogs: [MedicineLog!]!
     getMedicineLogsByUser(user_id: ID!): [MedicineLog!]!
+    getTodayMedicineLogs(user_id: ID!): [MedicineLog!]!
   }
 
   extend type Mutation {
@@ -25,6 +26,7 @@ export const medicineLogTypeDefs = gql`
       id: ID!
       amount: Float
       injection_time: Date
+      time_period: String
     ): MedicineLog!
 
     deleteMedicineLog(id: ID!): String!

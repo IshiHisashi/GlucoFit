@@ -7,7 +7,7 @@ import CarbsLogScreen from "../screens/logScreens/CarbsLogScreen";
 import ActivityLogScreen from "../screens/logScreens/ActivityLogScreen";
 import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
 import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
-import { RootStackParamList } from "../types";
+import { AppStackParamList } from "../../types/navigation";
 
 ///////////////////////////////
 // remaining tasks:
@@ -19,7 +19,7 @@ import { RootStackParamList } from "../types";
 // - and so on~~~
 ///////////////////////////////
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack: React.FC = () => (
   <NavigationContainer>

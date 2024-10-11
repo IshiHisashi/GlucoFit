@@ -31,6 +31,7 @@ export const userTypeDefs = gql`
     badges: JSON
     recently_read_articles_array: [String]
     active_status: Boolean
+    create_day: String
   }
 
   type AuthPayload {
@@ -75,6 +76,7 @@ export const userTypeDefs = gql`
       recently_read_articles_array: [String]
       active_status: Boolean
       favourite_articles: [String]
+      create_day: String
     ): User!
 
     updateUser(
@@ -106,6 +108,7 @@ export const userTypeDefs = gql`
       recently_read_articles_array: [String]
       active_status: Boolean
       favourite_articles: [String]
+      create_day: String
     ): User!
 
     deleteUser(id: ID!): String!

@@ -14,13 +14,29 @@ export const testResultsTypeDefs = gql`
     note_description: String
   }
 
+  type TestResultsAndAverage {
+    testResults: [TestResults!]!
+    averageBsl: Float
+  }  
+
+  type WeeklyBSLResponse {
+    weeklyData: [BSLData!]!
+    weeklyAverage: Float!
+  }
+  
+  type BSLData {
+    day: String!
+    value: Float!
+  }
+
   extend type Query {
     getTestResult(id: ID!): TestResults
     getTestResults: [TestResults!]!
     getTestResultsByUser(user_id: ID!): [TestResults!]!
     getUnconfirmedTestResults(user_id: ID!): [TestResults!]!
-    getAverageBslForToday(user_id: ID!): Float
-  }
+    getTestResultsAndAverageForToday(user_id: ID!): TestResultsAndAverage!
+    getWeeklyBSLData(user_id: ID!): WeeklyBSLResponse!
+    }
 
   extend type Mutation {
     createTestResult(
