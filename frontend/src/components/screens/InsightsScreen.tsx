@@ -1,20 +1,24 @@
 import {
   Center,
   HStack,
-  Icon,
-  Pressable,
   ScrollView,
   Text,
-  Button,
-  ButtonText,
-  CalendarDaysIcon,
   RefreshControl,
   Heading,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useState } from "react";
 import GlucoButton from "../atoms/GlucoButton";
+import {
+  BookmarkLight,
+  CapsuleLight,
+  FireLight,
+  HeartbeatLight,
+  MedalDark,
+  RestaurantLight,
+} from "../svgs/svgs";
 
-const InsightsScreen: React.FC = (props) => {
+const InsightsScreen: React.FC = () => {
+  // test pull down refresh
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -23,6 +27,7 @@ const InsightsScreen: React.FC = (props) => {
       setRefreshing(false);
     }, 2000);
   }, []);
+
   return (
     <ScrollView
       refreshControl={
@@ -38,22 +43,34 @@ const InsightsScreen: React.FC = (props) => {
 
       {/* full width button */}
       <Heading>full width buttons</Heading>
-      <GlucoButton text="full width btn" isDisabled={false} />
       <GlucoButton
         text="full width btn"
         isDisabled={false}
-        icon={CalendarDaysIcon}
+        onPress={() => console.log("pressed")}
+        style={{ borderColor: "red", borderWidth: 1 }}
+      />
+      <GlucoButton
+        text="full width btn"
+        isDisabled={false}
+        icon={BookmarkLight}
+        onPress={() => console.log("pressed")}
       />
 
       {/* two buttons taking up the screen width */}
       <Heading>two buttons taking up the screen width</Heading>
       <HStack space="sm">
-        <GlucoButton text="one" isDisabled={false} flex={1} />
+        <GlucoButton
+          text="one"
+          isDisabled={false}
+          flex={1}
+          onPress={() => console.log("pressed")}
+        />
         <GlucoButton
           text="two"
           isDisabled={false}
-          icon={CalendarDaysIcon}
+          icon={CapsuleLight}
           flex={1}
+          onPress={() => console.log("pressed")}
         />
       </HStack>
 
@@ -61,22 +78,33 @@ const InsightsScreen: React.FC = (props) => {
       <Heading>horizontal scroll buttons</Heading>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack space="sm">
-          <GlucoButton text="btn a" isDisabled={false} />
-          <GlucoButton text="btn aa" isDisabled={false} />
+          <GlucoButton
+            text="btn a"
+            isDisabled={false}
+            onPress={() => console.log("pressed")}
+          />
+          <GlucoButton
+            text="btn aa"
+            isDisabled={false}
+            onPress={() => console.log("pressed")}
+          />
           <GlucoButton
             text="btn aaa"
             isDisabled={false}
-            icon={CalendarDaysIcon}
+            icon={HeartbeatLight}
+            onPress={() => console.log("pressed")}
           />
           <GlucoButton
             text="btn aaaa"
             isDisabled={false}
-            icon={CalendarDaysIcon}
+            icon={RestaurantLight}
+            onPress={() => console.log("pressed")}
           />
           <GlucoButton
             text="btn aaaaa"
             isDisabled={false}
-            icon={CalendarDaysIcon}
+            icon={FireLight}
+            onPress={() => console.log("pressed")}
           />
         </HStack>
       </ScrollView>
