@@ -19,7 +19,7 @@ const dietLogsResolvers = {
         // Fetch all diet logs for today
         const todayDietLogs = await DietLogs.find({
           userID: userID,
-          logDateTime: { $gte: startOfDay, $lte: endOfDay },
+          log_timestamp: { $gte: startOfDay, $lte: endOfDay },
         });
 
         return todayDietLogs;

@@ -6,7 +6,7 @@ export const dietLogsTypeDefs = gql`
     userID: String!
     note: String
     calorieTaken: Float!
-    logDateTime: Date!
+    log_timestamp: Date!
   }
 
   extend type Query {
@@ -20,7 +20,7 @@ export const dietLogsTypeDefs = gql`
       userID: String!
       note: String
       calorieTaken: Float!
-      logDateTime: Date!
+      log_timestamp: Date!
     ): DietLog!
 
     updateDietLog(

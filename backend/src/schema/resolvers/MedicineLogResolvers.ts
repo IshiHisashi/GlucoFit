@@ -27,7 +27,7 @@ const medicineLogResolvers = {
       // Fetch all medicine logs for today
       return await MedicineLog.find({
         user_id: new Types.ObjectId(user_id),
-        injection_time: { $gte: startOfDay, $lte: endOfDay },
+        log_timestamp: { $gte: startOfDay, $lte: endOfDay },
       });
     } catch (error) {
       console.error("Error fetching today's medicine logs:", error);
