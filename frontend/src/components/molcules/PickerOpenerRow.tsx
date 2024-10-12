@@ -11,10 +11,11 @@ interface PickerOpenerRowProps {
   setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
   value: Date | string;
+  independent?: boolean;
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { setShowPicker, text, value } = props;
+  const { setShowPicker, text, value, independent = false } = props;
   return (
     <Pressable
       onPress={() => {
@@ -24,8 +25,15 @@ const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
       <HStack
         justifyContent="space-between"
         p="$3"
-        borderTopWidth={1}
-        borderTopColor="$borderLight200"
+        borderColor="$borderLight200"
+        style={
+          independent
+            ? {
+                borderWidth: 1,
+                borderRadius: 5,
+              }
+            : { borderTopWidth: 1 }
+        }
       >
         <Text>{text}</Text>
         <HStack alignItems="center">

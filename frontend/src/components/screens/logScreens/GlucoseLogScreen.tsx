@@ -22,7 +22,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
-import Sheet from "../../organisms/Sheet";
+import SheetHandmade from "../../organisms/SheetHandmade";
 import { AppStackParamList } from "../../../types/navigation";
 
 const GET_TEST_RESULTS = gql`
@@ -331,7 +331,7 @@ const GlucoseLogScreen: React.FC = () => {
         </Button>
       </FormControl>
 
-      {/* picker modals --------------------- */}
+      {/* picker modals --------------------------------- */}
 
       <DateTimePickerModal
         isVisible={isDatePickerOpen}
@@ -357,7 +357,7 @@ const GlucoseLogScreen: React.FC = () => {
         // onChange={onChangeTime}
       />
 
-      <Sheet
+      <SheetHandmade
         isSheetOpen={isTimePeriodPickerOpen}
         closeSheet={() => closeSheet("timePeriod")}
         setValue={setTimePeriod}
@@ -366,7 +366,7 @@ const GlucoseLogScreen: React.FC = () => {
         optionsArray={timePeriods}
       />
 
-      <Sheet
+      <SheetHandmade
         isSheetOpen={isNoteOpen}
         closeSheet={() => closeSheet("note")}
         setValue={setNote}

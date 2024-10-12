@@ -1,127 +1,118 @@
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import {
+  Button,
+  ButtonText,
+  ScrollView,
+  Textarea,
+  TextareaInput,
+} from "@gluestack-ui/themed";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetItem,
+  ActionsheetItemText,
   HStack,
+  Box,
   Icon,
   Pressable,
   Text,
-  Box,
-  ScrollView,
   ArrowLeftIcon,
-  Textarea,
-  Button,
-  ButtonText,
 } from "@gluestack-ui/themed";
-import { Animated, Modal, Platform, StyleSheet, View } from "react-native";
-import { TextareaInput } from "@gluestack-ui/themed";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import { StyleSheet } from "react-native";
 
 interface SheetProps {
-  isSheetOpen: boolean;
-  closeSheet(): void;
+  isOpen: boolean;
+  onClose: Dispatch<SetStateAction<boolean>>;
   setValue: Dispatch<SetStateAction<string>>;
-  translateY: Animated.Value;
   sheetContentType: string;
+  title: string;
   optionsArray?: string[];
   value?: string;
 }
 
 const Sheet: FC<SheetProps> = (props) => {
   const {
-    optionsArray,
-    isSheetOpen,
-    closeSheet,
+    isOpen,
+    onClose,
     setValue,
-    translateY,
     sheetContentType,
+    title,
+    optionsArray,
     value,
   } = props;
+
   const [note, setNote] = useState(value);
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isSheetOpen}
-      onRequestClose={closeSheet}
-    >
-      <View style={styles.modalContainer}>
-        <Animated.View
-          style={[styles.modalContent, { transform: [{ translateY }] }]}
+    <Actionsheet isOpen={isOpen} onClose={onClose} zIndex={999}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent zIndex={999}>
+        {/* <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper> */}
+        <ActionsheetItem>
+          <ActionsheetItemText>here</ActionsheetItemText>
+        </ActionsheetItem>
+
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          style={styles.modalHeader}
         >
-          <HStack
-            justifyContent="space-between"
-            alignItems="center"
-            style={styles.modalHeader}
-          >
-            <Pressable onPress={closeSheet}>
-              <Icon as={ArrowLeftIcon} size="sm" />
-            </Pressable>
-            <Text style={styles.modalTitle}>
-              {sheetContentType === "note" ? "Add Notes" : "Time period"}
-            </Text>
-            <Box width={24} />
-          </HStack>
+          <Pressable onPress={onClose}>
+            <Icon as={ArrowLeftIcon} size="sm" />
+          </Pressable>
+          <Text style={styles.modalTitle}>{title}</Text>
+          <Box width={24} />
+        </HStack>
 
-          {sheetContentType === "picker" && (
-            <ScrollView style={styles.scrollView}>
-              {optionsArray.map((period) => (
-                <Pressable
-                  key={period}
-                  onPress={() => {
-                    setValue(period);
-                    closeSheet();
-                  }}
-                  style={styles.optionContainer}
-                >
-                  <HStack alignItems="center">
-                    <Box style={styles.circle} />
-                    <Text>{period}</Text>
-                  </HStack>
-                </Pressable>
-              ))}
-            </ScrollView>
-          )}
-
-          {sheetContentType === "note" && (
-            <>
-              <Textarea h={200} mb="$4">
-                <TextareaInput
-                  placeholder="Write your note"
-                  value={note}
-                  onChangeText={setNote}
-                />
-              </Textarea>
-              <Button
-                isDisabled={!note}
+        {sheetContentType === "picker" && (
+          <ScrollView style={styles.scrollView}>
+            {optionsArray.map((period) => (
+              <Pressable
+                key={period}
                 onPress={() => {
-                  setValue(note as string);
-                  closeSheet();
+                  setValue(period);
+                  onClose();
                 }}
+                style={styles.optionContainer}
               >
-                <ButtonText>Add</ButtonText>
-              </Button>
-            </>
-          )}
-        </Animated.View>
-      </View>
-    </Modal>
+                <HStack alignItems="center">
+                  <Box style={styles.circle} />
+                  <Text>{period}</Text>
+                </HStack>
+              </Pressable>
+            ))}
+          </ScrollView>
+        )}
+
+        {sheetContentType === "note" && (
+          <>
+            <Textarea h={200} mb="$4">
+              <TextareaInput
+                placeholder="Write your note"
+                value={note}
+                onChangeText={setNote}
+              />
+            </Textarea>
+            <Button
+              isDisabled={!note}
+              onPress={() => {
+                setValue(note as string);
+                onClose();
+              }}
+            >
+              <ButtonText>Add</ButtonText>
+            </Button>
+          </>
+        )}
+      </ActionsheetContent>
+    </Actionsheet>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    maxHeight: "80%",
-  },
   modalHeader: {
     marginBottom: 20,
   },

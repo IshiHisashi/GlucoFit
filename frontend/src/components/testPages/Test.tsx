@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, ButtonText, Center, Text } from "@gluestack-ui/themed";
+import AuthMock from "../testPages/auth_temp/authMock";
 
 type TestProps = {
   navigation: any;
@@ -23,6 +24,9 @@ const Test: React.FC<TestProps> = ({ navigation, type, name, date }) => {
           <ButtonText>To another test page</ButtonText>
         </Button>
       </Center>
+      <Box my={100}>
+        <AuthMock />
+      </Box>
     </Box>
   );
 };
