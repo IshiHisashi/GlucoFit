@@ -26,7 +26,7 @@ const activityLogsResolvers = {
         {
           $match: {
             user_id: new Types.ObjectId(user_id),
-            log_date: { $gte: startOfDay, $lt: endOfDay }  // Filter by today's date
+            log_timestamp: { $gte: startOfDay, $lt: endOfDay }  // Filter by today's date
           }
         },
         {
@@ -52,7 +52,7 @@ const activityLogsResolvers = {
         // Fetch all activity logs for today
         const todayActivityLogs = await ActivityLogs.find({
           user_id: new Types.ObjectId(user_id),
-          log_date: { $gte: startOfDay, $lte: endOfDay },
+          log_timestamp: { $gte: startOfDay, $lte: endOfDay },
         });
 
         return todayActivityLogs;

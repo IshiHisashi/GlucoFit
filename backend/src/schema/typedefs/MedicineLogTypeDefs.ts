@@ -5,7 +5,7 @@ export const medicineLogTypeDefs = gql`
     id: ID!
     user_id: User!  # Linked to User
     amount: Float!
-    injection_time: Date!
+    log_timestamp: Date!
   }
 
   extend type Query {
@@ -19,13 +19,13 @@ export const medicineLogTypeDefs = gql`
     createMedicineLog(
       user_id: ID!
       amount: Float!
-      injection_time: Date!
+      log_timestamp: Date!
     ): MedicineLog!
 
     updateMedicineLog(
       id: ID!
       amount: Float
-      injection_time: Date
+      log_timestamp: Date
       time_period: String
     ): MedicineLog!
 

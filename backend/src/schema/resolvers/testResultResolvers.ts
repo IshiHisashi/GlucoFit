@@ -65,7 +65,7 @@ const testResultsResolvers = {
             },
           ]);
       
-          const averageBsl = result.length > 0 ? result[0].averageBsl : null;
+          const averageBsl = result.length > 0 ? parseFloat(result[0].averageBsl.toFixed(1)) : null;
       
           return { testResults, averageBsl };
         } catch (error) {
@@ -81,7 +81,7 @@ const testResultsResolvers = {
             throw new Error("User not found or create_day is missing");
           }
   
-          // Get the user's create day (e.g., "Wed")
+          // Get the user's create day 
           const startDayIndex = dayMapping.indexOf(user.create_day);
           if (startDayIndex === -1) {
             throw new Error("Invalid create_day");
@@ -133,7 +133,7 @@ const testResultsResolvers = {
           results.forEach((dayData) => {
             // Convert MongoDB $dayOfWeek (1 = Sunday) to JS getDay() (0 = Sunday)
             const dayIndex = (dayData._id % 7); // Convert to match day index (Sun = 0, Mon = 1, etc.)
-            resultMap.set(dayIndex-1, dayData.averageBsl);
+            resultMap.set(dayIndex-1, parseFloat(dayData.averageBsl.toFixed(1)));
           });
   
           // Prepare the weekly data with defaults for missing days
@@ -148,7 +148,7 @@ const testResultsResolvers = {
   
           // Calculate the weekly average
           const totalBSL = results.reduce((acc, curr) => acc + curr.averageBsl, 0);
-          const weeklyAverage = totalBSL / results.length || 0;
+          const weeklyAverage = results.length > 0 ? parseFloat((totalBSL / results.length).toFixed(1)) : 0; // Round to 1 decimal
   
           return {
             weeklyData: formattedData,
@@ -159,7 +159,27 @@ const testResultsResolvers = {
           throw new Error("Failed to fetch weekly BSL data");
         }
       },
-      
+      getAverageBslXAxisValue: async (_: any, { user_id }: { user_id: string }) => {
+        try {
+          const user = await User.findById(user_id);
+          if (!user) {
+            throw new Error("User not found");
+          }
+  
+          const { maximum_bsl, minimum_bsl } = user;
+  
+          if (maximum_bsl === undefined || minimum_bsl === undefined) {
+            throw new Error("User's BSL values are not defined");
+          }
+  
+          const averageBslXAxisValue = parseFloat(((maximum_bsl + minimum_bsl) / 2).toFixed(1)); 
+  
+          return averageBslXAxisValue;
+        } catch (error) {
+          console.error("Error calculating average BSL X Axis value:", error);
+          throw new Error("Failed to calculate average BSL X Axis value");
+        }
+      },
   },
   Mutation: {
     createTestResult: async (
