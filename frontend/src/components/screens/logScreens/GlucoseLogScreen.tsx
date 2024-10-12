@@ -25,6 +25,9 @@ import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import Sheet from "../../organisms/Sheet";
 import { AppStackParamList } from "../../../types/navigation";
 
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
 const GET_TEST_RESULTS = gql`
   query GetTestResults {
     getTestResults {
@@ -97,6 +100,8 @@ type GlucoseLogScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 const GlucoseLogScreen: React.FC = () => {
+  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
+
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
@@ -108,7 +113,9 @@ const GlucoseLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
 
-  const navigation = useNavigation<GlucoseLogScreenNavigationProp>();
+  // GMT
+  console.log(date);
+  console.log(new Date().toLocaleString());
 
   const [
     createTestResult,
@@ -144,16 +151,19 @@ const GlucoseLogScreen: React.FC = () => {
 
   const handleSubmitCreate = async () => {
     try {
+      console.log(date);
       const combinedDateTime = new Date(date);
+      console.log(combinedDateTime);
       combinedDateTime.setHours(
         time.getHours(),
         time.getMinutes(),
         time.getSeconds()
       );
+      console.log("date being sent:", combinedDateTime);
 
       const result = await createTestResult({
         variables: {
-          user_id: "60d8f33e7f3f83479cbf5b4f", // hardcode for now
+          user_id: userId,
           bsl: Number(glucoseLevel),
           note: {
             note_description: note,
@@ -163,7 +173,10 @@ const GlucoseLogScreen: React.FC = () => {
         },
       });
       console.log("Mutation result:", result);
-      navigation.navigate("Tabs", { screen: "Home" });
+      navigation.navigate("Tabs", {
+        screen: "Home",
+        params: { mutatedLog: "bsl" },
+      });
     } catch (e) {
       console.error("Error creating test result:", e);
     }
@@ -173,7 +186,7 @@ const GlucoseLogScreen: React.FC = () => {
     try {
       const result = await updateTestResult({
         variables: {
-          updateTestResultId: "6700bdd5049f25c81a7787b2", // result doc id hardcode for now
+          updateTestResultId: userId,
           bsl: 100,
           note: {
             note_description: "Updated!",
