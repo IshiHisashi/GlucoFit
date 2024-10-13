@@ -1,9 +1,11 @@
 import {
   Button,
   ButtonText,
+  CalendarDaysIcon,
   ScrollView,
   Textarea,
   TextareaInput,
+  VStack,
 } from "@gluestack-ui/themed";
 import {
   Actionsheet,
@@ -20,6 +22,8 @@ import {
 } from "@gluestack-ui/themed";
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { StyleSheet } from "react-native";
+
+import PickerOptionCard from "../molcules/PickerOptionCard";
 
 interface SheetProps {
   isOpen: boolean;
@@ -47,20 +51,18 @@ const Sheet: FC<SheetProps> = (props) => {
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose} zIndex={999}>
       <ActionsheetBackdrop />
-      <ActionsheetContent zIndex={999}>
+      <ActionsheetContent zIndex={999} p="$4" pb="$8">
         {/* <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper> */}
-        <ActionsheetItem>
-          <ActionsheetItemText>here</ActionsheetItemText>
-        </ActionsheetItem>
 
         <HStack
           justifyContent="space-between"
           alignItems="center"
           style={styles.modalHeader}
+          width="$full"
         >
-          <Pressable onPress={onClose}>
+          <Pressable onPress={() => onClose(false)}>
             <Icon as={ArrowLeftIcon} size="sm" />
           </Pressable>
           <Text style={styles.modalTitle}>{title}</Text>
@@ -68,22 +70,21 @@ const Sheet: FC<SheetProps> = (props) => {
         </HStack>
 
         {sheetContentType === "picker" && (
-          <ScrollView style={styles.scrollView}>
-            {optionsArray.map((period) => (
-              <Pressable
-                key={period}
-                onPress={() => {
-                  setValue(period);
-                  onClose();
-                }}
-                style={styles.optionContainer}
-              >
-                <HStack alignItems="center">
-                  <Box style={styles.circle} />
-                  <Text>{period}</Text>
-                </HStack>
-              </Pressable>
-            ))}
+          <ScrollView width="$full">
+            <VStack space="sm">
+              {optionsArray.map((el, index) => (
+                <PickerOptionCard
+                  key={index}
+                  onPress={() => {
+                    setValue(el);
+                    onClose(false);
+                  }}
+                  icon={CalendarDaysIcon}
+                  text={el}
+                  isSelected={value === el}
+                />
+              ))}
+            </VStack>
           </ScrollView>
         )}
 

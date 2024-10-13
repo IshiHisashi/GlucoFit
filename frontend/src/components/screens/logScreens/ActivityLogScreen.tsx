@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
+import DurationPicker from "../../atoms/DurationPicker";
 
 type ActivityLogScreenProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -36,6 +37,19 @@ const ActivityLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
 
   const navigation = useNavigation<ActivityLogScreenProps>();
+
+  const handleDurationChange = ({
+    hours,
+    minutes,
+  }: {
+    hours: number;
+    minutes: number;
+  }) => {
+    setDuration(
+      `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
+    );
+    setIsDurationPickerOpen(false);
+  };
 
   const handleSave = () => {};
 
@@ -76,23 +90,9 @@ const ActivityLogScreen: React.FC = () => {
         </Button>
       </Box>
 
-      {/* picker modals -------------------------------------- */}
+      <DurationPicker />
 
-      <Actionsheet
-        isOpen={isActivityPickerOpen}
-        // onClose={setIsActivityPickerOpen}
-        zIndex={999}
-      >
-        <ActionsheetBackdrop />
-        <ActionsheetContent zIndex={999}>
-          {/* <ActionsheetDragIndicatorWrapper>
-            <ActionsheetDragIndicator />
-          </ActionsheetDragIndicatorWrapper> */}
-          <ActionsheetItem>
-            <ActionsheetItemText>here</ActionsheetItemText>
-          </ActionsheetItem>
-        </ActionsheetContent>
-      </Actionsheet>
+      {/* picker modals -------------------------------------- */}
 
       <Sheet
         isOpen={isActivityPickerOpen}
@@ -101,6 +101,7 @@ const ActivityLogScreen: React.FC = () => {
         sheetContentType="picker"
         title="Type of activity"
         optionsArray={activities}
+        value={activity}
       />
     </View>
   );
