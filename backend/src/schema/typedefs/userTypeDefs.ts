@@ -5,6 +5,12 @@ export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 
+  type Badge {
+    id: String
+    achieved: Boolean
+    progress: Float
+  }
+
   type User {
     id: ID!
     name: String!
@@ -29,7 +35,7 @@ export const userTypeDefs = gql`
     apple_health_id: String
     android_health_token: String
     android_health_id: String
-    badges: JSON
+    badges: [Badge]
     recently_read_articles_array: [String]
     active_status: Boolean
     create_day: String
@@ -73,7 +79,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: JSON
+      badges: [Badge]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
@@ -106,7 +112,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: JSON
+      badges: [Badge]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
