@@ -19,7 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
-import DurationPicker from "../../atoms/DurationPicker";
 
 type ActivityLogScreenProps = NativeStackNavigationProp<
   AppStackParamList,

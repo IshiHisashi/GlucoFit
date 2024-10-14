@@ -7,6 +7,7 @@ import CarbsLogScreen from "../screens/logScreens/CarbsLogScreen";
 import ActivityLogScreen from "../screens/logScreens/ActivityLogScreen";
 import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
 import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
+import NoteScreen from "../screens/logScreens/NoteScreen";
 import { AppStackParamList } from "../../types/navigation";
 
 ///////////////////////////////
@@ -33,6 +34,7 @@ const AppStack: React.FC = () => (
       <Stack.Screen name="ActivityLog" component={ActivityLogScreen} />
       <Stack.Screen name="MedicineLog" component={MedicineLogScreen} />
       <Stack.Screen name="GlucoseLog" component={GlucoseLogScreen} />
+      <Stack.Screen name="Note" component={NoteScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

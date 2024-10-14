@@ -130,6 +130,8 @@ const HomeScreen: React.FC = () => {
       if (route.params?.mutatedLog === "medicine") {
         medicinesRefetch();
       }
+      if (route.params?.mutatedLog === "carb") {
+      }
     }, [
       route.params?.mutatedLog,
       bslResultsAndAverageRefetch,
