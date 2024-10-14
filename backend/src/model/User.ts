@@ -1,4 +1,4 @@
-import { Schema, model, Document, ObjectId, Decimal128 } from "mongoose";
+import { Schema, model, Document, ObjectId } from "mongoose";
 import bcrypt from "bcrypt";
 
 // interface Badges {
