@@ -7,6 +7,7 @@ import HomeScreen from "../screens/HomeScreen";
 import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
+import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -47,15 +48,16 @@ const TabNavigator: React.FC = () => (
         tabBarButton: () => null, // Hide the default tab button
       }}
     />
-    <Tab.Screen
-      name="TestStack"
-      component={TestStack}
-      options={{ title: "Test" }}
-    />
+
     <Tab.Screen
       name="Logs"
       component={LogsScreen}
       options={{ title: "Logs" }}
+    />
+    <Tab.Screen
+      name="BadgeScreen"
+      component={BadgeScreen}
+      options={{ title: "Badge" }}
     />
   </Tab.Navigator>
 );
