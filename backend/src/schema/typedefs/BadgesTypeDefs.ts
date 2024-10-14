@@ -10,6 +10,13 @@ export const badgesTypeDefs = gql`
     note: String
   }
 
+  input BadgeCriteriaInput {
+    value: Float!
+    comparison: String!
+    kind: String!
+    note: String
+  }
+
   type Badges {
     id: ID!
     badge_name: String!

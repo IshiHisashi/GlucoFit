@@ -1,16 +1,24 @@
 import { gql } from "apollo-server-express";
-import { DirectiveLocation } from "graphql";
 
 export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 
+  # Output type for querying badges
   type Badge {
     id: String
     achieved: Boolean
     progress: Float
   }
 
+  # Input type for mutations
+  input BadgeInput {
+    id: String
+    achieved: Boolean
+    progress: Float
+  }
+
+  # User type for querying
   type User {
     id: ID!
     name: String!
@@ -41,16 +49,19 @@ export const userTypeDefs = gql`
     create_day: String
   }
 
+  # AuthPayload type
   type AuthPayload {
     token: String!
     user: User!
   }
 
+  # Queries
   type Query {
     getUser(id: ID!): User
     getUsers: [User!]!
   }
 
+  # Mutations
   type Mutation {
     signUp(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
@@ -79,7 +90,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [Badge]
+      badges: [BadgeInput!] # Use BadgeInput for mutations
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
@@ -112,7 +123,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [Badge]
+      badges: [BadgeInput!] # Use BadgeInput for mutations
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
