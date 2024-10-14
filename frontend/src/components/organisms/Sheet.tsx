@@ -24,15 +24,18 @@ import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { StyleSheet } from "react-native";
 
 import PickerOptionCard from "../molcules/PickerOptionCard";
+import DurationPicker from "../atoms/DurationPicker";
 
 interface SheetProps {
   isOpen: boolean;
   onClose: Dispatch<SetStateAction<boolean>>;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: Dispatch<
+    SetStateAction<string | { hours: number; minutes: number }>
+  >;
   sheetContentType: string;
   title: string;
   optionsArray?: string[];
-  value?: string;
+  value?: string | { hours: 0; minutes: 0 };
 }
 
 const Sheet: FC<SheetProps> = (props) => {
@@ -93,7 +96,7 @@ const Sheet: FC<SheetProps> = (props) => {
             <Textarea h={200} mb="$4">
               <TextareaInput
                 placeholder="Write your note"
-                value={note}
+                value={note as string}
                 onChangeText={setNote}
               />
             </Textarea>
@@ -101,12 +104,16 @@ const Sheet: FC<SheetProps> = (props) => {
               isDisabled={!note}
               onPress={() => {
                 setValue(note as string);
-                onClose();
+                onClose(false);
               }}
             >
               <ButtonText>Add</ButtonText>
             </Button>
           </>
+        )}
+
+        {sheetContentType === "duration" && (
+          <DurationPicker value={value} setValue={setValue} onClose={onClose} />
         )}
       </ActionsheetContent>
     </Actionsheet>

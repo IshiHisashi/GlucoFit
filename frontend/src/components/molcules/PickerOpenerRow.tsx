@@ -10,7 +10,7 @@ import React, { Dispatch, FC, SetStateAction } from "react";
 interface PickerOpenerRowProps {
   setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
-  value: Date | string;
+  value: Date | string | { hours: number; minutes: number };
   independent?: boolean;
 }
 
@@ -40,9 +40,11 @@ const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
           <Text mr="$2">
             {typeof value === "string"
               ? value
-              : text === "Date"
-                ? value.toDateString()
-                : value.toTimeString()}
+              : text === "Duration"
+                ? `${value.hours} h ${value.minutes} m`
+                : text === "Date"
+                  ? value.toDateString()
+                  : value.toTimeString()}
           </Text>
           <Icon as={ChevronRightIcon} size="sm" />
         </HStack>

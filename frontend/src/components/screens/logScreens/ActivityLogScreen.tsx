@@ -28,7 +28,7 @@ type ActivityLogScreenProps = NativeStackNavigationProp<
 
 const ActivityLogScreen: React.FC = () => {
   const [activity, setActivity] = useState("");
-  const [duration, setDuration] = useState("");
+  const [duration, setDuration] = useState({ hours: 0, minutes: 0 });
   const [timePeriod, setTimePeriod] = useState("");
   const activities = ["Walking", "Running", "Cycling", "Others"];
   const timePeriods = ["After breakfast", "After lunch", "After dinner"];
@@ -90,7 +90,7 @@ const ActivityLogScreen: React.FC = () => {
         </Button>
       </Box>
 
-      <DurationPicker />
+      {/* <DurationPicker /> */}
 
       {/* picker modals -------------------------------------- */}
 
@@ -102,6 +102,15 @@ const ActivityLogScreen: React.FC = () => {
         title="Type of activity"
         optionsArray={activities}
         value={activity}
+      />
+
+      <Sheet
+        isOpen={isDurationPickerOpen}
+        onClose={setIsDurationPickerOpen}
+        setValue={setDuration}
+        sheetContentType="duration"
+        title="Pick activity duration"
+        value={duration}
       />
     </View>
   );
