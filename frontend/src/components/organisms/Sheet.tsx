@@ -35,7 +35,7 @@ interface SheetProps {
   sheetContentType: string;
   title: string;
   optionsArray?: string[];
-  value?: string | { hours: 0; minutes: 0 };
+  value?: string | { hours: number; minutes: number };
 }
 
 const Sheet: FC<SheetProps> = (props) => {
@@ -127,21 +127,6 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-  },
-  scrollView: {
-    marginBottom: 20,
-  },
-  optionContainer: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
-  },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#E0E0E0",
-    marginRight: 15,
   },
 });
 

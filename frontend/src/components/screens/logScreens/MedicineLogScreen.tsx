@@ -49,7 +49,10 @@ const MedicineLogScreen: React.FC = () => {
 
   const handleSave = () => {
     console.log(selectedMeds);
-    navigation.navigate("Tabs", { screen: "Home" });
+    navigation.navigate("Tabs", {
+      screen: "Home",
+      params: { mutatedLog: "medicine" },
+    });
   };
 
   return (

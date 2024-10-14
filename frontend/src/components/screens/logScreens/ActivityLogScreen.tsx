@@ -38,20 +38,12 @@ const ActivityLogScreen: React.FC = () => {
 
   const navigation = useNavigation<ActivityLogScreenProps>();
 
-  const handleDurationChange = ({
-    hours,
-    minutes,
-  }: {
-    hours: number;
-    minutes: number;
-  }) => {
-    setDuration(
-      `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
-    );
-    setIsDurationPickerOpen(false);
+  const handleSave = () => {
+    navigation.navigate("Tabs", {
+      screen: "Home",
+      params: { mutatedLog: "activity" },
+    });
   };
-
-  const handleSave = () => {};
 
   return (
     <View height="$full">
@@ -85,12 +77,17 @@ const ActivityLogScreen: React.FC = () => {
         pb="$8"
         bg="$white"
       >
-        <Button isDisabled={false} onPress={handleSave}>
+        <Button
+          isDisabled={
+            activity === "" ||
+            (duration.hours === 0 && duration.minutes === 0) ||
+            timePeriod === ""
+          }
+          onPress={handleSave}
+        >
           <ButtonText>Save</ButtonText>
         </Button>
       </Box>
-
-      {/* <DurationPicker /> */}
 
       {/* picker modals -------------------------------------- */}
 
@@ -111,6 +108,16 @@ const ActivityLogScreen: React.FC = () => {
         sheetContentType="duration"
         title="Pick activity duration"
         value={duration}
+      />
+
+      <Sheet
+        isOpen={isTimePeriodPickerOpen}
+        onClose={setIsTimePeriodPickerOpen}
+        setValue={setTimePeriod}
+        sheetContentType="picker"
+        title="Pick time period"
+        optionsArray={timePeriods}
+        value={timePeriod}
       />
     </View>
   );
