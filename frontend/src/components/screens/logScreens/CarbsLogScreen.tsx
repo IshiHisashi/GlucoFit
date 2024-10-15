@@ -23,9 +23,26 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
+import { gql, useMutation } from "@apollo/client";
 
 // hardcode for now
 const userId = "60d8f33e7f3f83479cbf5b4f";
+
+const CREATE_CARBS_LOG = gql`
+  mutation CreateCarbsLog(
+    $userId: String!
+    $calorieTaken: Float!
+    $logTimestamp: Date!
+  ) {
+    createDietLog(
+      userID: $userId
+      calorieTaken: $calorieTaken
+      log_timestamp: $logTimestamp
+    ) {
+      log_timestamp
+    }
+  }
+`;
 
 type CarbsLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -47,6 +64,9 @@ const CarbsLogScreen: React.FC = () => {
   const [isMealTypePickerOpen, setIsMealTypePickerOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+
+  const [createCarbsLog, { data, loading, error }] =
+    useMutation(CREATE_CARBS_LOG);
 
   const handleDateConfirm = (date: Date) => {
     setDate(date);
@@ -75,11 +95,29 @@ const CarbsLogScreen: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
-    navigation.navigate("Tabs", {
-      screen: "Home",
-      params: { mutatedLog: "carb" },
-    });
+  const handleSave = async () => {
+    try {
+      const combinedDateTime = new Date(date);
+      combinedDateTime.setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds()
+      );
+      const log = await createCarbsLog({
+        variables: {
+          userId: userId,
+          calorieTaken: Number(carbs),
+          logTimestamp: combinedDateTime,
+        },
+      });
+      console.log("Mutation result:", log);
+      navigation.navigate("Tabs", {
+        screen: "Home",
+        params: { mutatedLog: "carb" },
+      });
+    } catch (error) {
+      console.error("Error creating carbs log:", error);
+    }
   };
 
   return (

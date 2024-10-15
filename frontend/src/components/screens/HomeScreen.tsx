@@ -76,6 +76,14 @@ const GET_MEDICINES_FOR_TODAY = gql`
   }
 `;
 
+const GET_CARBS_FOR_TODAY = gql`
+  query GetCarbsForToday($userId: ID!) {
+    getTodayDietLogs(userID: $userId) {
+      log_timestamp
+    }
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 type RouteParams = {
@@ -122,6 +130,16 @@ const HomeScreen: React.FC = () => {
   });
   medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
 
+  const {
+    data: carbsData,
+    loading: carbsLoading,
+    error: carbsError,
+    refetch: carbsRefetch,
+  } = useQuery(GET_CARBS_FOR_TODAY, {
+    variables: { userId: userId },
+  });
+  carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.mutatedLog === "bsl") {
@@ -134,21 +152,29 @@ const HomeScreen: React.FC = () => {
         medicinesRefetch();
       }
       if (route.params?.mutatedLog === "carb") {
+        carbsRefetch();
       }
     }, [
       route.params?.mutatedLog,
       bslResultsAndAverageRefetch,
       activitiesRefetch,
       medicinesRefetch,
+      carbsRefetch,
     ])
   );
 
   let logsForToday;
-  if (bslResultsAndAverageData && activitiesData && medicinesData) {
+  if (
+    bslResultsAndAverageData &&
+    // activitiesData &&
+    medicinesData &&
+    carbsData
+  ) {
     logsForToday = [
       ...bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults,
-      ...activitiesData.getTodayActivityLogs,
+      // ...activitiesData.getTodayActivityLogs,
       ...medicinesData.getTodayMedicineLogs,
+      ...carbsData.getTodayDietLogs,
     ];
     // if we need to sort... but we need to have consistent nameing convention for timestamp.
     logsForToday.length > 1 &&
@@ -260,7 +286,9 @@ const HomeScreen: React.FC = () => {
                             ? "Activity"
                             : obj.__typename === "MedicineLog"
                               ? "Medicine"
-                              : "else"}
+                              : obj.__typename === "DietLog"
+                                ? "Carbs"
+                                : "else"}
                       </Text>
                       <Text>
                         {new Date(obj.log_timestamp).toLocaleString("en-US", {
@@ -292,6 +320,13 @@ const HomeScreen: React.FC = () => {
                           {obj.amount}
                         </Text>
                         <Text>mg</Text>
+                      </>
+                    ) : obj.__typename === "DietLog" ? (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.calorieTaken}
+                        </Text>
+                        <Text>g</Text>
                       </>
                     ) : (
                       <>
