@@ -4,25 +4,9 @@ export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 
-  # Badge Criteria Type
-  type BadgeCriteria {
-    value: Float!
-    comparison: String!
-    kind: String!
-    note: String
-  }
-
-  # BadgeDetails type for the populated badge information
-  type BadgeDetails {
-    _id: String
-    badge_name: String
-    badge_desc: String
-    criteria: BadgeCriteria
-  }
-
-  # Badge type for querying user badges (includes badgeId and badge details)
+  # Badge type for querying user badges (includes badgeId and badge details). This is comind from BadgesTypeDefs.ts but cannot use import as usual for this case. mergeTypes in typeDefs.ts connects those types at high level.
   type Badge {
-    badgeId: BadgeDetails
+    badgeId: Badges
     achieved: Boolean
     progress: Float
   }
@@ -107,7 +91,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [BadgeInput!] # Use BadgeInput for mutations
+      badges: [BadgeInput!]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
@@ -140,7 +124,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [BadgeInput!] # Use BadgeInput for mutations
+      badges: [BadgeInput!]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean

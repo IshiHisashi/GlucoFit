@@ -1,6 +1,5 @@
 import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
-import populateFields from "../utils/populate";
 import { Badges } from "../../model/Badges";
 
 const userResolvers = {
