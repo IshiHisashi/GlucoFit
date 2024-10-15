@@ -128,6 +128,15 @@ const HomeScreen: React.FC = () => {
       bslResultsAndAverageData.getTestResultsAndAverageForToday
     );
 
+  let latestBsl;
+  if (bslResultsAndAverageData) {
+    latestBsl =
+      bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults[
+        bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults
+          .length - 1
+      ];
+  }
+
   const {
     data: activitiesData,
     loading: activitiesLoading,
@@ -199,6 +208,7 @@ const HomeScreen: React.FC = () => {
       activitiesRefetch,
       medicinesRefetch,
       carbsRefetch,
+      weeklyBslRefetch,
     ])
   );
 
@@ -244,14 +254,17 @@ const HomeScreen: React.FC = () => {
               <VStack>
                 <HStack alignItems="center" space="xs">
                   <Text fontSize="$4xl" fontWeight="$bold">
-                    {
-                      bslResultsAndAverageData.getTestResultsAndAverageForToday
-                        .averageBsl
-                    }
+                    {latestBsl.bsl}
                   </Text>
                   <Text>mmol/L</Text>
                 </HStack>
-                <Text>6:00pm what kind of time is this?</Text>
+                <Text>
+                  {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
+                </Text>
               </VStack>
             )}
             <TotalSteps />
