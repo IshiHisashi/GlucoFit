@@ -4,16 +4,32 @@ export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 
-  # Output type for querying badges
+  # Badge Criteria Type
+  type BadgeCriteria {
+    value: Float!
+    comparison: String!
+    kind: String!
+    note: String
+  }
+
+  # BadgeDetails type for the populated badge information
+  type BadgeDetails {
+    _id: String
+    badge_name: String
+    badge_desc: String
+    criteria: BadgeCriteria
+  }
+
+  # Badge type for querying user badges (includes badgeId and badge details)
   type Badge {
-    id: String
+    badgeId: BadgeDetails
     achieved: Boolean
     progress: Float
   }
 
   # Input type for mutations
   input BadgeInput {
-    id: String
+    badgeId: ID!
     achieved: Boolean
     progress: Float
   }
@@ -59,6 +75,7 @@ export const userTypeDefs = gql`
   type Query {
     getUser(id: ID!): User
     getUsers: [User!]!
+    getUserBadge(id: ID!): User
   }
 
   # Mutations

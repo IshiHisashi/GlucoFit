@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 // }
 
 interface Badge {
-  id: string;
+  badgeId: { type: Schema.Types.ObjectId; ref: "Badges" };
   achieved: true;
   progress: number | boolean;
 }
@@ -74,7 +74,14 @@ const userSchema = new Schema<IUser>({
   apple_health_id: { type: String },
   android_health_token: { type: String },
   android_health_id: { type: String },
-  badges: { type: [Object] },
+  badges: [
+    {
+      badgeId: { type: Schema.Types.ObjectId, ref: "Badge" },
+      achieved: { type: Boolean },
+      progress: { type: Number },
+      _id: false,
+    },
+  ],
   read_article_history_array: { type: [String] },
   recently_read_articles_array: { type: [String] },
   active_status: { type: Boolean },

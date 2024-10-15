@@ -1,5 +1,7 @@
 import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
+import populateFields from "../utils/populate";
+import { Badges } from "../../model/Badges";
 
 const userResolvers = {
   Query: {
@@ -15,6 +17,17 @@ const userResolvers = {
     },
     getUsers: async (): Promise<IUser[]> => {
       return await User.find();
+    },
+    getUserBadge: async (
+      _: any,
+      { id }: { id: string }
+    ): Promise<IUser | null> => {
+      // Populate the 'badgeId' reference inside 'badges'
+      return await User.findById(id).populate({
+        path: "badges.badgeId",
+        model: Badges,
+        select: "_id badge_name badge_desc",
+      });
     },
   },
   Mutation: {
