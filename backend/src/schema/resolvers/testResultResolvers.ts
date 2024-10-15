@@ -300,6 +300,65 @@ const testResultsResolvers = {
         );
       }
     },
+    getStreakByTimeRange: async (
+      _: any,
+      {
+        user_id,
+        startHour,
+        endHour,
+      }: { user_id: string; startHour: number; endHour: number }
+    ): Promise<number> => {
+      try {
+        // Fetch all test results for the user, sorted by timestamp
+        const testResults = await TestResults.find({
+          user_id: new Types.ObjectId(user_id),
+        })
+          .sort({ log_timestamp: 1 })
+          .exec();
+
+        if (!testResults.length) return 0;
+
+        const days = new Set<string>();
+        testResults.forEach((result) => {
+          const logTime = moment.utc(result.log_timestamp);
+          const utcHour = logTime.hour();
+          const utcDate = logTime.format("YYYY-MM-DD");
+
+          if (utcHour >= startHour && utcHour < endHour) {
+            days.add(utcDate);
+          }
+        });
+
+        const uniqueDays = Array.from(days).sort();
+
+        if (!uniqueDays.length) return 0;
+
+        let streak = 0;
+        let currentStreak = 0;
+
+        for (let i = uniqueDays.length - 1; i >= 0; i--) {
+          const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
+          const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
+
+          if (i === uniqueDays.length - 1) {
+            currentStreak = 1;
+          } else {
+            const diff = prevDay.diff(currentDay, "days");
+            if (diff === 1) {
+              currentStreak++;
+            } else {
+              break;
+            }
+          }
+          streak = Math.max(streak, currentStreak);
+        }
+
+        return streak;
+      } catch (error) {
+        console.error("Error calculating streak by time range:", error);
+        throw new Error("Failed to calculate streak by time range");
+      }
+    },
     getTestResultsDatesByMonth: async (
       _: any,
       { user_id, year, month }: { user_id: string; year: number; month: number }
