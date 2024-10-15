@@ -1,11 +1,16 @@
 import { gql } from "apollo-server-express";
 
 export const dietLogsTypeDefs = gql`
+  type Note {
+    title: String
+    content: String
+  }
+
   type DietLog {
     id: ID! # This is the MongoDB _id
     userID: String!
-    note: String
-    calorieTaken: Float!
+    note: Note
+    carbs: Float!
     log_timestamp: Date!
   }
 
@@ -18,17 +23,24 @@ export const dietLogsTypeDefs = gql`
   extend type Mutation {
     createDietLog(
       userID: String!
-      note: String
-      calorieTaken: Float!
+      note: NoteInput
+      carbs: Float!
       log_timestamp: Date!
     ): DietLog!
 
     updateDietLog(
       id: ID! # Using MongoDB _id
-      note: String
-      calorieTaken: Float
+      note: NoteInput
+      carbs: Float
     ): DietLog!
 
     deleteDietLog(id: ID!): String!
   }
+
+  input NoteInput {
+    note_description: String!  
+    title: String
+    content: String
+  }
+  
 `;

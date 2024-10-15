@@ -31,18 +31,47 @@ const dietLogsResolvers = {
   },
   Mutation: {
     createDietLog: async (_: any, args: IDietLogs): Promise<IDietLogs> => {
-      const newDietLog = new DietLogs(args);
-      return await newDietLog.save(); // MongoDB will auto-generate _id
+      try {
+        const newDietLog = new DietLogs({
+          ...args,
+          note: {
+            title: args.note?.title || '',
+            content: args.note?.content || '',
+          },
+        });
+        return await newDietLog.save(); // MongoDB will auto-generate _id
+      } catch (error) {
+        console.error("Error creating diet log:", error);
+        throw new Error("Failed to create diet log");
+      }
     },
     updateDietLog: async (
       _: any,
       { id, ...args }: { id: string } & Partial<IDietLogs>
     ): Promise<IDietLogs | null> => {
-      return await DietLogs.findByIdAndUpdate(id, args, { new: true });
+      try {
+        const updatedLog = await DietLogs.findByIdAndUpdate(
+          id,
+          {
+            ...args,
+            note: args.note ? { title: args.note.title, content: args.note.content } : undefined,
+          },
+          { new: true }
+        );
+        return updatedLog;
+      } catch (error) {
+        console.error("Error updating diet log:", error);
+        throw new Error("Failed to update diet log");
+      }
     },
     deleteDietLog: async (_: any, { id }: { id: string }): Promise<string> => {
-      await DietLogs.findByIdAndDelete(id);
-      return "Diet Log deleted successfully";
+      try {
+        await DietLogs.findByIdAndDelete(id);
+        return "Diet Log deleted successfully";
+      } catch (error) {
+        console.error("Error deleting diet log:", error);
+        throw new Error("Failed to delete diet log");
+      }
     },
   },
 };

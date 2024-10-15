@@ -7,6 +7,7 @@ export const testResultsTypeDefs = gql`
     bsl: Float
     note: Note
     log_timestamp: Date
+    time_period : String
     confirmed: Boolean
   }
 
@@ -22,6 +23,7 @@ export const testResultsTypeDefs = gql`
   type WeeklyBSLResponse {
     weeklyData: [BSLData!]!
     weeklyAverage: Float!
+    dateRange: String! 
   }
 
   type BSLData {
@@ -52,6 +54,7 @@ export const testResultsTypeDefs = gql`
       bsl: Float!
       note: NoteInput!
       log_timestamp: Date
+      time_period : String
       confirmed: Boolean
     ): TestResults!
 
@@ -60,6 +63,7 @@ export const testResultsTypeDefs = gql`
       bsl: Float
       note: NoteInput
       log_timestamp: Date
+      time_period : String
       confirmed: Boolean
     ): TestResults!
 

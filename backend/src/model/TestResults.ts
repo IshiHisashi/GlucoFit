@@ -10,6 +10,7 @@ export interface ITestResults extends Document {
   bsl: number;
   note: Note;
   log_timestamp: Date;
+  time_period: string;
   confirmed: boolean;
 }
 
@@ -18,6 +19,7 @@ const testResultsSchema = new Schema<ITestResults>({
   bsl: { type: Number },
   note: { type: Object },
   log_timestamp: { type: Date },
+  time_period: { type: String},
   confirmed: { type: Boolean },
 });
 
