@@ -27,7 +27,7 @@ import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const TotalSteps = () => {
   const GET_TOTAL_STEPS_FOR_TODAY = gql`
@@ -81,6 +81,24 @@ const GET_CARBS_FOR_TODAY = gql`
     getTodayDietLogs(userID: $userId) {
       log_timestamp
     }
+  }
+`;
+
+const GET_WEEKLY_BSL_DATA = gql`
+  query GetWeeklyBSLData($userId: ID!) {
+    getWeeklyBSLData(user_id: $userId) {
+      weeklyAverage
+      weeklyData {
+        day
+        value
+      }
+    }
+  }
+`;
+
+const GET_AVERAGE_BSL_FOR_X = gql`
+  query GetAverageBslForX($userId: ID!) {
+    getAverageBslXAxisValue(user_id: $userId)
   }
 `;
 
@@ -140,10 +158,31 @@ const HomeScreen: React.FC = () => {
   });
   carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
 
+  const {
+    data: weeklyBslData,
+    loading: weeklyBslLoading,
+    error: weeklyBslError,
+    refetch: weeklyBslRefetch,
+  } = useQuery(GET_WEEKLY_BSL_DATA, {
+    variables: { userId: userId },
+  });
+  weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
+
+  const {
+    data: bslForXData,
+    loading: bslForXLoading,
+    error: bslForXError,
+    refetch: bslForXRefetch,
+  } = useQuery(GET_AVERAGE_BSL_FOR_X, {
+    variables: { userId: userId },
+  });
+  bslForXData && console.log("X:", bslForXData);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.mutatedLog === "bsl") {
         bslResultsAndAverageRefetch();
+        weeklyBslRefetch();
       }
       if (route.params?.mutatedLog === "activity") {
         activitiesRefetch();
@@ -364,12 +403,21 @@ const HomeScreen: React.FC = () => {
           <HStack alignItems="center" justifyContent="space-between" space="sm">
             <Center>
               <Text size="3xl" fontWeight="$bold">
-                150
+                {weeklyBslData
+                  ? weeklyBslData.getWeeklyBSLData.weeklyAverage
+                  : "N/A"}
               </Text>
               <Text>mg/dL</Text>
               <Text>Average</Text>
             </Center>
-            <BslWeeklyBarChart width={width} />
+
+            {weeklyBslData && (
+              <BslWeeklyBarChart
+                width={width}
+                data={weeklyBslData.getWeeklyBSLData.weeklyData}
+                bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+              />
+            )}
           </HStack>
         </VStack>
       </VStack>

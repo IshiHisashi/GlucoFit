@@ -18,7 +18,7 @@ import { AppStackParamList } from "../../../types/navigation";
 import { gql, useMutation } from "@apollo/client";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const CREATE_MEDICINE_LOG = gql`
   mutation CreateMedicineLog(

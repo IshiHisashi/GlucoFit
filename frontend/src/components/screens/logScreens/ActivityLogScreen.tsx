@@ -17,7 +17,7 @@ import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const CREATE_ACTIVITY_LOG = gql`
   mutation CreateActivityLog(

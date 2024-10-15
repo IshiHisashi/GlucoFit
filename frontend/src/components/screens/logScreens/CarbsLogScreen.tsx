@@ -26,7 +26,7 @@ import Sheet from "../../organisms/Sheet";
 import { gql, useMutation } from "@apollo/client";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const CREATE_CARBS_LOG = gql`
   mutation CreateCarbsLog(
