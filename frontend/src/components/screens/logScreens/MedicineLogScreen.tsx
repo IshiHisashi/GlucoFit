@@ -15,18 +15,33 @@ import { useNavigation } from "@react-navigation/native";
 import ListCard from "../../molcules/ListCard";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
+import { gql, useMutation } from "@apollo/client";
+
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
+const CREATE_MEDICINE_LOG = gql`
+  mutation CreateMedicineLog(
+    $userId: ID!
+    $amount: Float!
+    $injectionTime: Date!
+  ) {
+    createMedicineLog(
+      user_id: $userId
+      amount: $amount
+      injection_time: $injectionTime
+    ) {
+      user_id
+      amount
+      injection_time
+    }
+  }
+`;
 
 // dummy data
 const medicines = [
-  { name: "Apotokishin", dosage: "16mg", frequency: "Everyday" },
-  { name: "Kakkonto", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil2", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil3", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil4", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil5", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil6", dosage: "16mg", frequency: "Everyday" },
-  { name: "Advil7", dosage: "16mg", frequency: "Everyday" },
+  { name: "Apotokishin", dosage: 16, unit: "mg", frequency: "Everyday" },
+  { name: "Kakkonto", dosage: 18, unit: "mg", frequency: "Everyday" },
 ];
 
 type MedicineLogScreenProps = NativeStackNavigationProp<
@@ -35,20 +50,50 @@ type MedicineLogScreenProps = NativeStackNavigationProp<
 >;
 
 const MedicineLogScreen: React.FC = () => {
-  const [selectedMeds, setSelectedMeds] = useState<string[]>([]);
+  const [selectedMeds, setSelectedMeds] = useState<
+    [{ name: string; dosage: number }]
+  >([]);
 
   const navigation = useNavigation<MedicineLogScreenProps>();
 
-  const toggleMedSelection = (name: string) => {
+  const [createMedicineLog, { data, loading, error }] =
+    useMutation(CREATE_MEDICINE_LOG);
+
+  const toggleMedSelection = (name: string, dosage: number) => {
     setSelectedMeds((prev) => {
-      return prev.includes(name)
-        ? prev.filter((el) => el !== name)
-        : [...prev, name];
+      const isSelected = prev.some((med) => med.name === name);
+      if (isSelected) {
+        return prev.filter((med) => med.name !== name);
+      } else {
+        return [...prev, { name, dosage }];
+      }
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log(selectedMeds);
+    // const combinedDateTime = new Date(date);
+    // combinedDateTime.setHours(
+    //   time.getHours(),
+    //   time.getMinutes(),
+    //   time.getSeconds()
+    // );
+
+    for (const med of selectedMeds) {
+      try {
+        const log = await createMedicineLog({
+          variables: {
+            user_id: userId,
+            amount: med.dosage,
+            log_timestamp: new Date(),
+          },
+        });
+        console.log("Mutation result:", log);
+      } catch (err) {
+        console.error("Error creating medicine log:", err);
+      }
+    }
+
     navigation.navigate("Tabs", {
       screen: "Home",
       params: { mutatedLog: "medicine" },
@@ -60,15 +105,18 @@ const MedicineLogScreen: React.FC = () => {
       <ScrollView p="$4" pb="$16">
         <VStack space="md">
           {medicines &&
-            medicines.map((obj) => (
+            medicines.map((obj, index) => (
               <ListCard
+                key={index}
                 text={obj.name}
-                isSelected={selectedMeds.includes(obj.name)}
+                isSelected={selectedMeds.some((med) => med.name === obj.name)}
                 iconLeft={CalendarDaysIcon}
                 iconRightOn={CalendarDaysIcon}
                 iconRightOff={SunIcon}
-                badge={[obj.dosage, obj.frequency]}
-                onPressIconRight={() => toggleMedSelection(obj.name)}
+                badge={[`${obj.dosage}${obj.unit}`, obj.frequency]}
+                onPressIconRight={() =>
+                  toggleMedSelection(obj.name, obj.dosage)
+                }
               />
             ))}
         </VStack>

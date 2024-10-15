@@ -35,6 +35,7 @@ const LabelBadge: FC<LabelBadgeProps> = ({ text, isSelected }) => {
 };
 
 interface ListCardProps {
+  key?: number;
   text: string;
   isSelected: boolean;
   iconLeft?: (props: SvgProps) => React.JSX.Element;

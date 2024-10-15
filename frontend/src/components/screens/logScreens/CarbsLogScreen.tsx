@@ -24,6 +24,9 @@ import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
 
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
 type CarbsLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
   "CarbsLog"
@@ -44,7 +47,6 @@ const CarbsLogScreen: React.FC = () => {
   const [isMealTypePickerOpen, setIsMealTypePickerOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
-  const [isNoteOpen, setIsNoteOpen] = useState(false);
 
   const handleDateConfirm = (date: Date) => {
     setDate(date);
