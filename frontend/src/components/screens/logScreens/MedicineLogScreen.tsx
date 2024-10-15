@@ -24,16 +24,16 @@ const CREATE_MEDICINE_LOG = gql`
   mutation CreateMedicineLog(
     $userId: ID!
     $amount: Float!
-    $injectionTime: Date!
+    $logTimestamp: Date!
   ) {
     createMedicineLog(
       user_id: $userId
       amount: $amount
-      injection_time: $injectionTime
+      log_timestamp: $logTimestamp
     ) {
-      user_id
       amount
-      injection_time
+      id
+      log_timestamp
     }
   }
 `;
@@ -83,9 +83,9 @@ const MedicineLogScreen: React.FC = () => {
       try {
         const log = await createMedicineLog({
           variables: {
-            user_id: userId,
+            userId: userId,
             amount: med.dosage,
-            log_timestamp: new Date(),
+            logTimestamp: new Date(),
           },
         });
         console.log("Mutation result:", log);

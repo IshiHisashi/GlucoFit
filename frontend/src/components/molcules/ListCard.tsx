@@ -47,6 +47,7 @@ interface ListCardProps {
 
 const ListCard: FC<ListCardProps> = (props) => {
   const {
+    key,
     text,
     isSelected,
     iconLeft,
@@ -58,6 +59,7 @@ const ListCard: FC<ListCardProps> = (props) => {
 
   return (
     <HStack
+      key={key || 1}
       alignItems="center"
       justifyContent="space-between"
       borderWidth={1}

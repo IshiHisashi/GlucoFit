@@ -70,7 +70,7 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
 const GET_MEDICINES_FOR_TODAY = gql`
   query GetMedicinesForToday($userId: ID!) {
     getTodayMedicineLogs(user_id: $userId) {
-      injection_time
+      log_timestamp
       amount
     }
   }
@@ -96,8 +96,11 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY, {
     variables: { userId: userId },
   });
-  // bslResultsAndAverageData &&
-  //   console.log(bslResultsAndAverageData.getTestResultsAndAverageForToday);
+  bslResultsAndAverageData &&
+    console.log(
+      "bsl:",
+      bslResultsAndAverageData.getTestResultsAndAverageForToday
+    );
 
   const {
     data: activitiesData,
@@ -107,7 +110,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_ACTIVITIES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  activitiesData && console.log(activitiesData.getTodayActivityLogs);
+  activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
 
   const {
     data: medicinesData,
@@ -117,7 +120,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_MEDICINES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  medicinesData && console.log(medicinesData.getTodayMedicineLogs);
+  medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
 
   useFocusEffect(
     useCallback(() => {
@@ -148,16 +151,16 @@ const HomeScreen: React.FC = () => {
       ...medicinesData.getTodayMedicineLogs,
     ];
     // if we need to sort... but we need to have consistent nameing convention for timestamp.
-    // logsForToday.length > 1 &&
-    //   logsForToday.sort((obj1, obj2) => {
-    //     if (obj1.log_timestamp < obj2.log_timestamp) {
-    //       return -1;
-    //     } else if (obj1.log_timestamp > obj2.log_timestamp) {
-    //       return 1;
-    //     } else {
-    //       return 0;
-    //     }
-    //   });
+    logsForToday.length > 1 &&
+      logsForToday.sort((obj1, obj2) => {
+        if (obj1.log_timestamp < obj2.log_timestamp) {
+          return -1;
+        } else if (obj1.log_timestamp > obj2.log_timestamp) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
     console.log("sorted:", logsForToday);
   }
 
@@ -253,7 +256,9 @@ const HomeScreen: React.FC = () => {
                       <Text fontWeight="$bold">
                         {obj.__typename === "TestResults"
                           ? "Blood Glucose"
-                          : "else"}
+                          : obj.__typename === "MedicineLog"
+                            ? "Medicine"
+                            : "else"}
                       </Text>
                       <Text>
                         {new Date(obj.log_timestamp).toLocaleString("en-US", {
@@ -271,6 +276,13 @@ const HomeScreen: React.FC = () => {
                           {obj.bsl}
                         </Text>
                         <Text>mmol/L</Text>
+                      </>
+                    ) : obj.__typename === "MedicineLog" ? (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.amount}
+                        </Text>
+                        <Text>mg</Text>
                       </>
                     ) : (
                       <>
