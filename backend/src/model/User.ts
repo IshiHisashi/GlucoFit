@@ -14,6 +14,7 @@ export interface IUser extends Document {
   phone_number: string;
   password: string;
   maximum_bsl: number;
+  minimum_bsl: number;
   bsl_goal: number;
   footsteps_goal: number;
   test_streak_counter: number;
@@ -51,6 +52,7 @@ const userSchema = new Schema<IUser>({
   phone_number: { type: String },
   password: { type: String },
   maximum_bsl: { type: Number },
+  minimum_bsl: { type: Number },
   bsl_goal: { type: Number },
   footsteps_goal: { type: Number },
   test_streak_counter: { type: Number },
@@ -85,16 +87,14 @@ const dayMapping: { [key: number]: string } = {
 };
 
 
-// For signing up | hash the password before saving the user
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 
-  // Calculate the creation day (e.g., "Wed")
   const currentDate = new Date();
-  const dayOfWeek = currentDate.getDay(); // Get the numeric day of the week
+  const dayOfWeek = currentDate.getDay(); 
   this.create_day = dayMapping[dayOfWeek];
 
   next();

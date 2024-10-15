@@ -14,6 +14,7 @@ export const userTypeDefs = gql`
     phone_number: String
     password: String
     maximum_bsl: Float
+    minimum_bsl: Float
     bsl_goal: Float
     footsteps_goal: Int
     test_streak_counter: Int
@@ -56,6 +57,7 @@ export const userTypeDefs = gql`
       phone_number: String
       password: String
       maximum_bsl: Float
+      minimum_bsl: Float
       bsl_goal: Float
       footsteps_goal: Int
       test_streak_counter: Int
@@ -88,6 +90,7 @@ export const userTypeDefs = gql`
       phone_number: String
       password: String
       maximum_bsl: Float
+      minimum_bsl: Float
       bsl_goal: Float
       footsteps_goal: Int
       test_streak_counter: Int

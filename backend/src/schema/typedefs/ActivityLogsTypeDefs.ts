@@ -22,14 +22,14 @@ export const activityLogsTypeDefs = gql`
       user_id: ID!
       footsteps: Int!
       duration: Int!
-      log_date: Date!
+      log_timestamp: Date!
     ): ActivityLogs!
 
     updateActivityLog(
       id: ID!
       footsteps: Int
       duration: Int
-      log_date: Date
+      log_timestamp: Date
     ): ActivityLogs!
 
     deleteActivityLog(id: ID!): String!
