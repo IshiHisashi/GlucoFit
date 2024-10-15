@@ -1,6 +1,7 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
 import { User } from "../../model/User";
-import { Types, ObjectId } from "mongoose";
+import { Types } from "mongoose";
+import moment from "moment-timezone";
 
 // Day mapping to convert index to day
 const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -224,7 +225,7 @@ const testResultsResolvers = {
             throw new Error("User not found");
           }
           const { maximum_bsl, minimum_bsl } = user;
-          // Fetch test results where BSL is within the user's healthy range
+
           testResults = await TestResults.find({
             user_id: new Types.ObjectId(user_id),
             bsl: { $gte: minimum_bsl, $lte: maximum_bsl },
@@ -241,42 +242,43 @@ const testResultsResolvers = {
 
         if (!testResults.length) return 0;
 
-        // Group by day (only keeping the date part)
+        // Set timezone to 'America/Vancouver'
+        const timezone = "America/Vancouver";
+
+        // Group by day (only keeping the date part in Vancouver time)
         const days = new Set<string>();
         testResults.forEach((result) => {
-          const date = result.log_timestamp.toISOString().split("T")[0];
-          days.add(date);
+          const localDate = moment(result.log_timestamp)
+            .tz(timezone)
+            .format("YYYY-MM-DD");
+          days.add(localDate);
         });
 
         const uniqueDays = Array.from(days).sort();
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = moment().tz(timezone).startOf("day");
 
         let streak = 0;
         let currentStreak = 0;
 
         // Calculate the streak by checking consecutive days
         for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = new Date(uniqueDays[i]);
+          const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
 
           if (i === uniqueDays.length - 1) {
-            const diffFromToday =
-              (today.getTime() - currentDay.getTime()) / (1000 * 60 * 60 * 24);
+            const diffFromToday = today.diff(currentDay, "days");
             if (diffFromToday > 0) {
-              return 0;
+              return 0; // Streak is broken if the last log is not from today
             } else {
               currentStreak = 1;
             }
           } else {
-            const prevDay = new Date(uniqueDays[i + 1]);
-            const diff =
-              (prevDay.getTime() - currentDay.getTime()) /
-              (1000 * 60 * 60 * 24);
+            const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
+            const diff = prevDay.diff(currentDay, "days");
             if (diff === 1) {
               currentStreak++;
             } else {
-              break;
+              break; // Streak is broken if there's a gap
             }
           }
           streak = Math.max(streak, currentStreak);
