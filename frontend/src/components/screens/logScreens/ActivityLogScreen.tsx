@@ -1,9 +1,4 @@
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetItem,
-  ActionsheetItemText,
   Box,
   Button,
   ButtonText,
@@ -15,10 +10,34 @@ import {
 import React, { useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { gql, useMutation } from "@apollo/client";
 
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
+
+// hardcode for now
+const userId = "60d8f33e7f3f83479cbf5b4f";
+
+const CREATE_ACTIVITY_LOG = gql`
+  mutation CreateActivityLog(
+    $userId: ID!
+    $footsteps: Int!
+    $duration: Int!
+    $logTimestamp: Date!
+  ) {
+    createActivityLog(
+      user_id: $userId
+      footsteps: $footsteps
+      duration: $duration
+      log_timestamp: $logTimestamp
+    ) {
+      duration
+      log_date
+      id
+    }
+  }
+`;
 
 type ActivityLogScreenProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -37,7 +56,23 @@ const ActivityLogScreen: React.FC = () => {
 
   const navigation = useNavigation<ActivityLogScreenProps>();
 
-  const handleSave = () => {
+  const [createActivityLog, { data, loading, error }] =
+    useMutation(CREATE_ACTIVITY_LOG);
+
+  const handleSave = async () => {
+    try {
+      const log = await createActivityLog({
+        variables: {
+          userId: userId,
+          footsteps: 0,
+          duration: duration.hours * 60 + duration.minutes,
+          logTimestamp: new Date(),
+        },
+      });
+      console.log("Mutation result:", log);
+    } catch (error) {
+      console.error("Error creating activity log:", error);
+    }
     navigation.navigate("Tabs", {
       screen: "Home",
       params: { mutatedLog: "activity" },

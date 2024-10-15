@@ -256,9 +256,11 @@ const HomeScreen: React.FC = () => {
                       <Text fontWeight="$bold">
                         {obj.__typename === "TestResults"
                           ? "Blood Glucose"
-                          : obj.__typename === "MedicineLog"
-                            ? "Medicine"
-                            : "else"}
+                          : obj.__typename === "ActivityLog"
+                            ? "Activity"
+                            : obj.__typename === "MedicineLog"
+                              ? "Medicine"
+                              : "else"}
                       </Text>
                       <Text>
                         {new Date(obj.log_timestamp).toLocaleString("en-US", {
@@ -274,6 +276,13 @@ const HomeScreen: React.FC = () => {
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.bsl}
+                        </Text>
+                        <Text>mmol/L</Text>
+                      </>
+                    ) : obj.__typename === "ActivityLog" ? (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.duration}
                         </Text>
                         <Text>mmol/L</Text>
                       </>

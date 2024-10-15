@@ -89,8 +89,8 @@ const MedicineLogScreen: React.FC = () => {
           },
         });
         console.log("Mutation result:", log);
-      } catch (err) {
-        console.error("Error creating medicine log:", err);
+      } catch (error) {
+        console.error("Error creating medicine log:", error);
       }
     }
 
