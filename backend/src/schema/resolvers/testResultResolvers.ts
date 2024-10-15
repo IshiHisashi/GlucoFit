@@ -242,33 +242,30 @@ const testResultsResolvers = {
 
         if (!testResults.length) return 0;
 
-        const timezone = "America/Vancouver";
-
         const days = new Set<string>();
+
         testResults.forEach((result) => {
-          const localDate = moment(result.log_timestamp)
-            .tz(timezone)
-            .format("YYYY-MM-DD");
-          days.add(localDate);
+          const utcDate = moment.utc(result.log_timestamp).format("YYYY-MM-DD");
+          days.add(utcDate);
         });
 
         const uniqueDays = Array.from(days).sort();
-
-        const today = moment().tz(timezone).startOf("day");
-        const yesterday = moment()
-          .tz(timezone)
-          .subtract(1, "days")
-          .startOf("day");
+        const today = moment.utc().startOf("day");
+        const yesterday = moment.utc().subtract(1, "days").startOf("day");
 
         let streak = 0;
         let currentStreak = 0;
 
         for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
+          const currentDay = moment.utc(uniqueDays[i], "YYYY-MM-DD");
 
           if (i === uniqueDays.length - 1) {
             const diffFromToday = today.diff(currentDay, "days");
             const diffFromYesterday = yesterday.diff(currentDay, "days");
+
+            console.log(
+              `Checking first log day (UTC): ${uniqueDays[i]} (diffFromToday: ${diffFromToday}, diffFromYesterday: ${diffFromYesterday})`
+            );
 
             if (diffFromToday === 0) {
               currentStreak = 1;
@@ -278,8 +275,9 @@ const testResultsResolvers = {
               return 0;
             }
           } else {
-            const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
+            const prevDay = moment.utc(uniqueDays[i + 1], "YYYY-MM-DD");
             const diff = prevDay.diff(currentDay, "days");
+
             if (diff === 1) {
               currentStreak++;
             } else {
@@ -288,7 +286,6 @@ const testResultsResolvers = {
           }
           streak = Math.max(streak, currentStreak);
         }
-
         return streak;
       } catch (error) {
         console.error(
@@ -300,6 +297,7 @@ const testResultsResolvers = {
         );
       }
     },
+
     getStreakByTimeRange: async (
       _: any,
       {
