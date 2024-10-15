@@ -212,14 +212,33 @@ const testResultsResolvers = {
     // For Gamification
     getStreakTestResults: async (
       _: any,
-      { user_id }: { user_id: string }
+      { user_id, withThreshold }: { user_id: string; withThreshold: boolean }
     ): Promise<number> => {
       try {
-        const testResults = await TestResults.find({
-          user_id: new Types.ObjectId(user_id),
-        })
-          .sort({ log_timestamp: 1 })
-          .exec();
+        let testResults;
+
+        // Fetch test results for the user
+        if (withThreshold) {
+          const user = await User.findById(user_id);
+          if (!user) {
+            throw new Error("User not found");
+          }
+          const { maximum_bsl, minimum_bsl } = user;
+          // Fetch test results where BSL is within the user's healthy range
+          testResults = await TestResults.find({
+            user_id: new Types.ObjectId(user_id),
+            bsl: { $gte: minimum_bsl, $lte: maximum_bsl },
+          })
+            .sort({ log_timestamp: 1 })
+            .exec();
+        } else {
+          testResults = await TestResults.find({
+            user_id: new Types.ObjectId(user_id),
+          })
+            .sort({ log_timestamp: 1 })
+            .exec();
+        }
+
         if (!testResults.length) return 0;
 
         // Group by day (only keeping the date part)
@@ -237,10 +256,10 @@ const testResultsResolvers = {
         let streak = 0;
         let currentStreak = 0;
 
+        // Calculate the streak by checking consecutive days
         for (let i = uniqueDays.length - 1; i >= 0; i--) {
           const currentDay = new Date(uniqueDays[i]);
 
-          // Check if there's a gap from today
           if (i === uniqueDays.length - 1) {
             const diffFromToday =
               (today.getTime() - currentDay.getTime()) / (1000 * 60 * 60 * 24);
