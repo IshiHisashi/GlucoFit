@@ -242,10 +242,8 @@ const testResultsResolvers = {
 
         if (!testResults.length) return 0;
 
-        // Set timezone to 'America/Vancouver'
         const timezone = "America/Vancouver";
 
-        // Group by day (only keeping the date part in Vancouver time)
         const days = new Set<string>();
         testResults.forEach((result) => {
           const localDate = moment(result.log_timestamp)
@@ -257,20 +255,27 @@ const testResultsResolvers = {
         const uniqueDays = Array.from(days).sort();
 
         const today = moment().tz(timezone).startOf("day");
+        const yesterday = moment()
+          .tz(timezone)
+          .subtract(1, "days")
+          .startOf("day");
 
         let streak = 0;
         let currentStreak = 0;
 
-        // Calculate the streak by checking consecutive days
         for (let i = uniqueDays.length - 1; i >= 0; i--) {
           const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
 
           if (i === uniqueDays.length - 1) {
             const diffFromToday = today.diff(currentDay, "days");
-            if (diffFromToday > 0) {
-              return 0; // Streak is broken if the last log is not from today
-            } else {
+            const diffFromYesterday = yesterday.diff(currentDay, "days");
+
+            if (diffFromToday === 0) {
               currentStreak = 1;
+            } else if (diffFromYesterday === 0) {
+              currentStreak = 1;
+            } else {
+              return 0;
             }
           } else {
             const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
@@ -278,7 +283,7 @@ const testResultsResolvers = {
             if (diff === 1) {
               currentStreak++;
             } else {
-              break; // Streak is broken if there's a gap
+              break;
             }
           }
           streak = Math.max(streak, currentStreak);
