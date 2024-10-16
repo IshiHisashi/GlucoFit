@@ -11,12 +11,13 @@ import {
 } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import ListCard from "../../molcules/ListCard";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CapsuleDark } from "../../svgs/svgs";
+import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -148,19 +149,11 @@ const MedicineLogScreen: React.FC = () => {
         <View h={120} />
       </ScrollView>
 
-      <Box
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        p="$4"
-        pb="$8"
-        bg="$white"
-      >
-        <Button isDisabled={selectedMeds.length < 1} onPress={handleSave}>
-          <ButtonText>Save</ButtonText>
-        </Button>
-      </Box>
+      <ButtonFixedBottom
+        onPress={handleSave}
+        isDisabled={selectedMeds.length < 1}
+        text="Save"
+      />
     </View>
   );
 };

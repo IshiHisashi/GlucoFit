@@ -15,6 +15,7 @@ import { gql, useMutation } from "@apollo/client";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
+import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -102,26 +103,15 @@ const ActivityLogScreen: React.FC = () => {
         />
       </VStack>
 
-      <Box
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        p="$4"
-        pb="$8"
-        bg="$white"
-      >
-        <Button
-          isDisabled={
-            activity === "" ||
-            (duration.hours === 0 && duration.minutes === 0) ||
-            timePeriod === ""
-          }
-          onPress={handleSave}
-        >
-          <ButtonText>Save</ButtonText>
-        </Button>
-      </Box>
+      <ButtonFixedBottom
+        onPress={handleSave}
+        isDisabled={
+          activity === "" ||
+          (duration.hours === 0 && duration.minutes === 0) ||
+          timePeriod === ""
+        }
+        text="Save"
+      />
 
       {/* picker modals -------------------------------------- */}
 

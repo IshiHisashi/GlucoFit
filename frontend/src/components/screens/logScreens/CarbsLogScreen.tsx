@@ -19,11 +19,13 @@ import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { gql, useMutation } from "@apollo/client";
 
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
-import { gql, useMutation } from "@apollo/client";
+import AddNotesSection from "../../organisms/AddNotesSection";
+import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -185,50 +187,13 @@ const CarbsLogScreen: React.FC = () => {
         </HStack>
       </VStack>
 
-      <VStack
-        space="sm"
-        mt="$4"
-        borderWidth={1}
-        borderColor="$borderLight200"
-        borderRadius="$md"
-      >
-        <HStack alignItems="center" justifyContent="space-between" p="$3">
-          <Text fontSize="$lg" fontWeight="$bold">
-            Add Notes
-          </Text>
-          <Pressable onPress={handleOpenNote}>
-            <Icon as={AddIcon} size="sm" mr="$2" />
-          </Pressable>
-        </HStack>
-        <Pressable
-          onPress={() => {}}
-          borderTopWidth={1}
-          borderTopColor="$borderLight200"
-        >
-          <HStack alignItems="center" p="$3">
-            <Text color={note.title ? "#000000" : "#808080"}>
-              {note.title || "No notes to display"}
-            </Text>
-          </HStack>
-        </Pressable>
-      </VStack>
+      <AddNotesSection onPress={handleOpenNote} noteExcerpt={note.title} />
 
-      <Box
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        p="$4"
-        pb="$8"
-        bg="$white"
-      >
-        <Button
-          isDisabled={!(mealType && date && time && carbs)}
-          onPress={handleSave}
-        >
-          <ButtonText>Save</ButtonText>
-        </Button>
-      </Box>
+      <ButtonFixedBottom
+        onPress={handleSave}
+        isDisabled={!(mealType && date && time && carbs)}
+        text="Save"
+      />
 
       {/* picker modals --------------------------------- */}
 

@@ -12,18 +12,21 @@ import {
   Button,
   InputSlot,
   AddIcon,
+  View,
 } from "@gluestack-ui/themed";
 import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Animated, Modal, Platform, StyleSheet, View } from "react-native";
+import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
-import SheetHandmade from "../../organisms/SheetHandmade";
 import { AppStackParamList } from "../../../types/navigation";
+import AddNotesSection from "../../organisms/AddNotesSection";
+import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
+import Sheet from "../../organisms/Sheet";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -44,26 +47,30 @@ const GET_TEST_RESULTS = gql`
 
 const CREATE_TEST_RESULT = gql`
   mutation CreateTestResult(
-    $user_id: ID!
+    $userId: ID!
     $bsl: Float!
     $note: NoteInput!
-    $log_timestamp: Date!
-    $confirmed: Boolean!
+    $logTimestamp: Date
+    $timePeriod: String
+    $confirmed: Boolean
   ) {
     createTestResult(
-      user_id: $user_id
+      user_id: $userId
       bsl: $bsl
       note: $note
-      log_timestamp: $log_timestamp
+      log_timestamp: $logTimestamp
+      time_period: $timePeriod
       confirmed: $confirmed
     ) {
-      id
       bsl
-      note {
-        note_description
-      }
-      log_timestamp
       confirmed
+      log_timestamp
+      note {
+        content
+        note_description
+        title
+      }
+      time_period
     }
   }
 `;
@@ -107,7 +114,10 @@ const GlucoseLogScreen: React.FC = () => {
   const [time, setTime] = useState(new Date());
   const [timePeriod, setTimePeriod] = useState("");
   const timePeriods = ["After breakfast", "After lunch", "After dinner"];
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState<{ title: string; content: string }>({
+    title: "",
+    content: "",
+  });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
@@ -149,6 +159,15 @@ const GlucoseLogScreen: React.FC = () => {
     setIsTimePickerOpen(false);
   };
 
+  const handleOpenNote = () => {
+    navigation.navigate("Note", {
+      initialNote: note,
+      onSave: (updatedNote: { title: string; content: string }) => {
+        setNote(updatedNote);
+      },
+    });
+  };
+
   const handleSubmitCreate = async () => {
     try {
       console.log(date);
@@ -163,12 +182,15 @@ const GlucoseLogScreen: React.FC = () => {
 
       const result = await createTestResult({
         variables: {
-          user_id: userId,
+          userId: userId,
+          logTimestamp: combinedDateTime,
+          timePeriod: timePeriod,
           bsl: Number(glucoseLevel),
           note: {
-            note_description: note,
+            content: note.content,
+            note_description: note.content,
+            title: note.title,
           },
-          log_timestamp: combinedDateTime,
           confirmed: true,
         },
       });
@@ -206,59 +228,8 @@ const GlucoseLogScreen: React.FC = () => {
   // if (error) return `Error! ${error.message}`;
   // console.log(data);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
-
-  const showSheet = (sheetType: "timePeriod" | "note") => {
-    sheetType === "timePeriod" && setIsTimePeriodPickerOpen(true);
-    sheetType === "note" && setIsNoteOpen(true);
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      // Animated.spring(translateY, {
-      //   toValue: 0,
-      //   tension: 65,
-      //   friction: 11,
-      //   useNativeDriver: true,
-      // }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 300,
-        // easing: Animated.Easing.Out(Animated.Easing.Cubic),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  const closeSheet = (sheetType: "timePeriod" | "note") => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 100,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      // Animated.spring(translateY, {
-      //   toValue: 0,
-      //   tension: 65,
-      //   friction: 11,
-      //   useNativeDriver: true,
-      // }),
-    ]).start(() => {
-      sheetType === "timePeriod" && setIsTimePeriodPickerOpen(false);
-      sheetType === "note" && setIsNoteOpen(false);
-    });
-  };
-
   return (
-    <VStack>
+    <View height="$full" p="$4">
       <VStack space="sm" alignItems="center">
         <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
@@ -302,47 +273,19 @@ const GlucoseLogScreen: React.FC = () => {
           value={time}
         />
         <PickerOpenerRow
-          setShowPicker={() => showSheet("timePeriod")}
+          setShowPicker={setIsTimePeriodPickerOpen}
           text="Time Period"
           value={timePeriod}
         />
       </VStack>
 
-      <VStack
-        space="sm"
-        mt="$8"
-        borderWidth={1}
-        borderColor="$borderLight200"
-        borderRadius="$md"
-      >
-        <HStack alignItems="center" justifyContent="space-between" p="$3">
-          <Text fontSize="$lg" fontWeight="$bold">
-            Add Notes
-          </Text>
-          <Pressable onPress={() => showSheet("note")}>
-            <Icon as={AddIcon} size="sm" mr="$2" />
-          </Pressable>
-        </HStack>
-        <Pressable
-          onPress={() => {}}
-          borderTopWidth={1}
-          borderTopColor="$borderLight200"
-        >
-          <HStack alignItems="center" p="$3">
-            <Text color="$textLight400">{note || "No notes to display"}</Text>
-          </HStack>
-        </Pressable>
-      </VStack>
+      <AddNotesSection onPress={handleOpenNote} noteExcerpt={note.title} />
 
-      <FormControl>
-        <Button
-          mt="$8"
-          onPress={handleSubmitCreate}
-          isDisabled={!(glucoseLevel && date && time && timePeriod)}
-        >
-          <ButtonText>Save</ButtonText>
-        </Button>
-      </FormControl>
+      <ButtonFixedBottom
+        onPress={handleSubmitCreate}
+        isDisabled={!(glucoseLevel && date && time && timePeriod)}
+        text="Save"
+      />
 
       {/* picker modals --------------------------------- */}
 
@@ -370,24 +313,16 @@ const GlucoseLogScreen: React.FC = () => {
         // onChange={onChangeTime}
       />
 
-      <SheetHandmade
-        isSheetOpen={isTimePeriodPickerOpen}
-        closeSheet={() => closeSheet("timePeriod")}
+      <Sheet
+        isOpen={isTimePeriodPickerOpen}
+        onClose={setIsTimePeriodPickerOpen}
         setValue={setTimePeriod}
-        translateY={translateY}
         sheetContentType="picker"
+        title="Time period"
         optionsArray={timePeriods}
+        value={timePeriod}
       />
-
-      <SheetHandmade
-        isSheetOpen={isNoteOpen}
-        closeSheet={() => closeSheet("note")}
-        setValue={setNote}
-        translateY={translateY}
-        sheetContentType="note"
-        value={note}
-      />
-    </VStack>
+    </View>
   );
 };
 

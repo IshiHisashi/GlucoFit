@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { AppStackParamList } from "../../../types/navigation";
+import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 
 type NoteScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -64,19 +65,11 @@ const NoteScreen: FC = () => {
         <View h={120} />
       </ScrollView>
 
-      <Box
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        p="$4"
-        pb="$8"
-        bg="$white"
-      >
-        <Button isDisabled={!(title && content)} onPress={handleSave}>
-          <ButtonText>Save</ButtonText>
-        </Button>
-      </Box>
+      <ButtonFixedBottom
+        onPress={handleSave}
+        isDisabled={!(title && content)}
+        text="Save"
+      />
     </View>
   );
 };
