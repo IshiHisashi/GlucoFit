@@ -26,7 +26,7 @@ import Sheet from "../../organisms/Sheet";
 import { AppStackParamList } from "../../../types/navigation";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const GET_TEST_RESULTS = gql`
   query GetTestResults {

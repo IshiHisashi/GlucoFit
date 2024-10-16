@@ -8,14 +8,13 @@ import {
   Text,
   View,
   VStack,
+  Box,
+  SectionList,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 
 import GlucoButton from "../atoms/GlucoButton";
-import { Box } from "@gluestack-ui/themed";
-import { FlatList } from "@gluestack-ui/themed";
-import { SectionList } from "@gluestack-ui/themed";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -123,29 +122,56 @@ const LogsScreen: React.FC = () => {
   }, [refetch]);
 
   const renderSectionHeader = ({ section: { title } }) => (
-    <Box bg="gray.100" p={2}>
-      <Text fontWeight="bold">{title}</Text>
-    </Box>
+    <HStack
+      p="$2"
+      pt="$8"
+      justifyContent="space-between"
+      alignItems="flex-end"
+      borderBottomWidth={1}
+    >
+      <VStack space="xs">
+        <Text fontSize="$lg" fontWeight="bold">
+          {title}
+        </Text>
+        <Text>{title}</Text>
+      </VStack>
+      <HStack space="xs">
+        <Text>mmol/L</Text>
+        <Text>minutes</Text>
+        <Text>g</Text>
+      </HStack>
+    </HStack>
   );
 
   const renderLogItem = ({ item }) => (
-    <Box p={2} borderBottomWidth={1} borderBottomColor="gray.200">
-      <Text>{new Date(item.log_timestamp).toLocaleString()}</Text>
-      {item.__typename === "GlucoseLog" && (
-        <Text>Glucose: {item.bsl} mmol/L</Text>
-      )}
-      {item.__typename === "ActivityLog" && (
+    <Pressable onPress={() => {}} p="$2">
+      <HStack justifyContent="space-between">
+        <VStack space="xs">
+          <Text fontSize="$lg" fontWeight="$bold">
+            {item.__typename === "GlucoseLog" && "Glucose Level"}
+            {item.__typename === "ActivityLog" && "Activity"}
+            {item.__typename === "DietLog" && "Carb"}
+            {item.__typename === "MedicineLog" && "Med"}
+          </Text>
+
+          <Text>
+            {new Date(item.log_timestamp).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            })}
+          </Text>
+        </VStack>
+
         <Text>
-          Activity: {item.duration} minutes, {item.footsteps} steps
+          {item.__typename === "GlucoseLog" && `${item.bsl} mmol/L`}
+          {item.__typename === "ActivityLog" &&
+            `${item.duration} minutes, ${item.footsteps} steps`}
+          {item.__typename === "DietLog" && `${item.calorieTaken} calories`}
+          {item.__typename === "MedicineLog" && `${item.amount} units`}
         </Text>
-      )}
-      {item.__typename === "DietLog" && (
-        <Text>Diet: {item.calorieTaken} calories</Text>
-      )}
-      {item.__typename === "MedicineLog" && (
-        <Text>Medicine: {item.amount} units</Text>
-      )}
-    </Box>
+      </HStack>
+    </Pressable>
   );
 
   return (
@@ -186,9 +212,6 @@ const LogsScreen: React.FC = () => {
         }
       >
         <VStack flex={1}>
-          <Text fontSize="$xl" fontWeight="bold" p={4}>
-            Logs
-          </Text>
           {groupedLogs.length > 0 ? (
             <SectionList
               sections={groupedLogs}
@@ -204,9 +227,10 @@ const LogsScreen: React.FC = () => {
           ) : loading ? (
             <Spinner size="large" />
           ) : (
-            <Text p={4}>No logs found</Text>
+            <Text>No logs found</Text>
           )}
         </VStack>
+        <View h={70} />
       </ScrollView>
     </View>
   );
