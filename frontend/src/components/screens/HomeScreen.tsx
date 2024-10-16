@@ -63,7 +63,7 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
   query GetActivitiesForToday($userId: ID!) {
     getTodayActivityLogs(user_id: $userId) {
       duration
-      log_date
+      log_timestamp
     }
   }
 `;
@@ -218,13 +218,13 @@ const HomeScreen: React.FC = () => {
   let logsForToday;
   if (
     bslResultsAndAverageData &&
-    // activitiesData &&
+    activitiesData &&
     medicinesData &&
     carbsData
   ) {
     logsForToday = [
       ...bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults,
-      // ...activitiesData.getTodayActivityLogs,
+      ...activitiesData.getTodayActivityLogs,
       ...medicinesData.getTodayMedicineLogs,
       ...carbsData.getTodayDietLogs,
     ];
@@ -334,7 +334,7 @@ const HomeScreen: React.FC = () => {
                       {obj.__typename === "TestResults" && (
                         <Icon as={MoonIcon} size="md" />
                       )}
-                      {obj.__typename === "ActivityLog" && (
+                      {obj.__typename === "ActivityLogs" && (
                         <Icon as={HeartrateDark} size="md" />
                       )}
                       {obj.__typename === "MedicineLog" && (
@@ -348,7 +348,7 @@ const HomeScreen: React.FC = () => {
                     <VStack space="xs">
                       <Text fontWeight="$bold">
                         {obj.__typename === "TestResults" && "Blood Glucose"}
-                        {obj.__typename === "ActivityLog" && "Activity"}
+                        {obj.__typename === "ActivityLogs" && "Activity"}
                         {obj.__typename === "MedicineLog" && "Medicine"}
                         {obj.__typename === "DietLog" && "Carbs"}
                       </Text>
@@ -370,12 +370,12 @@ const HomeScreen: React.FC = () => {
                         <Text>mmol/L</Text>
                       </>
                     )}
-                    {obj.__typename === "ActivityLog" && (
+                    {obj.__typename === "ActivityLogs" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.duration}
                         </Text>
-                        <Text>mmol/L</Text>
+                        <Text>mins</Text>
                       </>
                     )}
                     {obj.__typename === "MedicineLog" && (

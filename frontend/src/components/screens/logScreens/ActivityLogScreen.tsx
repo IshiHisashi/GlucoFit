@@ -22,19 +22,19 @@ const userId = "670de7a6e96ff53059a49ba8";
 const CREATE_ACTIVITY_LOG = gql`
   mutation CreateActivityLog(
     $userId: ID!
-    $footsteps: Int!
     $duration: Int!
     $logTimestamp: Date!
+    $timePeriod: String
   ) {
     createActivityLog(
       user_id: $userId
-      footsteps: $footsteps
       duration: $duration
       log_timestamp: $logTimestamp
+      time_period: $timePeriod
     ) {
       duration
-      log_date
-      id
+      log_timestamp
+      time_period
     }
   }
 `;
@@ -64,19 +64,19 @@ const ActivityLogScreen: React.FC = () => {
       const log = await createActivityLog({
         variables: {
           userId: userId,
-          footsteps: 0,
           duration: duration.hours * 60 + duration.minutes,
           logTimestamp: new Date(),
+          timePeriod: timePeriod,
         },
       });
       console.log("Mutation result:", log);
+      navigation.navigate("Tabs", {
+        screen: "Home",
+        params: { mutatedLog: "activity" },
+      });
     } catch (error) {
       console.error("Error creating activity log:", error);
     }
-    navigation.navigate("Tabs", {
-      screen: "Home",
-      params: { mutatedLog: "activity" },
-    });
   };
 
   return (
