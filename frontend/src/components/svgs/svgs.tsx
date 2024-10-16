@@ -3,16 +3,90 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // https://react-svgr.com/playground/?native=true&typescript=true
 
 // Table of contents
+// - Analysis (light, dark)
+// - Award (light, dark)
 // - Bookmark (light, dark)
 // - Capsule (light, dark)
+// - File (light, dark)
 // - Fire (light, dark)
 // - Heartbeat (light, dark)
+// - Heartrate (light, dark)
+// - Home (light, dark)
 // - Medal (light, dark)
+// - Plus (light, dark)
 // - Restaurant (light, dark)
 
 const colorLight = "#ffffff";
 const colorDark = "#000000";
 const strokeWidth = 0.1;
+
+export const AnalysisLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="M21.71 7.29a1.001 1.001 0 0 0-1.42 0L14 13.59l-4.29-4.3a1 1 0 0 0-1.42 0l-6 6a.999.999 0 0 0 0 1.42 1 1 0 0 0 1.42 0L9 11.41l4.29 4.3a1.002 1.002 0 0 0 1.42 0l7-7a1 1 0 0 0 0-1.42Z"
+    />
+  </Svg>
+);
+
+export const AnalysisDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="M21.71 7.29a1.001 1.001 0 0 0-1.42 0L14 13.59l-4.29-4.3a1 1 0 0 0-1.42 0l-6 6a.999.999 0 0 0 0 1.42 1 1 0 0 0 1.42 0L9 11.41l4.29 4.3a1.002 1.002 0 0 0 1.42 0l7-7a1 1 0 0 0 0-1.42Z"
+    />
+  </Svg>
+);
+
+export const AwardLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="m20.87 17.25-2.71-4.68A7 7 0 1 0 5 9.25a6.9 6.9 0 0 0 .84 3.32l-2.71 4.68a1 1 0 0 0 .87 1.5h2.87l1.46 2.46c.05.082.11.156.18.22a1 1 0 0 0 .69.28h.14a1 1 0 0 0 .73-.49L12 17.9l1.93 3.35a1 1 0 0 0 .73.48h.14a1 1 0 0 0 .7-.28.87.87 0 0 0 .17-.21l1.46-2.46H20a1 1 0 0 0 .87-.5 1 1 0 0 0 0-1.03ZM9.19 18.78l-.89-1.49a1 1 0 0 0-.85-.49H5.72l1.43-2.48a7 7 0 0 0 3.57 1.84l-1.53 2.62ZM12 14.25a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm4.55 2.55a.999.999 0 0 0-.85.49l-.89 1.49-1.52-2.65a7.06 7.06 0 0 0 3.56-1.84l1.43 2.48-1.73.03Z"
+    />
+  </Svg>
+);
+
+export const AwardDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="m20.87 17.25-2.71-4.68A7 7 0 1 0 5 9.25a6.9 6.9 0 0 0 .84 3.32l-2.71 4.68a1 1 0 0 0 .87 1.5h2.87l1.46 2.46c.05.082.11.156.18.22a1 1 0 0 0 .69.28h.14a1 1 0 0 0 .73-.49L12 17.9l1.93 3.35a1 1 0 0 0 .73.48h.14a1 1 0 0 0 .7-.28.87.87 0 0 0 .17-.21l1.46-2.46H20a1 1 0 0 0 .87-.5 1 1 0 0 0 0-1.03ZM9.19 18.78l-.89-1.49a1 1 0 0 0-.85-.49H5.72l1.43-2.48a7 7 0 0 0 3.57 1.84l-1.53 2.62ZM12 14.25a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm4.55 2.55a.999.999 0 0 0-.85.49l-.89 1.49-1.52-2.65a7.06 7.06 0 0 0 3.56-1.84l1.43 2.48-1.73.03Z"
+    />
+  </Svg>
+);
 
 export const BookmarkLight = (props: SvgProps) => (
   <Svg
@@ -78,6 +152,40 @@ export const CapsuleDark = (props: SvgProps) => (
       stroke={colorDark}
       strokeWidth={strokeWidth}
       d="M19.5 4.5a5.12 5.12 0 0 0-7.24 0L4.5 12.26a5.12 5.12 0 1 0 7.24 7.24l7.76-7.76a5.12 5.12 0 0 0 0-7.24Zm-9.18 13.59a3.21 3.21 0 0 1-4.41 0 3.13 3.13 0 0 1 0-4.41l3.18-3.18 4.41 4.41-3.18 3.18Zm7.77-7.77-3.18 3.18-4.41-4.41 3.18-3.18a3.12 3.12 0 0 1 4.41 4.41Z"
+    />
+  </Svg>
+);
+
+export const FileLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H9Zm11-3.06a1.307 1.307 0 0 0-.06-.27v-.09a1.07 1.07 0 0 0-.19-.28l-6-6a1.071 1.071 0 0 0-.28-.19.32.32 0 0 0-.09 0 .88.88 0 0 0-.33-.11H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H15a1 1 0 0 1-1-1V5.41ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2Z"
+    />
+  </Svg>
+);
+
+export const FileDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="M9 10h1a1 1 0 1 0 0-2H9a1 1 0 0 0 0 2Zm0 2a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H9Zm11-3.06a1.307 1.307 0 0 0-.06-.27v-.09a1.07 1.07 0 0 0-.19-.28l-6-6a1.071 1.071 0 0 0-.28-.19.32.32 0 0 0-.09 0 .88.88 0 0 0-.33-.11H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H15a1 1 0 0 1-1-1V5.41ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v3a3 3 0 0 0 3 3h3v9Zm-3-3H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2Z"
     />
   </Svg>
 );
@@ -150,6 +258,74 @@ export const HeartbeatDark = (props: SvgProps) => (
   </Svg>
 );
 
+export const HeartrateLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="M21 11h-3.94a.785.785 0 0 0-.21 0h-.17c-.052.03-.102.063-.15.1-.056.037-.11.077-.16.12a1 1 0 0 0-.09.13c-.046.063-.086.13-.12.2l-1.6 4.41-4.17-11.3a1 1 0 0 0-1.88 0L6.2 11H3a1 1 0 0 0 0 2H7.3a.857.857 0 0 0 .16-.1c.056-.037.11-.077.16-.12l.09-.13a.999.999 0 0 0 .12-.2l1.62-4.53 4.16 11.42a1 1 0 0 0 1.88 0l2.3-6.34H21a1 1 0 1 0 0-2Z"
+    />
+  </Svg>
+);
+
+export const HeartrateDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="M21 11h-3.94a.785.785 0 0 0-.21 0h-.17c-.052.03-.102.063-.15.1-.056.037-.11.077-.16.12a1 1 0 0 0-.09.13c-.046.063-.086.13-.12.2l-1.6 4.41-4.17-11.3a1 1 0 0 0-1.88 0L6.2 11H3a1 1 0 0 0 0 2H7.3a.857.857 0 0 0 .16-.1c.056-.037.11-.077.16-.12l.09-.13a.999.999 0 0 0 .12-.2l1.62-4.53 4.16 11.42a1 1 0 0 0 1.88 0l2.3-6.34H21a1 1 0 1 0 0-2Z"
+    />
+  </Svg>
+);
+
+export const HomeLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="m20 8-6-5.26a3 3 0 0 0-4 0L4 8a3 3 0 0 0-1 2.26V19a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8.75A3 3 0 0 0 20 8Zm-6 12h-4v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5Zm5-1a1 1 0 0 1-1 1h-2v-5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v5H6a1 1 0 0 1-1-1v-8.75a1 1 0 0 1 .34-.75l6-5.25a1 1 0 0 1 1.32 0l6 5.25a1.002 1.002 0 0 1 .34.75V19Z"
+    />
+  </Svg>
+);
+
+export const HomeDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="m20 8-6-5.26a3 3 0 0 0-4 0L4 8a3 3 0 0 0-1 2.26V19a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8.75A3 3 0 0 0 20 8Zm-6 12h-4v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5Zm5-1a1 1 0 0 1-1 1h-2v-5a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v5H6a1 1 0 0 1-1-1v-8.75a1 1 0 0 1 .34-.75l6-5.25a1 1 0 0 1 1.32 0l6 5.25a1.002 1.002 0 0 1 .34.75V19Z"
+    />
+  </Svg>
+);
+
 export const MedalLight = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -180,6 +356,40 @@ export const MedalDark = (props: SvgProps) => (
       stroke={colorDark}
       strokeWidth={strokeWidth}
       d="M21.38 5.76a1 1 0 0 0-.47-.61l-5.2-3a1 1 0 0 0-1.37.36L12 6.57 9.66 2.51a1 1 0 0 0-1.37-.36l-5.2 3a1 1 0 0 0-.47.61 1 1 0 0 0 .1.75l4 6.83A5.91 5.91 0 0 0 6 16a6 6 0 1 0 11.34-2.72l3.9-6.76a1 1 0 0 0 .14-.76ZM5 6.38l3.46-2L11.68 10A5.94 5.94 0 0 0 8 11.58l-3-5.2ZM12 20a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm4-8.45a5.9 5.9 0 0 0-1.86-1.15l-.98-1.83 2.42-4.19 3.46 2L16 11.55Z"
+    />
+  </Svg>
+);
+
+export const PlusLight = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorLight}
+      stroke={colorLight}
+      strokeWidth={strokeWidth}
+      d="M19 11h-6V5a1 1 0 0 0-2 0v6H5a1 1 0 0 0 0 2h6v6a1 1 0 0 0 2 0v-6h6a1 1 0 1 0 0-2Z"
+    />
+  </Svg>
+);
+
+export const PlusDark = (props: SvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={colorDark}
+      stroke={colorDark}
+      strokeWidth={strokeWidth}
+      d="M19 11h-6V5a1 1 0 0 0-2 0v6H5a1 1 0 0 0 0 2h6v6a1 1 0 0 0 2 0v-6h6a1 1 0 1 0 0-2Z"
     />
   </Svg>
 );

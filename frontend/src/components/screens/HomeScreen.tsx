@@ -25,6 +25,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
+import { CapsuleDark, HeartrateDark } from "../svgs/svgs";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -227,7 +228,7 @@ const HomeScreen: React.FC = () => {
       ...medicinesData.getTodayMedicineLogs,
       ...carbsData.getTodayDietLogs,
     ];
-    // if we need to sort... but we need to have consistent nameing convention for timestamp.
+
     logsForToday.length > 1 &&
       logsForToday.sort((obj1, obj2) => {
         if (obj1.log_timestamp < obj2.log_timestamp) {
@@ -330,19 +331,26 @@ const HomeScreen: React.FC = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Icon as={MoonIcon} size="md" />
+                      {obj.__typename === "TestResults" && (
+                        <Icon as={MoonIcon} size="md" />
+                      )}
+                      {obj.__typename === "ActivityLog" && (
+                        <Icon as={HeartrateDark} size="md" />
+                      )}
+                      {obj.__typename === "MedicineLog" && (
+                        <Icon as={CapsuleDark} size="md" />
+                        // <CapsuleDark />
+                      )}
+                      {obj.__typename === "DietLog" && (
+                        <Icon as={MoonIcon} size="md" />
+                      )}
                     </Box>
                     <VStack space="xs">
                       <Text fontWeight="$bold">
-                        {obj.__typename === "TestResults"
-                          ? "Blood Glucose"
-                          : obj.__typename === "ActivityLog"
-                            ? "Activity"
-                            : obj.__typename === "MedicineLog"
-                              ? "Medicine"
-                              : obj.__typename === "DietLog"
-                                ? "Carbs"
-                                : "else"}
+                        {obj.__typename === "TestResults" && "Blood Glucose"}
+                        {obj.__typename === "ActivityLog" && "Activity"}
+                        {obj.__typename === "MedicineLog" && "Medicine"}
+                        {obj.__typename === "DietLog" && "Carbs"}
                       </Text>
                       <Text>
                         {new Date(obj.log_timestamp).toLocaleString("en-US", {
