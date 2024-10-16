@@ -68,7 +68,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
         // height={200}
         domainPadding={20}
         padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
-        domain={{ y: [yAxisMin, yAxisMax - 2] }}
+        domain={{ y: [yAxisMin - 2, yAxisMax - 2] }}
       >
         {/* X-axis for days */}
         <VictoryAxis
@@ -83,7 +83,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
         {/* {console.log(data.map((obj) => obj.day))} */}
 
         {/* Y-axis for values, will be deleted */}
-        <VictoryAxis
+        {/* <VictoryAxis
           dependentAxis
           tickFormat={(t) => t + bslBorder}
           offsetX={50}
@@ -91,7 +91,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
             axis: { stroke: "#000" },
             grid: { stroke: "#e5e5e5" },
           }}
-        />
+        /> */}
 
         {/* Bar chart */}
         <VictoryBar

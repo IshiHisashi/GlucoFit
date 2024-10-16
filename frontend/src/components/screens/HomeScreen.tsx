@@ -87,6 +87,7 @@ const GET_CARBS_FOR_TODAY = gql`
 const GET_WEEKLY_BSL_DATA = gql`
   query GetWeeklyBSLData($userId: ID!) {
     getWeeklyBSLData(user_id: $userId) {
+      dateRange
       weeklyAverage
       weeklyData {
         day
@@ -134,7 +135,7 @@ const HomeScreen: React.FC = () => {
       bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults[
         bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults
           .length - 1
-      ];
+      ] || {};
   }
 
   const {
@@ -352,40 +353,36 @@ const HomeScreen: React.FC = () => {
                     </VStack>
                   </HStack>
                   <HStack alignItems="center" space="xs">
-                    {obj.__typename === "TestResults" ? (
+                    {obj.__typename === "TestResults" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.bsl}
                         </Text>
                         <Text>mmol/L</Text>
                       </>
-                    ) : obj.__typename === "ActivityLog" ? (
+                    )}
+                    {obj.__typename === "ActivityLog" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.duration}
                         </Text>
                         <Text>mmol/L</Text>
                       </>
-                    ) : obj.__typename === "MedicineLog" ? (
+                    )}
+                    {obj.__typename === "MedicineLog" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.amount}
                         </Text>
                         <Text>mg</Text>
                       </>
-                    ) : obj.__typename === "DietLog" ? (
+                    )}
+                    {obj.__typename === "DietLog" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.calorieTaken}
                         </Text>
                         <Text>g</Text>
-                      </>
-                    ) : (
-                      <>
-                        <Text size="3xl" fontWeight="$bold">
-                          30
-                        </Text>
-                        <Text>min</Text>
                       </>
                     )}
                   </HStack>
@@ -402,7 +399,9 @@ const HomeScreen: React.FC = () => {
           p="$2"
         >
           <HStack alignItems="center" justifyContent="space-between" p="$2">
-            <Text>Sep 24 - 0ct 30, 2024</Text>
+            <Text>
+              {weeklyBslData ? weeklyBslData.getWeeklyBSLData.dateRange : "N/A"}
+            </Text>
             <Pressable
               onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
             >
