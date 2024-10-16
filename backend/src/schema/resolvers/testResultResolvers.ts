@@ -2,6 +2,8 @@ import { TestResults, ITestResults } from "../../model/TestResults";
 import { User } from "../../model/User";
 import { Types, ObjectId } from "mongoose";
 import { format } from "date-fns";
+import { Types } from "mongoose";
+import moment from "moment-timezone";
 
 // Day mapping to convert index to day
 const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -221,48 +223,135 @@ const testResultsResolvers = {
     // For Gamification
     getStreakTestResults: async (
       _: any,
-      { user_id }: { user_id: string }
+      { user_id, withThreshold }: { user_id: string; withThreshold: boolean }
     ): Promise<number> => {
       try {
-        const testResults = await TestResults.find({
-          user_id: new Types.ObjectId(user_id),
-        })
-          .sort({ log_timestamp: 1 })
-          .exec();
+        let testResults;
+
+        // Fetch test results for the user
+        if (withThreshold) {
+          const user = await User.findById(user_id);
+          if (!user) {
+            throw new Error("User not found");
+          }
+          const { maximum_bsl, minimum_bsl } = user;
+
+          testResults = await TestResults.find({
+            user_id: new Types.ObjectId(user_id),
+            bsl: { $gte: minimum_bsl, $lte: maximum_bsl },
+          })
+            .sort({ log_timestamp: 1 })
+            .exec();
+        } else {
+          testResults = await TestResults.find({
+            user_id: new Types.ObjectId(user_id),
+          })
+            .sort({ log_timestamp: 1 })
+            .exec();
+        }
+
         if (!testResults.length) return 0;
 
-        // Group by day (only keeping the date part)
         const days = new Set<string>();
+
         testResults.forEach((result) => {
-          const date = result.log_timestamp.toISOString().split("T")[0];
-          days.add(date);
+          const utcDate = moment.utc(result.log_timestamp).format("YYYY-MM-DD");
+          days.add(utcDate);
         });
 
         const uniqueDays = Array.from(days).sort();
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = moment.utc().startOf("day");
+        const yesterday = moment.utc().subtract(1, "days").startOf("day");
 
         let streak = 0;
         let currentStreak = 0;
 
         for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = new Date(uniqueDays[i]);
+          const currentDay = moment.utc(uniqueDays[i], "YYYY-MM-DD");
 
-          // Check if there's a gap from today
           if (i === uniqueDays.length - 1) {
-            const diffFromToday =
-              (today.getTime() - currentDay.getTime()) / (1000 * 60 * 60 * 24);
-            if (diffFromToday > 0) {
-              return 0;
-            } else {
+            const diffFromToday = today.diff(currentDay, "days");
+            const diffFromYesterday = yesterday.diff(currentDay, "days");
+
+            console.log(
+              `Checking first log day (UTC): ${uniqueDays[i]} (diffFromToday: ${diffFromToday}, diffFromYesterday: ${diffFromYesterday})`
+            );
+
+            if (diffFromToday === 0) {
               currentStreak = 1;
+            } else if (diffFromYesterday === 0) {
+              currentStreak = 1;
+            } else {
+              return 0;
             }
           } else {
-            const prevDay = new Date(uniqueDays[i + 1]);
-            const diff =
-              (prevDay.getTime() - currentDay.getTime()) /
-              (1000 * 60 * 60 * 24);
+            const prevDay = moment.utc(uniqueDays[i + 1], "YYYY-MM-DD");
+            const diff = prevDay.diff(currentDay, "days");
+
+            if (diff === 1) {
+              currentStreak++;
+            } else {
+              break;
+            }
+          }
+          streak = Math.max(streak, currentStreak);
+        }
+        return streak;
+      } catch (error) {
+        console.error(
+          "Error calculating streak of consecutive test results:",
+          error
+        );
+        throw new Error(
+          "Failed to calculate streak of consecutive test results"
+        );
+      }
+    },
+
+    getStreakByTimeRange: async (
+      _: any,
+      {
+        user_id,
+        startHour,
+        endHour,
+      }: { user_id: string; startHour: number; endHour: number }
+    ): Promise<number> => {
+      try {
+        // Fetch all test results for the user, sorted by timestamp
+        const testResults = await TestResults.find({
+          user_id: new Types.ObjectId(user_id),
+        })
+          .sort({ log_timestamp: 1 })
+          .exec();
+
+        if (!testResults.length) return 0;
+
+        const days = new Set<string>();
+        testResults.forEach((result) => {
+          const logTime = moment.utc(result.log_timestamp);
+          const utcHour = logTime.hour();
+          const utcDate = logTime.format("YYYY-MM-DD");
+
+          if (utcHour >= startHour && utcHour < endHour) {
+            days.add(utcDate);
+          }
+        });
+
+        const uniqueDays = Array.from(days).sort();
+
+        if (!uniqueDays.length) return 0;
+
+        let streak = 0;
+        let currentStreak = 0;
+
+        for (let i = uniqueDays.length - 1; i >= 0; i--) {
+          const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
+          const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
+
+          if (i === uniqueDays.length - 1) {
+            currentStreak = 1;
+          } else {
+            const diff = prevDay.diff(currentDay, "days");
             if (diff === 1) {
               currentStreak++;
             } else {
@@ -274,13 +363,8 @@ const testResultsResolvers = {
 
         return streak;
       } catch (error) {
-        console.error(
-          "Error calculating streak of consecutive test results:",
-          error
-        );
-        throw new Error(
-          "Failed to calculate streak of consecutive test results"
-        );
+        console.error("Error calculating streak by time range:", error);
+        throw new Error("Failed to calculate streak by time range");
       }
     },
     getTestResultsDatesByMonth: async (

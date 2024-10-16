@@ -10,7 +10,7 @@ import {
 import { saveToken } from "./utils/utilAuth"; // Import the utility function to store the token
 
 // PLEASE INPUT YOUR IP WHEN YOU TEST
-const IP = "";
+const IP = "192.168.1.64";
 
 // GraphQL Mutation for Signup
 const SIGNUP_MUTATION = gql`

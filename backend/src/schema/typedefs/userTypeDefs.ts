@@ -1,10 +1,24 @@
 import { gql } from "apollo-server-express";
-import { DirectiveLocation } from "graphql";
 
 export const userTypeDefs = gql`
   scalar Date
   scalar JSON
 
+  # Badge type for querying user badges (includes badgeId and badge details). This is comind from BadgesTypeDefs.ts but cannot use import as usual for this case. mergeTypes in typeDefs.ts connects those types at high level.
+  type Badge {
+    badgeId: Badges
+    achieved: Boolean
+    progress: Float
+  }
+
+  # Input type for mutations
+  input BadgeInput {
+    badgeId: ID!
+    achieved: Boolean
+    progress: Float
+  }
+
+  # User type for querying
   type User {
     id: ID!
     name: String!
@@ -29,22 +43,26 @@ export const userTypeDefs = gql`
     apple_health_id: String
     android_health_token: String
     android_health_id: String
-    badges: JSON
+    badges: [Badge]
     recently_read_articles_array: [String]
     active_status: Boolean
     create_day: String
   }
 
+  # AuthPayload type
   type AuthPayload {
     token: String!
     user: User!
   }
 
+  # Queries
   type Query {
     getUser(id: ID!): User
     getUsers: [User!]!
+    getUserBadge(id: ID!): User
   }
 
+  # Mutations
   type Mutation {
     signUp(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
@@ -73,7 +91,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: JSON
+      badges: [BadgeInput!]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
@@ -106,7 +124,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: JSON
+      badges: [BadgeInput!]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
