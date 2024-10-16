@@ -7,6 +7,7 @@ export const testResultsTypeDefs = gql`
     bsl: Float
     note: Note
     log_timestamp: Date
+    time_period : String
     confirmed: Boolean
   }
 
@@ -22,6 +23,7 @@ export const testResultsTypeDefs = gql`
   type WeeklyBSLResponse {
     weeklyData: [BSLData!]!
     weeklyAverage: Float!
+    dateRange: String! 
   }
 
   type BSLData {
@@ -37,7 +39,8 @@ export const testResultsTypeDefs = gql`
     getTestResultsAndAverageForToday(user_id: ID!): TestResultsAndAverage!
     getWeeklyBSLData(user_id: ID!): WeeklyBSLResponse!
     getAverageBslXAxisValue(user_id: ID!): Float
-    getStreakTestResults(user_id: ID!): Int!
+    getStreakTestResults(user_id: ID!, withThreshold: Boolean!): Int!
+    getStreakByTimeRange(user_id: ID!, startHour: Int!, endHour: Int!): Int!
     getTestResultsDatesByMonth(
       user_id: ID!
       year: Int!
@@ -52,6 +55,7 @@ export const testResultsTypeDefs = gql`
       bsl: Float!
       note: NoteInput!
       log_timestamp: Date
+      time_period : String
       confirmed: Boolean
     ): TestResults!
 
@@ -60,6 +64,7 @@ export const testResultsTypeDefs = gql`
       bsl: Float
       note: NoteInput
       log_timestamp: Date
+      time_period : String
       confirmed: Boolean
     ): TestResults!
 
