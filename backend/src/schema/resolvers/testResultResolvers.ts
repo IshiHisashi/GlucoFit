@@ -1,5 +1,6 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
 import { User } from "../../model/User";
+import { format } from "date-fns";
 import { Types } from "mongoose";
 import moment from "moment-timezone";
 
@@ -175,9 +176,17 @@ const testResultsResolvers = {
             ? parseFloat((totalBSL / results.length).toFixed(1))
             : 0; // Round to 1 decimal
 
+               // Format the start and end dates in the format: "Sep 24 - Oct 30, 2024"
+    const formattedStartDate = format(startOfWeek, "MMM dd");
+    const formattedEndDate = format(endOfWeek, "MMM dd, yyyy");
+
+    const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
+
+
         return {
           weeklyData: formattedData,
           weeklyAverage,
+          dateRange,
         };
       } catch (error) {
         console.error("Error fetching weekly BSL data:", error);
