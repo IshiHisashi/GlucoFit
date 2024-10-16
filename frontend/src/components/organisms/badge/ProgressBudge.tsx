@@ -17,9 +17,11 @@ import {
   ApolloProvider,
 } from "@apollo/client";
 
+const IP = "";
+
 // Apollo Client Setup
 const client = new ApolloClient({
-  uri: "http://192.168.1.64:3000/graphql", // Replace with your backend IP address or hosted GraphQL endpoint
+  uri: `http://${IP}:3000/graphql`, // Replace with your backend IP address or hosted GraphQL endpoint
   cache: new InMemoryCache(),
 });
 
