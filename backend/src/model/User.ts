@@ -1,8 +1,14 @@
-import { Schema, model, Document, ObjectId, Decimal128 } from "mongoose";
+import { Schema, model, Document, ObjectId } from "mongoose";
 import bcrypt from "bcrypt";
 
-interface Badges {
-  [key: string]: boolean;
+// interface Badges {
+//   [key: string]: boolean;
+// }
+
+interface Badge {
+  badgeId: { type: Schema.Types.ObjectId; ref: "Badges" };
+  achieved: true;
+  progress: number | boolean;
 }
 
 export interface IUser extends Document {
@@ -30,7 +36,7 @@ export interface IUser extends Document {
   apple_health_id: string;
   android_health_token: string;
   android_health_id: string;
-  badges: Badges;
+  badges: Badge[];
   read_article_history_array: string[];
   recently_read_articles_array: string[];
   active_status: boolean;
@@ -68,12 +74,19 @@ const userSchema = new Schema<IUser>({
   apple_health_id: { type: String },
   android_health_token: { type: String },
   android_health_id: { type: String },
-  badges: { type: Object },
-  read_article_history_array: {type: [String]},
+  badges: [
+    {
+      badgeId: { type: Schema.Types.ObjectId, ref: "Badge" },
+      achieved: { type: Boolean },
+      progress: { type: Number },
+      _id: false,
+    },
+  ],
+  read_article_history_array: { type: [String] },
   recently_read_articles_array: { type: [String] },
   active_status: { type: Boolean },
-  favourite_articles: {type: [String]},
-  create_day: {type: String },
+  favourite_articles: { type: [String] },
+  create_day: { type: String },
 });
 
 const dayMapping: { [key: number]: string } = {
@@ -86,7 +99,6 @@ const dayMapping: { [key: number]: string } = {
   6: "Sat",
 };
 
-
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -94,7 +106,7 @@ userSchema.pre<IUser>("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 
   const currentDate = new Date();
-  const dayOfWeek = currentDate.getDay(); 
+  const dayOfWeek = currentDate.getDay();
   this.create_day = dayMapping[dayOfWeek];
 
   next();

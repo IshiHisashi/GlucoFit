@@ -4,9 +4,10 @@ export const activityLogsTypeDefs = gql`
   type ActivityLogs {
     id: ID!
     user_id: User!  # Linked to User
-    footsteps: Int!
+    footsteps: Int
     duration: Int!
-    log_date: Date!
+    time_period : String
+    log_timestamp: Date!
   }
 
   extend type Query {
@@ -20,8 +21,9 @@ export const activityLogsTypeDefs = gql`
   extend type Mutation {
     createActivityLog(
       user_id: ID!
-      footsteps: Int!
+      footsteps: Int
       duration: Int!
+      time_period : String
       log_timestamp: Date!
     ): ActivityLogs!
 
@@ -29,6 +31,7 @@ export const activityLogsTypeDefs = gql`
       id: ID!
       footsteps: Int
       duration: Int
+      time_period : String
       log_timestamp: Date
     ): ActivityLogs!
 
