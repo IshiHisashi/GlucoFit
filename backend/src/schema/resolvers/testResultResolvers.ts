@@ -1,6 +1,5 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
 import { User } from "../../model/User";
-import { Types, ObjectId } from "mongoose";
 import { format } from "date-fns";
 import { Types } from "mongoose";
 import moment from "moment-timezone";
