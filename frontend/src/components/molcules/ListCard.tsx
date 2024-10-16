@@ -42,7 +42,7 @@ interface ListCardProps {
   iconRightOn?: (props: SvgProps) => React.JSX.Element;
   iconRightOff?: (props: SvgProps) => React.JSX.Element;
   badge?: string[];
-  onPressIconRight?: () => void;
+  onPress?: () => void;
 }
 
 const ListCard: FC<ListCardProps> = (props) => {
@@ -54,55 +54,56 @@ const ListCard: FC<ListCardProps> = (props) => {
     iconRightOn,
     iconRightOff,
     badge,
-    onPressIconRight,
+    onPress,
   } = props;
 
   return (
-    <HStack
+    <Pressable
+      onPress={onPress}
       key={key || 1}
-      alignItems="center"
-      justifyContent="space-between"
       borderWidth={1}
       borderColor="$borderLight200"
       borderRadius="$md"
       p="$4"
     >
-      <HStack space="sm" alignItems="center">
-        <Box
-          width={40}
-          height={40}
-          borderRadius="$full"
-          bg="#E0E0E0"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Icon as={iconLeft} size="md" />
-        </Box>
-
-        <VStack space="xs">
-          <Text
-            fontWeight="$bold"
-            color={isSelected ? "$black" : "$trueGray300"}
+      <HStack alignItems="center" justifyContent="space-between">
+        <HStack space="sm" alignItems="center">
+          <Box
+            width={40}
+            height={40}
+            borderRadius="$full"
+            bg="#E0E0E0"
+            justifyContent="center"
+            alignItems="center"
           >
-            {text}
-          </Text>
+            <Icon as={iconLeft} size="md" />
+          </Box>
 
-          {badge && (
-            <HStack space="sm">
-              {badge.map((text) => (
-                <LabelBadge text={text} isSelected={isSelected} />
-              ))}
-            </HStack>
-          )}
-        </VStack>
+          <VStack space="xs">
+            <Text
+              fontWeight="$bold"
+              color={isSelected ? "$black" : "$trueGray300"}
+            >
+              {text}
+            </Text>
+
+            {badge && (
+              <HStack space="sm">
+                {badge.map((text) => (
+                  <LabelBadge text={text} isSelected={isSelected} />
+                ))}
+              </HStack>
+            )}
+          </VStack>
+        </HStack>
+
+        {iconRightOn && iconRightOff && (
+          <Pressable onPress={onPress}>
+            <Icon as={isSelected ? iconRightOn : iconRightOff} />
+          </Pressable>
+        )}
       </HStack>
-
-      {iconRightOn && iconRightOff && (
-        <Pressable onPress={onPressIconRight}>
-          <Icon as={isSelected ? iconRightOn : iconRightOff} />
-        </Pressable>
-      )}
-    </HStack>
+    </Pressable>
   );
 };
 

@@ -15,34 +15,51 @@ import { useNavigation } from "@react-navigation/native";
 import ListCard from "../../molcules/ListCard";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { CapsuleDark } from "../../svgs/svgs";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
-
-const CREATE_MEDICINE_LOG = gql`
-  mutation CreateMedicineLog(
-    $userId: ID!
-    $amount: Float!
-    $logTimestamp: Date!
-  ) {
-    createMedicineLog(
-      user_id: $userId
-      amount: $amount
-      log_timestamp: $logTimestamp
-    ) {
-      amount
-      id
-      log_timestamp
-    }
-  }
-`;
 
 // dummy data
 const medicines = [
   { name: "Apotokishin", dosage: 16, unit: "mg", frequency: "Everyday" },
   { name: "Kakkonto", dosage: 18, unit: "mg", frequency: "Everyday" },
 ];
+
+const GET_MEDICINES_LIST = gql`
+  query GetMedicinesList($userId: ID!) {
+    getUserMedicineList(user_id: $userId) {
+      dosage
+      id
+      medicine_name
+      unit
+    }
+  }
+`;
+
+const CREATE_MEDICINE_LOG = gql`
+  mutation CreateMedicineLog(
+    $userId: ID!
+    $medicineId: ID!
+    $amount: Float!
+    $logTimestamp: Date!
+  ) {
+    createMedicineLog(
+      user_id: $userId
+      medicine_id: $medicineId
+      amount: $amount
+      log_timestamp: $logTimestamp
+    ) {
+      amount
+      log_timestamp
+      medicine_id {
+        medicine_name
+        id
+      }
+    }
+  }
+`;
 
 type MedicineLogScreenProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -51,21 +68,30 @@ type MedicineLogScreenProps = NativeStackNavigationProp<
 
 const MedicineLogScreen: React.FC = () => {
   const [selectedMeds, setSelectedMeds] = useState<
-    [{ name: string; dosage: number }]
+    [{ id: string; dosage: number }]
   >([]);
 
   const navigation = useNavigation<MedicineLogScreenProps>();
 
+  const {
+    data: medsListData,
+    loading: medsListLoading,
+    error: medsListError,
+  } = useQuery(GET_MEDICINES_LIST, {
+    variables: { userId },
+  });
+  // medsListData && console.log("meds:", medsListData.getUserMedicineList);
+
   const [createMedicineLog, { data, loading, error }] =
     useMutation(CREATE_MEDICINE_LOG);
 
-  const toggleMedSelection = (name: string, dosage: number) => {
+  const toggleMedSelection = (id: string, dosage: number) => {
     setSelectedMeds((prev) => {
-      const isSelected = prev.some((med) => med.name === name);
+      const isSelected = prev.some((med) => med.id === id);
       if (isSelected) {
-        return prev.filter((med) => med.name !== name);
+        return prev.filter((med) => med.id !== id);
       } else {
-        return [...prev, { name, dosage }];
+        return [...prev, { id, dosage }];
       }
     });
   };
@@ -84,39 +110,38 @@ const MedicineLogScreen: React.FC = () => {
         const log = await createMedicineLog({
           variables: {
             userId: userId,
-            amount: med.dosage,
+            medicineId: med.id,
+            amount: Number(med.dosage),
             logTimestamp: new Date(),
           },
         });
         console.log("Mutation result:", log);
+        navigation.navigate("Tabs", {
+          screen: "Home",
+          params: { mutatedLog: "medicine" },
+        });
       } catch (error) {
         console.error("Error creating medicine log:", error);
       }
     }
-
-    navigation.navigate("Tabs", {
-      screen: "Home",
-      params: { mutatedLog: "medicine" },
-    });
   };
 
   return (
     <View height="$full">
       <ScrollView p="$4" pb="$16">
         <VStack space="md">
-          {medicines &&
-            medicines.map((obj, index) => (
+          {medsListData &&
+            medsListData.getUserMedicineList.length > 0 &&
+            medsListData.getUserMedicineList.map((obj) => (
               <ListCard
-                key={index}
-                text={obj.name}
-                isSelected={selectedMeds.some((med) => med.name === obj.name)}
-                iconLeft={CalendarDaysIcon}
-                iconRightOn={CalendarDaysIcon}
-                iconRightOff={SunIcon}
-                badge={[`${obj.dosage}${obj.unit}`, obj.frequency]}
-                onPressIconRight={() =>
-                  toggleMedSelection(obj.name, obj.dosage)
-                }
+                key={obj.id}
+                text={obj.medicine_name}
+                isSelected={selectedMeds.some((med) => med.id === obj.id)}
+                iconLeft={CapsuleDark}
+                // iconRightOn={CalendarDaysIcon}
+                // iconRightOff={SunIcon}
+                badge={[`${obj.dosage}${obj.unit}`]}
+                onPress={() => toggleMedSelection(obj.id, obj.dosage)}
               />
             ))}
         </VStack>
