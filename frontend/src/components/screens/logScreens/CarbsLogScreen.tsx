@@ -31,15 +31,23 @@ const userId = "670de7a6e96ff53059a49ba8";
 const CREATE_CARBS_LOG = gql`
   mutation CreateCarbsLog(
     $userId: String!
-    $calorieTaken: Float!
+    $carbs: Float!
     $logTimestamp: Date!
+    $note: NoteInput
   ) {
     createDietLog(
       userID: $userId
-      calorieTaken: $calorieTaken
+      carbs: $carbs
       log_timestamp: $logTimestamp
+      note: $note
     ) {
+      carbs
       log_timestamp
+      note {
+        content
+        title
+        note_description
+      }
     }
   }
 `;
@@ -106,8 +114,13 @@ const CarbsLogScreen: React.FC = () => {
       const log = await createCarbsLog({
         variables: {
           userId: userId,
-          calorieTaken: Number(carbs),
+          carbs: Number(carbs),
           logTimestamp: combinedDateTime,
+          note: {
+            title: note.title,
+            content: note.content,
+            note_description: note.content,
+          },
         },
       });
       console.log("Mutation result:", log);
@@ -193,7 +206,7 @@ const CarbsLogScreen: React.FC = () => {
           borderTopColor="$borderLight200"
         >
           <HStack alignItems="center" p="$3">
-            <Text color="$textLight400">
+            <Text color={note.title ? "#000000" : "#808080"}>
               {note.title || "No notes to display"}
             </Text>
           </HStack>

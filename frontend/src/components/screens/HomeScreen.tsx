@@ -79,6 +79,7 @@ const GET_MEDICINES_FOR_TODAY = gql`
 const GET_CARBS_FOR_TODAY = gql`
   query GetCarbsForToday($userId: ID!) {
     getTodayDietLogs(userID: $userId) {
+      carbs
       log_timestamp
     }
   }
@@ -380,7 +381,7 @@ const HomeScreen: React.FC = () => {
                     {obj.__typename === "DietLog" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
-                          {obj.calorieTaken}
+                          {obj.carbs}
                         </Text>
                         <Text>g</Text>
                       </>
