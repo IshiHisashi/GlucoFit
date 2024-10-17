@@ -19,6 +19,47 @@ import GlucoButton from "../atoms/GlucoButton";
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
 
+interface BaseLog {
+  id: string;
+  log_timestamp: string;
+}
+
+interface TestResults extends BaseLog {
+  __typename: "TestResults";
+  bsl?: number;
+}
+
+interface ActivityLogs extends BaseLog {
+  __typename: "ActivityLogs";
+  duration?: number;
+  footsteps?: number;
+}
+
+interface DietLog extends BaseLog {
+  __typename: "DietLog";
+  carbs?: number;
+}
+
+interface MedicineLog extends BaseLog {
+  __typename: "MedicineLog";
+  amount?: number;
+  medicine_id?: {
+    unit?: string;
+    medicine_name?: string;
+  };
+}
+
+type Log = TestResults | ActivityLogs | DietLog | MedicineLog;
+
+interface GroupedLogs {
+  [date: string]: Log[];
+}
+
+interface Section {
+  title: string;
+  data: Log[];
+}
+
 const GET_COMBINED_LOGS = gql`
   query GetCombinedLogs($userId: ID!, $startDate: Date!, $endDate: Date!) {
     getCombinedLogsByDateRange(
@@ -28,21 +69,30 @@ const GET_COMBINED_LOGS = gql`
     ) {
       hasMoreData
       logs {
-        ... on GlucoseLog {
+        ... on TestResults {
           bsl
+          id
           log_timestamp
         }
-        ... on ActivityLog {
+        ... on ActivityLogs {
           duration
+          footsteps
+          id
           log_timestamp
         }
         ... on DietLog {
-          calorieTaken
+          carbs
+          id
           log_timestamp
         }
         ... on MedicineLog {
           amount
+          id
           log_timestamp
+          medicine_id {
+            unit
+            medicine_name
+          }
         }
       }
     }
@@ -52,8 +102,8 @@ const GET_COMBINED_LOGS = gql`
 const LogsScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
-  const [logs, setLogs] = useState([]);
-  const [groupedLogs, setGroupedLogs] = useState([]);
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [sectionedLogs, setSectionedLogs] = useState<Section[]>([]);
   const [endDate, setEndDate] = useState(new Date());
   const [hasMore, setHasMore] = useState(true);
 
@@ -79,10 +129,11 @@ const LogsScreen: React.FC = () => {
       },
     }
   );
-  data && console.log(data);
+  data && console.log(data.getCombinedLogsByDateRange);
 
   useEffect(() => {
-    const grouped = logs.reduce((acc, cur) => {
+    // group the data by date
+    const grouped = logs.reduce((acc: GroupedLogs, cur: Log) => {
       const date = new Date(cur.log_timestamp).toDateString();
       if (!acc[date]) {
         acc[date] = [];
@@ -91,13 +142,38 @@ const LogsScreen: React.FC = () => {
       return acc;
     }, {});
 
-    const sections = Object.keys(grouped).map((date) => ({
+    // create an array of objects containing date and data on that day
+    const sections: Section[] = Object.keys(grouped).map((date) => ({
       title: date,
       data: grouped[date],
     }));
 
-    setGroupedLogs(
-      sections.sort((a, b) => new Date(b.title) - new Date(a.title))
+    // sort logs in ascending order within each section
+    sections.forEach((obj) => {
+      obj.data.sort((obj1, obj2) => {
+        if (new Date(obj1.log_timestamp) < new Date(obj2.log_timestamp)) {
+          return -1;
+        } else if (
+          new Date(obj1.log_timestamp) > new Date(obj2.log_timestamp)
+        ) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    });
+
+    // sort sections in descending order and set
+    setSectionedLogs(
+      sections.sort((obj1, obj2) => {
+        if (new Date(obj1.title) > new Date(obj2.title)) {
+          return -1;
+        } else if (new Date(obj1.title) < new Date(obj2.title)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      })
     );
   }, [logs]);
 
@@ -121,7 +197,11 @@ const LogsScreen: React.FC = () => {
     });
   }, [refetch]);
 
-  const renderSectionHeader = ({ section: { title } }) => (
+  const renderSectionHeader = ({
+    section: { title },
+  }: {
+    section: Section;
+  }) => (
     <HStack
       p="$2"
       pt="$8"
@@ -143,13 +223,18 @@ const LogsScreen: React.FC = () => {
     </HStack>
   );
 
-  const renderLogItem = ({ item }) => (
-    <Pressable onPress={() => {}} p="$2">
+  const renderLogItem = ({ item }: { item: Log }) => (
+    <Pressable
+      onPress={() => {
+        console.log(item.id);
+      }}
+      p="$2"
+    >
       <HStack justifyContent="space-between">
         <VStack space="xs">
           <Text fontSize="$lg" fontWeight="$bold">
-            {item.__typename === "GlucoseLog" && "Glucose Level"}
-            {item.__typename === "ActivityLog" && "Activity"}
+            {item.__typename === "TestResults" && "Glucose Level"}
+            {item.__typename === "ActivityLogs" && "Activity"}
             {item.__typename === "DietLog" && "Carb"}
             {item.__typename === "MedicineLog" && "Med"}
           </Text>
@@ -164,11 +249,12 @@ const LogsScreen: React.FC = () => {
         </VStack>
 
         <Text>
-          {item.__typename === "GlucoseLog" && `${item.bsl} mmol/L`}
-          {item.__typename === "ActivityLog" &&
+          {item.__typename === "TestResults" && `${item.bsl} mmol/L`}
+          {item.__typename === "ActivityLogs" &&
             `${item.duration} minutes, ${item.footsteps} steps`}
-          {item.__typename === "DietLog" && `${item.calorieTaken} calories`}
-          {item.__typename === "MedicineLog" && `${item.amount} units`}
+          {item.__typename === "DietLog" && `${item.carbs} g`}
+          {item.__typename === "MedicineLog" &&
+            `${item.amount} ${item.medicine_id.unit}`}
         </Text>
       </HStack>
     </Pressable>
@@ -177,7 +263,7 @@ const LogsScreen: React.FC = () => {
   return (
     <View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <HStack space="sm">
+        <HStack space="sm" p="$4">
           <GlucoButton
             text="All"
             isDisabled={false}
@@ -206,32 +292,33 @@ const LogsScreen: React.FC = () => {
         </HStack>
       </ScrollView>
 
-      <ScrollView
+      {/* <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        <VStack flex={1}>
-          {groupedLogs.length > 0 ? (
-            <SectionList
-              sections={groupedLogs}
-              keyExtractor={(item, index) => item.log_timestamp + index}
-              renderItem={renderLogItem}
-              renderSectionHeader={renderSectionHeader}
-              onEndReached={loadMoreLogs}
-              onEndReachedThreshold={0.1}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            />
-          ) : loading ? (
-            <Spinner size="large" />
-          ) : (
-            <Text>No logs found</Text>
-          )}
-        </VStack>
-        <View h={70} />
-      </ScrollView>
+      > */}
+      {/* <View> */}
+      {sectionedLogs.length > 0 ? (
+        <SectionList
+          sections={sectionedLogs}
+          keyExtractor={(item, index) => item.log_timestamp + index}
+          renderItem={renderLogItem}
+          renderSectionHeader={renderSectionHeader}
+          onEndReached={loadMoreLogs}
+          onEndReachedThreshold={0.1}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          stickySectionHeadersEnabled={false}
+          ListFooterComponent={() => <View h={40} />}
+        />
+      ) : loading ? (
+        <Spinner size="large" />
+      ) : (
+        <Text>No logs found</Text>
+      )}
+      {/* </View> */}
+      {/* </ScrollView> */}
     </View>
   );
 };
