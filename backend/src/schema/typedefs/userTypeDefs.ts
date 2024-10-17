@@ -60,6 +60,7 @@ export const userTypeDefs = gql`
     getUser(id: ID!): User
     getUsers: [User!]!
     getUserBadge(id: ID!): User
+    getUserOnProgressBadge(id: ID!): User
   }
 
   # Mutations

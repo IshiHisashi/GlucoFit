@@ -25,8 +25,26 @@ const userResolvers = {
       return await User.findById(id).populate({
         path: "badges.badgeId",
         model: Badges,
-        select: "_id badge_name badge_desc",
+        select: "_id badge_name badge_desc badge_image_address criteria",
       });
+    },
+    getUserOnProgressBadge: async (
+      _: any,
+      { id }: { id: string }
+    ): Promise<IUser | null> => {
+      return await User.findById(id)
+        .populate({
+          path: "badges.badgeId",
+          model: Badges,
+          select: "_id badge_name badge_desc badge_image_address criteria",
+          match: {},
+        })
+        .then((user) => {
+          if (user) {
+            user.badges = user.badges.filter((badge) => !badge.achieved);
+          }
+          return user;
+        });
     },
   },
   Mutation: {
