@@ -190,11 +190,30 @@ const LogsScreen: React.FC = () => {
     });
   }, [hasMore, loading, logs, fetchMore]);
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    refetch().then(() => {
+
+    try {
+      const now = new Date();
+      setEndDate(now);
+      setLogs([]);
+
+      const result = await refetch({
+        userId: userId,
+        startDate: new Date(
+          now.getTime() - 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        endDate: now.toISOString(),
+        limit: 50,
+      });
+
+      setLogs(result.data.getCombinedLogsByDateRange.logs);
+      setHasMore(result.data.getCombinedLogsByDateRange.hasMoreData);
+    } catch (error) {
+      console.log("Error refreshing data: ", error);
+    } finally {
       setRefreshing(false);
-    });
+    }
   }, [refetch]);
 
   const renderSectionHeader = ({
@@ -264,31 +283,11 @@ const LogsScreen: React.FC = () => {
     <View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack space="sm" p="$4">
-          <GlucoButton
-            text="All"
-            isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            text="Glucose"
-            isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            text="Activity"
-            isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            text="Food"
-            isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            text="Medicine"
-            isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
+          <GlucoButton text="All" isDisabled={false} onPress={() => {}} />
+          <GlucoButton text="Glucose" isDisabled={false} onPress={() => {}} />
+          <GlucoButton text="Activity" isDisabled={false} onPress={() => {}} />
+          <GlucoButton text="Food" isDisabled={false} onPress={() => {}} />
+          <GlucoButton text="Medicine" isDisabled={false} onPress={() => {}} />
         </HStack>
       </ScrollView>
 
