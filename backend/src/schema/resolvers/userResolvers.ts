@@ -1,6 +1,7 @@
 import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
 import { Badges } from "../../model/Badges";
+import { verifyToken } from "../../auth/auth";
 
 const userResolvers = {
   Query: {
@@ -55,8 +56,11 @@ const userResolvers = {
       const newUser = new User({ email, password });
       await newUser.save();
 
-      const token = generateToken(newUser._id.toString(), newUser.email);
-      return { token, user: newUser };
+      const { accessToken, refreshToken } = generateToken(
+        newUser._id.toString(),
+        newUser.email
+      );
+      return { accessToken, refreshToken, user: newUser };
     },
 
     login: async (_: any, { email, password }: any) => {
@@ -66,8 +70,29 @@ const userResolvers = {
       const validPassword = await user.comparePassword(password);
       if (!validPassword) throw new Error("Invalid password");
 
-      const token = generateToken(user._id.toString(), user.email);
-      return { token, user };
+      const { accessToken, refreshToken } = generateToken(
+        user._id.toString(),
+        user.email
+      );
+
+      return { accessToken, refreshToken, user };
+    },
+    refreshToken: async (_: any, { token }: any) => {
+      try {
+        const decoded = verifyToken(token);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) throw new Error("User not found");
+
+        const { accessToken, refreshToken } = generateToken(
+          user._id.toString(),
+          user.email
+        );
+
+        return { accessToken, refreshToken };
+      } catch (error) {
+        throw new Error("Invalid or expired refresh token");
+      }
     },
 
     createUser: async (_: any, args: IUser): Promise<IUser> => {
