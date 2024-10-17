@@ -1,35 +1,24 @@
 import { gql } from "apollo-server-express";
 
 export const logsForHistoryScreenTypeDefs = gql`
-  type GlucoseLog {
+  type TestResults {
     id: ID!
-    bsl: Float!
-    note: String
     log_timestamp: Date!
-    confirmed: Boolean
   }
 
-  type ActivityLog {
+  type ActivityLogs {
     id: ID!
-    footsteps: Int!
-    duration: Int!
-    log_timestamp: Date!
   }
 
   type DietLog {
     id: ID!
-    note: String
-    calorieTaken: Float!
-    log_timestamp: Date!
   }
 
   type MedicineLog {
     id: ID!
-    amount: Float!
-    log_timestamp: Date!
   }
 
-  union LogEntry = GlucoseLog | ActivityLog | DietLog | MedicineLog
+  union LogEntry = TestResults | ActivityLogs | DietLog | MedicineLog
 
   type CombinedLogsResponse {
     logs: [LogEntry!]!
