@@ -60,6 +60,8 @@ interface Section {
   data: Log[];
 }
 
+type FilterType = "All" | "Glucose" | "Activity" | "Food" | "Medicine";
+
 const GET_COMBINED_LOGS = gql`
   query GetCombinedLogs($userId: ID!, $startDate: Date!, $endDate: Date!) {
     getCombinedLogsByDateRange(
@@ -107,6 +109,8 @@ const LogsScreen: React.FC = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [hasMore, setHasMore] = useState(true);
 
+  const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
+
   const { data, loading, error, refetch, fetchMore } = useQuery(
     GET_COMBINED_LOGS,
     {
@@ -132,8 +136,24 @@ const LogsScreen: React.FC = () => {
   data && console.log(data.getCombinedLogsByDateRange);
 
   useEffect(() => {
+    // filter by currently selected chip
+    const filteredLogs = logs.filter((log) => {
+      switch (currentFilter) {
+        case "Glucose":
+          return log.__typename === "TestResults";
+        case "Activity":
+          return log.__typename === "ActivityLogs";
+        case "Food":
+          return log.__typename === "DietLog";
+        case "Medicine":
+          return log.__typename === "MedicineLog";
+        default:
+          return true;
+      }
+    });
+
     // group the data by date
-    const grouped = logs.reduce((acc: GroupedLogs, cur: Log) => {
+    const grouped = filteredLogs.reduce((acc: GroupedLogs, cur: Log) => {
       const date = new Date(cur.log_timestamp).toDateString();
       if (!acc[date]) {
         acc[date] = [];
@@ -175,7 +195,7 @@ const LogsScreen: React.FC = () => {
         }
       })
     );
-  }, [logs]);
+  }, [logs, currentFilter]);
 
   const loadMoreLogs = useCallback(() => {
     if (!hasMore || loading) return;
@@ -283,20 +303,34 @@ const LogsScreen: React.FC = () => {
     <View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack space="sm" p="$4">
-          <GlucoButton text="All" isDisabled={false} onPress={() => {}} />
-          <GlucoButton text="Glucose" isDisabled={false} onPress={() => {}} />
-          <GlucoButton text="Activity" isDisabled={false} onPress={() => {}} />
-          <GlucoButton text="Food" isDisabled={false} onPress={() => {}} />
-          <GlucoButton text="Medicine" isDisabled={false} onPress={() => {}} />
+          <GlucoButton
+            text="All"
+            isDisabled={currentFilter === "All"}
+            onPress={() => setCurrentFilter("All")}
+          />
+          <GlucoButton
+            text="Glucose"
+            isDisabled={currentFilter === "Glucose"}
+            onPress={() => setCurrentFilter("Glucose")}
+          />
+          <GlucoButton
+            text="Activity"
+            isDisabled={currentFilter === "Activity"}
+            onPress={() => setCurrentFilter("Activity")}
+          />
+          <GlucoButton
+            text="Food"
+            isDisabled={currentFilter === "Food"}
+            onPress={() => setCurrentFilter("Food")}
+          />
+          <GlucoButton
+            text="Medicine"
+            isDisabled={currentFilter === "Medicine"}
+            onPress={() => setCurrentFilter("Medicine")}
+          />
         </HStack>
       </ScrollView>
 
-      {/* <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      > */}
-      {/* <View> */}
       {sectionedLogs.length > 0 ? (
         <SectionList
           sections={sectionedLogs}
@@ -316,8 +350,6 @@ const LogsScreen: React.FC = () => {
       ) : (
         <Text>No logs found</Text>
       )}
-      {/* </View> */}
-      {/* </ScrollView> */}
     </View>
   );
 };
