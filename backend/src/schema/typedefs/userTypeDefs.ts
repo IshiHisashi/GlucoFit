@@ -50,8 +50,14 @@ export const userTypeDefs = gql`
   }
 
   # AuthPayload type
+  type TokenResponse {
+    accessToken: String!
+    refreshToken: String!
+  }
+
   type AuthPayload {
-    token: String!
+    accessToken: String!
+    refreshToken: String!
     user: User!
   }
 
@@ -67,6 +73,7 @@ export const userTypeDefs = gql`
   type Mutation {
     signUp(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
+    refreshToken(token: String!): TokenResponse!
 
     createUser(
       name: String!
