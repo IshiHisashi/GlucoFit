@@ -1,148 +1,132 @@
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import {
+  Button,
+  ButtonText,
+  CalendarDaysIcon,
+  ScrollView,
+  Textarea,
+  TextareaInput,
+  VStack,
+} from "@gluestack-ui/themed";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetItem,
+  ActionsheetItemText,
   HStack,
+  Box,
   Icon,
   Pressable,
   Text,
-  Box,
-  ScrollView,
   ArrowLeftIcon,
-  Textarea,
-  Button,
-  ButtonText,
 } from "@gluestack-ui/themed";
-import { Animated, Modal, Platform, StyleSheet, View } from "react-native";
-import { TextareaInput } from "@gluestack-ui/themed";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import { StyleSheet } from "react-native";
+
+import PickerOptionCard from "../molcules/PickerOptionCard";
+import DurationPicker from "../atoms/DurationPicker";
 
 interface SheetProps {
-  isSheetOpen: boolean;
-  closeSheet(): void;
-  setValue: Dispatch<SetStateAction<string>>;
-  translateY: Animated.Value;
+  isOpen: boolean;
+  onClose: Dispatch<SetStateAction<boolean>>;
+  setValue: Dispatch<
+    SetStateAction<string | { hours: number; minutes: number }>
+  >;
   sheetContentType: string;
+  title: string;
   optionsArray?: string[];
-  value?: string;
+  value?: string | { hours: number; minutes: number };
 }
 
 const Sheet: FC<SheetProps> = (props) => {
   const {
-    optionsArray,
-    isSheetOpen,
-    closeSheet,
+    isOpen,
+    onClose,
     setValue,
-    translateY,
     sheetContentType,
+    title,
+    optionsArray,
     value,
   } = props;
+
   const [note, setNote] = useState(value);
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isSheetOpen}
-      onRequestClose={closeSheet}
-    >
-      <View style={styles.modalContainer}>
-        <Animated.View
-          style={[styles.modalContent, { transform: [{ translateY }] }]}
+    <Actionsheet isOpen={isOpen} onClose={onClose} zIndex={999}>
+      <ActionsheetBackdrop />
+      <ActionsheetContent zIndex={999} p="$4" pb="$8">
+        {/* <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper> */}
+
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          style={styles.modalHeader}
+          width="$full"
         >
-          <HStack
-            justifyContent="space-between"
-            alignItems="center"
-            style={styles.modalHeader}
-          >
-            <Pressable onPress={closeSheet}>
-              <Icon as={ArrowLeftIcon} size="sm" />
-            </Pressable>
-            <Text style={styles.modalTitle}>
-              {sheetContentType === "note" ? "Add Notes" : "Time period"}
-            </Text>
-            <Box width={24} />
-          </HStack>
+          <Pressable onPress={() => onClose(false)}>
+            <Icon as={ArrowLeftIcon} size="sm" />
+          </Pressable>
+          <Text style={styles.modalTitle}>{title}</Text>
+          <Box width={24} />
+        </HStack>
 
-          {sheetContentType === "picker" && (
-            <ScrollView style={styles.scrollView}>
-              {optionsArray.map((period) => (
-                <Pressable
-                  key={period}
+        {sheetContentType === "picker" && (
+          <ScrollView width="$full">
+            <VStack space="sm">
+              {optionsArray.map((el, index) => (
+                <PickerOptionCard
+                  key={index}
                   onPress={() => {
-                    setValue(period);
-                    closeSheet();
+                    setValue(el);
+                    onClose(false);
                   }}
-                  style={styles.optionContainer}
-                >
-                  <HStack alignItems="center">
-                    <Box style={styles.circle} />
-                    <Text>{period}</Text>
-                  </HStack>
-                </Pressable>
-              ))}
-            </ScrollView>
-          )}
-
-          {sheetContentType === "note" && (
-            <>
-              <Textarea h={200} mb="$4">
-                <TextareaInput
-                  placeholder="Write your note"
-                  value={note}
-                  onChangeText={setNote}
+                  icon={CalendarDaysIcon}
+                  text={el}
+                  isSelected={value === el}
                 />
-              </Textarea>
-              <Button
-                isDisabled={!note}
-                onPress={() => {
-                  setValue(note as string);
-                  closeSheet();
-                }}
-              >
-                <ButtonText>Add</ButtonText>
-              </Button>
-            </>
-          )}
-        </Animated.View>
-      </View>
-    </Modal>
+              ))}
+            </VStack>
+          </ScrollView>
+        )}
+
+        {sheetContentType === "note" && (
+          <>
+            <Textarea h={200} mb="$4">
+              <TextareaInput
+                placeholder="Write your note"
+                value={note as string}
+                onChangeText={setNote}
+              />
+            </Textarea>
+            <Button
+              isDisabled={!note}
+              onPress={() => {
+                setValue(note as string);
+                onClose(false);
+              }}
+            >
+              <ButtonText>Add</ButtonText>
+            </Button>
+          </>
+        )}
+
+        {sheetContentType === "duration" && (
+          <DurationPicker value={value} setValue={setValue} onClose={onClose} />
+        )}
+      </ActionsheetContent>
+    </Actionsheet>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    maxHeight: "80%",
-  },
   modalHeader: {
     marginBottom: 20,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-  },
-  scrollView: {
-    marginBottom: 20,
-  },
-  optionContainer: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
-  },
-  circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#E0E0E0",
-    marginRight: 15,
   },
 });
 

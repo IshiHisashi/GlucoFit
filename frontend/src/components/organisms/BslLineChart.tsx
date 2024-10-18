@@ -17,40 +17,6 @@ const data = [
   { log_timestamp: new Date(2024, 9, 10, 23), bsl: 100 },
 ];
 
-// tick values for the X-axis
-const ticks = [
-  new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-    0
-  ),
-  new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-    6
-  ),
-  new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-    12
-  ),
-  new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate(),
-    18
-  ),
-  new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    new Date().getDate() + 1,
-    0
-  ),
-];
-
 interface BslLineChartProps {
   width: number;
   data: {
@@ -60,6 +26,40 @@ interface BslLineChartProps {
 }
 
 const BslLineChart: FC<BslLineChartProps> = ({ width, data }) => {
+  // tick values for the X-axis
+  const ticks = [
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      0
+    ),
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      6
+    ),
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      12
+    ),
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      18
+    ),
+    new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      0
+    ),
+  ];
+
   const convertedData = data.map((obj) => {
     return {
       bsl: obj.bsl,

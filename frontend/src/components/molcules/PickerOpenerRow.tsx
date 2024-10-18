@@ -10,11 +10,12 @@ import React, { Dispatch, FC, SetStateAction } from "react";
 interface PickerOpenerRowProps {
   setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
-  value: Date | string;
+  value: Date | string | { hours: number; minutes: number };
+  independent?: boolean;
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { setShowPicker, text, value } = props;
+  const { setShowPicker, text, value, independent = false } = props;
   return (
     <Pressable
       onPress={() => {
@@ -24,17 +25,26 @@ const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
       <HStack
         justifyContent="space-between"
         p="$3"
-        borderTopWidth={1}
-        borderTopColor="$borderLight200"
+        borderColor="$borderLight200"
+        style={
+          independent
+            ? {
+                borderWidth: 1,
+                borderRadius: 5,
+              }
+            : { borderTopWidth: 1 }
+        }
       >
         <Text>{text}</Text>
         <HStack alignItems="center">
           <Text mr="$2">
             {typeof value === "string"
               ? value
-              : text === "Date"
-                ? value.toDateString()
-                : value.toTimeString()}
+              : text === "Duration"
+                ? `${value.hours} h ${value.minutes} m`
+                : text === "Date"
+                  ? value.toDateString()
+                  : value.toTimeString()}
           </Text>
           <Icon as={ChevronRightIcon} size="sm" />
         </HStack>

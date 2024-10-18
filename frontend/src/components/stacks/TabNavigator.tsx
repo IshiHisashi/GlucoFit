@@ -8,6 +8,17 @@ import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
 import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
+import {
+  AnalysisDark,
+  AnalysisLight,
+  AwardDark,
+  AwardLight,
+  FileDark,
+  FileLight,
+  HomeDark,
+  HomeLight,
+  PlusDark,
+} from "../svgs/svgs";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,9 +31,9 @@ const TabNavigator: React.FC = () => (
         title: "Home",
         tabBarIcon: ({ focused, color, size }) => (
           <Icon
-            // as={focused ? "CircleIcon" : "home"}
-            size="sm"
-            color={color}
+            as={focused ? HomeDark : HomeLight}
+            // size="sm"
+            // color={color}
           />
         ),
       }}
@@ -34,9 +45,9 @@ const TabNavigator: React.FC = () => (
         title: "Insights",
         tabBarIcon: ({ focused, color, size }) => (
           <Icon
-            // as={focused ? "CircleIcon" : "home"}
-            size="sm"
-            color={color}
+            as={focused ? AnalysisDark : AnalysisLight}
+            // size="sm"
+            // color={color}
           />
         ),
       }}
@@ -46,18 +57,43 @@ const TabNavigator: React.FC = () => (
       component={View} // Placeholder component
       options={{
         tabBarButton: () => null, // Hide the default tab button
+        tabBarIcon: ({ focused, color, size }) => (
+          <Icon
+            as={PlusDark}
+            //  size="sm"
+            //   color={color}
+          />
+        ),
       }}
     />
 
     <Tab.Screen
       name="Logs"
       component={LogsScreen}
-      options={{ title: "Logs" }}
+      options={{
+        title: "Logs",
+        tabBarIcon: ({ focused, color, size }) => (
+          <Icon
+            as={focused ? FileDark : FileLight}
+            // size="sm"
+            // color={color}
+          />
+        ),
+      }}
     />
     <Tab.Screen
       name="BadgeScreen"
       component={BadgeScreen}
-      options={{ title: "Badge" }}
+      options={{
+        title: "Badges",
+        tabBarIcon: ({ focused, color, size }) => (
+          <Icon
+            as={focused ? AwardDark : AwardLight}
+            // size="sm"
+            // color={color}
+          />
+        ),
+      }}
     />
   </Tab.Navigator>
 );

@@ -50,7 +50,12 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
                   onPress={toggleSubMenu}
                   style={styles.fabButton}
                 >
-                  {/* <Icon as="AddIcon" size="md" color="#fff" /> */}
+                  {options.tabBarIcon &&
+                    options.tabBarIcon({
+                      focused: isFocused,
+                      color: "",
+                      size: 0,
+                    })}
                 </TouchableOpacity>
               </View>
             );
@@ -65,8 +70,8 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
               {options.tabBarIcon &&
                 options.tabBarIcon({
                   focused: isFocused,
-                  color: isFocused ? "#000000" : "#222",
-                  size: 24,
+                  color: "",
+                  size: 0,
                 })}
               <Text
                 style={{

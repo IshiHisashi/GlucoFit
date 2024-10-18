@@ -25,9 +25,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
+import { CapsuleDark, HeartrateDark } from "../svgs/svgs";
 
 // hardcode for now
-const userId = "60d8f33e7f3f83479cbf5b4f";
+const userId = "670de7a6e96ff53059a49ba8";
 
 const TotalSteps = () => {
   const GET_TOTAL_STEPS_FOR_TODAY = gql`
@@ -62,7 +63,7 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
   query GetActivitiesForToday($userId: ID!) {
     getTodayActivityLogs(user_id: $userId) {
       duration
-      log_date
+      log_timestamp
     }
   }
 `;
@@ -70,9 +71,37 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
 const GET_MEDICINES_FOR_TODAY = gql`
   query GetMedicinesForToday($userId: ID!) {
     getTodayMedicineLogs(user_id: $userId) {
-      injection_time
+      log_timestamp
       amount
     }
+  }
+`;
+
+const GET_CARBS_FOR_TODAY = gql`
+  query GetCarbsForToday($userId: ID!) {
+    getTodayDietLogs(userID: $userId) {
+      carbs
+      log_timestamp
+    }
+  }
+`;
+
+const GET_WEEKLY_BSL_DATA = gql`
+  query GetWeeklyBSLData($userId: ID!) {
+    getWeeklyBSLData(user_id: $userId) {
+      dateRange
+      weeklyAverage
+      weeklyData {
+        day
+        value
+      }
+    }
+  }
+`;
+
+const GET_AVERAGE_BSL_FOR_X = gql`
+  query GetAverageBslForX($userId: ID!) {
+    getAverageBslXAxisValue(user_id: $userId)
   }
 `;
 
@@ -96,8 +125,20 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY, {
     variables: { userId: userId },
   });
-  // bslResultsAndAverageData &&
-  //   console.log(bslResultsAndAverageData.getTestResultsAndAverageForToday);
+  bslResultsAndAverageData &&
+    console.log(
+      "bsl:",
+      bslResultsAndAverageData.getTestResultsAndAverageForToday
+    );
+
+  let latestBsl;
+  if (bslResultsAndAverageData) {
+    latestBsl =
+      bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults[
+        bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults
+          .length - 1
+      ] || {};
+  }
 
   const {
     data: activitiesData,
@@ -107,7 +148,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_ACTIVITIES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  activitiesData && console.log(activitiesData.getTodayActivityLogs);
+  activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
 
   const {
     data: medicinesData,
@@ -117,12 +158,43 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_MEDICINES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  medicinesData && console.log(medicinesData.getTodayMedicineLogs);
+  medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
+
+  const {
+    data: carbsData,
+    loading: carbsLoading,
+    error: carbsError,
+    refetch: carbsRefetch,
+  } = useQuery(GET_CARBS_FOR_TODAY, {
+    variables: { userId: userId },
+  });
+  carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
+
+  const {
+    data: weeklyBslData,
+    loading: weeklyBslLoading,
+    error: weeklyBslError,
+    refetch: weeklyBslRefetch,
+  } = useQuery(GET_WEEKLY_BSL_DATA, {
+    variables: { userId: userId },
+  });
+  weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
+
+  const {
+    data: bslForXData,
+    loading: bslForXLoading,
+    error: bslForXError,
+    refetch: bslForXRefetch,
+  } = useQuery(GET_AVERAGE_BSL_FOR_X, {
+    variables: { userId: userId },
+  });
+  bslForXData && console.log("X:", bslForXData);
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.mutatedLog === "bsl") {
         bslResultsAndAverageRefetch();
+        weeklyBslRefetch();
       }
       if (route.params?.mutatedLog === "activity") {
         activitiesRefetch();
@@ -130,32 +202,43 @@ const HomeScreen: React.FC = () => {
       if (route.params?.mutatedLog === "medicine") {
         medicinesRefetch();
       }
+      if (route.params?.mutatedLog === "carb") {
+        carbsRefetch();
+      }
     }, [
       route.params?.mutatedLog,
       bslResultsAndAverageRefetch,
       activitiesRefetch,
       medicinesRefetch,
+      carbsRefetch,
+      weeklyBslRefetch,
     ])
   );
 
   let logsForToday;
-  if (bslResultsAndAverageData && activitiesData && medicinesData) {
+  if (
+    bslResultsAndAverageData &&
+    activitiesData &&
+    medicinesData &&
+    carbsData
+  ) {
     logsForToday = [
       ...bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults,
       ...activitiesData.getTodayActivityLogs,
       ...medicinesData.getTodayMedicineLogs,
+      ...carbsData.getTodayDietLogs,
     ];
-    // if we need to sort... but we need to have consistent nameing convention for timestamp.
-    // logsForToday.length > 1 &&
-    //   logsForToday.sort((obj1, obj2) => {
-    //     if (obj1.log_timestamp < obj2.log_timestamp) {
-    //       return -1;
-    //     } else if (obj1.log_timestamp > obj2.log_timestamp) {
-    //       return 1;
-    //     } else {
-    //       return 0;
-    //     }
-    //   });
+
+    logsForToday.length > 1 &&
+      logsForToday.sort((obj1, obj2) => {
+        if (obj1.log_timestamp < obj2.log_timestamp) {
+          return -1;
+        } else if (obj1.log_timestamp > obj2.log_timestamp) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
     console.log("sorted:", logsForToday);
   }
 
@@ -174,14 +257,17 @@ const HomeScreen: React.FC = () => {
               <VStack>
                 <HStack alignItems="center" space="xs">
                   <Text fontSize="$4xl" fontWeight="$bold">
-                    {
-                      bslResultsAndAverageData.getTestResultsAndAverageForToday
-                        .averageBsl
-                    }
+                    {latestBsl.bsl}
                   </Text>
                   <Text>mmol/L</Text>
                 </HStack>
-                <Text>6:00pm what kind of time is this?</Text>
+                <Text>
+                  {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  })}
+                </Text>
               </VStack>
             )}
             <TotalSteps />
@@ -245,13 +331,26 @@ const HomeScreen: React.FC = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <Icon as={MoonIcon} size="md" />
+                      {obj.__typename === "TestResults" && (
+                        <Icon as={MoonIcon} size="md" />
+                      )}
+                      {obj.__typename === "ActivityLogs" && (
+                        <Icon as={HeartrateDark} size="md" />
+                      )}
+                      {obj.__typename === "MedicineLog" && (
+                        <Icon as={CapsuleDark} size="md" />
+                        // <CapsuleDark />
+                      )}
+                      {obj.__typename === "DietLog" && (
+                        <Icon as={MoonIcon} size="md" />
+                      )}
                     </Box>
                     <VStack space="xs">
                       <Text fontWeight="$bold">
-                        {obj.__typename === "TestResults"
-                          ? "Blood Glucose"
-                          : "else"}
+                        {obj.__typename === "TestResults" && "Blood Glucose"}
+                        {obj.__typename === "ActivityLogs" && "Activity"}
+                        {obj.__typename === "MedicineLog" && "Medicine"}
+                        {obj.__typename === "DietLog" && "Carbs"}
                       </Text>
                       <Text>
                         {new Date(obj.log_timestamp).toLocaleString("en-US", {
@@ -263,19 +362,36 @@ const HomeScreen: React.FC = () => {
                     </VStack>
                   </HStack>
                   <HStack alignItems="center" space="xs">
-                    {obj.__typename === "TestResults" ? (
+                    {obj.__typename === "TestResults" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
                           {obj.bsl}
                         </Text>
                         <Text>mmol/L</Text>
                       </>
-                    ) : (
+                    )}
+                    {obj.__typename === "ActivityLogs" && (
                       <>
                         <Text size="3xl" fontWeight="$bold">
-                          30
+                          {obj.duration}
                         </Text>
-                        <Text>min</Text>
+                        <Text>mins</Text>
+                      </>
+                    )}
+                    {obj.__typename === "MedicineLog" && (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.amount}
+                        </Text>
+                        <Text>mg</Text>
+                      </>
+                    )}
+                    {obj.__typename === "DietLog" && (
+                      <>
+                        <Text size="3xl" fontWeight="$bold">
+                          {obj.carbs}
+                        </Text>
+                        <Text>g</Text>
                       </>
                     )}
                   </HStack>
@@ -292,7 +408,9 @@ const HomeScreen: React.FC = () => {
           p="$2"
         >
           <HStack alignItems="center" justifyContent="space-between" p="$2">
-            <Text>Sep 24 - 0ct 30, 2024</Text>
+            <Text>
+              {weeklyBslData ? weeklyBslData.getWeeklyBSLData.dateRange : "N/A"}
+            </Text>
             <Pressable
               onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
             >
@@ -306,12 +424,21 @@ const HomeScreen: React.FC = () => {
           <HStack alignItems="center" justifyContent="space-between" space="sm">
             <Center>
               <Text size="3xl" fontWeight="$bold">
-                150
+                {weeklyBslData
+                  ? weeklyBslData.getWeeklyBSLData.weeklyAverage
+                  : "N/A"}
               </Text>
               <Text>mg/dL</Text>
               <Text>Average</Text>
             </Center>
-            <BslWeeklyBarChart width={width} />
+
+            {weeklyBslData && (
+              <BslWeeklyBarChart
+                width={width}
+                data={weeklyBslData.getWeeklyBSLData.weeklyData}
+                bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+              />
+            )}
           </HStack>
         </VStack>
       </VStack>
