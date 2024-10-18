@@ -9,11 +9,16 @@ import {
 import React, { useCallback, useState } from "react";
 import GlucoButton from "../atoms/GlucoButton";
 import {
+  BookmarkCustom,
   BookmarkLight,
+  CapsuleCustom,
   CapsuleLight,
+  FireCustom,
   FireLight,
+  HeartbeatCustom,
   HeartbeatLight,
   MedalDark,
+  RestaurantCustom,
   RestaurantLight,
 } from "../svgs/svgs";
 
@@ -54,7 +59,7 @@ const InsightsScreen: React.FC = () => {
         buttonType="secondary"
         text="full width btn"
         isDisabled={false}
-        icon={BookmarkLight}
+        icon={BookmarkCustom}
         onPress={() => console.log("pressed")}
       />
 
@@ -72,7 +77,7 @@ const InsightsScreen: React.FC = () => {
           buttonType="secondary"
           text="two"
           isDisabled={false}
-          icon={CapsuleLight}
+          icon={CapsuleCustom}
           flex={1}
           onPress={() => console.log("pressed")}
         />
@@ -98,21 +103,21 @@ const InsightsScreen: React.FC = () => {
             buttonType="primary"
             text="btn aaa"
             isDisabled={false}
-            icon={HeartbeatLight}
+            icon={HeartbeatCustom}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
             buttonType="primary"
             text="btn aaaa"
             isDisabled={false}
-            icon={RestaurantLight}
+            icon={RestaurantCustom}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
             buttonType="primary"
             text="btn aaaaa"
             isDisabled={false}
-            icon={FireLight}
+            icon={FireCustom}
             onPress={() => console.log("pressed")}
           />
         </HStack>
