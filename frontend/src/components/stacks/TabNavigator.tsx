@@ -8,6 +8,7 @@ import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
 import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
+import LoginSignupScreen from "../screens/loginSignupScreens/LoginSignupScreen";
 import {
   AnalysisDark,
   AnalysisLight,
@@ -19,7 +20,6 @@ import {
   HomeLight,
   PlusDark,
 } from "../svgs/svgs";
-
 const Tab = createBottomTabNavigator();
 
 const TabNavigator: React.FC = () => (
@@ -94,6 +94,11 @@ const TabNavigator: React.FC = () => (
           />
         ),
       }}
+    />
+    <Tab.Screen
+      name="LoginSignupScreen"
+      component={LoginSignupScreen}
+      options={{ title: "Welcome" }}
     />
   </Tab.Navigator>
 );
