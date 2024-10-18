@@ -20,7 +20,9 @@
     "@react-navigation/native-stack": "^6.11.0",
     "@types/react-navigation": "^3.0.8",
     "axios": "^1.7.7",
+    "debug": "^4.3.7",
     "expo": "~51.0.28",
+    "expo-module-scripts": "^3.5.2",
     "expo-secure-store": "^13.0.2",
     "expo-status-bar": "~1.12.1",
     "graphql": "^15.8.0",
@@ -35,8 +37,8 @@
     "react-native-timer-picker": "^1.10.3",
     "react-native-webview": "^13.12.2",
     "expo-linear-gradient": "~13.0.2",
-    "webidl-conversions": "^7.0.0",
-    "victory-native": "^37.0.3-next.0"
+    "victory-native": "^37.0.3-next.0",
+    "webidl-conversions": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

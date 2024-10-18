@@ -7,6 +7,7 @@ import HomeScreen from "../screens/HomeScreen";
 import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
+import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
 import {
   AnalysisDark,
   AnalysisLight,
@@ -81,8 +82,8 @@ const TabNavigator: React.FC = () => (
       }}
     />
     <Tab.Screen
-      name="TestStack"
-      component={TestStack}
+      name="BadgeScreen"
+      component={BadgeScreen}
       options={{
         title: "Badges",
         tabBarIcon: ({ focused, color, size }) => (

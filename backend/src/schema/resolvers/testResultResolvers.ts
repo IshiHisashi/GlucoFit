@@ -176,12 +176,11 @@ const testResultsResolvers = {
             ? parseFloat((totalBSL / results.length).toFixed(1))
             : 0; // Round to 1 decimal
 
-               // Format the start and end dates in the format: "Sep 24 - Oct 30, 2024"
-    const formattedStartDate = format(startOfWeek, "MMM dd");
-    const formattedEndDate = format(endOfWeek, "MMM dd, yyyy");
+        // Format the start and end dates in the format: "Sep 24 - Oct 30, 2024"
+        const formattedStartDate = format(startOfWeek, "MMM dd");
+        const formattedEndDate = format(endOfWeek, "MMM dd, yyyy");
 
-    const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
-
+        const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
 
         return {
           weeklyData: formattedData,
@@ -259,8 +258,11 @@ const testResultsResolvers = {
         });
 
         const uniqueDays = Array.from(days).sort();
-        const today = moment.utc().startOf("day");
-        const yesterday = moment.utc().subtract(1, "days").startOf("day");
+        const today = moment.tz("America/Vancouver").startOf("day");
+        const yesterday = moment
+          .tz("America/Vancouver")
+          .subtract(1, "days")
+          .startOf("day");
 
         let streak = 0;
         let currentStreak = 0;
