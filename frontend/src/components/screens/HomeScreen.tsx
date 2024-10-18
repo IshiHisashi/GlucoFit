@@ -256,7 +256,7 @@ const HomeScreen: React.FC = () => {
             {bslResultsAndAverageData && (
               <VStack>
                 <HStack alignItems="center" space="xs">
-                  <Text fontSize="$4xl" fontWeight="$bold">
+                  <Text fontSize="$4xl" fontFamily="$bold">
                     {latestBsl.bsl}
                   </Text>
                   <Text>mmol/L</Text>
@@ -305,7 +305,7 @@ const HomeScreen: React.FC = () => {
           p="$2"
         >
           <HStack alignItems="center" justifyContent="space-between" p="$2">
-            <Text fontSize="$lg" fontWeight="$bold">
+            <Text fontSize="$lg" fontFamily="$bold">
               Logs for today
             </Text>
             <Pressable
@@ -346,7 +346,7 @@ const HomeScreen: React.FC = () => {
                       )}
                     </Box>
                     <VStack space="xs">
-                      <Text fontWeight="$bold">
+                      <Text fontFamily="$bold">
                         {obj.__typename === "TestResults" && "Blood Glucose"}
                         {obj.__typename === "ActivityLogs" && "Activity"}
                         {obj.__typename === "MedicineLog" && "Medicine"}
@@ -364,7 +364,7 @@ const HomeScreen: React.FC = () => {
                   <HStack alignItems="center" space="xs">
                     {obj.__typename === "TestResults" && (
                       <>
-                        <Text size="3xl" fontWeight="$bold">
+                        <Text size="3xl" fontFamily="$bold">
                           {obj.bsl}
                         </Text>
                         <Text>mmol/L</Text>
@@ -372,7 +372,7 @@ const HomeScreen: React.FC = () => {
                     )}
                     {obj.__typename === "ActivityLogs" && (
                       <>
-                        <Text size="3xl" fontWeight="$bold">
+                        <Text size="3xl" fontFamily="$bold">
                           {obj.duration}
                         </Text>
                         <Text>mins</Text>
@@ -380,7 +380,7 @@ const HomeScreen: React.FC = () => {
                     )}
                     {obj.__typename === "MedicineLog" && (
                       <>
-                        <Text size="3xl" fontWeight="$bold">
+                        <Text size="3xl" fontFamily="$bold">
                           {obj.amount}
                         </Text>
                         <Text>mg</Text>
@@ -388,7 +388,7 @@ const HomeScreen: React.FC = () => {
                     )}
                     {obj.__typename === "DietLog" && (
                       <>
-                        <Text size="3xl" fontWeight="$bold">
+                        <Text size="3xl" fontFamily="$bold">
                           {obj.carbs}
                         </Text>
                         <Text>g</Text>
@@ -423,7 +423,7 @@ const HomeScreen: React.FC = () => {
 
           <HStack alignItems="center" justifyContent="space-between" space="sm">
             <Center>
-              <Text size="3xl" fontWeight="$bold">
+              <Text size="3xl" fontFamily="$bold">
                 {weeklyBslData
                   ? weeklyBslData.getWeeklyBSLData.weeklyAverage
                   : "N/A"}
