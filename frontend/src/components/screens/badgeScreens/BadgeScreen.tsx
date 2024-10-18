@@ -26,12 +26,14 @@ const BadgeScreen: React.FC = () => {
       {/* Toggle */}
       <View flexDirection="row" width="$full" gap={10}>
         <GlucoButton
+          buttonType="primary"
           text="Streaks"
           isDisabled={false}
           flex={1}
           onPress={() => setSelectScreen("streaks")}
         />
         <GlucoButton
+          buttonType="primary"
           text="Badges"
           isDisabled={false}
           flex={1}

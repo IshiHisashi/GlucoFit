@@ -44,12 +44,14 @@ const InsightsScreen: React.FC = () => {
       {/* full width button */}
       <Heading>full width buttons</Heading>
       <GlucoButton
+        buttonType="primary"
         text="full width btn"
         isDisabled={false}
         onPress={() => console.log("pressed")}
         style={{ borderColor: "red", borderWidth: 1 }}
       />
       <GlucoButton
+        buttonType="secondary"
         text="full width btn"
         isDisabled={false}
         icon={BookmarkLight}
@@ -60,12 +62,14 @@ const InsightsScreen: React.FC = () => {
       <Heading>two buttons taking up the screen width</Heading>
       <HStack space="sm">
         <GlucoButton
+          buttonType="primary"
           text="one"
           isDisabled={false}
           flex={1}
           onPress={() => console.log("pressed")}
         />
         <GlucoButton
+          buttonType="secondary"
           text="two"
           isDisabled={false}
           icon={CapsuleLight}
@@ -79,28 +83,33 @@ const InsightsScreen: React.FC = () => {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack space="sm">
           <GlucoButton
+            buttonType="primary"
             text="btn a"
             isDisabled={false}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
+            buttonType="primary"
             text="btn aa"
             isDisabled={false}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
+            buttonType="primary"
             text="btn aaa"
             isDisabled={false}
             icon={HeartbeatLight}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
+            buttonType="primary"
             text="btn aaaa"
             isDisabled={false}
             icon={RestaurantLight}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
+            buttonType="primary"
             text="btn aaaaa"
             isDisabled={false}
             icon={FireLight}
