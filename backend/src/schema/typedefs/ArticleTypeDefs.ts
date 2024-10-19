@@ -24,11 +24,12 @@ export const articlesTypeDefs = gql`
   extend type Query {
     getArticle(id: ID!): Articles
     getArticles: [Articles!]!
-    getArticlesPagination(cursor: String, limit: Int): ArticlesConnection
-    getUserRecentArticles(
+    getAllArticlesPagination(cursor: String, limit: Int): ArticlesConnection
+    getUserArticlesPagination(
       userId: ID!
       cursor: String
       limit: Int
+      classification: String
     ): ArticlesConnection
   }
 

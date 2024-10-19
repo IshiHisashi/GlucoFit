@@ -6,6 +6,7 @@ type GetInsightsArgs = {
   userId?: string;
   cursor?: string;
   limit?: number;
+  classification?: "recent" | "favorite";
 };
 
 interface PageInfo {
@@ -31,7 +32,7 @@ const articlesResolvers = {
       return await Articles.find();
     },
 
-    getArticlesPagination: async (
+    getAllArticlesPagination: async (
       _: any,
       { cursor, limit }: GetInsightsArgs
     ): Promise<ArticlesConnection> => {
@@ -62,9 +63,9 @@ const articlesResolvers = {
       };
     },
 
-    getUserRecentArticles: async (
+    getUserArticlesPagination: async (
       _: any,
-      { userId, cursor, limit }: GetInsightsArgs
+      { userId, cursor, limit, classification }: GetInsightsArgs
     ): Promise<ArticlesConnection> => {
       const defaultLimit = 10;
 
@@ -73,8 +74,15 @@ const articlesResolvers = {
       if (!user) {
         throw new Error("User not found");
       }
-      const recentlyReadIds = user.recently_read_articles_array;
-      let filteredIds = recentlyReadIds.map((id) => new Types.ObjectId(id));
+      let articleIds: string[];
+      if (classification === "recent") {
+        articleIds = user.recently_read_articles_array;
+      } else if (classification === "favorite") {
+        articleIds = user.favourite_articles;
+      } else {
+        articleIds = [];
+      }
+      let filteredIds = articleIds.map((id) => new Types.ObjectId(id));
       if (cursor) {
         const cursorIndex = filteredIds.findIndex(
           (id) => id.toString() === cursor
