@@ -1,7 +1,9 @@
 import { Articles, IArticles } from "../../model/Articles";
+import { User, IUser } from "../../model/User";
 import { Types } from "mongoose";
 
 type GetInsightsArgs = {
+  userId?: string;
   cursor?: string;
   limit?: number;
 };
@@ -49,6 +51,51 @@ const articlesResolvers = {
         }
       }
 
+      const hasNextPage = !!limit && articles.length === limit;
+
+      return {
+        edges: articles,
+        pageInfo: {
+          hasNextPage,
+          endCursor,
+        },
+      };
+    },
+
+    getUserRecentArticles: async (
+      _: any,
+      { userId, cursor, limit }: GetInsightsArgs
+    ): Promise<ArticlesConnection> => {
+      const defaultLimit = 10;
+
+      // Fetch the user by ID
+      const user: IUser | null = await User.findById(userId);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const recentlyReadIds = user.recently_read_articles_array;
+      let filteredIds = recentlyReadIds.map((id) => new Types.ObjectId(id));
+      if (cursor) {
+        const cursorIndex = filteredIds.findIndex(
+          (id) => id.toString() === cursor
+        );
+        if (cursorIndex >= 0) {
+          filteredIds = filteredIds.slice(cursorIndex + 1);
+        }
+      }
+      const articles = await Articles.find({ _id: { $in: filteredIds } })
+        .limit(limit || defaultLimit)
+        .exec();
+
+      let endCursor: string | null = null;
+      if (articles.length > 0) {
+        const lastArticle = articles[articles.length - 1];
+        if (lastArticle && lastArticle._id instanceof Types.ObjectId) {
+          endCursor = lastArticle._id.toString();
+        }
+      }
+
+      // Check if there are more articles based on the limit
       const hasNextPage = !!limit && articles.length === limit;
 
       return {

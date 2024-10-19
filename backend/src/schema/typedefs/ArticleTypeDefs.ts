@@ -25,6 +25,11 @@ export const articlesTypeDefs = gql`
     getArticle(id: ID!): Articles
     getArticles: [Articles!]!
     getArticlesPagination(cursor: String, limit: Int): ArticlesConnection
+    getUserRecentArticles(
+      userId: ID!
+      cursor: String
+      limit: Int
+    ): ArticlesConnection
   }
 
   extend type Mutation {
