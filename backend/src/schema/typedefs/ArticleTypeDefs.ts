@@ -11,9 +11,20 @@ export const articlesTypeDefs = gql`
     diabetes_type: String!
   }
 
+  type ArticlesConnection {
+    edges: [Articles]
+    pageInfo: PageInfo
+  }
+
+  type PageInfo {
+    hasNextPage: Boolean
+    endCursor: String
+  }
+
   extend type Query {
     getArticle(id: ID!): Articles
     getArticles: [Articles!]!
+    getArticlesPagination(cursor: String, limit: Int): ArticlesConnection
   }
 
   extend type Mutation {
