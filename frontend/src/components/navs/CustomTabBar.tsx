@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import {
   Button,
@@ -13,15 +13,15 @@ import {
   View,
   VStack,
 } from "@gluestack-ui/themed";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { TimesCustom } from "../svgs/svgs";
+import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { PlusCustom, TimesCustom } from "../svgs/svgs";
 
-interface SubMenuButtonProps {
+interface SubMenuItemProps {
   onPress: () => void;
   text: string;
 }
 
-const SubMenuButton: FC<SubMenuButtonProps> = (props) => {
+const SubMenuItem: FC<SubMenuItemProps> = (props) => {
   const { onPress, text } = props;
 
   return (
@@ -34,12 +34,24 @@ const SubMenuButton: FC<SubMenuButtonProps> = (props) => {
 const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
   const { state, descriptors, navigation } = props;
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  const toggleSubMenu = () => setIsSubMenuOpen(!isSubMenuOpen);
+  const toggleSubMenu = () => {
+    setIsSubMenuOpen(!isSubMenuOpen);
+    Animated.timing(rotateAnim, {
+      toValue: isSubMenuOpen ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+  const spin = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "45deg"],
+  });
 
   return (
     <View style={styles.container}>
-      <View style={styles.tabBar}>
+      <View style={styles.tabBar} zIndex={1}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
@@ -65,19 +77,25 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
 
           if (route.name === "FAB") {
             return (
-              <View key={route.key} style={styles.fabContainer}>
-                <TouchableOpacity
+              <View key={route.key} style={styles.fabContainer} zIndex={100}>
+                {/* <TouchableOpacity
                   key={route.key}
                   onPress={toggleSubMenu}
                   style={styles.fabButton}
-                >
-                  {options.tabBarIcon &&
+                > */}
+                {/* {options.tabBarIcon &&
                     options.tabBarIcon({
                       focused: isFocused,
                       color: "",
                       size: 0,
-                    })}
-                </TouchableOpacity>
+                    })} */}
+                {/* <Animated.View
+                    style={{ transform: [{ rotate: spin }] }}
+                    zIndex={100}
+                  >
+                    <PlusCustom color="#ffffff" size={32} />
+                  </Animated.View>
+                </TouchableOpacity> */}
               </View>
             );
           }
@@ -103,6 +121,22 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
             </TouchableOpacity>
           );
         })}
+
+        {/* ------ FAB Button ------ */}
+        <View
+          style={styles.fabContainer}
+          position="absolute"
+          left={0}
+          right={0}
+          bottom={0}
+          zIndex={100}
+        >
+          <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <PlusCustom color="#ffffff" size={32} />
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ------ sub menu ----- */}
@@ -114,28 +148,28 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
         <ModalBackdrop bg="$neutralWhite" />
         <ModalContent w="$full">
           <ModalBody pb={90}>
-            <SubMenuButton
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("CarbsLog");
               }}
               text="Food/Carbs"
             />
-            <SubMenuButton
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("MedicineLog");
               }}
               text="Medicine"
             />
-            <SubMenuButton
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("ActivityLog");
               }}
               text="Activity"
             />
-            <SubMenuButton
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("GlucoseLog");
@@ -143,7 +177,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
               text="Blood Glucose"
             />
           </ModalBody>
-          <View style={styles.fabContainer} bottom={5}>
+          <View style={styles.fabContainer}>
             <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
               <TimesCustom color="#ffffff" size={32} />
             </TouchableOpacity>
@@ -183,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: 20,
+    bottom: 25,
     elevation: 8, // for Android shadow
     shadowColor: "#000", // for iOS shadow
     shadowOffset: { width: 0, height: 2 },
