@@ -5,25 +5,31 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 
 // Table of contents
 // - Analysis (light, dark, custom)
-// - Award (light, dark)
+// - AngleLeft (Custom)
+// - Award (light, dark, custom)
+// - Bell (custom)
 // - Bookmark (light, dark, custom)
-// - Capsule (light, dark)
-// - File (light, dark)
-// - Fire (light, dark)
-// - Heartbeat (light, dark)
-// - Heartrate (light, dark)
-// - Home (light, dark)
-// - Medal (light, dark)
-// - Plus (light, dark)
-// - Restaurant (light, dark)
+// - Capsule (light, dark, custom)
+// - File (light, dark, custom)
+// - Fire (light, dark, custom)
+// - Heartbeat (light, dark, custom)
+// - Heartrate (light, dark, custom)
+// - Home (light, dark, custom)
+// - Medal (light, dark, custom)
+// - Pen (custom)
+// - Plus (light, dark, custom)
+// - Restaurant (light, dark, custom)
+// - Search (custom)
 
 interface IconProps extends SvgProps {
   color?: string;
+  size?: number;
 }
 
 const colorLight = "#ffffff";
 const colorDark = "#000000";
 const colorDefault = "#000000"; // for custom one
+const sizeDefault = 24; // for custom one
 const strokeWidth = 0.1;
 
 export const AnalysisLight: FC = (props: SvgProps) => (
@@ -32,6 +38,7 @@ export const AnalysisLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -49,6 +56,7 @@ export const AnalysisDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -62,13 +70,15 @@ export const AnalysisDark: FC = (props: SvgProps) => (
 
 export const AnalysisCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -80,12 +90,35 @@ export const AnalysisCustom: FC = ({
   </Svg>
 );
 
+export const AngleLeftCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="m8.5 12.8 5.7 5.6c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4l-4.9-5 4.9-5c.4-.4.4-1 0-1.4-.2-.2-.4-.3-.7-.3-.3 0-.5.1-.7.3l-5.7 5.6c-.4.5-.4 1.1 0 1.6 0-.1 0-.1 0 0Z"
+    />
+  </Svg>
+);
+
 export const AwardLight: FC = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -103,6 +136,7 @@ export const AwardDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -116,13 +150,15 @@ export const AwardDark: FC = (props: SvgProps) => (
 
 export const AwardCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -134,12 +170,35 @@ export const AwardCustom: FC = ({
   </Svg>
 );
 
+export const BellCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M18 13.18V10a6 6 0 0 0-5-5.91V3a1 1 0 0 0-2 0v1.09A6 6 0 0 0 6 10v3.18A3 3 0 0 0 4 16v2a1 1 0 0 0 1 1h3.14a4 4 0 0 0 7.72 0H19a1 1 0 0 0 1-1v-2a3 3 0 0 0-2-2.82ZM8 10a4 4 0 0 1 8 0v3H8v-3Zm4 10a2 2 0 0 1-1.72-1h3.44A2 2 0 0 1 12 20Zm6-3H6v-1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1Z"
+    />
+  </Svg>
+);
+
 export const BookmarkLight: FC = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -157,6 +216,7 @@ export const BookmarkDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -170,13 +230,15 @@ export const BookmarkDark: FC = (props: SvgProps) => (
 
 export const BookmarkCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -194,6 +256,7 @@ export const CapsuleLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -211,6 +274,7 @@ export const CapsuleDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -224,13 +288,15 @@ export const CapsuleDark: FC = (props: SvgProps) => (
 
 export const CapsuleCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -248,6 +314,7 @@ export const FileLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -265,6 +332,7 @@ export const FileDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -278,13 +346,15 @@ export const FileDark: FC = (props: SvgProps) => (
 
 export const FileCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -302,6 +372,7 @@ export const FireLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -319,6 +390,7 @@ export const FireDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -332,13 +404,15 @@ export const FireDark: FC = (props: SvgProps) => (
 
 export const FireCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -356,6 +430,7 @@ export const HeartbeatLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -373,6 +448,7 @@ export const HeartbeatDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -386,13 +462,15 @@ export const HeartbeatDark: FC = (props: SvgProps) => (
 
 export const HeartbeatCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -410,6 +488,7 @@ export const HeartrateLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -427,6 +506,7 @@ export const HeartrateDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -440,13 +520,15 @@ export const HeartrateDark: FC = (props: SvgProps) => (
 
 export const HeartrateCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -464,6 +546,7 @@ export const HomeLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -481,6 +564,7 @@ export const HomeDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -494,13 +578,15 @@ export const HomeDark: FC = (props: SvgProps) => (
 
 export const HomeCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -518,6 +604,7 @@ export const MedalLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -535,6 +622,7 @@ export const MedalDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -548,13 +636,15 @@ export const MedalDark: FC = (props: SvgProps) => (
 
 export const MedalCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -566,12 +656,35 @@ export const MedalCustom: FC = ({
   </Svg>
 );
 
+export const PenCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M22 7.24a.999.999 0 0 0-.29-.71l-4.24-4.24a.999.999 0 0 0-.71-.29 1 1 0 0 0-.71.29l-2.83 2.83L2.29 16.05a.999.999 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.091-.097.166-.208.22-.33.01-.08.01-.16 0-.24a.697.697 0 0 0 0-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"
+    />
+  </Svg>
+);
+
 export const PlusLight: FC = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -589,6 +702,7 @@ export const PlusDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -602,13 +716,15 @@ export const PlusDark: FC = (props: SvgProps) => (
 
 export const PlusCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -626,6 +742,7 @@ export const RestaurantLight: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -643,6 +760,7 @@ export const RestaurantDark: FC = (props: SvgProps) => (
     width={24}
     height={24}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -656,13 +774,15 @@ export const RestaurantDark: FC = (props: SvgProps) => (
 
 export const RestaurantCustom: FC = ({
   color = colorDefault,
+  size = sizeDefault,
   ...props
 }: IconProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={24}
-    height={24}
+    width={size}
+    height={size}
     fill="none"
+    viewBox="0 0 24 24"
     {...props}
   >
     <Path
@@ -670,6 +790,28 @@ export const RestaurantCustom: FC = ({
       stroke={color}
       strokeWidth={strokeWidth}
       d="M16.84 11.63a2.998 2.998 0 0 0 2.16-.88l2.83-2.83a1 1 0 1 0-1.42-1.41l-2.86 2.82a1 1 0 0 1-1.42 0l3.54-3.53a1.004 1.004 0 0 0-1.42-1.42l-3.53 3.54a1 1 0 0 1 0-1.41l2.83-2.83a1.004 1.004 0 0 0-1.42-1.42L13.3 5.09a3 3 0 0 0 0 4.24L12 10.62l-8.27-8.3-.1-.06a.71.71 0 0 0-.17-.11l-.18-.07L3.16 2h-.27a.57.57 0 0 0-.18 0 .7.7 0 0 0-.17.09l-.16.1h-.07l-.06.1a1 1 0 0 0-.11.17 1.07 1.07 0 0 0-.07.19v.11a11 11 0 0 0 3.11 9.34l2.64 2.63-5.41 5.4a1 1 0 0 0 .71 1.71.999.999 0 0 0 .71-.29l6.07-5.98 2.83-2.83 2-2a3 3 0 0 0 2.11.89Zm-7.65 1.82-2.63-2.64A9.06 9.06 0 0 1 4 5.4l6.61 6.6-1.42 1.45Zm6.24.57A1.008 1.008 0 0 0 14 15.44l6.3 6.3a1 1 0 0 0 .7.26.998.998 0 0 0 .71-1.71l-6.28-6.27Z"
+    />
+  </Svg>
+);
+
+export const SearchCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1.002 1.002 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"
     />
   </Svg>
 );

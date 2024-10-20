@@ -1,48 +1,47 @@
 import React, { useState } from "react";
 import { View, Text, Input, InputField } from "@gluestack-ui/themed";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRoute } from "@react-navigation/native";
+
 import StreakScreen from "./StreakScreen";
 import BadgesScreen from "./BadgesScreen";
 import GlucoButton from "../../atoms/GlucoButton";
+import HeaderBasic from "../../headers/HeaderBasic";
 
 const BadgeScreen: React.FC = () => {
+  const route = useRoute<{ key: string; name: string }>();
   const [selectScreen, setSelectScreen] = useState<string>("streaks");
+
   return (
-    <View padding={16} flexDirection="column" gap={16}>
-      {/* Header */}
-      <View flexDirection="row" gap={10} alignItems="center">
-        <Input
-          variant="outline"
-          size="md"
-          isDisabled={false}
-          isInvalid={false}
-          isReadOnly={false}
-          flex={1}
-        >
-          <InputField placeholder="Enter Text here" />
-        </Input>
-        <Text>A</Text>
-        <Text>Notif</Text>
-      </View>
-      {/* Toggle */}
-      <View flexDirection="row" width="$full" gap={10}>
-        <GlucoButton
-          buttonType="primary"
-          text="Streaks"
-          isDisabled={false}
-          flex={1}
-          onPress={() => setSelectScreen("streaks")}
+    <SafeAreaView>
+      <View padding={16} flexDirection="column" gap={16}>
+        {/* Header */}
+        <HeaderBasic
+          routeName={route.name as "BadgeScreen"}
+          searchValue={""}
+          onChangeSearchValue={() => {}}
         />
-        <GlucoButton
-          buttonType="primary"
-          text="Badges"
-          isDisabled={false}
-          flex={1}
-          onPress={() => setSelectScreen("badges")}
-        />
+        {/* Toggle */}
+        <View flexDirection="row" width="$full" gap={10}>
+          <GlucoButton
+            buttonType="primary"
+            text="Streaks"
+            isDisabled={false}
+            flex={1}
+            onPress={() => setSelectScreen("streaks")}
+          />
+          <GlucoButton
+            buttonType="primary"
+            text="Badges"
+            isDisabled={false}
+            flex={1}
+            onPress={() => setSelectScreen("badges")}
+          />
+        </View>
+        {selectScreen === "streaks" && <StreakScreen />}
+        {selectScreen === "badges" && <BadgesScreen />}
       </View>
-      {selectScreen === "streaks" && <StreakScreen />}
-      {selectScreen === "badges" && <BadgesScreen />}
-    </View>
+    </SafeAreaView>
   );
 };
 

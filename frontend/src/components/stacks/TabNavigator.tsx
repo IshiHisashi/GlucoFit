@@ -36,6 +36,7 @@ const TabNavigator: React.FC = () => (
             // color={color}
           />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -50,6 +51,7 @@ const TabNavigator: React.FC = () => (
             // color={color}
           />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -64,6 +66,7 @@ const TabNavigator: React.FC = () => (
             //   color={color}
           />
         ),
+        headerShown: false,
       }}
     />
 
@@ -79,6 +82,7 @@ const TabNavigator: React.FC = () => (
             // color={color}
           />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -93,6 +97,7 @@ const TabNavigator: React.FC = () => (
             // color={color}
           />
         ),
+        headerShown: false,
       }}
     />
   </Tab.Navigator>

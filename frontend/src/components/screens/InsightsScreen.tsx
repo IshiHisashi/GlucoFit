@@ -7,6 +7,9 @@ import {
   Heading,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRoute } from "@react-navigation/native";
+
 import GlucoButton from "../atoms/GlucoButton";
 import {
   BookmarkCustom,
@@ -21,8 +24,11 @@ import {
   RestaurantCustom,
   RestaurantLight,
 } from "../svgs/svgs";
+import HeaderBasic from "../headers/HeaderBasic";
 
 const InsightsScreen: React.FC = () => {
+  const route = useRoute<{ key: string; name: string }>();
+
   // test pull down refresh
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
@@ -34,95 +40,103 @@ const InsightsScreen: React.FC = () => {
   }, []);
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <Center>
-        <Text>
-          This is insights screen... currently showing sammple usages of
-          buttons.
-        </Text>
-      </Center>
+    <SafeAreaView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <HeaderBasic
+          routeName={route.name as "Insights"}
+          searchValue={""}
+          onChangeSearchValue={() => {}}
+        />
 
-      {/* full width button */}
-      <Heading>full width buttons</Heading>
-      <GlucoButton
-        buttonType="primary"
-        text="full width btn"
-        isDisabled={false}
-        onPress={() => console.log("pressed")}
-        style={{ borderColor: "red", borderWidth: 1 }}
-      />
-      <GlucoButton
-        buttonType="secondary"
-        text="full width btn"
-        isDisabled={false}
-        icon={BookmarkCustom}
-        onPress={() => console.log("pressed")}
-      />
+        <Center>
+          <Text>
+            This is insights screen... currently showing sammple usages of
+            buttons.
+          </Text>
+        </Center>
 
-      {/* two buttons taking up the screen width */}
-      <Heading>two buttons taking up the screen width</Heading>
-      <HStack space="sm">
+        {/* full width button */}
+        <Heading>full width buttons</Heading>
         <GlucoButton
           buttonType="primary"
-          text="one"
+          text="full width btn"
           isDisabled={false}
-          flex={1}
           onPress={() => console.log("pressed")}
+          style={{ borderColor: "red", borderWidth: 1 }}
         />
         <GlucoButton
           buttonType="secondary"
-          text="two"
+          text="full width btn"
           isDisabled={false}
-          icon={CapsuleCustom}
-          flex={1}
+          icon={BookmarkCustom}
           onPress={() => console.log("pressed")}
         />
-      </HStack>
 
-      {/* horizontal scroll buttons */}
-      <Heading>horizontal scroll buttons</Heading>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {/* two buttons taking up the screen width */}
+        <Heading>two buttons taking up the screen width</Heading>
         <HStack space="sm">
           <GlucoButton
             buttonType="primary"
-            text="btn a"
+            text="one"
             isDisabled={false}
+            flex={1}
             onPress={() => console.log("pressed")}
           />
           <GlucoButton
-            buttonType="primary"
-            text="btn aa"
+            buttonType="secondary"
+            text="two"
             isDisabled={false}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            buttonType="primary"
-            text="btn aaa"
-            isDisabled={false}
-            icon={HeartbeatCustom}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            buttonType="primary"
-            text="btn aaaa"
-            isDisabled={false}
-            icon={RestaurantCustom}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            buttonType="primary"
-            text="btn aaaaa"
-            isDisabled={false}
-            icon={FireCustom}
+            icon={CapsuleCustom}
+            flex={1}
             onPress={() => console.log("pressed")}
           />
         </HStack>
+
+        {/* horizontal scroll buttons */}
+        <Heading>horizontal scroll buttons</Heading>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HStack space="sm">
+            <GlucoButton
+              buttonType="primary"
+              text="btn a"
+              isDisabled={false}
+              onPress={() => console.log("pressed")}
+            />
+            <GlucoButton
+              buttonType="primary"
+              text="btn aa"
+              isDisabled={false}
+              onPress={() => console.log("pressed")}
+            />
+            <GlucoButton
+              buttonType="primary"
+              text="btn aaa"
+              isDisabled={false}
+              icon={HeartbeatCustom}
+              onPress={() => console.log("pressed")}
+            />
+            <GlucoButton
+              buttonType="primary"
+              text="btn aaaa"
+              isDisabled={false}
+              icon={RestaurantCustom}
+              onPress={() => console.log("pressed")}
+            />
+            <GlucoButton
+              buttonType="primary"
+              text="btn aaaaa"
+              isDisabled={false}
+              icon={FireCustom}
+              onPress={() => console.log("pressed")}
+            />
+          </HStack>
+        </ScrollView>
       </ScrollView>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 

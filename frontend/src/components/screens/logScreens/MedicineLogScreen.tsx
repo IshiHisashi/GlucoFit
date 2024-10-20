@@ -12,12 +12,14 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import ListCard from "../../molcules/ListCard";
 import { AppStackParamList } from "../../../types/navigation";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { CapsuleDark } from "../../svgs/svgs";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
+import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -69,7 +71,7 @@ type MedicineLogScreenProps = NativeStackNavigationProp<
 
 const MedicineLogScreen: React.FC = () => {
   const [selectedMeds, setSelectedMeds] = useState<
-    [{ id: string; dosage: number }]
+    { id: string; dosage: number }[]
   >([]);
 
   const navigation = useNavigation<MedicineLogScreenProps>();
@@ -128,33 +130,40 @@ const MedicineLogScreen: React.FC = () => {
   };
 
   return (
-    <View height="$full">
-      <ScrollView p="$4" pb="$16">
-        <VStack space="md">
-          {medsListData &&
-            medsListData.getUserMedicineList.length > 0 &&
-            medsListData.getUserMedicineList.map((obj) => (
-              <ListCard
-                key={obj.id}
-                text={obj.medicine_name}
-                isSelected={selectedMeds.some((med) => med.id === obj.id)}
-                iconLeft={CapsuleDark}
-                // iconRightOn={CalendarDaysIcon}
-                // iconRightOff={SunIcon}
-                badge={[`${obj.dosage}${obj.unit}`]}
-                onPress={() => toggleMedSelection(obj.id, obj.dosage)}
-              />
-            ))}
-        </VStack>
-        <View h={120} />
-      </ScrollView>
+    <SafeAreaView>
+      <View height="$full">
+        <HeaderWithBackButton
+          navigation={navigation}
+          text="Medicine"
+          rightIconOnPress={() => {}}
+        />
+        <ScrollView p="$4" pb="$16">
+          <VStack space="md">
+            {medsListData &&
+              medsListData.getUserMedicineList.length > 0 &&
+              medsListData.getUserMedicineList.map((obj) => (
+                <ListCard
+                  key={obj.id}
+                  text={obj.medicine_name}
+                  isSelected={selectedMeds.some((med) => med.id === obj.id)}
+                  iconLeft={CapsuleDark}
+                  // iconRightOn={CalendarDaysIcon}
+                  // iconRightOff={SunIcon}
+                  badge={[`${obj.dosage}${obj.unit}`]}
+                  onPress={() => toggleMedSelection(obj.id, obj.dosage)}
+                />
+              ))}
+          </VStack>
+          <View h={120} />
+        </ScrollView>
 
-      <ButtonFixedBottom
-        onPress={handleSave}
-        isDisabled={selectedMeds.length < 1}
-        text="Save"
-      />
-    </View>
+        <ButtonFixedBottom
+          onPress={handleSave}
+          isDisabled={selectedMeds.length < 1}
+          text="Save"
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 

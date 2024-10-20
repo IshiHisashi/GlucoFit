@@ -11,6 +11,7 @@ import {
   VStack,
   ChevronRightIcon,
   ScrollView,
+  View,
 } from "@gluestack-ui/themed";
 import React, { useCallback } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
@@ -21,11 +22,13 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { CapsuleDark, HeartrateDark } from "../svgs/svgs";
+import { BellCustom, CapsuleDark, HeartrateDark } from "../svgs/svgs";
+import HeaderBasic from "../headers/HeaderBasic";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -114,6 +117,7 @@ type RouteParams = {
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  console.log(route.name);
 
   const { width } = useWindowDimensions();
 
@@ -243,206 +247,215 @@ const HomeScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView>
-      <VStack p="$4" space="md">
-        <VStack
-          space="sm"
-          borderWidth={1}
-          borderColor="$borderLight200"
-          borderRadius="$md"
-          p="$4"
-        >
-          <HStack alignItems="center" justifyContent="space-between">
-            {bslResultsAndAverageData && (
-              <VStack>
-                <HStack alignItems="center" space="xs">
-                  <Text fontSize="$4xl" fontFamily="$bold">
-                    {latestBsl.bsl}
-                  </Text>
-                  <Text>mmol/L</Text>
-                </HStack>
-                <Text>
-                  {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })}
-                </Text>
-              </VStack>
-            )}
-            <TotalSteps />
-          </HStack>
-
-          {bslResultsAndAverageData && (
-            <BslLineChart
-              width={width}
-              data={
-                bslResultsAndAverageData.getTestResultsAndAverageForToday
-                  .testResults
-              }
-            />
-          )}
-        </VStack>
-
-        <VStack
-          borderWidth={1}
-          borderColor="$borderLight200"
-          borderRadius="$md"
-          p="$4"
-        >
-          <Text>Do you want to connect your device?</Text>
-          <Text>Supporting text here</Text>
-          <Button>
-            <ButtonText>Connect device</ButtonText>
-          </Button>
-        </VStack>
-
-        {/* will be replaced by log table component ---------------------------------- */}
-        <VStack
-          borderWidth={1}
-          borderColor="$borderLight200"
-          borderRadius="$md"
-          p="$2"
-        >
-          <HStack alignItems="center" justifyContent="space-between" p="$2">
-            <Text fontSize="$lg" fontFamily="$bold">
-              Logs for today
-            </Text>
-            <Pressable
-              onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-            >
-              <HStack alignItems="center" space="xs">
-                <Text>See more</Text>
-                <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-              </HStack>
-            </Pressable>
-          </HStack>
-
-          {logsForToday &&
-            logsForToday.map((obj, index) => (
-              <Pressable onPress={() => {}} key={index}>
-                <HStack justifyContent="space-between" p="$2">
-                  <HStack alignItems="center" space="sm">
-                    <Box
-                      width={40}
-                      height={40}
-                      borderRadius="$full"
-                      bg="#E0E0E0"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      {obj.__typename === "TestResults" && (
-                        <Icon as={MoonIcon} size="md" />
-                      )}
-                      {obj.__typename === "ActivityLogs" && (
-                        <Icon as={HeartrateDark} size="md" />
-                      )}
-                      {obj.__typename === "MedicineLog" && (
-                        <Icon as={CapsuleDark} size="md" />
-                        // <CapsuleDark />
-                      )}
-                      {obj.__typename === "DietLog" && (
-                        <Icon as={MoonIcon} size="md" />
-                      )}
-                    </Box>
-                    <VStack space="xs">
-                      <Text fontFamily="$bold">
-                        {obj.__typename === "TestResults" && "Blood Glucose"}
-                        {obj.__typename === "ActivityLogs" && "Activity"}
-                        {obj.__typename === "MedicineLog" && "Medicine"}
-                        {obj.__typename === "DietLog" && "Carbs"}
-                      </Text>
-                      <Text>
-                        {new Date(obj.log_timestamp).toLocaleString("en-US", {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        })}
-                      </Text>
-                    </VStack>
-                  </HStack>
+    <SafeAreaView>
+      <ScrollView>
+        <HeaderBasic routeName={route.name as "Home"} />
+        <VStack p="$4" space="md">
+          <VStack
+            space="sm"
+            borderWidth={1}
+            borderColor="$borderLight200"
+            borderRadius="$md"
+            p="$4"
+          >
+            <HStack alignItems="center" justifyContent="space-between">
+              {bslResultsAndAverageData && (
+                <VStack>
                   <HStack alignItems="center" space="xs">
-                    {obj.__typename === "TestResults" && (
-                      <>
-                        <Text size="3xl" fontFamily="$bold">
-                          {obj.bsl}
-                        </Text>
-                        <Text>mmol/L</Text>
-                      </>
-                    )}
-                    {obj.__typename === "ActivityLogs" && (
-                      <>
-                        <Text size="3xl" fontFamily="$bold">
-                          {obj.duration}
-                        </Text>
-                        <Text>mins</Text>
-                      </>
-                    )}
-                    {obj.__typename === "MedicineLog" && (
-                      <>
-                        <Text size="3xl" fontFamily="$bold">
-                          {obj.amount}
-                        </Text>
-                        <Text>mg</Text>
-                      </>
-                    )}
-                    {obj.__typename === "DietLog" && (
-                      <>
-                        <Text size="3xl" fontFamily="$bold">
-                          {obj.carbs}
-                        </Text>
-                        <Text>g</Text>
-                      </>
-                    )}
+                    <Text fontSize="$4xl" fontFamily="$bold">
+                      {latestBsl.bsl}
+                    </Text>
+                    <Text>mmol/L</Text>
                   </HStack>
-                </HStack>
-              </Pressable>
-            ))}
-        </VStack>
-        {/* ---------------------------------------------------------------------- */}
+                  <Text>
+                    {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                      hour12: true,
+                    })}
+                  </Text>
+                </VStack>
+              )}
+              <TotalSteps />
+            </HStack>
 
-        <VStack
-          borderWidth={1}
-          borderColor="$borderLight200"
-          borderRadius="$md"
-          p="$2"
-        >
-          <HStack alignItems="center" justifyContent="space-between" p="$2">
-            <Text>
-              {weeklyBslData ? weeklyBslData.getWeeklyBSLData.dateRange : "N/A"}
-            </Text>
-            <Pressable
-              onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-            >
-              <HStack alignItems="center" space="xs">
-                <Text>See more</Text>
-                <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-              </HStack>
-            </Pressable>
-          </HStack>
-
-          <HStack alignItems="center" justifyContent="space-between" space="sm">
-            <Center>
-              <Text size="3xl" fontFamily="$bold">
-                {weeklyBslData
-                  ? weeklyBslData.getWeeklyBSLData.weeklyAverage
-                  : "N/A"}
-              </Text>
-              <Text>mg/dL</Text>
-              <Text>Average</Text>
-            </Center>
-
-            {weeklyBslData && (
-              <BslWeeklyBarChart
+            {bslResultsAndAverageData && (
+              <BslLineChart
                 width={width}
-                data={weeklyBslData.getWeeklyBSLData.weeklyData}
-                bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+                data={
+                  bslResultsAndAverageData.getTestResultsAndAverageForToday
+                    .testResults
+                }
               />
             )}
-          </HStack>
+          </VStack>
+
+          <VStack
+            borderWidth={1}
+            borderColor="$borderLight200"
+            borderRadius="$md"
+            p="$4"
+          >
+            <Text>Do you want to connect your device?</Text>
+            <Text>Supporting text here</Text>
+            <Button>
+              <ButtonText>Connect device</ButtonText>
+            </Button>
+          </VStack>
+
+          {/* will be replaced by log table component ---------------------------------- */}
+          <VStack
+            borderWidth={1}
+            borderColor="$borderLight200"
+            borderRadius="$md"
+            p="$2"
+          >
+            <HStack alignItems="center" justifyContent="space-between" p="$2">
+              <Text fontSize="$lg" fontFamily="$bold">
+                Logs for today
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
+              >
+                <HStack alignItems="center" space="xs">
+                  <Text>See more</Text>
+                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
+                </HStack>
+              </Pressable>
+            </HStack>
+
+            {logsForToday &&
+              logsForToday.map((obj, index) => (
+                <Pressable onPress={() => {}} key={index}>
+                  <HStack justifyContent="space-between" p="$2">
+                    <HStack alignItems="center" space="sm">
+                      <Box
+                        width={40}
+                        height={40}
+                        borderRadius="$full"
+                        bg="#E0E0E0"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        {obj.__typename === "TestResults" && (
+                          <Icon as={MoonIcon} size="md" />
+                        )}
+                        {obj.__typename === "ActivityLogs" && (
+                          <Icon as={HeartrateDark} size="md" />
+                        )}
+                        {obj.__typename === "MedicineLog" && (
+                          <Icon as={CapsuleDark} size="md" />
+                          // <CapsuleDark />
+                        )}
+                        {obj.__typename === "DietLog" && (
+                          <Icon as={MoonIcon} size="md" />
+                        )}
+                      </Box>
+                      <VStack space="xs">
+                        <Text fontFamily="$bold">
+                          {obj.__typename === "TestResults" && "Blood Glucose"}
+                          {obj.__typename === "ActivityLogs" && "Activity"}
+                          {obj.__typename === "MedicineLog" && "Medicine"}
+                          {obj.__typename === "DietLog" && "Carbs"}
+                        </Text>
+                        <Text>
+                          {new Date(obj.log_timestamp).toLocaleString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          })}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                    <HStack alignItems="center" space="xs">
+                      {obj.__typename === "TestResults" && (
+                        <>
+                          <Text size="3xl" fontFamily="$bold">
+                            {obj.bsl}
+                          </Text>
+                          <Text>mmol/L</Text>
+                        </>
+                      )}
+                      {obj.__typename === "ActivityLogs" && (
+                        <>
+                          <Text size="3xl" fontFamily="$bold">
+                            {obj.duration}
+                          </Text>
+                          <Text>mins</Text>
+                        </>
+                      )}
+                      {obj.__typename === "MedicineLog" && (
+                        <>
+                          <Text size="3xl" fontFamily="$bold">
+                            {obj.amount}
+                          </Text>
+                          <Text>mg</Text>
+                        </>
+                      )}
+                      {obj.__typename === "DietLog" && (
+                        <>
+                          <Text size="3xl" fontFamily="$bold">
+                            {obj.carbs}
+                          </Text>
+                          <Text>g</Text>
+                        </>
+                      )}
+                    </HStack>
+                  </HStack>
+                </Pressable>
+              ))}
+          </VStack>
+          {/* ---------------------------------------------------------------------- */}
+
+          <VStack
+            borderWidth={1}
+            borderColor="$borderLight200"
+            borderRadius="$md"
+            p="$2"
+          >
+            <HStack alignItems="center" justifyContent="space-between" p="$2">
+              <Text>
+                {weeklyBslData
+                  ? weeklyBslData.getWeeklyBSLData.dateRange
+                  : "N/A"}
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
+              >
+                <HStack alignItems="center" space="xs">
+                  <Text>See more</Text>
+                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
+                </HStack>
+              </Pressable>
+            </HStack>
+
+            <HStack
+              alignItems="center"
+              justifyContent="space-between"
+              space="sm"
+            >
+              <Center>
+                <Text size="3xl" fontFamily="$bold">
+                  {weeklyBslData
+                    ? weeklyBslData.getWeeklyBSLData.weeklyAverage
+                    : "N/A"}
+                </Text>
+                <Text>mg/dL</Text>
+                <Text>Average</Text>
+              </Center>
+
+              {weeklyBslData && (
+                <BslWeeklyBarChart
+                  width={width}
+                  data={weeklyBslData.getWeeklyBSLData.weeklyData}
+                  bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+                />
+              )}
+            </HStack>
+          </VStack>
         </VStack>
-      </VStack>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

@@ -11,10 +11,21 @@ import {
   Box,
   SectionList,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { useRoute } from "@react-navigation/native";
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
 
 import GlucoButton from "../atoms/GlucoButton";
+import HeaderBasic from "../headers/HeaderBasic";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -102,6 +113,48 @@ const GET_COMBINED_LOGS = gql`
 `;
 
 const LogsScreen: React.FC = () => {
+  const route = useRoute<{ key: string; name: string }>();
+
+  const AnimatedSectionList = Animated.createAnimatedComponent(SectionList);
+
+  // animation for header //////////////////////////
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const offsetAnim = useRef(new Animated.Value(0)).current;
+  const clampedScroll = Animated.diffClamp(
+    Animated.add(
+      scrollY.interpolate({
+        inputRange: [0, 140],
+        outputRange: [0, 140],
+        extrapolateLeft: "clamp",
+      }),
+      offsetAnim
+    ),
+    0,
+    140
+  );
+  let clampedScrollValue = 0;
+  let offsetValue = 0;
+  let scrollValue = 0;
+  useEffect(() => {
+    scrollY.addListener(({ value }) => {
+      const diff = value - scrollValue;
+      scrollValue = value;
+      clampedScrollValue = Math.min(
+        Math.max(clampedScrollValue * diff, 0),
+        140
+      );
+    });
+    offsetAnim.addListener(({ value }) => {
+      offsetValue = value;
+    });
+  }, []);
+  const headerTranslate = clampedScroll.interpolate({
+    inputRange: [0, 140],
+    outputRange: [0, -140],
+    extrapolate: "clamp",
+  });
+  // animation for header end ////////////////////////////////
+
   const [refreshing, setRefreshing] = useState(false);
 
   const [logs, setLogs] = useState<Log[]>([]);
@@ -300,57 +353,96 @@ const LogsScreen: React.FC = () => {
   );
 
   return (
-    <View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <HStack space="sm" p="$4">
-          <GlucoButton
-            text="All"
-            isDisabled={currentFilter === "All"}
-            onPress={() => setCurrentFilter("All")}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View>
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 140,
+            zIndex: 1000,
+            elevation: 1000,
+            backgroundColor: "$neutralWhite",
+            transform: [{ translateY: headerTranslate }],
+            // paddingTop: insets.top,
+          }}
+        >
+          <HeaderBasic
+            routeName={route.name as "Logs"}
+            searchValue={""}
+            onChangeSearchValue={() => {}}
           />
-          <GlucoButton
-            text="Glucose"
-            isDisabled={currentFilter === "Glucose"}
-            onPress={() => setCurrentFilter("Glucose")}
-          />
-          <GlucoButton
-            text="Activity"
-            isDisabled={currentFilter === "Activity"}
-            onPress={() => setCurrentFilter("Activity")}
-          />
-          <GlucoButton
-            text="Food"
-            isDisabled={currentFilter === "Food"}
-            onPress={() => setCurrentFilter("Food")}
-          />
-          <GlucoButton
-            text="Medicine"
-            isDisabled={currentFilter === "Medicine"}
-            onPress={() => setCurrentFilter("Medicine")}
-          />
-        </HStack>
-      </ScrollView>
 
-      {sectionedLogs.length > 0 ? (
-        <SectionList
-          sections={sectionedLogs}
-          keyExtractor={(item, index) => item.log_timestamp + index}
-          renderItem={renderLogItem}
-          renderSectionHeader={renderSectionHeader}
-          onEndReached={loadMoreLogs}
-          onEndReachedThreshold={0.1}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          stickySectionHeadersEnabled={false}
-          ListFooterComponent={() => <View h={40} />}
-        />
-      ) : loading ? (
-        <Spinner size="large" />
-      ) : (
-        <Text>No logs found</Text>
-      )}
-    </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            bg="$neutralWhite"
+          >
+            <HStack space="sm" p="$4">
+              <GlucoButton
+                buttonType="primary"
+                text="All"
+                isDisabled={currentFilter === "All"}
+                onPress={() => setCurrentFilter("All")}
+              />
+              <GlucoButton
+                buttonType="primary"
+                text="Glucose"
+                isDisabled={currentFilter === "Glucose"}
+                onPress={() => setCurrentFilter("Glucose")}
+              />
+              <GlucoButton
+                buttonType="primary"
+                text="Activity"
+                isDisabled={currentFilter === "Activity"}
+                onPress={() => setCurrentFilter("Activity")}
+              />
+              <GlucoButton
+                buttonType="primary"
+                text="Food"
+                isDisabled={currentFilter === "Food"}
+                onPress={() => setCurrentFilter("Food")}
+              />
+              <GlucoButton
+                buttonType="primary"
+                text="Medicine"
+                isDisabled={currentFilter === "Medicine"}
+                onPress={() => setCurrentFilter("Medicine")}
+              />
+            </HStack>
+          </ScrollView>
+        </Animated.View>
+
+        {sectionedLogs.length > 0 ? (
+          <AnimatedSectionList
+            sections={sectionedLogs}
+            keyExtractor={(item, index) => item.log_timestamp + index}
+            renderItem={renderLogItem}
+            renderSectionHeader={renderSectionHeader}
+            onEndReached={loadMoreLogs}
+            onEndReachedThreshold={0.1}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            stickySectionHeadersEnabled={false}
+            // ListFooterComponent={() => <View h={90} />}
+
+            contentContainerStyle={{ paddingTop: 140 }}
+            // onScroll={(e) => scrollY.setValue(e.nativeEvent.contentOffset.y)}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: true }
+            )}
+          />
+        ) : loading ? (
+          <Spinner size="large" />
+        ) : (
+          <Text>No logs found</Text>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
