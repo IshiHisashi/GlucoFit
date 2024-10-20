@@ -74,10 +74,8 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
                   size: 0,
                 })}
               <Text
-                style={{
-                  color: isFocused ? "#000000" : "#222",
-                  fontWeight: isFocused ? "bold" : "regular",
-                }}
+                fontFamily={isFocused ? "$bold" : "$regular"}
+                color={isFocused ? "$primaryIndigo70" : "$neutralDark90"}
               >
                 {label}
               </Text>
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    backgroundColor: "#f8f8dd",
+    backgroundColor: "#ffffff",
     height: 90,
     paddingBottom: 5,
   },
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#ff6347",
+    backgroundColor: "#4800FF",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
