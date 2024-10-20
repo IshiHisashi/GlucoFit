@@ -142,7 +142,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
       {/* ------ sub menu ----- */}
       <Modal
         isOpen={isSubMenuOpen}
-        onClose={() => setIsSubMenuOpen(false)}
+        onClose={toggleSubMenu}
         justifyContent="flex-end"
       >
         <ModalBackdrop bg="$neutralWhite" />
