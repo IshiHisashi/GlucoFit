@@ -20,6 +20,7 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // - Plus (light, dark, custom)
 // - Restaurant (light, dark, custom)
 // - Search (custom)
+// - Times (custom)
 
 interface IconProps extends SvgProps {
   color?: string;
@@ -812,6 +813,28 @@ export const SearchCustom: FC = ({
       stroke={color}
       strokeWidth={strokeWidth}
       d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1.002 1.002 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"
+    />
+  </Svg>
+);
+
+export const TimesCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="m13.41 12 4.3-4.29a1.004 1.004 0 0 0-1.42-1.42L12 10.59l-4.29-4.3a1.004 1.004 0 1 0-1.42 1.42l4.3 4.29-4.3 4.29a.999.999 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L13.41 12Z"
     />
   </Svg>
 );

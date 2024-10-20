@@ -10,20 +10,10 @@ import TestStack from "./TestStack";
 import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
 import {
   AnalysisCustom,
-  AnalysisDark,
-  AnalysisLight,
   AwardCustom,
-  AwardDark,
-  AwardLight,
   FileCustom,
-  FileDark,
-  FileLight,
   HomeCustom,
-  HomeDark,
-  HomeLight,
   PlusCustom,
-  PlusDark,
-  PlusLight,
 } from "../svgs/svgs";
 
 const Tab = createBottomTabNavigator();
@@ -63,7 +53,6 @@ const TabNavigator: React.FC = () => (
         headerShown: false,
       }}
     />
-
     <Tab.Screen
       name="Logs"
       component={LogsScreen}

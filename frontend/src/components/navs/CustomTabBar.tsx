@@ -1,14 +1,35 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import {
   Button,
   ButtonText,
   Icon,
   Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  Pressable,
   Text,
   View,
+  VStack,
 } from "@gluestack-ui/themed";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { TimesCustom } from "../svgs/svgs";
+
+interface SubMenuButtonProps {
+  onPress: () => void;
+  text: string;
+}
+
+const SubMenuButton: FC<SubMenuButtonProps> = (props) => {
+  const { onPress, text } = props;
+
+  return (
+    <Pressable onPress={onPress} $active-bg="$neutralDark10" p="$4" w="$full">
+      <Text textAlign="center">{text}</Text>
+    </Pressable>
+  );
+};
 
 const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
   const { state, descriptors, navigation } = props;
@@ -85,44 +106,49 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
       </View>
 
       {/* ------ sub menu ----- */}
-      <Modal isOpen={isSubMenuOpen} onClose={() => setIsSubMenuOpen(false)}>
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Body>
-            <Button
+      <Modal
+        isOpen={isSubMenuOpen}
+        onClose={() => setIsSubMenuOpen(false)}
+        justifyContent="flex-end"
+      >
+        <ModalBackdrop bg="$neutralWhite" />
+        <ModalContent w="$full">
+          <ModalBody pb={90}>
+            <SubMenuButton
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("CarbsLog");
               }}
-            >
-              <ButtonText>Food/Carbs</ButtonText>
-            </Button>
-            <Button
+              text="Food/Carbs"
+            />
+            <SubMenuButton
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("MedicineLog");
               }}
-            >
-              <ButtonText>Medicine</ButtonText>
-            </Button>
-            <Button
+              text="Medicine"
+            />
+            <SubMenuButton
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("ActivityLog");
               }}
-            >
-              <ButtonText>Activity</ButtonText>
-            </Button>
-            <Button
+              text="Activity"
+            />
+            <SubMenuButton
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("GlucoseLog");
               }}
-            >
-              <ButtonText>Blood Glucose</ButtonText>
-            </Button>
-          </Modal.Body>
-        </Modal.Content>
+              text="Blood Glucose"
+            />
+          </ModalBody>
+          <View style={styles.fabContainer} bottom={5}>
+            <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
+              <TimesCustom color="#ffffff" size={32} />
+            </TouchableOpacity>
+          </View>
+        </ModalContent>
       </Modal>
     </View>
   );
