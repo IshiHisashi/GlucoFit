@@ -20,6 +20,7 @@ import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
 import PickerOpenerRow from "../../molcules/PickerOpenerRow";
@@ -27,6 +28,7 @@ import { AppStackParamList } from "../../../types/navigation";
 import AddNotesSection from "../../organisms/AddNotesSection";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import Sheet from "../../organisms/Sheet";
+import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -229,100 +231,109 @@ const GlucoseLogScreen: React.FC = () => {
   // console.log(data);
 
   return (
-    <View height="$full" p="$4">
-      <VStack space="sm" alignItems="center">
-        <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
+    <SafeAreaView>
+      <View height="$full">
+        <HeaderWithBackButton
+          navigation={navigation}
+          text="Add Blood Glucose"
+          rightIconOnPress={() => {}}
+        />
+        <VStack p="$4">
+          <VStack space="sm" alignItems="center">
+            <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
-        <FormControl isRequired>
-          <Input variant="outline" size="md" w="$56">
-            <InputField
-              value={glucoseLevel}
-              onChangeText={setGlucoseLevel}
-              keyboardType="numeric"
-              // placeholder="Input your glucose level..."
-              // w="$full"
-              // textAlign="center"
-              fontSize="$2xl"
+            <FormControl isRequired>
+              <Input variant="outline" size="md" w="$56">
+                <InputField
+                  value={glucoseLevel}
+                  onChangeText={setGlucoseLevel}
+                  keyboardType="numeric"
+                  // placeholder="Input your glucose level..."
+                  // w="$full"
+                  // textAlign="center"
+                  fontSize="$2xl"
+                />
+                <InputSlot pr="$3">
+                  <Text>mmol/L</Text>
+                </InputSlot>
+              </Input>
+            </FormControl>
+          </VStack>
+
+          <VStack
+            space="sm"
+            mt="$8"
+            borderWidth={1}
+            borderColor="$borderLight200"
+            borderRadius="$md"
+          >
+            <Text fontSize="$lg" fontWeight="$bold" p="$3">
+              Schedule
+            </Text>
+
+            <PickerOpenerRow
+              setShowPicker={setIsDatePickerOpen}
+              text="Date"
+              value={date}
             />
-            <InputSlot pr="$3">
-              <Text>mmol/L</Text>
-            </InputSlot>
-          </Input>
-        </FormControl>
-      </VStack>
+            <PickerOpenerRow
+              setShowPicker={setIsTimePickerOpen}
+              text="Time"
+              value={time}
+            />
+            <PickerOpenerRow
+              setShowPicker={setIsTimePeriodPickerOpen}
+              text="Time Period"
+              value={timePeriod}
+            />
+          </VStack>
 
-      <VStack
-        space="sm"
-        mt="$8"
-        borderWidth={1}
-        borderColor="$borderLight200"
-        borderRadius="$md"
-      >
-        <Text fontSize="$lg" fontWeight="$bold" p="$3">
-          Schedule
-        </Text>
+          <AddNotesSection onPress={handleOpenNote} noteExcerpt={note.title} />
+        </VStack>
 
-        <PickerOpenerRow
-          setShowPicker={setIsDatePickerOpen}
-          text="Date"
-          value={date}
+        <ButtonFixedBottom
+          onPress={handleSubmitCreate}
+          isDisabled={!(glucoseLevel && date && time && timePeriod)}
+          text="Save"
         />
-        <PickerOpenerRow
-          setShowPicker={setIsTimePickerOpen}
-          text="Time"
-          value={time}
+
+        {/* picker modals --------------------------------- */}
+
+        <DateTimePickerModal
+          isVisible={isDatePickerOpen}
+          mode="date"
+          onConfirm={handleDateConfirm}
+          onCancel={() => setIsDatePickerOpen(false)}
+          // testID="dateTimePicker"
+          // date={date}
+          // is24Hour={true}
+          // display="default"
+          // onChange={onChangeDate}
         />
-        <PickerOpenerRow
-          setShowPicker={setIsTimePeriodPickerOpen}
-          text="Time Period"
+
+        <DateTimePickerModal
+          isVisible={isTimePickerOpen}
+          mode="time"
+          onConfirm={handleTimeConfirm}
+          onCancel={() => setIsTimePickerOpen(false)}
+          // testID="dateTimePicker"
+          // time={time}
+          is24Hour={true}
+          // display="default"
+          // onChange={onChangeTime}
+        />
+
+        <Sheet
+          isOpen={isTimePeriodPickerOpen}
+          onClose={setIsTimePeriodPickerOpen}
+          setValue={setTimePeriod}
+          sheetContentType="picker"
+          title="Time period"
+          optionsArray={timePeriods}
           value={timePeriod}
         />
-      </VStack>
-
-      <AddNotesSection onPress={handleOpenNote} noteExcerpt={note.title} />
-
-      <ButtonFixedBottom
-        onPress={handleSubmitCreate}
-        isDisabled={!(glucoseLevel && date && time && timePeriod)}
-        text="Save"
-      />
-
-      {/* picker modals --------------------------------- */}
-
-      <DateTimePickerModal
-        isVisible={isDatePickerOpen}
-        mode="date"
-        onConfirm={handleDateConfirm}
-        onCancel={() => setIsDatePickerOpen(false)}
-        // testID="dateTimePicker"
-        // date={date}
-        // is24Hour={true}
-        // display="default"
-        // onChange={onChangeDate}
-      />
-
-      <DateTimePickerModal
-        isVisible={isTimePickerOpen}
-        mode="time"
-        onConfirm={handleTimeConfirm}
-        onCancel={() => setIsTimePickerOpen(false)}
-        // testID="dateTimePicker"
-        // time={time}
-        is24Hour={true}
-        // display="default"
-        // onChange={onChangeTime}
-      />
-
-      <Sheet
-        isOpen={isTimePeriodPickerOpen}
-        onClose={setIsTimePeriodPickerOpen}
-        setValue={setTimePeriod}
-        sheetContentType="picker"
-        title="Time period"
-        optionsArray={timePeriods}
-        value={timePeriod}
-      />
-    </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

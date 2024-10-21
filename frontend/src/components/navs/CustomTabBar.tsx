@@ -1,24 +1,57 @@
-import React, { useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import {
   Button,
   ButtonText,
   Icon,
   Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  Pressable,
   Text,
   View,
+  VStack,
 } from "@gluestack-ui/themed";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { PlusCustom, TimesCustom } from "../svgs/svgs";
+
+interface SubMenuItemProps {
+  onPress: () => void;
+  text: string;
+}
+
+const SubMenuItem: FC<SubMenuItemProps> = (props) => {
+  const { onPress, text } = props;
+
+  return (
+    <Pressable onPress={onPress} $active-bg="$neutralDark10" p="$4" w="$full">
+      <Text textAlign="center">{text}</Text>
+    </Pressable>
+  );
+};
 
 const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
   const { state, descriptors, navigation } = props;
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  const toggleSubMenu = () => setIsSubMenuOpen(!isSubMenuOpen);
+  const toggleSubMenu = () => {
+    setIsSubMenuOpen(!isSubMenuOpen);
+    Animated.timing(rotateAnim, {
+      toValue: isSubMenuOpen ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+  const spin = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "45deg"],
+  });
 
   return (
     <View style={styles.container}>
-      <View style={styles.tabBar}>
+      <View style={styles.tabBar} zIndex={1}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
@@ -44,19 +77,25 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
 
           if (route.name === "FAB") {
             return (
-              <View key={route.key} style={styles.fabContainer}>
-                <TouchableOpacity
+              <View key={route.key} style={styles.fabContainer} zIndex={100}>
+                {/* <TouchableOpacity
                   key={route.key}
                   onPress={toggleSubMenu}
                   style={styles.fabButton}
-                >
-                  {options.tabBarIcon &&
+                > */}
+                {/* {options.tabBarIcon &&
                     options.tabBarIcon({
                       focused: isFocused,
                       color: "",
                       size: 0,
-                    })}
-                </TouchableOpacity>
+                    })} */}
+                {/* <Animated.View
+                    style={{ transform: [{ rotate: spin }] }}
+                    zIndex={100}
+                  >
+                    <PlusCustom color="#ffffff" size={32} />
+                  </Animated.View>
+                </TouchableOpacity> */}
               </View>
             );
           }
@@ -74,57 +113,76 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
                   size: 0,
                 })}
               <Text
-                style={{
-                  color: isFocused ? "#000000" : "#222",
-                  fontWeight: isFocused ? "bold" : "regular",
-                }}
+                fontFamily={isFocused ? "$bold" : "$regular"}
+                color={isFocused ? "$primaryIndigo70" : "$neutralDark90"}
               >
                 {label}
               </Text>
             </TouchableOpacity>
           );
         })}
+
+        {/* ------ FAB Button ------ */}
+        <View
+          style={styles.fabContainer}
+          position="absolute"
+          left={0}
+          right={0}
+          bottom={0}
+          zIndex={100}
+        >
+          <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <PlusCustom color="#ffffff" size={32} />
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* ------ sub menu ----- */}
-      <Modal isOpen={isSubMenuOpen} onClose={() => setIsSubMenuOpen(false)}>
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Body>
-            <Button
+      <Modal
+        isOpen={isSubMenuOpen}
+        onClose={toggleSubMenu}
+        justifyContent="flex-end"
+      >
+        <ModalBackdrop bg="$neutralWhite" />
+        <ModalContent w="$full">
+          <ModalBody pb={90}>
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("CarbsLog");
               }}
-            >
-              <ButtonText>Food/Carbs</ButtonText>
-            </Button>
-            <Button
+              text="Food/Carbs"
+            />
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("MedicineLog");
               }}
-            >
-              <ButtonText>Medicine</ButtonText>
-            </Button>
-            <Button
+              text="Medicine"
+            />
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("ActivityLog");
               }}
-            >
-              <ButtonText>Activity</ButtonText>
-            </Button>
-            <Button
+              text="Activity"
+            />
+            <SubMenuItem
               onPress={() => {
                 setIsSubMenuOpen(false);
                 navigation.navigate("GlucoseLog");
               }}
-            >
-              <ButtonText>Blood Glucose</ButtonText>
-            </Button>
-          </Modal.Body>
-        </Modal.Content>
+              text="Blood Glucose"
+            />
+          </ModalBody>
+          <View style={styles.fabContainer}>
+            <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
+              <TimesCustom color="#ffffff" size={32} />
+            </TouchableOpacity>
+          </View>
+        </ModalContent>
       </Modal>
     </View>
   );
@@ -137,7 +195,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    backgroundColor: "#f8f8dd",
+    backgroundColor: "#ffffff",
     height: 90,
     paddingBottom: 5,
   },
@@ -155,11 +213,11 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#ff6347",
+    backgroundColor: "#4800FF",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: 20,
+    bottom: 25,
     elevation: 8, // for Android shadow
     shadowColor: "#000", // for iOS shadow
     shadowOffset: { width: 0, height: 2 },

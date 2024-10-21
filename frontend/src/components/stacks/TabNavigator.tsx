@@ -9,15 +9,11 @@ import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
 import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
 import {
-  AnalysisDark,
-  AnalysisLight,
-  AwardDark,
-  AwardLight,
-  FileDark,
-  FileLight,
-  HomeDark,
-  HomeLight,
-  PlusDark,
+  AnalysisCustom,
+  AwardCustom,
+  FileCustom,
+  HomeCustom,
+  PlusCustom,
 } from "../svgs/svgs";
 
 const Tab = createBottomTabNavigator();
@@ -30,12 +26,9 @@ const TabNavigator: React.FC = () => (
       options={{
         title: "Home",
         tabBarIcon: ({ focused, color, size }) => (
-          <Icon
-            as={focused ? HomeDark : HomeLight}
-            // size="sm"
-            // color={color}
-          />
+          <HomeCustom color={focused ? "#3D00D6" : "#141414"} size={28} />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -44,12 +37,9 @@ const TabNavigator: React.FC = () => (
       options={{
         title: "Insights",
         tabBarIcon: ({ focused, color, size }) => (
-          <Icon
-            as={focused ? AnalysisDark : AnalysisLight}
-            // size="sm"
-            // color={color}
-          />
+          <AnalysisCustom color={focused ? "#3D00D6" : "#141414"} size={28} />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -58,27 +48,20 @@ const TabNavigator: React.FC = () => (
       options={{
         tabBarButton: () => null, // Hide the default tab button
         tabBarIcon: ({ focused, color, size }) => (
-          <Icon
-            as={PlusDark}
-            //  size="sm"
-            //   color={color}
-          />
+          <PlusCustom color="#ffffff" size={32} />
         ),
+        headerShown: false,
       }}
     />
-
     <Tab.Screen
       name="Logs"
       component={LogsScreen}
       options={{
         title: "Logs",
         tabBarIcon: ({ focused, color, size }) => (
-          <Icon
-            as={focused ? FileDark : FileLight}
-            // size="sm"
-            // color={color}
-          />
+          <FileCustom color={focused ? "#3D00D6" : "#141414"} size={28} />
         ),
+        headerShown: false,
       }}
     />
     <Tab.Screen
@@ -87,12 +70,9 @@ const TabNavigator: React.FC = () => (
       options={{
         title: "Badges",
         tabBarIcon: ({ focused, color, size }) => (
-          <Icon
-            as={focused ? AwardDark : AwardLight}
-            // size="sm"
-            // color={color}
-          />
+          <AwardCustom color={focused ? "#3D00D6" : "#141414"} size={28} />
         ),
+        headerShown: false,
       }}
     />
   </Tab.Navigator>
