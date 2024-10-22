@@ -19,6 +19,12 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
         <Button bgColor="#888" onPress={() => navigation.navigate("Signup")}>
           <ButtonText>Go to Sign up</ButtonText>
         </Button>
+        <Button
+          bgColor="#888"
+          onPress={() => navigation.navigate("OnboardingStack")}
+        >
+          <ButtonText>Go to Onboarding</ButtonText>
+        </Button>
       </View>
     </View>
   );

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginSignupScreen from "../screens/loginSignupScreens/LoginSignupScreen";
 import LoginScreen from "../screens/loginSignupScreens/LoginScreen";
 import SignupScreen from "../screens/loginSignupScreens/SignupScreen";
+import OnboardingStack from "./OnboardingStack";
 import type { LoginSignupStackParamList } from "../../types/navigation";
 
 const Stack = createNativeStackNavigator<LoginSignupStackParamList>();
@@ -25,6 +26,15 @@ const LoginSignupStack: React.FC = () => {
         component={SignupScreen}
         options={{
           title: "Signup",
+          headerBackTitleVisible: false,
+          headerTintColor: "#555",
+        }}
+      />
+      <Stack.Screen
+        name="OnboardingStack"
+        component={OnboardingStack}
+        options={{
+          title: "Onboarding(will delete this nav)",
           headerBackTitleVisible: false,
           headerTintColor: "#555",
         }}
