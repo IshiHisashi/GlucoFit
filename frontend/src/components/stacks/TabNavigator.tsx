@@ -75,11 +75,11 @@ const TabNavigator: React.FC = () => (
         headerShown: false,
       }}
     />
-    <Tab.Screen
+    {/* <Tab.Screen
       name="LoginSignupScreen"
       component={LoginSignupStack}
       options={{ title: "Welcome", headerShown: false }}
-    />
+    /> */}
   </Tab.Navigator>
 );
 
