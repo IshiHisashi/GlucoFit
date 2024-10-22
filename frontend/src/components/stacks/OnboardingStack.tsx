@@ -7,6 +7,8 @@ import DiabeticTypeScreen from "../screens/onboardingScreens/DiabeticTypeScreen"
 import MedicationScreen from "../screens/onboardingScreens/MedicationScreen";
 import MedicineListScreen from "../screens/onboardingScreens/MedicineListScreen";
 import BslRangeScreen from "../screens/onboardingScreens/bslRangeScreen";
+import ConnectIhelathScreen from "../screens/onboardingScreens/ConnectIhelathScreen";
+import AllDoneScreen from "../screens/onboardingScreens/AllDoneScreen";
 import type { OnboardingStackParamList } from "../../types/navigation";
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -71,6 +73,24 @@ const OnboardingStack: React.FC = () => {
       <Stack.Screen
         name="BslRangeScreen"
         component={BslRangeScreen}
+        options={{
+          title: "",
+          headerBackTitleVisible: false,
+          headerTintColor: "#555",
+        }}
+      />
+      <Stack.Screen
+        name="ConnectIhelathScreen"
+        component={ConnectIhelathScreen}
+        options={{
+          title: "",
+          headerBackTitleVisible: false,
+          headerTintColor: "#555",
+        }}
+      />
+      <Stack.Screen
+        name="AllDoneScreen"
+        component={AllDoneScreen}
         options={{
           title: "",
           headerBackTitleVisible: false,

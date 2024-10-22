@@ -34,9 +34,7 @@ const LoginSignupStack: React.FC = () => {
         name="OnboardingStack"
         component={OnboardingStack}
         options={{
-          title: "Onboarding(will delete this nav)",
-          headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

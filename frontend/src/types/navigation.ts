@@ -36,4 +36,6 @@ export type OnboardingStackParamList = {
   MedicationScreen: undefined;
   MedicineListScreen: undefined;
   BslRangeScreen: undefined;
+  ConnectIhelathScreen: undefined;
+  AllDoneScreen: undefined;
 };
