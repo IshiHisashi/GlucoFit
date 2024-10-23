@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import {
   View,
   Text,
+  Image,
   Pressable,
   HStack,
   Icon,
@@ -27,7 +28,6 @@ const ProgressBudgeSection: React.FC = () => {
 
   // -------------------------
   // FETCH DATA TO SEE PROGRESS OF EACH BADGE
-  //This is a sample for lazyquery to retrieve data conditionally (conditional fetching).
   const [loadStreakData, { data: streakData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
     {
@@ -91,7 +91,6 @@ const ProgressBudgeSection: React.FC = () => {
           loadStreakActivityLogslData();
         } else if (badge.badgeId.badge_name === "Knowledge Seeker") {
           loadNumArticleData();
-          console.log(numArticleData);
         }
       });
     }
@@ -132,12 +131,26 @@ const ProgressBudgeSection: React.FC = () => {
         {data?.getUserOnProgressBadge?.badges.map((badge: any) => (
           <View
             key={badge.badgeId.id}
-            borderColor="hotpink"
-            borderWidth={1}
-            p={4}
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            borderColor="#ddd"
+            borderBottomWidth={1}
+            p={8}
           >
-            <Text>{badge.badgeId.badge_name}</Text>
-            <Text fontSize={10}>{badge.badgeId.badge_desc}</Text>
+            <View flexDirection="row" gap={8} alignItems="center">
+              {/* Please add conditional image rendering later */}
+              <Image
+                source={require("../../../assets/badges/knowledgeSeeker.png")}
+                alt="Local Image"
+                w={40}
+                h={40}
+              />
+              <View>
+                <Text>{badge.badgeId.badge_name}</Text>
+                <Text fontSize={10}>badge description</Text>
+              </View>
+            </View>
             <Text>
               {/* Need conditional rendering depending on badge name */}
               {badge.badgeId.badge_name === "First Steps"
@@ -156,12 +169,10 @@ const ProgressBudgeSection: React.FC = () => {
                           )
                         : badge.badgeId.badge_name === "Glucose Guru"
                           ? JSON.stringify(
-                              streakNightOwlData?.getStreakByTimeRange
+                              streakBslRangeData?.getStreakTestResults
                             )
                           : badge.badgeId.badge_name === "Check-in Champion"
-                            ? JSON.stringify(
-                                streakNightOwlData?.getStreakByTimeRange
-                              )
+                            ? JSON.stringify(streakData?.getStreakTestResults)
                             : badge.badgeId.badge_name === "Fitness Streak"
                               ? JSON.stringify(
                                   streakActivityLogsData?.getStreakActivityLogs
