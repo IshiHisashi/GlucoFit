@@ -2,86 +2,114 @@ import React, { useEffect } from "react";
 import {
   View,
   Text,
+  Image,
   Pressable,
   HStack,
   Icon,
   ChevronRightIcon,
   ScrollView,
 } from "@gluestack-ui/themed";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import {
-  useQuery,
-  useLazyQuery,
-  gql,
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-} from "@apollo/client";
-
-const IP = "";
-
-// Apollo Client Setup
-const client = new ApolloClient({
-  uri: `http://${IP}:3000/graphql`, // Replace with your backend IP address or hosted GraphQL endpoint
-  cache: new InMemoryCache(),
-});
+  GET_USER_ON_PROGRESS_BADGES,
+  QUERY_FOR_STREAK_STARTER,
+  QUERY_FOR_STREAK_BY_TIME_RANGE,
+  QUERY_FOR_STREAK_ACTIVITYLOGS,
+  GET_NUM_FAVORITE_ARTICLE,
+} from "../../utils/query/badgeProgressQuery";
 
 const userId = "670db268582e7e887e447288";
 
-// Main Query to Get User's Badges
-const GET_USER_ON_PROGRESS_BADGES = gql`
-  query GetUserOnProgressBadges($id: ID!) {
-    getUserOnProgressBadge(id: $id) {
-      badges {
-        badgeId {
-          id
-          badge_name
-          badge_desc
-          badge_image_address
-          criteria {
-            value
-            comparison
-          }
-        }
-        achieved
-      }
-    }
-  }
-`;
-
-// Query to Fetch Data for a Specific Badge (Streak Starter)
-const QUERY_FOR_STREAK_STARTER = gql`
-  query GetStreakWithThreshold {
-    getStreakTestResults(
-      user_id: "670702cbd3ce55c634ec740c"
-      withThreshold: false
-    )
-  }
-`;
-
 const ProgressBudgeSection: React.FC = () => {
-  // Fetch user badges using useQuery
+  //-------------- TO AKI FROM ISHI ------------
+  // Conditional fetching is done in the following idea.
+  // 1) Fetch unachieved badges initially.
+  // 2) Then, depending on the result, the necessary functions are executed to show corresponding progress. This is done by 'useLazyQuery'
+  // 3) So, LazyQueries are defined
+  // 4) Define (map) badge name with these lazyqueries.
+  // 5) Define (map) badge name with the retrieved data (number as progress).
+
+  // Remaining task to hand over.
+  // - image needs to be dynamic
+  // - badge description should be added
+  // - fetch optimization (if any)
+
+  // 1).Fetch user badges using useQuery
   const { loading, error, data } = useQuery(GET_USER_ON_PROGRESS_BADGES, {
     variables: { id: userId },
   });
 
-  // -------------------------
-  // FETCH DATA TO SEE PROGRESS OF EACH BADGE
-  //This is a sample for lazyquery to retrieve data conditionally (conditional fetching).
+  // 2). 3). Lazy Queries for each badge progress
   const [loadStreakData, { data: streakData }] = useLazyQuery(
-    QUERY_FOR_STREAK_STARTER
+    QUERY_FOR_STREAK_STARTER,
+    { variables: { userId, withThreshold: false } }
+  );
+  const [loadStreakBslRangeData, { data: streakBslRangeData }] = useLazyQuery(
+    QUERY_FOR_STREAK_STARTER,
+    { variables: { userId, withThreshold: true } }
+  );
+  const [loadStreakEarlyBirdData, { data: streakEarlyBirdData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    { variables: { userId, startHour: 6, endHour: 8 } }
+  );
+  const [loadStreakNightOwlData, { data: streakNightOwlData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    { variables: { userId, startHour: 20, endHour: 24 } }
+  );
+  const [loadStreakActivityLogslData, { data: streakActivityLogsData }] =
+    useLazyQuery(QUERY_FOR_STREAK_ACTIVITYLOGS, { variables: { userId } });
+  const [loadNumArticleData, { data: numArticleData }] = useLazyQuery(
+    GET_NUM_FAVORITE_ARTICLE,
+    { variables: { id: userId } }
   );
 
-  // Effect to Load Badge-Specific Data
+  // 4). Map badge names to their respective loaders
+  const badgeLoaders: Record<string, () => void> = {
+    "First Steps": loadStreakData,
+    "Streak Starter": loadStreakData,
+    "Healthy Habit": loadStreakBslRangeData,
+    "Early Bird": loadStreakEarlyBirdData,
+    "Night Owl": loadStreakNightOwlData,
+    "Glucose Guru": loadStreakBslRangeData,
+    "Check-in Champion": loadStreakData,
+    "Fitness Streak": loadStreakActivityLogslData,
+    "Knowledge Seeker": loadNumArticleData,
+  };
+
+  // 4). Effect to Load Badge-Specific Data
   useEffect(() => {
     if (data?.getUserOnProgressBadge?.badges) {
       data.getUserOnProgressBadge.badges.forEach((badge: any) => {
-        if (badge.badgeId.badge_name === "Streak Starter") {
-          loadStreakData(); // Only load data when the "Streak Starter" badge is found
-        }
+        const loadBadgeData = badgeLoaders[badge.badgeId.badge_name];
+        if (loadBadgeData) loadBadgeData();
       });
     }
-  }, [data, loadStreakData]);
-  // ---------------------------
+  }, [data]);
+
+  // 5). Helper function to get the appropriate data for the badge
+  const getBadgeProgress = (badgeName: string) => {
+    switch (badgeName) {
+      case "First Steps":
+      case "Streak Starter":
+      case "Check-in Champion":
+        return JSON.stringify(streakData?.getStreakTestResults);
+      case "Healthy Habit":
+      case "Glucose Guru":
+        return JSON.stringify(streakBslRangeData?.getStreakTestResults);
+      case "Early Bird":
+        return JSON.stringify(streakEarlyBirdData?.getStreakByTimeRange);
+      case "Night Owl":
+        return JSON.stringify(streakNightOwlData?.getStreakByTimeRange);
+      case "Fitness Streak":
+        return JSON.stringify(streakActivityLogsData?.getStreakActivityLogs);
+      case "Knowledge Seeker":
+        return JSON.stringify(
+          numArticleData?.getUser.favourite_articles?.length
+        );
+      default:
+        return "tbc";
+    }
+  };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -113,22 +141,33 @@ const ProgressBudgeSection: React.FC = () => {
       </View>
 
       {/* Render Badge Cards */}
-      <ScrollView>
+      <ScrollView height={250}>
         {data?.getUserOnProgressBadge?.badges.map((badge: any) => (
           <View
             key={badge.badgeId.id}
-            borderColor="hotpink"
-            borderWidth={1}
-            p={4}
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            borderColor="#ddd"
+            borderBottomWidth={1}
+            p={12}
           >
-            <Text>{badge.badgeId.badge_name}</Text>
-            <Text fontSize={10}>{badge.badgeId.badge_desc}</Text>
+            <View flexDirection="row" gap={8} alignItems="center">
+              {/* NEED TO BE REPLACED CONDITIONALLY */}
+              <Image
+                source={require("../../../assets/badges/knowledgeSeeker.png")}
+                alt="Local Image"
+                w={40}
+                h={40}
+              />
+              <View>
+                <Text>{badge.badgeId.badge_name}</Text>
+                <Text fontSize={10}>badge description</Text>
+              </View>
+            </View>
             <Text>
-              {/* Need conditional rendering depending on badge name */}
-              {badge.badgeId.badge_name === "Streak Starter"
-                ? JSON.stringify(streakData?.getStreakTestResults)
-                : "tbc"}{" "}
-              / {badge.badgeId.criteria.value}
+              {getBadgeProgress(badge.badgeId.badge_name)} /{" "}
+              {badge.badgeId.criteria.value}
             </Text>
           </View>
         ))}
@@ -138,11 +177,7 @@ const ProgressBudgeSection: React.FC = () => {
 };
 
 const ProgressBudge: React.FC = () => {
-  return (
-    <ApolloProvider client={client}>
-      <ProgressBudgeSection />
-    </ApolloProvider>
-  );
+  return <ProgressBudgeSection />;
 };
 
 export default ProgressBudge;
