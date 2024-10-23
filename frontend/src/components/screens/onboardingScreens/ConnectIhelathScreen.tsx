@@ -18,6 +18,7 @@ const ConnectIhelathScreen: React.FC<Props> = ({ navigation }) => {
       <OnbordingLayout
         comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        progressValue={87.5}
         onPress={() => navigation.navigate("AllDoneScreen")}
       >
         <View flexDirection="column" gap={8}>

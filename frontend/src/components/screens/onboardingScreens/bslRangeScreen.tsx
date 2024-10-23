@@ -17,6 +17,7 @@ const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
       <OnbordingLayout
         comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        progressValue={75}
         onPress={() => navigation.navigate("ConnectIhelathScreen")}
       >
         <Text textAlign="center">Dual-slider will be here...</Text>

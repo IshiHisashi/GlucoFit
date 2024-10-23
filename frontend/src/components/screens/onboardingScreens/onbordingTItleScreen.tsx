@@ -5,7 +5,6 @@ import {
   Button,
   ButtonText,
   Image,
-  Center,
 } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";

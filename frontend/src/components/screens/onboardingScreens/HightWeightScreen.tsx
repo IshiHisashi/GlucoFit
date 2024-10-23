@@ -13,6 +13,7 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
       <OnbordingLayout
         comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        progressValue={25}
         onPress={() => navigation.navigate("DiabeticTypeScreen")}
       >
         <View width="100%" flexDirection="row" gap={16}>

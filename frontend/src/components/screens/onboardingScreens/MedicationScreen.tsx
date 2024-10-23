@@ -18,6 +18,7 @@ const MedicationScreen: React.FC<Props> = ({ navigation }) => {
       <OnbordingLayout
         comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        progressValue={50}
         onPress={() => navigation.navigate("MedicineListScreen")}
       >
         <View flexDirection="column" gap={8}>

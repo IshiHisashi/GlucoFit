@@ -25,6 +25,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
     <View>
       <OnbordingLayout
         comment="Let’s add your medicine!"
+        progressValue={62.5}
         onPress={() => navigation.navigate("BslRangeScreen")}
         addLater
       >
