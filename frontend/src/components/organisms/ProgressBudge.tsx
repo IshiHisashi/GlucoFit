@@ -21,81 +21,95 @@ import {
 const userId = "670db268582e7e887e447288";
 
 const ProgressBudgeSection: React.FC = () => {
-  // Fetch user badges using useQuery
+  //-------------- TO AKI FROM ISHI ------------
+  // Conditional fetching is done in the following idea.
+  // 1) Fetch unachieved badges initially.
+  // 2) Then, depending on the result, the necessary functions are executed to show corresponding progress. This is done by 'useLazyQuery'
+  // 3) So, LazyQueries are defined
+  // 4) Define (map) badge name with these lazyqueries.
+  // 5) Define (map) badge name with the retrieved data (number as progress).
+
+  // Remaining task to hand over.
+  // - image needs to be dynamic
+  // - badge description should be added
+  // - fetch optimization (if any)
+
+  // 1).Fetch user badges using useQuery
   const { loading, error, data } = useQuery(GET_USER_ON_PROGRESS_BADGES, {
     variables: { id: userId },
   });
 
-  // -------------------------
-  // FETCH DATA TO SEE PROGRESS OF EACH BADGE
+  // 2). 3). Lazy Queries for each badge progress
   const [loadStreakData, { data: streakData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
-    {
-      variables: {
-        userId: userId,
-        withThreshold: false,
-      },
-    }
+    { variables: { userId, withThreshold: false } }
   );
   const [loadStreakBslRangeData, { data: streakBslRangeData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
-    {
-      variables: {
-        userId: userId,
-        withThreshold: true,
-      },
-    }
+    { variables: { userId, withThreshold: true } }
   );
   const [loadStreakEarlyBirdData, { data: streakEarlyBirdData }] = useLazyQuery(
     QUERY_FOR_STREAK_BY_TIME_RANGE,
-    {
-      variables: { userId: userId, startHour: 6, endHour: 8 },
-    }
+    { variables: { userId, startHour: 6, endHour: 8 } }
   );
   const [loadStreakNightOwlData, { data: streakNightOwlData }] = useLazyQuery(
     QUERY_FOR_STREAK_BY_TIME_RANGE,
-    {
-      variables: { userId: userId, startHour: 20, endHour: 24 },
-    }
+    { variables: { userId, startHour: 20, endHour: 24 } }
   );
   const [loadStreakActivityLogslData, { data: streakActivityLogsData }] =
-    useLazyQuery(QUERY_FOR_STREAK_ACTIVITYLOGS, {
-      variables: { userId: userId },
-    });
+    useLazyQuery(QUERY_FOR_STREAK_ACTIVITYLOGS, { variables: { userId } });
   const [loadNumArticleData, { data: numArticleData }] = useLazyQuery(
     GET_NUM_FAVORITE_ARTICLE,
-    {
-      variables: { id: userId },
-    }
+    { variables: { id: userId } }
   );
 
-  // Effect to Load Badge-Specific Data
+  // 4). Map badge names to their respective loaders
+  const badgeLoaders: Record<string, () => void> = {
+    "First Steps": loadStreakData,
+    "Streak Starter": loadStreakData,
+    "Healthy Habit": loadStreakBslRangeData,
+    "Early Bird": loadStreakEarlyBirdData,
+    "Night Owl": loadStreakNightOwlData,
+    "Glucose Guru": loadStreakBslRangeData,
+    "Check-in Champion": loadStreakData,
+    "Fitness Streak": loadStreakActivityLogslData,
+    "Knowledge Seeker": loadNumArticleData,
+  };
+
+  // 4). Effect to Load Badge-Specific Data
   useEffect(() => {
     if (data?.getUserOnProgressBadge?.badges) {
       data.getUserOnProgressBadge.badges.forEach((badge: any) => {
-        if (badge.badgeId.badge_name === "First Steps") {
-          loadStreakData();
-        } else if (badge.badgeId.badge_name === "Streak Starter") {
-          loadStreakData();
-        } else if (badge.badgeId.badge_name === "Healthy Habit") {
-          loadStreakBslRangeData();
-        } else if (badge.badgeId.badge_name === "Early Bird") {
-          loadStreakEarlyBirdData();
-        } else if (badge.badgeId.badge_name === "Night Owl") {
-          loadStreakNightOwlData();
-        } else if (badge.badgeId.badge_name === "Glucose Guru") {
-          loadStreakBslRangeData();
-        } else if (badge.badgeId.badge_name === "Check-in Champion") {
-          loadStreakData();
-        } else if (badge.badgeId.badge_name === "Fitness Streak") {
-          loadStreakActivityLogslData();
-        } else if (badge.badgeId.badge_name === "Knowledge Seeker") {
-          loadNumArticleData();
-        }
+        const loadBadgeData = badgeLoaders[badge.badgeId.badge_name];
+        if (loadBadgeData) loadBadgeData();
       });
     }
   }, [data]);
-  // ---------------------------
+
+  // 5). Helper function to get the appropriate data for the badge
+  const getBadgeProgress = (badgeName: string) => {
+    switch (badgeName) {
+      case "First Steps":
+      case "Streak Starter":
+      case "Check-in Champion":
+        return JSON.stringify(streakData?.getStreakTestResults);
+      case "Healthy Habit":
+      case "Glucose Guru":
+        return JSON.stringify(streakBslRangeData?.getStreakTestResults);
+      case "Early Bird":
+        return JSON.stringify(streakEarlyBirdData?.getStreakByTimeRange);
+      case "Night Owl":
+        return JSON.stringify(streakNightOwlData?.getStreakByTimeRange);
+      case "Fitness Streak":
+        return JSON.stringify(streakActivityLogsData?.getStreakActivityLogs);
+      case "Knowledge Seeker":
+        return JSON.stringify(
+          numArticleData?.getUser.favourite_articles?.length
+        );
+      default:
+        return "tbc";
+    }
+  };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -136,10 +150,10 @@ const ProgressBudgeSection: React.FC = () => {
             alignItems="center"
             borderColor="#ddd"
             borderBottomWidth={1}
-            p={8}
+            p={12}
           >
             <View flexDirection="row" gap={8} alignItems="center">
-              {/* Please add conditional image rendering later */}
+              {/* NEED TO BE REPLACED CONDITIONALLY */}
               <Image
                 source={require("../../../assets/badges/knowledgeSeeker.png")}
                 alt="Local Image"
@@ -152,38 +166,8 @@ const ProgressBudgeSection: React.FC = () => {
               </View>
             </View>
             <Text>
-              {/* Need conditional rendering depending on badge name */}
-              {badge.badgeId.badge_name === "First Steps"
-                ? JSON.stringify(streakData?.getStreakTestResults)
-                : badge.badgeId.badge_name === "Streak Starter"
-                  ? JSON.stringify(streakData?.getStreakTestResults)
-                  : badge.badgeId.badge_name === "Healthy Habit"
-                    ? JSON.stringify(streakBslRangeData?.getStreakTestResults)
-                    : badge.badgeId.badge_name === "Early Bird"
-                      ? JSON.stringify(
-                          streakEarlyBirdData?.getStreakByTimeRange
-                        )
-                      : badge.badgeId.badge_name === "Night Owl"
-                        ? JSON.stringify(
-                            streakNightOwlData?.getStreakByTimeRange
-                          )
-                        : badge.badgeId.badge_name === "Glucose Guru"
-                          ? JSON.stringify(
-                              streakBslRangeData?.getStreakTestResults
-                            )
-                          : badge.badgeId.badge_name === "Check-in Champion"
-                            ? JSON.stringify(streakData?.getStreakTestResults)
-                            : badge.badgeId.badge_name === "Fitness Streak"
-                              ? JSON.stringify(
-                                  streakActivityLogsData?.getStreakActivityLogs
-                                )
-                              : badge.badgeId.badge_name === "Knowledge Seeker"
-                                ? JSON.stringify(
-                                    numArticleData?.getUser.favourite_articles
-                                      ?.length
-                                  )
-                                : "tbc"}{" "}
-              / {badge.badgeId.criteria.value}
+              {getBadgeProgress(badge.badgeId.badge_name)} /{" "}
+              {badge.badgeId.criteria.value}
             </Text>
           </View>
         ))}
