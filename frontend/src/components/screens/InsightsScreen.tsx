@@ -5,10 +5,18 @@ import {
   Text,
   RefreshControl,
   Heading,
+  View,
+  Box,
+  Image,
+  VStack,
+  Pressable,
+  set,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
+import { Dimensions } from "react-native";
+import { gql, useQuery } from "@apollo/client";
 
 import GlucoButton from "../atoms/GlucoButton";
 import {
@@ -25,6 +33,58 @@ import {
   RestaurantLight,
 } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
+import InsightCard from "../molcules/InsightCard";
+
+// hardcode for now
+const userId = "670de7a6e96ff53059a49ba8";
+
+type FilterType = "All" | "Favorite" | "Food" | "Medication" | "Wellness";
+
+const GET_RECENT_ARTICLES = gql`
+  query GetRecentArticles(
+    $userId: ID!
+    $limit: Int
+    $cursor: String
+    $classification: String
+  ) {
+    getUserArticlesPagination(
+      userId: $userId
+      limit: $limit
+      cursor: $cursor
+      classification: $classification
+    ) {
+      edges {
+        id
+        article_genre
+        article_url
+        article_thumbnail_address
+        article_name
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+const GET_ARTICLES = gql`
+  query GetArticles($cursor: String, $limit: Int) {
+    getAllArticlesPagination(cursor: $cursor, limit: $limit) {
+      edges {
+        article_genre
+        article_name
+        article_thumbnail_address
+        article_url
+        id
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
 
 const InsightsScreen: React.FC = () => {
   const route = useRoute<{ key: string; name: string }>();
@@ -39,102 +99,216 @@ const InsightsScreen: React.FC = () => {
     }, 2000);
   }, []);
 
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [endCursor, setEndCursor] = useState<string | null>(null);
+
+  const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
+
+  const screenWidth = Dimensions.get("window").width;
+  const itemWidth = (screenWidth - 48) / 2;
+
+  const {
+    data: recentArticlesData,
+    loading: recentArticlesLoading,
+    error: recentArticlesError,
+    refetch: recentArticlesRefetch,
+    fetchMore: recentArticlesFetchMore,
+  } = useQuery(GET_RECENT_ARTICLES, {
+    variables: {
+      userId: userId,
+      limit: 5,
+      cursor: "",
+      classification: "recent",
+    },
+  });
+  recentArticlesData &&
+    console.log("recent:", recentArticlesData.getUserArticlesPagination);
+
+  const {
+    data: articlesData,
+    loading: articlesLoading,
+    error: articlesError,
+    refetch: articlesRefetch,
+    fetchMore: articlesFetchMore,
+  } = useQuery(GET_ARTICLES, {
+    variables: {
+      limit: 10,
+      cursor: null,
+    },
+    onCompleted: (data) => {
+      if (data?.getAllArticlesPagination && isInitialLoad) {
+        // setArticles((prevArticles) => [
+        //   ...prevArticles,
+        //   ...data.getAllArticlesPagination.edges,
+        // ]);
+        setArticles(data.getAllArticlesPagination.edges);
+        setHasMore(data.getAllArticlesPagination.pageInfo.hasNextPage);
+        setEndCursor(data.getAllArticlesPagination.pageInfo.endCursor);
+        setIsInitialLoad(false);
+      }
+    },
+  });
+  articlesData &&
+    console.log(
+      "end cursor:",
+      articlesData.getAllArticlesPagination.pageInfo.endCursor
+    );
+
+  const loadMoreArticles = useCallback(async () => {
+    if (!hasMore || articlesLoading || !endCursor || isInitialLoad) return;
+
+    try {
+      const res = await articlesFetchMore({
+        variables: {
+          limit: 10,
+          cursor: endCursor,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          return {
+            getAllArticlesPagination: {
+              edges: [
+                ...previousResult.getAllArticlesPagination.edges,
+                ...fetchMoreResult.getAllArticlesPagination.edges,
+              ],
+              pageInfo: fetchMoreResult.getAllArticlesPagination.pageInfo,
+              __typename: previousResult.getAllArticlesPagination.__typename,
+            },
+          };
+        },
+      });
+      if (res.data?.getAllArticlesPagination) {
+        setArticles((prevArticles) => [
+          ...prevArticles,
+          ...res.data.getAllArticlesPagination.edges,
+        ]);
+        setEndCursor(res.data.getAllArticlesPagination.pageInfo.endCursor);
+        setHasMore(res.data.getAllArticlesPagination.pageInfo.hasNextPage);
+      }
+    } catch (error) {
+      console.log("Error loading more articles:", error);
+    }
+  }, [hasMore, articlesLoading, articlesFetchMore, endCursor, setEndCursor]);
+
+  const handleEndReached = useCallback(() => {
+    loadMoreArticles();
+  }, [loadMoreArticles]);
+
   return (
     <SafeAreaView>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        onScroll={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          const paddingToBottom = 20;
+          if (
+            layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - paddingToBottom
+          ) {
+            handleEndReached();
+          }
+        }}
+        scrollEventThrottle={400}
       >
         <HeaderBasic
           routeName={route.name as "Insights"}
           searchValue={""}
           onChangeSearchValue={() => {}}
         />
-
-        <Center>
-          <Text>
-            This is insights screen... currently showing sammple usages of
-            buttons.
-          </Text>
-        </Center>
-
-        {/* full width button */}
-        <Heading>full width buttons</Heading>
-        <GlucoButton
-          buttonType="primary"
-          text="full width btn"
-          isDisabled={false}
-          onPress={() => console.log("pressed")}
-          style={{ borderColor: "red", borderWidth: 1 }}
-        />
-        <GlucoButton
-          buttonType="secondary"
-          text="full width btn"
-          isDisabled={false}
-          icon={BookmarkCustom}
-          onPress={() => console.log("pressed")}
-        />
-
-        {/* two buttons taking up the screen width */}
-        <Heading>two buttons taking up the screen width</Heading>
-        <HStack space="sm">
-          <GlucoButton
-            buttonType="primary"
-            text="one"
-            isDisabled={false}
-            flex={1}
-            onPress={() => console.log("pressed")}
-          />
-          <GlucoButton
-            buttonType="secondary"
-            text="two"
-            isDisabled={false}
-            icon={CapsuleCustom}
-            flex={1}
-            onPress={() => console.log("pressed")}
-          />
-        </HStack>
-
-        {/* horizontal scroll buttons */}
-        <Heading>horizontal scroll buttons</Heading>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack space="sm">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          bg="$neutralWhite"
+        >
+          <HStack space="sm" p="$4">
             <GlucoButton
               buttonType="primary"
-              text="btn a"
-              isDisabled={false}
-              onPress={() => console.log("pressed")}
+              text="All"
+              isDisabled={currentFilter === "All"}
+              onPress={() => setCurrentFilter("All")}
             />
             <GlucoButton
               buttonType="primary"
-              text="btn aa"
-              isDisabled={false}
-              onPress={() => console.log("pressed")}
+              text="Favorite"
+              isDisabled={currentFilter === "Favorite"}
+              onPress={() => setCurrentFilter("Favorite")}
             />
             <GlucoButton
               buttonType="primary"
-              text="btn aaa"
-              isDisabled={false}
-              icon={HeartbeatCustom}
-              onPress={() => console.log("pressed")}
+              text="Food"
+              isDisabled={currentFilter === "Food"}
+              onPress={() => setCurrentFilter("Food")}
             />
             <GlucoButton
               buttonType="primary"
-              text="btn aaaa"
-              isDisabled={false}
-              icon={RestaurantCustom}
-              onPress={() => console.log("pressed")}
+              text="Medication"
+              isDisabled={currentFilter === "Medication"}
+              onPress={() => setCurrentFilter("Medication")}
             />
             <GlucoButton
               buttonType="primary"
-              text="btn aaaaa"
-              isDisabled={false}
-              icon={FireCustom}
-              onPress={() => console.log("pressed")}
+              text="Wellness"
+              isDisabled={currentFilter === "Wellness"}
+              onPress={() => setCurrentFilter("Wellness")}
             />
           </HStack>
         </ScrollView>
+
+        <View p="$4">
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text fontSize="$lg" fontFamily="$bold">
+              Recent Insights
+            </Text>
+            <Pressable>
+              <Text>Show more</Text>
+            </Pressable>
+          </HStack>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} mt="$4">
+            <HStack space="sm">
+              {recentArticlesData &&
+                recentArticlesData.getUserArticlesPagination.edges.map(
+                  (obj: any) => (
+                    <InsightCard
+                      title={obj.article_name}
+                      category={obj.article_genre}
+                      image={obj.article_thumbnail_address}
+                      width={250}
+                      height={150}
+                      onPressBookmark={() => {}}
+                      onPressCard={() => {}}
+                    />
+                  )
+                )}
+            </HStack>
+          </ScrollView>
+        </View>
+
+        <View p="$4">
+          <Text fontSize="$lg" fontFamily="$bold">
+            Explore
+          </Text>
+
+          <Box flexDirection="row" flexWrap="wrap" gap="$4" mt="$4">
+            {articles.length > 0 &&
+              articles.map((obj: any) => (
+                <InsightCard
+                  title={obj.article_name}
+                  category={obj.article_genre}
+                  image={obj.article_thumbnail_address}
+                  width={itemWidth}
+                  height={120}
+                  onPressBookmark={() => {}}
+                  onPressCard={() => {}}
+                />
+              ))}
+          </Box>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
