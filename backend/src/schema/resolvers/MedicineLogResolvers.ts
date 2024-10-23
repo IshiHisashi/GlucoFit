@@ -75,11 +75,10 @@ const medicineLogResolvers = {
     },
   },
   Mutation: {
-
     // Add a new medicine to the user's personal list
     addMedicineToList: async (
       _: any,
-      { user_id, medicine_name, dosage, unit }: { user_id: string; medicine_name: string; dosage: string; unit: string }
+      { user_id, medicine_name, dosage, unit ,log_timestamp}: { user_id: string; medicine_name: string; dosage: string; unit: string, log_timestamp: Date }
     ) => {
       try {
         const newMedicine = new UserMedicineList({
@@ -87,6 +86,7 @@ const medicineLogResolvers = {
           medicine_name,
           dosage,
           unit,
+          log_timestamp
         });
 
         return await newMedicine.save();

@@ -7,6 +7,7 @@ export const medicineLogTypeDefs = gql`
     medicine_name: String!
     dosage: String!
     unit: String!
+    log_timestamp: Date!
   }
 
   type MedicineLog {
@@ -22,6 +23,7 @@ export const medicineLogTypeDefs = gql`
     medicine_name: String!
     dosage: String!
     unit: String!
+    log_timestamp: Date!
   }
   extend type Query {
     getMedicineLog(id: ID!): MedicineLog
@@ -38,6 +40,7 @@ export const medicineLogTypeDefs = gql`
     medicine_name: String!
     dosage: String!
     unit: String!
+    log_timestamp: Date!
   ): UserMedicineList!
 
     createMedicineLog(

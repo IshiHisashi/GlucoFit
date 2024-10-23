@@ -1,4 +1,8 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
+import { Articles, IArticles } from "../../model/Articles";
+import { ActivityLogs } from "../../model/ActivityLogs";
+import { DietLogs } from "../../model/DietLogs";
+import { MedicineLog, UserMedicineList } from "../../model/MedicineLog";
 import { User } from "../../model/User";
 import { format } from "date-fns";
 import { Types } from "mongoose";
@@ -6,6 +10,84 @@ import moment from "moment-timezone";
 
 // Day mapping to convert index to day
 const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// Helper function to check if the medicine log timestamp matches the user's medicine list timestamp
+const checkMedicineLog = async (user_id: string) => {
+  const latestUserMedicine = await UserMedicineList.findOne({ user_id })
+    .sort({ log_timestamp: -1 }) // Get the most recent medicine added by the user
+    .exec();
+
+  const latestMedicineLog = await MedicineLog.findOne({ user_id })
+    .sort({ log_timestamp: -1 }) // Get the most recent medicine log
+    .exec();
+
+  if (!latestUserMedicine || !latestMedicineLog) {
+    return false; // No logs available
+  }
+
+  // Compare the timestamps from both collections
+  return latestUserMedicine.log_timestamp.getTime() === latestMedicineLog.log_timestamp.getTime();
+};
+
+// Helper function to get the previous BSL log for comparison
+const getPreviousBSLLog = async (user_id: string) => {
+  return await TestResults.findOne({ user_id })
+    .sort({ log_timestamp: -1 })
+    .exec();
+};
+
+// Helper function to fetch the last carb log
+const getLastCarbLog = async (user_id: string) => {
+  return await DietLogs.findOne({ userID: user_id })
+    .sort({ log_timestamp: -1 })
+    .exec();
+};
+
+// Helper function to calculate total weekly footsteps count
+const getWeeklyFootstepsCount = async (user_id: string) => {
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const now = new Date(); // Current time
+
+  const activityLogs = await ActivityLogs.find({
+    user_id,
+    log_timestamp: { $gte: oneWeekAgo, $lte: now },
+  });
+
+  const totalFootsteps = activityLogs.reduce(
+    (total, log) => total + log.footsteps,
+    0
+  );
+
+  return totalFootsteps;
+};
+
+// Mapping diabetic_type from user to string representation for articles
+const mapDiabetesType = (diabetesType: number): string => {
+  switch (diabetesType) {
+    case 1:
+      return "Prediabetic";
+    case 2:
+      return "Type 2";
+    default:
+      throw new Error("Unknown diabetes type");
+  }
+};
+
+// Helper function to get a random article
+const getRandomArticle = async (genre: "Food" | "Wellness" | "Medication", diabetesType: number): Promise<IArticles | null> => {
+  const diabetesTypeString = mapDiabetesType(diabetesType); 
+
+  const articles = await Articles.find({
+    article_genre: genre,
+    diabetes_type: diabetesTypeString, 
+  }).exec();
+
+  if (articles.length === 0) return null;
+
+  const randomIndex = Math.floor(Math.random() * articles.length);
+  return articles[randomIndex];
+};
 
 const testResultsResolvers = {
   Query: {
@@ -425,12 +507,70 @@ const testResultsResolvers = {
     },
   },
   Mutation: {
-    createTestResult: async (
+    createTestResultWithInsights: async (
       _: any,
-      args: ITestResults
-    ): Promise<ITestResults> => {
-      const newTestResult = new TestResults(args);
-      return (await newTestResult.save()).populate("user_id");
+      { user_id, bsl, note, time_period, confirmed }: { user_id: string; bsl: number; note: string; time_period: string; confirmed: boolean }
+    ): Promise<IArticles[]> => {
+      try {
+        const newTestResult = new TestResults({
+          user_id,
+          bsl,
+          note: { note_description: note },
+          log_timestamp: new Date(), 
+          time_period, 
+          confirmed,
+        });
+        await newTestResult.save();
+
+        // Fetch the user's diabetic type and BSL data from the User model
+        const user = await User.findById(user_id);
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const diabetesType = user.diabates_type; 
+        const maxBSL = user.maximum_bsl;
+        const minBSL = user.minimum_bsl;
+        const averageBSL = (maxBSL + minBSL) / 2; 
+
+        // Fetch the previous BSL log
+        const previousBSLLog = await getPreviousBSLLog(user_id);
+
+        const articlesToShow: IArticles[] = []; // Always an array of IArticles
+
+        // Check if the medicine log timestamps don't match
+        const medicineCheck = await checkMedicineLog(user_id);
+
+        // Check if BSL is different from previous log or exceeds average BSL
+        const bslCheck = !previousBSLLog || bsl !== previousBSLLog.bsl || bsl > averageBSL;
+
+        // If either medicine log or BSL check fails, fetch an article
+        if (!medicineCheck || bslCheck) {
+          const medicationArticle = await getRandomArticle("Medication", diabetesType);
+          if (medicationArticle) articlesToShow.push(medicationArticle);
+        }
+
+         // Fetch the latest carb log and check if carbs are above 45g
+         const lastCarbLog = await getLastCarbLog(user_id);
+         if (lastCarbLog && lastCarbLog.carbs > 45) {
+           // If carbs are higher than 60g, pop up a "Food" article
+           const foodArticle = await getRandomArticle("Food", diabetesType);
+           if (foodArticle) articlesToShow.push(foodArticle);
+         }
+
+        // Check total footsteps for the past week( below 150 )
+        const totalFootsteps = await getWeeklyFootstepsCount(user_id);
+        if (totalFootsteps < 150) {
+          const wellnessArticle = await getRandomArticle("Wellness", diabetesType);
+          if (wellnessArticle) articlesToShow.push(wellnessArticle);
+        }
+
+        // Return the list of articles to show (empty array if no articles are found)
+        return articlesToShow;
+      } catch (error) {
+        console.error("Error creating test result:", error);
+        throw new Error("Failed to create test result and fetch insights");
+      }
     },
     updateTestResult: async (
       _: any,
