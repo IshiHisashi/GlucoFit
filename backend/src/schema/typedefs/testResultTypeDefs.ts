@@ -63,6 +63,7 @@ export const testResultsTypeDefs = gql`
       user_id: ID!, 
       bsl: Float!, 
       note: String!, 
+      log_timestamp: Date
       time_period: String, 
       confirmed: Boolean
     ): [Articles]
