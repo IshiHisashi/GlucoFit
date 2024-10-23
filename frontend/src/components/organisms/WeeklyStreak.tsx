@@ -36,7 +36,7 @@ const WeeklyStreak: React.FC = () => {
     // fetch graphQL
 
     // HardCord for now
-    setDaysHasLog(["2024-10-06", "2024-10-12", "2024-10-15"]);
+    setDaysHasLog(["2024-10-06", "2024-10-12", "2024-10-20"]);
   }, []);
 
   const last7Days = getLast7Days();

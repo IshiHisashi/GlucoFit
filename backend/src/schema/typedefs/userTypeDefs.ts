@@ -45,6 +45,7 @@ export const userTypeDefs = gql`
     android_health_id: String
     badges: [Badge]
     recently_read_articles_array: [String]
+    favourite_articles: [String]
     active_status: Boolean
     create_day: String
   }

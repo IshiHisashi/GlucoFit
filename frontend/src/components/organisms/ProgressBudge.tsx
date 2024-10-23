@@ -8,55 +8,16 @@ import {
   ChevronRightIcon,
   ScrollView,
 } from "@gluestack-ui/themed";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import {
-  useQuery,
-  useLazyQuery,
-  gql,
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-} from "@apollo/client";
-
-const IP = "";
-
-// Apollo Client Setup
-const client = new ApolloClient({
-  uri: `http://${IP}:3000/graphql`, // Replace with your backend IP address or hosted GraphQL endpoint
-  cache: new InMemoryCache(),
-});
+  GET_USER_ON_PROGRESS_BADGES,
+  QUERY_FOR_STREAK_STARTER,
+  QUERY_FOR_STREAK_BY_TIME_RANGE,
+  QUERY_FOR_STREAK_ACTIVITYLOGS,
+  GET_NUM_FAVORITE_ARTICLE,
+} from "../../utils/query/badgeProgressQuery";
 
 const userId = "670db268582e7e887e447288";
-
-// Main Query to Get User's Badges
-const GET_USER_ON_PROGRESS_BADGES = gql`
-  query GetUserOnProgressBadges($id: ID!) {
-    getUserOnProgressBadge(id: $id) {
-      badges {
-        badgeId {
-          id
-          badge_name
-          badge_desc
-          badge_image_address
-          criteria {
-            value
-            comparison
-          }
-        }
-        achieved
-      }
-    }
-  }
-`;
-
-// Query to Fetch Data for a Specific Badge (Streak Starter)
-const QUERY_FOR_STREAK_STARTER = gql`
-  query GetStreakWithThreshold {
-    getStreakTestResults(
-      user_id: "670702cbd3ce55c634ec740c"
-      withThreshold: false
-    )
-  }
-`;
 
 const ProgressBudgeSection: React.FC = () => {
   // Fetch user badges using useQuery
@@ -68,19 +29,73 @@ const ProgressBudgeSection: React.FC = () => {
   // FETCH DATA TO SEE PROGRESS OF EACH BADGE
   //This is a sample for lazyquery to retrieve data conditionally (conditional fetching).
   const [loadStreakData, { data: streakData }] = useLazyQuery(
-    QUERY_FOR_STREAK_STARTER
+    QUERY_FOR_STREAK_STARTER,
+    {
+      variables: {
+        userId: userId,
+        withThreshold: false,
+      },
+    }
+  );
+  const [loadStreakBslRangeData, { data: streakBslRangeData }] = useLazyQuery(
+    QUERY_FOR_STREAK_STARTER,
+    {
+      variables: {
+        userId: userId,
+        withThreshold: true,
+      },
+    }
+  );
+  const [loadStreakEarlyBirdData, { data: streakEarlyBirdData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    {
+      variables: { userId: userId, startHour: 6, endHour: 8 },
+    }
+  );
+  const [loadStreakNightOwlData, { data: streakNightOwlData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    {
+      variables: { userId: userId, startHour: 20, endHour: 24 },
+    }
+  );
+  const [loadStreakActivityLogslData, { data: streakActivityLogsData }] =
+    useLazyQuery(QUERY_FOR_STREAK_ACTIVITYLOGS, {
+      variables: { userId: userId },
+    });
+  const [loadNumArticleData, { data: numArticleData }] = useLazyQuery(
+    GET_NUM_FAVORITE_ARTICLE,
+    {
+      variables: { id: userId },
+    }
   );
 
   // Effect to Load Badge-Specific Data
   useEffect(() => {
     if (data?.getUserOnProgressBadge?.badges) {
       data.getUserOnProgressBadge.badges.forEach((badge: any) => {
-        if (badge.badgeId.badge_name === "Streak Starter") {
-          loadStreakData(); // Only load data when the "Streak Starter" badge is found
+        if (badge.badgeId.badge_name === "First Steps") {
+          loadStreakData();
+        } else if (badge.badgeId.badge_name === "Streak Starter") {
+          loadStreakData();
+        } else if (badge.badgeId.badge_name === "Healthy Habit") {
+          loadStreakBslRangeData();
+        } else if (badge.badgeId.badge_name === "Early Bird") {
+          loadStreakEarlyBirdData();
+        } else if (badge.badgeId.badge_name === "Night Owl") {
+          loadStreakNightOwlData();
+        } else if (badge.badgeId.badge_name === "Glucose Guru") {
+          loadStreakBslRangeData();
+        } else if (badge.badgeId.badge_name === "Check-in Champion") {
+          loadStreakData();
+        } else if (badge.badgeId.badge_name === "Fitness Streak") {
+          loadStreakActivityLogslData();
+        } else if (badge.badgeId.badge_name === "Knowledge Seeker") {
+          loadNumArticleData();
+          console.log(numArticleData);
         }
       });
     }
-  }, [data, loadStreakData]);
+  }, [data]);
   // ---------------------------
 
   if (loading) return <Text>Loading...</Text>;
@@ -113,7 +128,7 @@ const ProgressBudgeSection: React.FC = () => {
       </View>
 
       {/* Render Badge Cards */}
-      <ScrollView>
+      <ScrollView height={250}>
         {data?.getUserOnProgressBadge?.badges.map((badge: any) => (
           <View
             key={badge.badgeId.id}
@@ -125,9 +140,38 @@ const ProgressBudgeSection: React.FC = () => {
             <Text fontSize={10}>{badge.badgeId.badge_desc}</Text>
             <Text>
               {/* Need conditional rendering depending on badge name */}
-              {badge.badgeId.badge_name === "Streak Starter"
+              {badge.badgeId.badge_name === "First Steps"
                 ? JSON.stringify(streakData?.getStreakTestResults)
-                : "tbc"}{" "}
+                : badge.badgeId.badge_name === "Streak Starter"
+                  ? JSON.stringify(streakData?.getStreakTestResults)
+                  : badge.badgeId.badge_name === "Healthy Habit"
+                    ? JSON.stringify(streakBslRangeData?.getStreakTestResults)
+                    : badge.badgeId.badge_name === "Early Bird"
+                      ? JSON.stringify(
+                          streakEarlyBirdData?.getStreakByTimeRange
+                        )
+                      : badge.badgeId.badge_name === "Night Owl"
+                        ? JSON.stringify(
+                            streakNightOwlData?.getStreakByTimeRange
+                          )
+                        : badge.badgeId.badge_name === "Glucose Guru"
+                          ? JSON.stringify(
+                              streakNightOwlData?.getStreakByTimeRange
+                            )
+                          : badge.badgeId.badge_name === "Check-in Champion"
+                            ? JSON.stringify(
+                                streakNightOwlData?.getStreakByTimeRange
+                              )
+                            : badge.badgeId.badge_name === "Fitness Streak"
+                              ? JSON.stringify(
+                                  streakActivityLogsData?.getStreakActivityLogs
+                                )
+                              : badge.badgeId.badge_name === "Knowledge Seeker"
+                                ? JSON.stringify(
+                                    numArticleData?.getUser.favourite_articles
+                                      ?.length
+                                  )
+                                : "tbc"}{" "}
               / {badge.badgeId.criteria.value}
             </Text>
           </View>
@@ -138,11 +182,7 @@ const ProgressBudgeSection: React.FC = () => {
 };
 
 const ProgressBudge: React.FC = () => {
-  return (
-    <ApolloProvider client={client}>
-      <ProgressBudgeSection />
-    </ApolloProvider>
-  );
+  return <ProgressBudgeSection />;
 };
 
 export default ProgressBudge;
