@@ -6,6 +6,7 @@ export interface IUserMedicineList extends Document {
   medicine_name: string;
   dosage: string;
   unit: string; // mg, mcg, mL, etc.
+  log_timestamp: Date;
 }
 
 // Define interface for MedicineLog (Log of medicine intake)
@@ -22,6 +23,7 @@ const userMedicineListSchema = new Schema<IUserMedicineList>({
   medicine_name: { type: String, required: true },
   dosage: { type: String, required: true }, // Dosage amount
   unit: { type: String, required: true },   // Unit for dosage (e.g., mg, mL)
+  log_timestamp: { type: Date, required: true }, 
 });
 
 // Create schema for MedicineLog

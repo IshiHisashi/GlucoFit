@@ -59,6 +59,14 @@ export const testResultsTypeDefs = gql`
       confirmed: Boolean
     ): TestResults!
 
+    createTestResultWithInsights(
+      user_id: ID!, 
+      bsl: Float!, 
+      note: String!, 
+      time_period: String, 
+      confirmed: Boolean
+    ): [Articles]
+
     updateTestResult(
       id: ID!
       bsl: Float

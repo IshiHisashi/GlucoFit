@@ -35,8 +35,8 @@ const dietLogsResolvers = {
         const newDietLog = new DietLogs({
           ...args,
           note: {
-            title: args.note?.title || '',
-            content: args.note?.content || '',
+            title: args.note?.note_title || '',
+            content: args.note?.note_description || '',
           },
         });
         return await newDietLog.save(); // MongoDB will auto-generate _id
@@ -54,7 +54,7 @@ const dietLogsResolvers = {
           id,
           {
             ...args,
-            note: args.note ? { title: args.note.title, content: args.note.content } : undefined,
+            note: args.note ? { title: args.note.note_title, content: args.note.note_description } : undefined,
           },
           { new: true }
         );

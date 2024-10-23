@@ -1,10 +1,11 @@
 import { gql } from "apollo-server-express";
 
 export const dietLogsTypeDefs = gql`
-  type Note {
-    title: String
-    content: String
-  }
+type Note {
+  note_title: String
+  note_description: String
+}
+
 
   type DietLog {
     id: ID! # This is the MongoDB _id
@@ -38,9 +39,8 @@ export const dietLogsTypeDefs = gql`
   }
 
   input NoteInput {
-    note_description: String!  
-    title: String
-    content: String
+    note_title: String!  
+    note_description: String!
   }
   
 `;
