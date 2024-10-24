@@ -109,6 +109,7 @@ const InsightsScreen: React.FC = () => {
 
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [articles, setArticles] = useState<any[]>([]);
+  const [articlesToShow, setArticlesToShow] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
 
@@ -164,6 +165,22 @@ const InsightsScreen: React.FC = () => {
       articlesData.getAllArticlesPagination.pageInfo.endCursor
     );
 
+  useEffect(() => {
+    const filteredArticles = articles.filter((obj) => {
+      switch (currentFilter) {
+        case "Food":
+          return obj.article_genre === "Food";
+        case "Medication":
+          return obj.article_genre === "Medication";
+        case "Wellness":
+          return obj.article_genre === "Wellness";
+        default:
+          return true;
+      }
+    });
+    setArticlesToShow(filteredArticles);
+  }, [articles, currentFilter]);
+
   const loadMoreArticles = useCallback(async () => {
     if (!hasMore || articlesLoading || !endCursor || isInitialLoad) return;
 
@@ -218,20 +235,6 @@ const InsightsScreen: React.FC = () => {
       title,
     });
   };
-
-  const renderArticle = ({ item }) => (
-    <InsightCard
-      key={item.id}
-      title={item.article_name}
-      category={item.article_genre}
-      description={item.article_desc}
-      image={item.article_thumbnail_address}
-      width={itemWidth}
-      height={120}
-      onPressBookmark={() => {}}
-      onPressCard={() => openArticle(item.article_url, item.article_name)}
-    />
-  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -298,8 +301,8 @@ const InsightsScreen: React.FC = () => {
         {/* contents for "All" tab */}
         {currentFilter === "All" && (
           <>
-            <View p="$4">
-              <HStack justifyContent="space-between" alignItems="center">
+            <View>
+              <HStack justifyContent="space-between" alignItems="center" p="$4">
                 <Text fontSize="$lg" fontFamily="$bold">
                   Recent Insights
                 </Text>
@@ -316,7 +319,8 @@ const InsightsScreen: React.FC = () => {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                mt="$4"
+                p="$4"
+                pt={0}
               >
                 <HStack space="sm">
                   {recentArticlesData &&
@@ -369,17 +373,23 @@ const InsightsScreen: React.FC = () => {
         {/* contents for other tabs */}
         {currentFilter !== "All" && (
           <View p="$4">
-            <FlatList
-              data={articles}
-              keyExtractor={(item) => item.id}
-              renderItem={renderArticle}
-              numColumns={2}
-              contentContainerStyle={{ gap: 16 }}
-              columnWrapperStyle={{ gap: 16 }}
-              onEndReached={loadMoreArticles}
-              onEndReachedThreshold={0.1}
-              refreshControl={() => {}}
-            />
+            <Box flexDirection="row" flexWrap="wrap" gap="$4">
+              {articlesToShow.length > 0 &&
+                articlesToShow.map((obj: any) => (
+                  <InsightCard
+                    key={obj.id}
+                    title={obj.article_name}
+                    category={obj.article_genre}
+                    image={obj.article_thumbnail_address}
+                    width={itemWidth}
+                    height={120}
+                    onPressBookmark={() => {}}
+                    onPressCard={() =>
+                      openArticle(obj.article_url, obj.article_name)
+                    }
+                  />
+                ))}
+            </Box>
           </View>
         )}
       </ScrollView>
