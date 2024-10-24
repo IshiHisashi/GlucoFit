@@ -18,25 +18,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Dimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import GlucoButton from "../atoms/GlucoButton";
-import {
-  AngleRightCustom,
-  BookmarkCustom,
-  BookmarkLight,
-  CapsuleCustom,
-  CapsuleLight,
-  FireCustom,
-  FireLight,
-  HeartbeatCustom,
-  HeartbeatLight,
-  MedalDark,
-  RestaurantCustom,
-  RestaurantLight,
-} from "../svgs/svgs";
+import { AngleRightCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import InsightCard from "../molcules/InsightCard";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
 
 // hardcode for now
@@ -123,7 +110,6 @@ const InsightsScreen: React.FC = () => {
     loading: recentArticlesLoading,
     error: recentArticlesError,
     refetch: recentArticlesRefetch,
-    fetchMore: recentArticlesFetchMore,
   } = useQuery(GET_RECENT_ARTICLES, {
     variables: {
       userId: userId,
@@ -161,7 +147,7 @@ const InsightsScreen: React.FC = () => {
   });
   articlesData &&
     console.log(
-      "end cursor:",
+      "END CURSOR:",
       articlesData.getAllArticlesPagination.pageInfo.endCursor
     );
 
