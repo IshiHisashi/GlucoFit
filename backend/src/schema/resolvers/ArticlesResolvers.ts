@@ -37,28 +37,34 @@ const articlesResolvers = {
       { cursor, limit }: GetInsightsArgs
     ): Promise<ArticlesConnection> => {
       const defaultLimit = 10;
-      const cursorFilter = cursor
-        ? { _id: { $gt: new Types.ObjectId(cursor) } }
-        : {};
-      const articles = await Articles.find(cursorFilter)
-        .limit(limit || defaultLimit)
+
+      const startIndex = cursor ? parseInt(cursor) : 0;
+
+      const itemsPerPage = limit || defaultLimit;
+
+      const articles = await Articles.find()
+        .skip(startIndex)
+        .limit(itemsPerPage)
         .exec();
-
-      let endCursor: string | null = null;
-      if (articles.length > 0) {
-        const lastArticle = articles[articles.length - 1];
-        if (lastArticle && lastArticle._id instanceof Types.ObjectId) {
-          endCursor = lastArticle._id.toString();
-        }
+      if (articles.length === 0) {
+        return {
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null,
+          },
+        };
       }
-
-      const hasNextPage = !!limit && articles.length === limit;
+      const hasNextPage = articles.length === itemsPerPage;
+      const newCursor = hasNextPage
+        ? (startIndex + itemsPerPage).toString()
+        : null;
 
       return {
-        edges: articles,
+        edges: articles as IArticles[],
         pageInfo: {
           hasNextPage,
-          endCursor,
+          endCursor: newCursor,
         },
       };
     },
@@ -69,11 +75,11 @@ const articlesResolvers = {
     ): Promise<ArticlesConnection> => {
       const defaultLimit = 10;
 
-      // Fetch the user by ID
       const user: IUser | null = await User.findById(userId);
       if (!user) {
         throw new Error("User not found");
       }
+
       let articleIds: string[];
       if (classification === "recent") {
         articleIds = user.recently_read_articles_array;
@@ -82,35 +88,46 @@ const articlesResolvers = {
       } else {
         articleIds = [];
       }
-      let filteredIds = articleIds.map((id) => new Types.ObjectId(id));
-      if (cursor) {
-        const cursorIndex = filteredIds.findIndex(
-          (id) => id.toString() === cursor
-        );
-        if (cursorIndex >= 0) {
-          filteredIds = filteredIds.slice(cursorIndex + 1);
-        }
-      }
-      const articles = await Articles.find({ _id: { $in: filteredIds } })
-        .limit(limit || defaultLimit)
-        .exec();
 
-      let endCursor: string | null = null;
-      if (articles.length > 0) {
-        const lastArticle = articles[articles.length - 1];
-        if (lastArticle && lastArticle._id instanceof Types.ObjectId) {
-          endCursor = lastArticle._id.toString();
-        }
+      const startIndex = cursor ? parseInt(cursor) : 0;
+      const itemsPerPage = limit || defaultLimit;
+      const paginatedIds = articleIds.slice(
+        startIndex,
+        startIndex + itemsPerPage
+      );
+
+      const articles = await Articles.find({
+        _id: { $in: paginatedIds },
+      }).exec();
+      const orderedArticles = paginatedIds
+        .map((id) => {
+          const article = articles.find(
+            (article) => article._id.toString() === id.toString()
+          );
+          return article;
+        })
+        .filter(Boolean);
+
+      if (orderedArticles.length === 0) {
+        return {
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null,
+          },
+        };
       }
 
-      // Check if there are more articles based on the limit
-      const hasNextPage = !!limit && articles.length === limit;
+      const hasNextPage = startIndex + itemsPerPage < articleIds.length;
+      const newCursor = hasNextPage
+        ? (startIndex + itemsPerPage).toString()
+        : null;
 
       return {
-        edges: articles,
+        edges: orderedArticles as IArticles[],
         pageInfo: {
           hasNextPage,
-          endCursor,
+          endCursor: newCursor,
         },
       };
     },
