@@ -9,13 +9,7 @@ import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
 import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
 import NoteScreen from "../screens/logScreens/NoteScreen";
 import { AppStackParamList } from "../../types/navigation";
-
-///////////////////////////////
-// remaining tasks:
-// - Change how sub menu appears (slide up from bottom with animations?)
-// - Change the sub menu styling and content overall
-// - OnClose for sub menu
-///////////////////////////////
+import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -50,6 +44,11 @@ const AppStack: React.FC = () => (
       <Stack.Screen
         name="Note"
         component={NoteScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Article"
+        component={ArticleWebViewScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

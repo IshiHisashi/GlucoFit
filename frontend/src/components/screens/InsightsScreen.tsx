@@ -14,7 +14,7 @@ import {
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Dimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 
@@ -34,6 +34,8 @@ import {
 } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import InsightCard from "../molcules/InsightCard";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AppStackParamList } from "../../types/navigation";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -86,7 +88,13 @@ const GET_ARTICLES = gql`
   }
 `;
 
+type InsightsScreenNavigationProps = NativeStackNavigationProp<
+  AppStackParamList,
+  "GlucoseLog"
+>;
+
 const InsightsScreen: React.FC = () => {
+  const navigation = useNavigation<InsightsScreenNavigationProps>();
   const route = useRoute<{ key: string; name: string }>();
 
   // test pull down refresh
@@ -191,11 +199,25 @@ const InsightsScreen: React.FC = () => {
     } catch (error) {
       console.log("Error loading more articles:", error);
     }
-  }, [hasMore, articlesLoading, articlesFetchMore, endCursor, setEndCursor]);
+  }, [
+    hasMore,
+    articlesLoading,
+    articlesFetchMore,
+    endCursor,
+    setEndCursor,
+    isInitialLoad,
+  ]);
 
   const handleEndReached = useCallback(() => {
     loadMoreArticles();
   }, [loadMoreArticles]);
+
+  const openArticle = (url: string, title: string) => {
+    navigation.navigate("Article", {
+      url,
+      title,
+    });
+  };
 
   return (
     <SafeAreaView>
@@ -275,13 +297,16 @@ const InsightsScreen: React.FC = () => {
                 recentArticlesData.getUserArticlesPagination.edges.map(
                   (obj: any) => (
                     <InsightCard
+                      key={obj.id}
                       title={obj.article_name}
                       category={obj.article_genre}
                       image={obj.article_thumbnail_address}
                       width={250}
                       height={150}
                       onPressBookmark={() => {}}
-                      onPressCard={() => {}}
+                      onPressCard={() =>
+                        openArticle(obj.article_url, obj.article_name)
+                      }
                     />
                   )
                 )}
@@ -298,13 +323,16 @@ const InsightsScreen: React.FC = () => {
             {articles.length > 0 &&
               articles.map((obj: any) => (
                 <InsightCard
+                  key={obj.id}
                   title={obj.article_name}
                   category={obj.article_genre}
                   image={obj.article_thumbnail_address}
                   width={itemWidth}
                   height={120}
                   onPressBookmark={() => {}}
-                  onPressCard={() => {}}
+                  onPressCard={() =>
+                    openArticle(obj.article_url, obj.article_name)
+                  }
                 />
               ))}
           </Box>

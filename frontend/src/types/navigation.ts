@@ -16,6 +16,7 @@ export type AppStackParamList = {
     initialNote: { title: string; content: string };
     onSave: (note: { title: string; content: string }) => void;
   };
+  Article: { url: string; title: string };
 };
 
 export type LoginSignupStackParamList = {

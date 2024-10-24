@@ -6,6 +6,7 @@ import { BookmarkCustom } from "../svgs/svgs";
 import { Text } from "@gluestack-ui/themed";
 
 interface InsightCardProps {
+  key: string;
   title: string;
   category: string;
   image: string;
@@ -17,6 +18,7 @@ interface InsightCardProps {
 
 const InsightCard: FC<InsightCardProps> = (props) => {
   const {
+    key,
     title,
     category,
     image,
@@ -28,6 +30,7 @@ const InsightCard: FC<InsightCardProps> = (props) => {
 
   return (
     <Pressable
+      key={key}
       w={width || "$full"}
       bg="$neutralWhite"
       borderRadius="$8"
