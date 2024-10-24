@@ -77,6 +77,31 @@ const CREATE_TEST_RESULT = gql`
   }
 `;
 
+const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
+  mutation CreateTestResultWithInsights(
+    $userId: ID!
+    $bsl: Float!
+    $note: NoteInput!
+    $logTimestamp: Date
+    $timePeriod: String
+    $confirmed: Boolean
+  ) {
+    createTestResultWithInsights(
+      user_id: $userId
+      bsl: $bsl
+      note: $note
+      log_timestamp: $logTimestamp
+      time_period: $timePeriod
+      confirmed: $confirmed
+    ) {
+      article_genre
+      article_name
+      article_url
+      id
+    }
+  }
+`;
+
 const UPDATE_TEST_RESULT = gql`
   mutation UpdateTestResult(
     $updateTestResultId: ID!
@@ -132,7 +157,7 @@ const GlucoseLogScreen: React.FC = () => {
   const [
     createTestResult,
     { data: createData, loading: createLoading, error: createError },
-  ] = useMutation(CREATE_TEST_RESULT);
+  ] = useMutation(CREATE_TEST_RESULT_WITH_INSIGHTS);
 
   const [
     updateTestResult,
@@ -189,17 +214,19 @@ const GlucoseLogScreen: React.FC = () => {
           timePeriod: timePeriod,
           bsl: Number(glucoseLevel),
           note: {
-            content: note.content,
             note_description: note.content,
-            title: note.title,
+            note_title: note.title,
           },
           confirmed: true,
         },
       });
-      console.log("Mutation result:", result);
+      console.log("Mutation result:", result.data.createTestResultWithInsights);
       navigation.navigate("Tabs", {
         screen: "Home",
-        params: { mutatedLog: "bsl" },
+        params: {
+          mutatedLog: "bsl",
+          insight: result.data.createTestResultWithInsights[0],
+        },
       });
     } catch (e) {
       console.error("Error creating test result:", e);

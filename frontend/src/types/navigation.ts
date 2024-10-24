@@ -1,5 +1,5 @@
 export type TabParamList = {
-  Home: undefined;
+  Home: { mutatedLog?: string; insight?: any };
   Insights: undefined;
   FAB: undefined;
   TestStack: undefined;
