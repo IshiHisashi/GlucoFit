@@ -20,6 +20,7 @@ import { gql, useQuery } from "@apollo/client";
 
 import GlucoButton from "../atoms/GlucoButton";
 import {
+  AngleRightCustom,
   BookmarkCustom,
   BookmarkLight,
   CapsuleCustom,
@@ -88,10 +89,8 @@ const GET_ARTICLES = gql`
   }
 `;
 
-type InsightsScreenNavigationProps = NativeStackNavigationProp<
-  AppStackParamList,
-  "GlucoseLog"
->;
+type InsightsScreenNavigationProps =
+  NativeStackNavigationProp<AppStackParamList>;
 
 const InsightsScreen: React.FC = () => {
   const navigation = useNavigation<InsightsScreenNavigationProps>();
@@ -220,7 +219,7 @@ const InsightsScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -286,8 +285,11 @@ const InsightsScreen: React.FC = () => {
             <Text fontSize="$lg" fontFamily="$bold">
               Recent Insights
             </Text>
-            <Pressable>
-              <Text>Show more</Text>
+            <Pressable onPress={() => navigation.navigate("RecentInsights")}>
+              <HStack alignItems="center">
+                <Text>Show more</Text>
+                <AngleRightCustom color="#4800FF" size={24} />
+              </HStack>
             </Pressable>
           </HStack>
 

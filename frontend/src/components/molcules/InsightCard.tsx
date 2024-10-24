@@ -9,6 +9,7 @@ interface InsightCardProps {
   key: string;
   title: string;
   category: string;
+  description?: string;
   image: string;
   width?: number;
   height?: number;
@@ -21,6 +22,7 @@ const InsightCard: FC<InsightCardProps> = (props) => {
     key,
     title,
     category,
+    description,
     image,
     width,
     height,
@@ -60,6 +62,7 @@ const InsightCard: FC<InsightCardProps> = (props) => {
       <VStack p="$2">
         <Text>{title}</Text>
         <Text color="$neutralDark40">{category}</Text>
+        {description && <Text>{description}</Text>}
       </VStack>
     </Pressable>
   );

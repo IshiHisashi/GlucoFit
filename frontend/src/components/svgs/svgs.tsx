@@ -6,6 +6,7 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // Table of contents
 // - Analysis (light, dark, custom)
 // - AngleLeft (Custom)
+// - AngleRight (Custom)
 // - Award (light, dark, custom)
 // - Bell (custom)
 // - Bookmark (light, dark, custom)
@@ -109,6 +110,28 @@ export const AngleLeftCustom: FC = ({
       stroke={color}
       strokeWidth={strokeWidth}
       d="m8.5 12.8 5.7 5.6c.4.4 1 .4 1.4 0 .4-.4.4-1 0-1.4l-4.9-5 4.9-5c.4-.4.4-1 0-1.4-.2-.2-.4-.3-.7-.3-.3 0-.5.1-.7.3l-5.7 5.6c-.4.5-.4 1.1 0 1.6 0-.1 0-.1 0 0Z"
+    />
+  </Svg>
+);
+
+export const AngleRightCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M15.54 11.29 9.88 5.64a1 1 0 1 0-1.42 1.41l4.95 5L8.46 17a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.3.999.999 0 0 0 .71-.3l5.66-5.65a1 1 0 0 0 0-1.47Z"
     />
   </Svg>
 );

@@ -17,6 +17,7 @@ export type AppStackParamList = {
     onSave: (note: { title: string; content: string }) => void;
   };
   Article: { url: string; title: string };
+  RecentInsights: undefined;
 };
 
 export type LoginSignupStackParamList = {
