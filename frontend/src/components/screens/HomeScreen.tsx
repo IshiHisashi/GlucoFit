@@ -15,6 +15,7 @@ import {
   useToast,
   Toast,
   ToastTitle,
+  ToastDescription,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
@@ -38,7 +39,6 @@ import {
   TimesCustom,
 } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
-import { ToastDescription } from "@gluestack-ui/themed";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -118,6 +118,14 @@ const GET_AVERAGE_BSL_FOR_X = gql`
   }
 `;
 
+const GET_USER = gql`
+  query GetUser($getUserId: ID!) {
+    getUser(id: $getUserId) {
+      name
+    }
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 type RouteParams = {
@@ -133,6 +141,14 @@ const HomeScreen: React.FC = () => {
   const { width } = useWindowDimensions();
 
   const toast = useToast();
+
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery(GET_USER, {
+    variables: { getUserId: userId },
+  });
 
   const {
     data: bslResultsAndAverageData,
@@ -347,7 +363,10 @@ const HomeScreen: React.FC = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <HeaderBasic routeName={route.name as "Home"} />
+        <HeaderBasic
+          routeName={route.name as "Home"}
+          userName={userData?.getUser.name}
+        />
         <VStack p="$4" space="md">
           <VStack
             space="sm"
