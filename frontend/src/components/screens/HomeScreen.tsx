@@ -39,6 +39,7 @@ import {
   TimesCustom,
 } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
+import BslTodayBarChart from "../organisms/BslTodayBarChart";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -397,7 +398,14 @@ const HomeScreen: React.FC = () => {
             </HStack>
 
             {bslResultsAndAverageData && (
-              <BslLineChart
+              // <BslLineChart
+              //   width={width}
+              //   data={
+              //     bslResultsAndAverageData.getTestResultsAndAverageForToday
+              //       .testResults
+              //   }
+              // />
+              <BslTodayBarChart
                 width={width}
                 data={
                   bslResultsAndAverageData.getTestResultsAndAverageForToday
