@@ -1,4 +1,4 @@
-import { View, Text } from "@gluestack-ui/themed";
+import { View, Text, ScrollView } from "@gluestack-ui/themed";
 import React from "react";
 import WeeklyStreak from "../../organisms/WeeklyStreak";
 import CalenderStreak from "../../organisms/CalenderStreak";
@@ -11,7 +11,8 @@ const StreakScreen: React.FC = () => {
       <WeeklyStreak />
       <CalenderStreak />
       <ProgressBudge />
-    </View>
+    </View>    
+
   );
 };
 
