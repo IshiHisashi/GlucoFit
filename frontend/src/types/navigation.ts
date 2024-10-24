@@ -1,5 +1,5 @@
 export type TabParamList = {
-  Home: undefined;
+  Home: { mutatedLog?: string; insight?: any };
   Insights: undefined;
   FAB: undefined;
   TestStack: undefined;
@@ -16,6 +16,8 @@ export type AppStackParamList = {
     initialNote: { title: string; content: string };
     onSave: (note: { title: string; content: string }) => void;
   };
+  Article: { url: string; title: string };
+  RecentInsights: undefined;
 };
 
 export type LoginSignupStackParamList = {

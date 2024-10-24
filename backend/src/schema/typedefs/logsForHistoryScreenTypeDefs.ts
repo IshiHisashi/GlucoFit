@@ -23,14 +23,14 @@ export const logsForHistoryScreenTypeDefs = gql`
   type CombinedLogsResponse {
     logs: [LogEntry!]!
     hasMoreData: Boolean!
+    nextLatestDate: Date!
   }
 
   type Query {
     getCombinedLogsByDateRange(
       user_id: ID!
-      startDate: Date!
-      endDate: Date!
-      limit: Int
+      goBackTillThisDate: Date!
+      latestDate: Date!
     ): CombinedLogsResponse!
   }
 `;

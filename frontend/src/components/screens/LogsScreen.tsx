@@ -13,16 +13,9 @@ import {
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
-import {
-  Animated,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from "react-native";
+import { Animated } from "react-native";
 
 import GlucoButton from "../atoms/GlucoButton";
 import HeaderBasic from "../headers/HeaderBasic";
@@ -74,11 +67,15 @@ interface Section {
 type FilterType = "All" | "Glucose" | "Activity" | "Food" | "Medicine";
 
 const GET_COMBINED_LOGS = gql`
-  query GetCombinedLogs($userId: ID!, $startDate: Date!, $endDate: Date!) {
+  query GetCombinedLogs(
+    $userId: ID!
+    $goBackTillThisDate: Date!
+    $latestDate: Date!
+  ) {
     getCombinedLogsByDateRange(
       user_id: $userId
-      startDate: $startDate
-      endDate: $endDate
+      goBackTillThisDate: $goBackTillThisDate
+      latestDate: $latestDate
     ) {
       hasMoreData
       logs {
@@ -108,6 +105,7 @@ const GET_COMBINED_LOGS = gql`
           }
         }
       }
+      nextLatestDate
     }
   }
 `;
@@ -159,7 +157,7 @@ const LogsScreen: React.FC = () => {
 
   const [logs, setLogs] = useState<Log[]>([]);
   const [sectionedLogs, setSectionedLogs] = useState<Section[]>([]);
-  const [endDate, setEndDate] = useState(new Date());
+  const [latestDate, setLatestDate] = useState<Date>(() => new Date());
   const [hasMore, setHasMore] = useState(true);
 
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
@@ -169,24 +167,25 @@ const LogsScreen: React.FC = () => {
     {
       variables: {
         userId: userId,
-        startDate: new Date(
-          endDate.getTime() - 30 * 24 * 60 * 60 * 1000
-        ).toISOString(), // 30 days before endDate
-        endDate: endDate.toISOString(),
-        // startDate: "2024-10-01T05:32:18.789+00:00",
-        // endDate: "2024-10-16T05:32:18.789+00:00",
-        limit: 50,
+        goBackTillThisDate: new Date(
+          latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 30 days before latestDate
+        latestDate: latestDate.toISOString(),
+        // goBackTillThisDate: "2024-10-01T05:32:18.789+00:00",
+        // latestDate: "2024-10-25T05:32:18.789+00:00",
       },
       onCompleted: (data) => {
+        if (!hasMore) return;
         setLogs((prevLogs) => [
           ...prevLogs,
           ...data.getCombinedLogsByDateRange.logs,
         ]);
         setHasMore(data.getCombinedLogsByDateRange.hasMoreData);
+        setLatestDate(new Date(data.getCombinedLogsByDateRange.nextLatestDate));
       },
     }
   );
-  data && console.log(data.getCombinedLogsByDateRange);
+  data && console.log("LOGS:", data.getCombinedLogsByDateRange);
 
   useEffect(() => {
     // filter by currently selected chip
@@ -250,40 +249,68 @@ const LogsScreen: React.FC = () => {
     );
   }, [logs, currentFilter]);
 
-  const loadMoreLogs = useCallback(() => {
+  const loadMoreLogs = useCallback(async () => {
     if (!hasMore || loading) return;
 
-    const oldestLogDate = new Date(logs[logs.length - 1].log_timestamp);
-    setEndDate(oldestLogDate);
+    try {
+      const res = await fetchMore({
+        variables: {
+          userId: userId,
+          goBackTillThisDate: new Date(
+            latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
+          ).toISOString(),
+          latestDate: latestDate.toISOString(),
+        },
+      });
 
-    fetchMore({
-      variables: {
-        endDate: oldestLogDate.toISOString(),
-      },
-    });
-  }, [hasMore, loading, logs, fetchMore]);
+      if (res.data.getCombinedLogsByDateRange.logs.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setLogs((prev) => [...prev, ...res.data.getCombinedLogsByDateRange.logs]);
+      setHasMore(res.data.getCombinedLogsByDateRange.hasMoreData);
+      if (res.data.getCombinedLogsByDateRange.nextLatestDate) {
+        setLatestDate(
+          new Date(res.data.getCombinedLogsByDateRange.nextLatestDate)
+        );
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.log("Error loading more logs:", error);
+      setHasMore(false);
+    }
+  }, [hasMore, loading, fetchMore, latestDate]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
 
     try {
       const now = new Date();
-      setEndDate(now);
+      setLatestDate(now);
       setLogs([]);
 
       const result = await refetch({
         userId: userId,
-        startDate: new Date(
+        goBackTillThisDate: new Date(
           now.getTime() - 30 * 24 * 60 * 60 * 1000
         ).toISOString(),
-        endDate: now.toISOString(),
-        limit: 50,
+        latestDate: now.toISOString(),
       });
 
       setLogs(result.data.getCombinedLogsByDateRange.logs);
       setHasMore(result.data.getCombinedLogsByDateRange.hasMoreData);
+      if (result.data.getCombinedLogsByDateRange.nextLatestDate) {
+        setLatestDate(
+          new Date(result.data.getCombinedLogsByDateRange.nextLatestDate)
+        );
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.log("Error refreshing data: ", error);
+      setHasMore(false);
     } finally {
       setRefreshing(false);
     }

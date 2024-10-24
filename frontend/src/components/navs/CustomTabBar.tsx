@@ -25,8 +25,20 @@ const SubMenuItem: FC<SubMenuItemProps> = (props) => {
   const { onPress, text } = props;
 
   return (
-    <Pressable onPress={onPress} $active-bg="$neutralDark10" p="$4" w="$full">
-      <Text textAlign="center">{text}</Text>
+    <Pressable
+      onPress={onPress}
+      p="$4"
+      w="$full"
+      $active-color="$primaryIndigo60"
+      $_active={{ color: "#4800FF" }}
+    >
+      <Text
+        textAlign="center"
+        $active-color="$primaryIndigo60"
+        $_active={{ color: "#4800FF" }}
+      >
+        {text}
+      </Text>
     </Pressable>
   );
 };
@@ -150,28 +162,32 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
           <ModalBody pb={90}>
             <SubMenuItem
               onPress={() => {
-                setIsSubMenuOpen(false);
+                // setIsSubMenuOpen(false);
+                toggleSubMenu();
                 navigation.navigate("CarbsLog");
               }}
               text="Food/Carbs"
             />
             <SubMenuItem
               onPress={() => {
-                setIsSubMenuOpen(false);
+                // setIsSubMenuOpen(false);
+                toggleSubMenu();
                 navigation.navigate("MedicineLog");
               }}
               text="Medicine"
             />
             <SubMenuItem
               onPress={() => {
-                setIsSubMenuOpen(false);
+                // setIsSubMenuOpen(false);
+                toggleSubMenu();
                 navigation.navigate("ActivityLog");
               }}
               text="Activity"
             />
             <SubMenuItem
               onPress={() => {
-                setIsSubMenuOpen(false);
+                // setIsSubMenuOpen(false);
+                toggleSubMenu();
                 navigation.navigate("GlucoseLog");
               }}
               text="Blood Glucose"
