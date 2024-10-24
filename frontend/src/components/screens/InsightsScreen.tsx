@@ -11,6 +11,7 @@ import {
   VStack,
   Pressable,
   set,
+  FlatList,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -218,6 +219,20 @@ const InsightsScreen: React.FC = () => {
     });
   };
 
+  const renderArticle = ({ item }) => (
+    <InsightCard
+      key={item.id}
+      title={item.article_name}
+      category={item.article_genre}
+      description={item.article_desc}
+      image={item.article_thumbnail_address}
+      width={itemWidth}
+      height={120}
+      onPressBookmark={() => {}}
+      onPressCard={() => openArticle(item.article_url, item.article_name)}
+    />
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
@@ -280,65 +295,93 @@ const InsightsScreen: React.FC = () => {
           </HStack>
         </ScrollView>
 
-        <View p="$4">
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text fontSize="$lg" fontFamily="$bold">
-              Recent Insights
-            </Text>
-            <Pressable onPress={() => navigation.navigate("RecentInsights")}>
-              <HStack alignItems="center">
-                <Text>Show more</Text>
-                <AngleRightCustom color="#4800FF" size={24} />
+        {/* contents for "All" tab */}
+        {currentFilter === "All" && (
+          <>
+            <View p="$4">
+              <HStack justifyContent="space-between" alignItems="center">
+                <Text fontSize="$lg" fontFamily="$bold">
+                  Recent Insights
+                </Text>
+                <Pressable
+                  onPress={() => navigation.navigate("RecentInsights")}
+                >
+                  <HStack alignItems="center">
+                    <Text>Show more</Text>
+                    <AngleRightCustom color="#4800FF" size={24} />
+                  </HStack>
+                </Pressable>
               </HStack>
-            </Pressable>
-          </HStack>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} mt="$4">
-            <HStack space="sm">
-              {recentArticlesData &&
-                recentArticlesData.getUserArticlesPagination.edges.map(
-                  (obj: any) => (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                mt="$4"
+              >
+                <HStack space="sm">
+                  {recentArticlesData &&
+                    recentArticlesData.getUserArticlesPagination.edges.map(
+                      (obj: any) => (
+                        <InsightCard
+                          key={obj.id}
+                          title={obj.article_name}
+                          category={obj.article_genre}
+                          image={obj.article_thumbnail_address}
+                          width={250}
+                          height={150}
+                          onPressBookmark={() => {}}
+                          onPressCard={() =>
+                            openArticle(obj.article_url, obj.article_name)
+                          }
+                        />
+                      )
+                    )}
+                </HStack>
+              </ScrollView>
+            </View>
+
+            <View p="$4">
+              <Text fontSize="$lg" fontFamily="$bold">
+                Explore
+              </Text>
+
+              <Box flexDirection="row" flexWrap="wrap" gap="$4" mt="$4">
+                {articles.length > 0 &&
+                  articles.map((obj: any) => (
                     <InsightCard
                       key={obj.id}
                       title={obj.article_name}
                       category={obj.article_genre}
                       image={obj.article_thumbnail_address}
-                      width={250}
-                      height={150}
+                      width={itemWidth}
+                      height={120}
                       onPressBookmark={() => {}}
                       onPressCard={() =>
                         openArticle(obj.article_url, obj.article_name)
                       }
                     />
-                  )
-                )}
-            </HStack>
-          </ScrollView>
-        </View>
+                  ))}
+              </Box>
+            </View>
+          </>
+        )}
 
-        <View p="$4">
-          <Text fontSize="$lg" fontFamily="$bold">
-            Explore
-          </Text>
-
-          <Box flexDirection="row" flexWrap="wrap" gap="$4" mt="$4">
-            {articles.length > 0 &&
-              articles.map((obj: any) => (
-                <InsightCard
-                  key={obj.id}
-                  title={obj.article_name}
-                  category={obj.article_genre}
-                  image={obj.article_thumbnail_address}
-                  width={itemWidth}
-                  height={120}
-                  onPressBookmark={() => {}}
-                  onPressCard={() =>
-                    openArticle(obj.article_url, obj.article_name)
-                  }
-                />
-              ))}
-          </Box>
-        </View>
+        {/* contents for other tabs */}
+        {currentFilter !== "All" && (
+          <View p="$4">
+            <FlatList
+              data={articles}
+              keyExtractor={(item) => item.id}
+              renderItem={renderArticle}
+              numColumns={2}
+              contentContainerStyle={{ gap: 16 }}
+              columnWrapperStyle={{ gap: 16 }}
+              onEndReached={loadMoreArticles}
+              onEndReachedThreshold={0.1}
+              refreshControl={() => {}}
+            />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

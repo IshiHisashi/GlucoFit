@@ -63,7 +63,6 @@ const RecentInsightsScreen: FC = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [articles, setArticles] = useState<any[]>([]);
   const [articlesToShow, setArticlesToShow] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -170,10 +169,6 @@ const RecentInsightsScreen: FC = () => {
     />
   );
 
-  const handleEndReached = useCallback(() => {
-    loadMoreArticles();
-  }, [loadMoreArticles]);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View>
@@ -235,7 +230,7 @@ const RecentInsightsScreen: FC = () => {
         </Animated.View>
 
         <VStack p="$4">
-          {articles.length > 0 ? (
+          {articlesToShow.length > 0 ? (
             <FlatList
               data={articlesToShow}
               keyExtractor={(item) => item.id}
