@@ -23,7 +23,6 @@
     "debug": "^4.3.7",
     "expo": "~51.0.28",
     "expo-font": "~12.0.10",
-    "expo-linear-gradient": "~13.0.2",
     "expo-module-scripts": "^3.5.2",
     "expo-secure-store": "^13.0.2",
     "expo-status-bar": "~1.12.1",
@@ -39,6 +38,7 @@
     "react-native-svg": "^13.4.0",
     "react-native-timer-picker": "^1.10.3",
     "react-native-webview": "13.8.6",
+    "expo-linear-gradient": "~13.0.2",
     "victory-native": "^37.0.3-next.0",
     "webidl-conversions": "^7.0.0"
   },
