@@ -14,10 +14,12 @@ const CalenderStreak: React.FC = () => {
     variables: { userId: userId, year: 2024, month: 10 },
   });
 
-  console.log(data);
   useEffect(() => {
-    setLogDates(data.getTestResultsDatesByMonth);
-    console.log('logdates', data.getTestResultsDatesByMonth)
+    if (data?.getTestResultsDatesByMonth) {
+      setLogDates(data.getTestResultsDatesByMonth);
+      console.log('logdates', data.getTestResultsDatesByMonth)      
+    }
+
   }, [data])
 
   useEffect(() => {
