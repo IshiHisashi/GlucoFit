@@ -1,7 +1,10 @@
 import { View, Text } from "@gluestack-ui/themed";
-import React from "react";
+import React, { useState } from "react";
+import { Calendar } from 'react-native-calendars';
 
 const CalenderStreak: React.FC = () => {
+  const [selected, setSelected] = useState('');
+
   return (
     <View
       flexDirection="column"
@@ -11,7 +14,14 @@ const CalenderStreak: React.FC = () => {
       rounded={10}
       padding={10}
     >
-      <Text>Calender will be here</Text>
+      <Calendar 
+        onDayPress={day => {
+          setSelected(day.dateString);
+        }}
+        markedDates={{
+          [selected]: {selected: true, disableTouchEvent: true, selectedDotColor: 'orange'}
+        }}
+      />
     </View>
   );
 };
