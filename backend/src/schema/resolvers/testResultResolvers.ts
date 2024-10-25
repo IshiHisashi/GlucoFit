@@ -13,20 +13,40 @@ const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // Helper function to check if the medicine log timestamp matches the user's medicine list timestamp
 const checkMedicineLog = async (user_id: string) => {
-  const latestUserMedicine = await UserMedicineList.findOne({ user_id })
-    .sort({ log_timestamp: -1 }) // Get the most recent medicine added by the user
-    .exec();
 
+  // Fetch the most recent medicine log for the user
   const latestMedicineLog = await MedicineLog.findOne({ user_id })
-    .sort({ log_timestamp: -1 }) // Get the most recent medicine log
+    .sort({ log_timestamp: -1 })
     .exec();
 
-  if (!latestUserMedicine || !latestMedicineLog) {
-    return false; // No logs available
+  if (!latestMedicineLog) {
+    throw new Error("No medicine log found for this user");
   }
 
-  // Compare the timestamps from both collections
-  return latestUserMedicine.log_timestamp.getTime() === latestMedicineLog.log_timestamp.getTime();
+  // Extract the medicine_id from the latest medicine log
+  const { medicine_id } = latestMedicineLog;
+
+  if (!medicine_id) {
+    throw new Error("No medicine_id found in the latest medicine log");
+  }
+
+  // Get the relevant medicine from UserMedicineList using the medicine_id
+  const userMedicine = await UserMedicineList.findOne({
+    _id: medicine_id, // Ensure we're querying the correct medicine ID
+    user_id,          // Ensure it belongs to the correct user
+  }).exec();
+
+  if (!userMedicine) {
+    throw new Error("No corresponding medicine found in the user's medicine list");
+  }
+
+  // Compare timestamps
+  const userMedicineTime = userMedicine.log_timestamp.getTime();
+  const latestMedicineLogTime = latestMedicineLog.log_timestamp.getTime();
+
+  // Check if the timestamps are within 0.5 hours (30 minutes)
+  const halfHourInMillis = 30 * 60 * 1000;
+  return Math.abs(userMedicineTime - latestMedicineLogTime) <= halfHourInMillis;
 };
 
 // Helper function to get the previous BSL log for comparison
@@ -538,33 +558,62 @@ const testResultsResolvers = {
 
         const articlesToShow: IArticles[] = []; // Always an array of IArticles
 
-        // Check if the medicine log timestamps don't match
-        const medicineCheck = await checkMedicineLog(user_id);
+        // Use the actual medicine_id from the latest medicine log and pass it to the checkMedicineLog function
+        const medicineCheck = await checkMedicineLog(user_id); // Pass the ObjectId as a string
 
         // Check if BSL is different from previous log or exceeds average BSL
-        const bslCheck = !previousBSLLog || bsl !== previousBSLLog.bsl || bsl > averageBSL;
+        const bslCheck = !previousBSLLog || bsl > previousBSLLog.bsl || bsl > averageBSL;
 
-        // If either medicine log or BSL check fails, fetch an article
-        if (!medicineCheck || bslCheck) {
-          const medicationArticle = await getRandomArticle("Medication", diabetesType);
-          if (medicationArticle) articlesToShow.push(medicationArticle);
+      // If bslCheck is false, proceed with further checks
+    if (!bslCheck) {
+      // If medicine log check fails, fetch a medication article
+      if (!medicineCheck) {
+        const medicationArticle = await getRandomArticle("Medication", diabetesType);
+        if (medicationArticle) {
+          // Add article to articlesToShow array
+          articlesToShow.push(medicationArticle);
+
+          // Add article ID to user's recently_read_articles_array if not already present
+          if (!user.recently_read_articles_array.includes(medicationArticle._id)) {
+            user.recently_read_articles_array.push(medicationArticle._id);
+            await user.save(); // Save the user document with updated article array
+          }
         }
+      }
 
-         // Fetch the latest carb log and check if carbs are above 45g
-         const lastCarbLog = await getLastCarbLog(user_id);
-         if (lastCarbLog && lastCarbLog.carbs > 45) {
-           // If carbs are higher than 60g, pop up a "Food" article
-           const foodArticle = await getRandomArticle("Food", diabetesType);
-           if (foodArticle) articlesToShow.push(foodArticle);
-         }
+      // Fetch the latest carb log and check if carbs are above 45g
+      const lastCarbLog = await getLastCarbLog(user_id);
+      if (lastCarbLog && lastCarbLog.carbs > 45) {
+        // If carbs are higher than 45g, pop up a "Food" article
+        const foodArticle = await getRandomArticle("Food", diabetesType);
+        if (foodArticle) {
+          // Add article to articlesToShow array
+          articlesToShow.push(foodArticle);
 
-        // Check total footsteps for the past week( below 150 )
-        const totalFootsteps = await getWeeklyFootstepsCount(user_id);
-        if (totalFootsteps < 150) {
-          const wellnessArticle = await getRandomArticle("Wellness", diabetesType);
-          if (wellnessArticle) articlesToShow.push(wellnessArticle);
+          // Add article ID to user's recently_read_articles_array if not already present
+          if (!user.recently_read_articles_array.includes(foodArticle._id)) {
+            user.recently_read_articles_array.push(foodArticle._id);
+            await user.save();
+          }
         }
+      }
 
+      // Check total footsteps for the past week (below 150)
+      const totalFootsteps = await getWeeklyFootstepsCount(user_id);
+      if (totalFootsteps < 150) {
+        const wellnessArticle = await getRandomArticle("Wellness", diabetesType);
+        if (wellnessArticle) {
+          // Add article to articlesToShow array
+          articlesToShow.push(wellnessArticle);
+
+          // Add article ID to user's recently_read_articles_array if not already present
+          if (!user.recently_read_articles_array.includes(wellnessArticle._id)) {
+            user.recently_read_articles_array.push(wellnessArticle._id);
+            await user.save();
+          }
+        }
+      }
+    }
         // Return the list of articles to show (empty array if no articles are found)
         return articlesToShow;
       } catch (error) {
