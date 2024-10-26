@@ -54,5 +54,7 @@ export const articlesTypeDefs = gql`
     ): Articles!
 
     deleteArticle(id: ID!): String!
+
+    toggleFavouriteArticle(userId: ID!, articleId: ID!): String!
   }
 `;
