@@ -150,6 +150,30 @@ const articlesResolvers = {
       await Articles.findByIdAndDelete(id);
       return "Article deleted successfully";
     },
+    toggleFavouriteArticle: async (
+      _: any,
+      { userId, articleId }: { userId: string; articleId: string }
+    ): Promise<string> => {
+      const user = await User.findById(userId);
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const articleIndex = user.favourite_articles.indexOf(articleId);
+
+      if (articleIndex > -1) {
+        // If the article is already in favourites, remove it
+        user.favourite_articles.splice(articleIndex, 1);
+        await user.save();
+        return "Article removed from favourites.";
+      } else {
+        // If not in favourites, add it
+        user.favourite_articles.unshift(articleId);
+        await user.save();
+        return "Article added to favourites.";
+      }
+    },
   },
 };
 
