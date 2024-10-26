@@ -80,6 +80,7 @@ const Tab: FC<TabProps> = (props) => {
         )}
         <ButtonText
           fontFamily="$bold"
+          fontSize={12}
           color={customStyle.color}
           $active-color={customStyle.$active.color}
           $focus-color={customStyle.$focus.color}

@@ -5,9 +5,11 @@ import { SvgProps } from "react-native-svg";
 interface GlucoButtonProps {
   buttonType: "primary" | "secondary";
   text: string;
+  isFocused: boolean;
   isDisabled: boolean;
   onPress: () => void;
   icon?: FC<SvgProps>;
+  buttonSize?: "small" | "medium";
   flex?: 1 | 0;
   style?: {};
 }
@@ -16,9 +18,11 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
   const {
     buttonType,
     text,
+    isFocused,
     isDisabled,
     onPress,
     icon: IconComponent,
+    buttonSize,
     flex = 0,
     style,
   } = props;
@@ -79,12 +83,17 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
   const getIconColor = () => {
     if (isDisabled) return currentStyle.$disabled.colorForSvg;
     if (isPressed) return currentStyle.$active.colorForSvg;
+    if (isFocused) return currentStyle.$focus.colorForSvg;
     return currentStyle.colorForSvg;
   };
 
   return (
     <Button
       borderRadius="$full"
+      width={
+        buttonSize === "small" ? 110 : buttonSize === "medium" ? 214 : "$auto"
+      }
+      maxWidth={347}
       flex={flex}
       isDisabled={isDisabled}
       onPress={onPress}
@@ -97,6 +106,7 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
         {IconComponent && <IconComponent color={getIconColor()} />}
         <ButtonText
           fontFamily="$bold"
+          fontSize={17}
           color={currentStyle.color}
           $active-color={currentStyle.$active.color}
           $focus-color={currentStyle.$focus.color}
