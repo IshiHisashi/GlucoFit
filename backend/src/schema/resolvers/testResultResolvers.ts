@@ -1,19 +1,30 @@
 import { TestResults, ITestResults } from "../../model/TestResults";
 import { Articles, IArticles } from "../../model/Articles";
+import { Badges, IBadges } from "../../model/Badges";
 import { ActivityLogs } from "../../model/ActivityLogs";
 import { DietLogs } from "../../model/DietLogs";
 import { MedicineLog, UserMedicineList } from "../../model/MedicineLog";
 import { User } from "../../model/User";
+import {
+  calculateStreak,
+  calculateStreakByTimeRange,
+} from "../utils/testResuktUtils";
+import userResolvers from "./userResolvers";
+import badgesResolvers from "./BadgesResolvers";
 import { format } from "date-fns";
 import { Types } from "mongoose";
 import moment from "moment-timezone";
+
+interface TestResultResponse {
+  articlesToShow: IArticles[];
+  badgesToShow: IBadges[];
+}
 
 // Day mapping to convert index to day
 const dayMapping = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // Helper function to check if the medicine log timestamp matches the user's medicine list timestamp
 const checkMedicineLog = async (user_id: string) => {
-
   // Fetch the most recent medicine log for the user
   const latestMedicineLog = await MedicineLog.findOne({ user_id })
     .sort({ log_timestamp: -1 })
@@ -33,11 +44,13 @@ const checkMedicineLog = async (user_id: string) => {
   // Get the relevant medicine from UserMedicineList using the medicine_id
   const userMedicine = await UserMedicineList.findOne({
     _id: medicine_id, // Ensure we're querying the correct medicine ID
-    user_id,          // Ensure it belongs to the correct user
+    user_id, // Ensure it belongs to the correct user
   }).exec();
 
   if (!userMedicine) {
-    throw new Error("No corresponding medicine found in the user's medicine list");
+    throw new Error(
+      "No corresponding medicine found in the user's medicine list"
+    );
   }
 
   // Compare timestamps
@@ -47,7 +60,6 @@ const checkMedicineLog = async (user_id: string) => {
   // Check if the timestamps are within 0.5 hours (30 minutes)
   const halfHourInMillis = 30 * 60 * 1000;
   return Math.abs(userMedicineTime - latestMedicineLogTime) <= halfHourInMillis;
-
 };
 
 // Helper function to get the previous BSL log for comparison
@@ -111,6 +123,19 @@ const getRandomArticle = async (
 
   const randomIndex = Math.floor(Math.random() * articles.length);
   return articles[randomIndex];
+};
+
+// Helper functions for Gamfication
+const updateUserBadgeById = async (
+  userId: string,
+  badgeId: string,
+  achieved: boolean
+): Promise<any> => {
+  return await User.findOneAndUpdate(
+    { _id: userId, "badges.badgeId": badgeId },
+    { $set: { "badges.$.achieved": achieved } },
+    { new: true }
+  );
 };
 
 const testResultsResolvers = {
@@ -330,91 +355,12 @@ const testResultsResolvers = {
       { user_id, withThreshold }: { user_id: string; withThreshold: boolean }
     ): Promise<number> => {
       try {
-        let testResults;
-
-        // Fetch test results for the user
-        if (withThreshold) {
-          const user = await User.findById(user_id);
-          if (!user) {
-            throw new Error("User not found");
-          }
-          const { maximum_bsl, minimum_bsl } = user;
-
-          testResults = await TestResults.find({
-            user_id: new Types.ObjectId(user_id),
-            bsl: { $gte: minimum_bsl, $lte: maximum_bsl },
-          })
-            .sort({ log_timestamp: 1 })
-            .exec();
-        } else {
-          testResults = await TestResults.find({
-            user_id: new Types.ObjectId(user_id),
-          })
-            .sort({ log_timestamp: 1 })
-            .exec();
-        }
-
-        if (!testResults.length) return 0;
-
-        const days = new Set<string>();
-
-        testResults.forEach((result) => {
-          const utcDate = moment.utc(result.log_timestamp).format("YYYY-MM-DD");
-          days.add(utcDate);
-        });
-
-        const uniqueDays = Array.from(days).sort();
-        const today = moment.tz("America/Vancouver").startOf("day");
-        const yesterday = moment
-          .tz("America/Vancouver")
-          .subtract(1, "days")
-          .startOf("day");
-
-        let streak = 0;
-        let currentStreak = 0;
-
-        for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = moment.utc(uniqueDays[i], "YYYY-MM-DD");
-
-          if (i === uniqueDays.length - 1) {
-            const diffFromToday = today.diff(currentDay, "days");
-            const diffFromYesterday = yesterday.diff(currentDay, "days");
-
-            console.log(
-              `Checking first log day (UTC): ${uniqueDays[i]} (diffFromToday: ${diffFromToday}, diffFromYesterday: ${diffFromYesterday})`
-            );
-
-            if (diffFromToday === 0) {
-              currentStreak = 1;
-            } else if (diffFromYesterday === 0) {
-              currentStreak = 1;
-            } else {
-              return 0;
-            }
-          } else {
-            const prevDay = moment.utc(uniqueDays[i + 1], "YYYY-MM-DD");
-            const diff = prevDay.diff(currentDay, "days");
-
-            if (diff === 1) {
-              currentStreak++;
-            } else {
-              break;
-            }
-          }
-          streak = Math.max(streak, currentStreak);
-        }
-        return streak;
+        return await calculateStreak(user_id, withThreshold);
       } catch (error) {
-        console.error(
-          "Error calculating streak of consecutive test results:",
-          error
-        );
-        throw new Error(
-          "Failed to calculate streak of consecutive test results"
-        );
+        console.error("Error calculating streak:", error);
+        throw new Error("Failed to calculate streak");
       }
     },
-
     getStreakByTimeRange: async (
       _: any,
       {
@@ -424,51 +370,7 @@ const testResultsResolvers = {
       }: { user_id: string; startHour: number; endHour: number }
     ): Promise<number> => {
       try {
-        // Fetch all test results for the user, sorted by timestamp
-        const testResults = await TestResults.find({
-          user_id: new Types.ObjectId(user_id),
-        })
-          .sort({ log_timestamp: 1 })
-          .exec();
-
-        if (!testResults.length) return 0;
-
-        const days = new Set<string>();
-        testResults.forEach((result) => {
-          const logTime = moment.utc(result.log_timestamp);
-          const utcHour = logTime.hour();
-          const utcDate = logTime.format("YYYY-MM-DD");
-
-          if (utcHour >= startHour && utcHour < endHour) {
-            days.add(utcDate);
-          }
-        });
-
-        const uniqueDays = Array.from(days).sort();
-
-        if (!uniqueDays.length) return 0;
-
-        let streak = 0;
-        let currentStreak = 0;
-
-        for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = moment(uniqueDays[i], "YYYY-MM-DD");
-          const prevDay = moment(uniqueDays[i + 1], "YYYY-MM-DD");
-
-          if (i === uniqueDays.length - 1) {
-            currentStreak = 1;
-          } else {
-            const diff = prevDay.diff(currentDay, "days");
-            if (diff === 1) {
-              currentStreak++;
-            } else {
-              break;
-            }
-          }
-          streak = Math.max(streak, currentStreak);
-        }
-
-        return streak;
+        return await calculateStreakByTimeRange(user_id, startHour, endHour);
       } catch (error) {
         console.error("Error calculating streak by time range:", error);
         throw new Error("Failed to calculate streak by time range");
@@ -531,17 +433,29 @@ const testResultsResolvers = {
     },
   },
   Mutation: {
-    createTestResultWithInsights: async (
+    createTestResult: async (
       _: any,
-      { user_id, bsl, note, time_period, confirmed }: { user_id: string; bsl: number; note: string; time_period: string; confirmed: boolean }
-    ): Promise<IArticles[]> => {
+      {
+        user_id,
+        bsl,
+        note,
+        time_period,
+        confirmed,
+      }: {
+        user_id: string;
+        bsl: number;
+        note: string;
+        time_period: string;
+        confirmed: boolean;
+      }
+    ): Promise<TestResultResponse> => {
       try {
         const newTestResult = new TestResults({
           user_id,
           bsl,
           note: { note_description: note },
-          log_timestamp: new Date(), 
-          time_period, 
+          log_timestamp: new Date(),
+          time_period,
           confirmed,
         });
         await newTestResult.save();
@@ -551,14 +465,14 @@ const testResultsResolvers = {
         if (!user) {
           throw new Error("User not found");
         }
-
-
-        const diabetesType = user.diabates_type; 
+        const diabetesType = user.diabates_type;
         const maxBSL = user.maximum_bsl;
         const minBSL = user.minimum_bsl;
-        const averageBSL = (maxBSL + minBSL) / 2; 
+        const averageBSL = (maxBSL + minBSL) / 2;
+        const badges = user.badges;
 
- // Fetch the previous BSL log
+        // FOR INSIGHTS-----------------------------------------------------
+        // Fetch the previous BSL log
         const previousBSLLog = await getPreviousBSLLog(user_id);
 
         const articlesToShow: IArticles[] = []; // Always an array of IArticles
@@ -567,61 +481,201 @@ const testResultsResolvers = {
         const medicineCheck = await checkMedicineLog(user_id); // Pass the ObjectId as a string
 
         // Check if BSL is different from previous log or exceeds average BSL
-        const bslCheck = !previousBSLLog || bsl > previousBSLLog.bsl || bsl > averageBSL;
+        const bslCheck =
+          !previousBSLLog || bsl > previousBSLLog.bsl || bsl > averageBSL;
 
-      // If bslCheck is false, proceed with further checks
-    if (!bslCheck) {
-      // If medicine log check fails, fetch a medication article
-      if (!medicineCheck) {
-        const medicationArticle = await getRandomArticle("Medication", diabetesType);
-        if (medicationArticle) {
-          // Add article to articlesToShow array
-          articlesToShow.push(medicationArticle);
+        // If bslCheck is false, proceed with further checks
+        if (!bslCheck) {
+          // If medicine log check fails, fetch a medication article
+          if (!medicineCheck) {
+            const medicationArticle = await getRandomArticle(
+              "Medication",
+              diabetesType
+            );
+            if (medicationArticle) {
+              // Add article to articlesToShow array
+              articlesToShow.push(medicationArticle);
 
-          // Add article ID to user's recently_read_articles_array if not already present
-          if (!user.recently_read_articles_array.includes(medicationArticle._id)) {
-            user.recently_read_articles_array.push(medicationArticle._id);
-            await user.save(); // Save the user document with updated article array
+              // Add article ID to user's recently_read_articles_array if not already present
+              if (
+                !user.recently_read_articles_array.includes(
+                  medicationArticle._id
+                )
+              ) {
+                user.recently_read_articles_array.push(medicationArticle._id);
+                await user.save(); // Save the user document with updated article array
+              }
+            }
           }
 
-        }
-      }
+          // Fetch the latest carb log and check if carbs are above 45g
+          const lastCarbLog = await getLastCarbLog(user_id);
+          if (lastCarbLog && lastCarbLog.carbs > 45) {
+            // If carbs are higher than 45g, pop up a "Food" article
+            const foodArticle = await getRandomArticle("Food", diabetesType);
+            if (foodArticle) {
+              // Add article to articlesToShow array
+              articlesToShow.push(foodArticle);
 
-      // Fetch the latest carb log and check if carbs are above 45g
-      const lastCarbLog = await getLastCarbLog(user_id);
-      if (lastCarbLog && lastCarbLog.carbs > 45) {
-        // If carbs are higher than 45g, pop up a "Food" article
-        const foodArticle = await getRandomArticle("Food", diabetesType);
-        if (foodArticle) {
-          // Add article to articlesToShow array
-          articlesToShow.push(foodArticle);
+              // Add article ID to user's recently_read_articles_array if not already present
+              if (
+                !user.recently_read_articles_array.includes(foodArticle._id)
+              ) {
+                user.recently_read_articles_array.push(foodArticle._id);
+                await user.save();
+              }
+            }
+          }
 
-          // Add article ID to user's recently_read_articles_array if not already present
-          if (!user.recently_read_articles_array.includes(foodArticle._id)) {
-            user.recently_read_articles_array.push(foodArticle._id);
-            await user.save();
+          // Check total footsteps for the past week (below 150)
+          const totalFootsteps = await getWeeklyFootstepsCount(user_id);
+          if (totalFootsteps < 150) {
+            const wellnessArticle = await getRandomArticle(
+              "Wellness",
+              diabetesType
+            );
+            if (wellnessArticle) {
+              // Add article to articlesToShow array
+              articlesToShow.push(wellnessArticle);
+
+              // Add article ID to user's recently_read_articles_array if not already present
+              if (
+                !user.recently_read_articles_array.includes(wellnessArticle._id)
+              ) {
+                user.recently_read_articles_array.push(wellnessArticle._id);
+                await user.save();
+              }
+            }
           }
         }
-      }
+        // --------------------------------------- END INSIGHTS
+        // ---------------BADGES------------------
+        const badgesToShow: IBadges[] = []; // Always an array of IBadges
 
-      // Check total footsteps for the past week (below 150)
-      const totalFootsteps = await getWeeklyFootstepsCount(user_id);
-      if (totalFootsteps < 150) {
-        const wellnessArticle = await getRandomArticle("Wellness", diabetesType);
-        if (wellnessArticle) {
-          // Add article to articlesToShow array
-          articlesToShow.push(wellnessArticle);
-
-          // Add article ID to user's recently_read_articles_array if not already present
-          if (!user.recently_read_articles_array.includes(wellnessArticle._id)) {
-            user.recently_read_articles_array.push(wellnessArticle._id);
-            await user.save();
+        const unachivedBadgeArr = badges
+          .filter((badge) => !badge.achieved)
+          .map((badge) => badge.badgeId.toString());
+        if (unachivedBadgeArr.includes("670b2125cb185c3905515da2")) {
+          // Badge | First Steps
+          await updateUserBadgeById(user_id, "670b2125cb185c3905515da2", true);
+          const badgeDetails = (await Badges.findById(
+            "670b2125cb185c3905515da2"
+          )) as IBadges | null;
+          if (badgeDetails) {
+            badgesToShow.push(badgeDetails);
+          }
+        } else {
+          if (unachivedBadgeArr.includes("670b2149cb185c3905515da4")) {
+            // Badge | Starter Streek
+            // 1. Calculate streak number
+            const streakCount = await calculateStreak(user_id, false);
+            // 2. If streak satisfies, update the badge status
+            if (streakCount >= 7) {
+              await updateUserBadgeById(
+                user_id,
+                "670b2149cb185c3905515da4",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b2149cb185c3905515da4"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
+          }
+          if (unachivedBadgeArr.includes("670b215bcb185c3905515da6")) {
+            // Badge | Healty Habit
+            const streakCount = await calculateStreak(user_id, true);
+            if (streakCount >= 5) {
+              await updateUserBadgeById(
+                user_id,
+                "670b215bcb185c3905515da6",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b215bcb185c3905515da6"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
+          }
+          if (unachivedBadgeArr.includes("670b216fcb185c3905515da8")) {
+            // Badge | Early Bird
+            const streakCount = await calculateStreakByTimeRange(user_id, 6, 8);
+            if (streakCount >= 10) {
+              await updateUserBadgeById(
+                user_id,
+                "670b216fcb185c3905515da8",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b216fcb185c3905515da8"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
+          }
+          if (unachivedBadgeArr.includes("670b2188cb185c3905515daa")) {
+            // Badge | Night Owl
+            const streakCount = await calculateStreakByTimeRange(
+              user_id,
+              20,
+              24
+            );
+            if (streakCount >= 10) {
+              await updateUserBadgeById(
+                user_id,
+                "670b2188cb185c3905515daa",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b2188cb185c3905515daa"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
+          }
+          if (unachivedBadgeArr.includes("670b2199cb185c3905515dae")) {
+            // Badge | GlucoseGulu
+            const streakCount = await calculateStreak(user_id, true);
+            if (streakCount >= 30) {
+              await updateUserBadgeById(
+                user_id,
+                "670b2199cb185c3905515dae",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b2199cb185c3905515dae"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
+          }
+          if (unachivedBadgeArr.includes("670b21a8cb185c3905515db0")) {
+            // Badge | Check-in Champion
+            const streakCount = await calculateStreak(user_id, false);
+            if (streakCount >= 100) {
+              await updateUserBadgeById(
+                user_id,
+                "670b21a8cb185c3905515db0",
+                true
+              );
+              const badgeDetails = (await Badges.findById(
+                "670b21a8cb185c3905515db0"
+              )) as IBadges | null;
+              if (badgeDetails) {
+                badgesToShow.push(badgeDetails);
+              }
+            }
           }
         }
-      }
-    }
         // Return the list of articles to show (empty array if no articles are found)
-        return articlesToShow;
+        return { articlesToShow, badgesToShow };
       } catch (error) {
         console.error("Error creating test result:", error);
         throw new Error("Failed to create test result and fetch insights");
