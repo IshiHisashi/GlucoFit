@@ -12,8 +12,12 @@ import {
   ChevronRightIcon,
   ScrollView,
   View,
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription,
 } from "@gluestack-ui/themed";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
@@ -27,8 +31,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { BellCustom, CapsuleDark, HeartrateDark } from "../svgs/svgs";
+import {
+  AnalysisCustom,
+  BellCustom,
+  CapsuleDark,
+  HeartrateDark,
+  TimesCustom,
+} from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
+import BslTodayBarChart from "../organisms/BslTodayBarChart";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -108,10 +119,19 @@ const GET_AVERAGE_BSL_FOR_X = gql`
   }
 `;
 
+const GET_USER = gql`
+  query GetUser($getUserId: ID!) {
+    getUser(id: $getUserId) {
+      name
+    }
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 type RouteParams = {
   mutatedLog?: string;
+  insight?: any;
 };
 
 const HomeScreen: React.FC = () => {
@@ -120,6 +140,16 @@ const HomeScreen: React.FC = () => {
   console.log(route.name);
 
   const { width } = useWindowDimensions();
+
+  const toast = useToast();
+
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useQuery(GET_USER, {
+    variables: { getUserId: userId },
+  });
 
   const {
     data: bslResultsAndAverageData,
@@ -194,11 +224,95 @@ const HomeScreen: React.FC = () => {
   });
   bslForXData && console.log("X:", bslForXData);
 
+  const openArticle = (url: string, title: string) => {
+    navigation.navigate("Article", {
+      url,
+      title,
+    });
+  };
+
+  useEffect(() => {
+    if (route.params?.insight) {
+      toast.show({
+        placement: "bottom",
+        duration: null,
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast
+              nativeID={toastId}
+              bg="$secondaryY70"
+              bottom="$16"
+              width="90%"
+              // left="$4"
+              // right="$4"
+            >
+              <Pressable
+                onPress={() => {
+                  toast.close(id);
+                  navigation.setParams({ insight: undefined });
+                  openArticle(
+                    route.params.insight.article_url,
+                    route.params.insight.article_name
+                  );
+                }}
+              >
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  space="sm"
+                >
+                  <HStack alignItems="center" space="sm">
+                    <Box
+                      width={34}
+                      height={34}
+                      borderRadius="$full"
+                      bg="$secondaryY5"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <AnalysisCustom color="#E5BA2D" size={24} />
+                    </Box>
+                    <VStack space="xs" width={200}>
+                      <ToastTitle numberOfLines={2}>
+                        {route.params.insight.article_name}
+                      </ToastTitle>
+                      <ToastDescription>See quick tips</ToastDescription>
+                    </VStack>
+                  </HStack>
+
+                  <Pressable
+                    onPress={() => {
+                      toast.close(id);
+                      // Clean up route params
+                      navigation.setParams({ insight: undefined });
+                    }}
+                  >
+                    <TimesCustom color="#000000" size={24} />
+                  </Pressable>
+                </HStack>
+              </Pressable>
+            </Toast>
+          );
+        },
+      });
+      // Clean up route params after showing toast
+      navigation.setParams({
+        mutatedLog: route.params.mutatedLog,
+        insight: undefined,
+      });
+    }
+  }, [route.params?.insight, toast, navigation, route.params?.mutatedLog]);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.mutatedLog === "bsl") {
         bslResultsAndAverageRefetch();
         weeklyBslRefetch();
+
+        if (route.params?.insight) {
+          console.log("insight:", route.params.insight);
+        }
       }
       if (route.params?.mutatedLog === "activity") {
         activitiesRefetch();
@@ -211,6 +325,7 @@ const HomeScreen: React.FC = () => {
       }
     }, [
       route.params?.mutatedLog,
+      route.params?.insight,
       bslResultsAndAverageRefetch,
       activitiesRefetch,
       medicinesRefetch,
@@ -249,7 +364,10 @@ const HomeScreen: React.FC = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <HeaderBasic routeName={route.name as "Home"} />
+        <HeaderBasic
+          routeName={route.name as "Home"}
+          userName={userData?.getUser.name}
+        />
         <VStack p="$4" space="md">
           <VStack
             space="sm"
@@ -280,7 +398,14 @@ const HomeScreen: React.FC = () => {
             </HStack>
 
             {bslResultsAndAverageData && (
-              <BslLineChart
+              // <BslLineChart
+              //   width={width}
+              //   data={
+              //     bslResultsAndAverageData.getTestResultsAndAverageForToday
+              //       .testResults
+              //   }
+              // />
+              <BslTodayBarChart
                 width={width}
                 data={
                   bslResultsAndAverageData.getTestResultsAndAverageForToday
@@ -444,7 +569,7 @@ const HomeScreen: React.FC = () => {
                 <Text>Average</Text>
               </Center>
 
-              {weeklyBslData && (
+              {weeklyBslData && bslForXData && (
                 <BslWeeklyBarChart
                   width={width}
                   data={weeklyBslData.getWeeklyBSLData.weeklyData}

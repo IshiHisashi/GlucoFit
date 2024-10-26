@@ -7,11 +7,12 @@ export const testResultsTypeDefs = gql`
     bsl: Float
     note: Note
     log_timestamp: Date
-    time_period : String
+    time_period: String
     confirmed: Boolean
   }
 
   type Note {
+    note_title: String
     note_description: String
   }
 
@@ -23,7 +24,7 @@ export const testResultsTypeDefs = gql`
   type WeeklyBSLResponse {
     weeklyData: [BSLData!]!
     weeklyAverage: Float!
-    dateRange: String! 
+    dateRange: String!
   }
 
   type BSLData {
@@ -55,16 +56,16 @@ export const testResultsTypeDefs = gql`
       bsl: Float!
       note: NoteInput!
       log_timestamp: Date
-      time_period : String
+      time_period: String
       confirmed: Boolean
     ): TestResults!
 
     createTestResultWithInsights(
-      user_id: ID!, 
-      bsl: Float!, 
-      note: String!, 
+      user_id: ID!
+      bsl: Float!
+      note: NoteInput
       log_timestamp: Date
-      time_period: String, 
+      time_period: String
       confirmed: Boolean
     ): [Articles]
 
@@ -73,7 +74,7 @@ export const testResultsTypeDefs = gql`
       bsl: Float
       note: NoteInput
       log_timestamp: Date
-      time_period : String
+      time_period: String
       confirmed: Boolean
     ): TestResults!
 
@@ -81,6 +82,7 @@ export const testResultsTypeDefs = gql`
   }
 
   input NoteInput {
+    note_title: String!
     note_description: String!
   }
 `;

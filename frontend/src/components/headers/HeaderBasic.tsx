@@ -14,12 +14,13 @@ import { BellCustom, SearchCustom } from "../svgs/svgs";
 
 interface HeaderBasicProps {
   routeName: "Home" | "Insights" | "Logs" | "BadgeScreen";
+  userName?: string;
   searchValue?: string;
   onChangeSearchValue?: (value: string) => void;
 }
 
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
-  const { routeName, searchValue, onChangeSearchValue } = props;
+  const { routeName, userName, searchValue, onChangeSearchValue } = props;
 
   const headerStyles = {
     Home: {
@@ -42,6 +43,13 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
 
   const currentStyle = headerStyles[routeName];
 
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
     <HStack
       bg={currentStyle.bg}
@@ -53,9 +61,9 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       {routeName === "Home" && (
         <VStack>
           <Text fontSize="$3xl" fontFamily="$bold" color="$neutralWhite">
-            Hi, Angie!
+            Hi, {userName || "there"}!
           </Text>
-          <Text color="$neutralWhite">Today, October 12, 2024</Text>
+          <Text color="$neutralWhite">Today, {formattedDate}</Text>
         </VStack>
       )}
 

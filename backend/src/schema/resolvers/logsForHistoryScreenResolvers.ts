@@ -9,18 +9,23 @@ const logsForHistoryScreenResolvers = {
       _: any,
       {
         user_id,
-        startDate,
-        endDate,
-        limit = 50,
-      }: { user_id: string; startDate: any; endDate: any; limit: number }
+        goBackTillThisDate,
+        latestDate,
+      }: { user_id: string; goBackTillThisDate: any; latestDate: any }
     ) => {
       const queryArgs = {
         user_id,
-        log_timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        log_timestamp: {
+          $gt: new Date(goBackTillThisDate),
+          $lte: new Date(latestDate),
+        },
       };
       const queryArgsForDietLogs = {
         userID: user_id.toString(),
-        log_timestamp: { $gte: new Date(startDate), $lte: new Date(endDate) },
+        log_timestamp: {
+          $gt: new Date(goBackTillThisDate),
+          $lte: new Date(latestDate),
+        },
       };
 
       // Query each collection
@@ -79,12 +84,12 @@ const logsForHistoryScreenResolvers = {
         // .filter((log) => log.id != null)
         .sort((a: any, b: any) => b.log_timestamp - a.log_timestamp);
 
-      const hasMoreData = allLogs.length > limit;
-      const logsToReturn = allLogs.slice(0, limit);
+      const hasMoreData = allLogs.length > 0;
 
       return {
-        logs: logsToReturn,
+        logs: allLogs,
         hasMoreData,
+        nextLatestDate: goBackTillThisDate,
       };
     },
   },

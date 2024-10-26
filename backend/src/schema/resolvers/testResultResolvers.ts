@@ -47,6 +47,7 @@ const checkMedicineLog = async (user_id: string) => {
   // Check if the timestamps are within 0.5 hours (30 minutes)
   const halfHourInMillis = 30 * 60 * 1000;
   return Math.abs(userMedicineTime - latestMedicineLogTime) <= halfHourInMillis;
+
 };
 
 // Helper function to get the previous BSL log for comparison
@@ -95,12 +96,15 @@ const mapDiabetesType = (diabetesType: number): string => {
 };
 
 // Helper function to get a random article
-const getRandomArticle = async (genre: "Food" | "Wellness" | "Medication", diabetesType: number): Promise<IArticles | null> => {
-  const diabetesTypeString = mapDiabetesType(diabetesType); 
+const getRandomArticle = async (
+  genre: "Food" | "Wellness" | "Medication",
+  diabetesType: number
+): Promise<IArticles | null> => {
+  const diabetesTypeString = mapDiabetesType(diabetesType);
 
   const articles = await Articles.find({
     article_genre: genre,
-    diabetes_type: diabetesTypeString, 
+    diabetes_type: diabetesTypeString,
   }).exec();
 
   if (articles.length === 0) return null;
@@ -529,34 +533,28 @@ const testResultsResolvers = {
   Mutation: {
     createTestResultWithInsights: async (
       _: any,
-      { user_id, bsl, note, time_period, confirmed }: { user_id: string; bsl: number; note: string; time_period: string; confirmed: boolean }
+      args: ITestResults
     ): Promise<IArticles[]> => {
       try {
-        const newTestResult = new TestResults({
-          user_id,
-          bsl,
-          note: { note_description: note },
-          log_timestamp: new Date(), 
-          time_period, 
-          confirmed,
-        });
+        const newTestResult = new TestResults(args);
         await newTestResult.save();
 
         // Fetch the user's diabetic type and BSL data from the User model
-        const user = await User.findById(user_id);
+        const user = await User.findById(args.user_id);
         if (!user) {
           throw new Error("User not found");
         }
 
-        const diabetesType = user.diabates_type; 
+        const diabetesType = user.diabates_type;
         const maxBSL = user.maximum_bsl;
         const minBSL = user.minimum_bsl;
-        const averageBSL = (maxBSL + minBSL) / 2; 
+        const averageBSL = (maxBSL + minBSL) / 2;
 
         // Fetch the previous BSL log
-        const previousBSLLog = await getPreviousBSLLog(user_id);
+        const previousBSLLog = await getPreviousBSLLog(args.user_id.toString());
 
         const articlesToShow: IArticles[] = []; // Always an array of IArticles
+
 
         // Use the actual medicine_id from the latest medicine log and pass it to the checkMedicineLog function
         const medicineCheck = await checkMedicineLog(user_id); // Pass the ObjectId as a string
@@ -578,6 +576,7 @@ const testResultsResolvers = {
             user.recently_read_articles_array.push(medicationArticle._id);
             await user.save(); // Save the user document with updated article array
           }
+
         }
       }
 

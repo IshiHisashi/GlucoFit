@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Input, InputField } from "@gluestack-ui/themed";
+import { View, Text, Input, InputField, ScrollView } from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 
@@ -38,8 +38,11 @@ const BadgeScreen: React.FC = () => {
             onPress={() => setSelectScreen("badges")}
           />
         </View>
-        {selectScreen === "streaks" && <StreakScreen />}
-        {selectScreen === "badges" && <BadgesScreen />}
+        {/* I HAVE TO MODIFY THIS HEIGHT ISSUE HERE!!! JUST TEMPORARY MEASURE DONE */}
+        <ScrollView h={"$4/5"}>
+          {selectScreen === "streaks" && <StreakScreen />}
+          {selectScreen === "badges" && <BadgesScreen />}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
