@@ -533,28 +533,35 @@ const testResultsResolvers = {
   Mutation: {
     createTestResultWithInsights: async (
       _: any,
-      args: ITestResults
+      { user_id, bsl, note, time_period, confirmed }: { user_id: string; bsl: number; note: string; time_period: string; confirmed: boolean }
     ): Promise<IArticles[]> => {
       try {
-        const newTestResult = new TestResults(args);
+        const newTestResult = new TestResults({
+          user_id,
+          bsl,
+          note: { note_description: note },
+          log_timestamp: new Date(), 
+          time_period, 
+          confirmed,
+        });
         await newTestResult.save();
 
         // Fetch the user's diabetic type and BSL data from the User model
-        const user = await User.findById(args.user_id);
+        const user = await User.findById(user_id);
         if (!user) {
           throw new Error("User not found");
         }
 
-        const diabetesType = user.diabates_type;
+
+        const diabetesType = user.diabates_type; 
         const maxBSL = user.maximum_bsl;
         const minBSL = user.minimum_bsl;
-        const averageBSL = (maxBSL + minBSL) / 2;
+        const averageBSL = (maxBSL + minBSL) / 2; 
 
-        // Fetch the previous BSL log
-        const previousBSLLog = await getPreviousBSLLog(args.user_id.toString());
+ // Fetch the previous BSL log
+        const previousBSLLog = await getPreviousBSLLog(user_id);
 
         const articlesToShow: IArticles[] = []; // Always an array of IArticles
-
 
         // Use the actual medicine_id from the latest medicine log and pass it to the checkMedicineLog function
         const medicineCheck = await checkMedicineLog(user_id); // Pass the ObjectId as a string
