@@ -63,7 +63,7 @@ const extendedConfig = createConfig({
       // neutralDark25: "#999999",
       neutralDark40: "#7B7B7B",
       // neutralDark35: "#5E5E5E",
-      // neutralDark70: "#404040",
+      neutralDark60: "#404040",
       // neutralDark80: "#313131",
       // neutralDark85: "#232323",
       neutralDark90: "#141414",
