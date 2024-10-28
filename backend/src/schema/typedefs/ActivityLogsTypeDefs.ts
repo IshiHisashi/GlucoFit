@@ -10,6 +10,21 @@ export const activityLogsTypeDefs = gql`
     log_timestamp: Date!
   }
 
+  type BadgeCriteria {
+    value: Float!
+    comparison: String!
+    kind: String!
+    note: String
+  }
+  type Badges {
+    id: ID!
+    badge_name: String!
+    badge_desc: String!
+    badge_image_address: String!
+    criteria: BadgeCriteria!
+    last_updated: Date
+  }
+
   extend type Query {
     getActivityLog(id: ID!): ActivityLogs
     getActivityLogs: [ActivityLogs!]!
@@ -25,8 +40,7 @@ export const activityLogsTypeDefs = gql`
       footsteps: Int
       duration: Int!
       time_period: String
-      log_timestamp: Date!
-    ): ActivityLogs!
+    ): Badges
 
     updateActivityLog(
       id: ID!
