@@ -1,6 +1,8 @@
 import { Articles, IArticles } from "../../model/Articles";
 import { User, IUser } from "../../model/User";
+import { Badges, IBadges } from "../../model/Badges";
 import { Types } from "mongoose";
+import { updateUserBadgeById } from "../../utils/userUtils";
 
 type GetInsightsArgs = {
   userId?: string;
@@ -153,7 +155,7 @@ const articlesResolvers = {
     toggleFavouriteArticle: async (
       _: any,
       { userId, articleId }: { userId: string; articleId: string }
-    ): Promise<string> => {
+    ): Promise<{ badge: IBadges | null; message: string | null }> => {
       const user = await User.findById(userId);
 
       if (!user) {
@@ -166,12 +168,30 @@ const articlesResolvers = {
         // If the article is already in favourites, remove it
         user.favourite_articles.splice(articleIndex, 1);
         await user.save();
-        return "Article removed from favourites.";
+        return { badge: null, message: "Article taken out from favourites." };
       } else {
         // If not in favourites, add it
         user.favourite_articles.unshift(articleId);
         await user.save();
-        return "Article added to favourites.";
+
+        // See if the badge is already achieved
+        const targetBadge = user.badges.find(
+          (badge) => badge.badgeId.toString() === "670b21b1cb185c3905515db2"
+        );
+        if (targetBadge?.achieved) {
+          return { badge: null, message: "Article added to favourites." };
+        }
+
+        // Check if the user has 10 or more saved (favourite article)
+        if (user.favourite_articles.length >= 10) {
+          await updateUserBadgeById(userId, "670b21b1cb185c3905515db2", true);
+          const badgeDetails = (await Badges.findById(
+            "670b21b1cb185c3905515db2"
+          )) as IBadges | null;
+
+          return { badge: badgeDetails, message: "Badge achieved!" };
+        }
+        return { badge: null, message: "Article added to favourites." };
       }
     },
   },
