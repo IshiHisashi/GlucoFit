@@ -21,6 +21,26 @@ export const articlesTypeDefs = gql`
     endCursor: String
   }
 
+  type FavouriteArticleResponse {
+    badge: Badges
+    message: String
+  }
+
+  type BadgeCriteria {
+    value: Float!
+    comparison: String!
+    kind: String!
+    note: String
+  }
+  type Badges {
+    id: ID!
+    badge_name: String!
+    badge_desc: String!
+    badge_image_address: String!
+    criteria: BadgeCriteria!
+    last_updated: Date
+  }
+
   extend type Query {
     getArticle(id: ID!): Articles
     getArticles: [Articles!]!
@@ -55,6 +75,9 @@ export const articlesTypeDefs = gql`
 
     deleteArticle(id: ID!): String!
 
-    toggleFavouriteArticle(userId: ID!, articleId: ID!): String!
+    toggleFavouriteArticle(
+      userId: ID!
+      articleId: ID!
+    ): FavouriteArticleResponse
   }
 `;

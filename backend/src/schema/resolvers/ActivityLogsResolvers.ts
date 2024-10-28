@@ -1,6 +1,9 @@
 import { ActivityLogs, IActivityLogs } from "../../model/ActivityLogs";
 import { Types } from "mongoose";
-import moment from "moment-timezone";
+import { calculateActivityStreak } from "../../utils/activityLogsUtils";
+import { User } from "../../model/User";
+import { updateUserBadgeById } from "../../utils/userUtils";
+import { Badges, IBadges } from "../../model/Badges";
 
 const activityLogsResolvers = {
   Query: {
@@ -76,64 +79,7 @@ const activityLogsResolvers = {
       { user_id }: { user_id: string }
     ): Promise<number> => {
       try {
-        // Fetch activity logs for the user
-        const activityLogs = await ActivityLogs.find({
-          user_id: new Types.ObjectId(user_id),
-        })
-          .sort({ log_timestamp: 1 })
-          .exec();
-
-        if (!activityLogs.length) return 0;
-
-        const days = new Set<string>();
-
-        activityLogs.forEach((log) => {
-          const utcDate = moment.utc(log.log_timestamp).format("YYYY-MM-DD");
-          days.add(utcDate);
-        });
-
-        const uniqueDays = Array.from(days).sort();
-        const today = moment.tz("America/Vancouver").startOf("day");
-        const yesterday = moment
-          .tz("America/Vancouver")
-          .subtract(1, "days")
-          .startOf("day");
-
-        let streak = 0;
-        let currentStreak = 0;
-
-        for (let i = uniqueDays.length - 1; i >= 0; i--) {
-          const currentDay = moment.utc(uniqueDays[i], "YYYY-MM-DD");
-
-          if (i === uniqueDays.length - 1) {
-            const diffFromToday = today.diff(currentDay, "days");
-            const diffFromYesterday = yesterday.diff(currentDay, "days");
-
-            console.log(
-              `Checking first log day (UTC): ${uniqueDays[i]} (diffFromToday: ${diffFromToday}, diffFromYesterday: ${diffFromYesterday})`
-            );
-
-            if (diffFromToday === 0) {
-              currentStreak = 1;
-            } else if (diffFromYesterday === 0) {
-              currentStreak = 1;
-            } else {
-              return 0;
-            }
-          } else {
-            const prevDay = moment.utc(uniqueDays[i + 1], "YYYY-MM-DD");
-            const diff = prevDay.diff(currentDay, "days");
-
-            if (diff === 1) {
-              currentStreak++;
-            } else {
-              break;
-            }
-          }
-          streak = Math.max(streak, currentStreak);
-        }
-
-        return streak;
+        return await calculateActivityStreak(user_id);
       } catch (error) {
         console.error(
           "Error calculating streak of consecutive activity logs:",
@@ -149,10 +95,59 @@ const activityLogsResolvers = {
   Mutation: {
     createActivityLog: async (
       _: any,
-      args: IActivityLogs
-    ): Promise<IActivityLogs> => {
-      const newActivityLog = new ActivityLogs(args);
-      return await newActivityLog.save();
+      {
+        user_id,
+        footsteps,
+        duration,
+        time_period,
+      }: {
+        user_id: string;
+        footsteps: number;
+        duration: number;
+        time_period: string;
+      }
+    ): Promise<IBadges | null> => {
+      // Create a new activity log
+      try {
+        const newActivityLog = new ActivityLogs({
+          user_id,
+          footsteps,
+          duration,
+          time_period,
+          log_timestamp: new Date(),
+        });
+        await newActivityLog.save();
+        // See if user's badges have
+        const user = await User.findById(user_id);
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        const badges = user.badges;
+        const targetBadge = badges.find(
+          (badge) => badge.badgeId.toString() === "670b2192cb185c3905515dac"
+        );
+        if (targetBadge?.achieved) {
+          return null;
+        }
+        // Count streak
+        const streakCount = await calculateActivityStreak(user_id);
+        // See if it meets the criteria
+        if (streakCount >= 8) {
+          // This should actually be 14, but decrease the number for the ease of frontend implementation.
+          await updateUserBadgeById(user_id, "670b2192cb185c3905515dac", true);
+
+          const badgeDetails = (await Badges.findById(
+            "670b2192cb185c3905515dac"
+          )) as IBadges | null;
+
+          return badgeDetails;
+        }
+        return null;
+      } catch (error: any) {
+        console.error("Error creating activity log:", error);
+        throw new Error("Failed to create activity log and check badge streak");
+      }
     },
     updateActivityLog: async (
       _: any,
