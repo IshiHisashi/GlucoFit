@@ -2,19 +2,8 @@ import { ActivityLogs, IActivityLogs } from "../../model/ActivityLogs";
 import { Types } from "mongoose";
 import { calculateActivityStreak } from "../../utils/activityLogsUtils";
 import { User } from "../../model/User";
+import { updateUserBadgeById } from "../../utils/userUtils";
 import { Badges, IBadges } from "../../model/Badges";
-
-const updateUserBadgeById = async (
-  userId: string,
-  badgeId: string,
-  achieved: boolean
-): Promise<any> => {
-  return await User.findOneAndUpdate(
-    { _id: userId, "badges.badgeId": badgeId },
-    { $set: { "badges.$.achieved": achieved } },
-    { new: true }
-  );
-};
 
 const activityLogsResolvers = {
   Query: {
