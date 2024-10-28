@@ -32,6 +32,11 @@ export const testResultsTypeDefs = gql`
     value: Float!
   }
 
+  type TestResultResponse {
+    articlesToShow: [Articles!]!
+    badgesToShow: [Badges!]!
+  }
+
   extend type Query {
     getTestResult(id: ID!): TestResults
     getTestResults: [TestResults!]!
@@ -54,20 +59,11 @@ export const testResultsTypeDefs = gql`
     createTestResult(
       user_id: ID!
       bsl: Float!
-      note: NoteInput!
-      log_timestamp: Date
-      time_period: String
-      confirmed: Boolean
-    ): TestResults!
-
-    createTestResultWithInsights(
-      user_id: ID!
-      bsl: Float!
       note: NoteInput
       log_timestamp: Date
       time_period: String
       confirmed: Boolean
-    ): [Articles]
+    ): TestResultResponse
 
     updateTestResult(
       id: ID!
