@@ -8,6 +8,7 @@ import { badgesTypeDefs } from "./BadgesTypeDefs";
 import { articlesTypeDefs } from "./ArticleTypeDefs";
 import { dietLogsTypeDefs } from "./DietLogsTypeDefs";
 import { logsForHistoryScreenTypeDefs } from "./logsForHistoryScreenTypeDefs";
+import { notificationTypeDefs } from "./NotificationTypeDefs";
 // Import more typeDefs as needed...
 
 const rootTypeDefs = gql`
@@ -27,5 +28,6 @@ export const typeDefs = mergeTypeDefs([
   badgesTypeDefs,
   articlesTypeDefs,
   dietLogsTypeDefs,
-  logsForHistoryScreenTypeDefs
+  logsForHistoryScreenTypeDefs,
+  notificationTypeDefs
 ]);
