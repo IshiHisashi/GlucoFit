@@ -7,6 +7,7 @@ import badgesResolvers from "./BadgesResolvers";
 import articlesResolvers from "./ArticlesResolvers";
 import dietLogsResolvers from "./DietLogsResolvers";
 import logsForHistoryScreenResolvers from "./logsForHistoryScreenResolvers"
+import notificationResolvers from "./NotificationResolvers";
 
 const resolvers = {
   Query: {
@@ -26,7 +27,8 @@ const resolvers = {
     ...medicineLogResolvers.Mutation,
     ...badgesResolvers.Mutation,
     ...articlesResolvers.Mutation,
-    ...dietLogsResolvers.Mutation
+    ...dietLogsResolvers.Mutation,
+    ...notificationResolvers.Mutation
   },
 };
 

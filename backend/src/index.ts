@@ -7,6 +7,7 @@ import { typeDefs } from "./schema/typedefs/typeDefs";
 import resolvers from "./schema/resolvers/resolvers";
 import { verifyToken } from "./auth/auth";
 import { setupIHealthRoutes } from "./ihealth/ihealth";
+import "./scheduler";
 
 dotenv.config();
 

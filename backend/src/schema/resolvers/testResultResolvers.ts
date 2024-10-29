@@ -5,6 +5,7 @@ import { ActivityLogs } from "../../model/ActivityLogs";
 import { DietLogs } from "../../model/DietLogs";
 import { MedicineLog, UserMedicineList } from "../../model/MedicineLog";
 import { User } from "../../model/User";
+import { Notification } from "../../model/Notification"; 
 import {
   calculateStreak,
   calculateStreakByTimeRange,
@@ -505,6 +506,16 @@ const testResultsResolvers = {
                 user.recently_read_articles_array.push(medicationArticle._id);
                 await user.save(); // Save the user document with updated article array
               }
+               // Add notification for new medication insight
+          await Notification.create({
+            user_id: user._id,
+            title: "New Insights",
+            message: "Your latest medication insights are here",
+            description: "Medication insight notification",
+            type:"Medication",
+            read: false,
+            createdAt: new Date(),
+          });
             }
           }
 
@@ -524,6 +535,15 @@ const testResultsResolvers = {
                 user.recently_read_articles_array.push(foodArticle._id);
                 await user.save();
               }
+              await Notification.create({
+                user_id: user._id,
+                title: "New Insights",
+                message: "Your latest food insights are here",
+                type:"Food",
+                description: "Food insight notification",
+                read: false,
+                createdAt: new Date(),
+              });
             }
           }
 
@@ -545,6 +565,16 @@ const testResultsResolvers = {
                 user.recently_read_articles_array.push(wellnessArticle._id);
                 await user.save();
               }
+                // Add notification for new wellness insight
+          await Notification.create({
+            user_id: user._id,
+            title: "New Insights",
+            message: "Your latest wellness insights are here",
+            description: "Wellness insight notification",
+            type:"Wellness",
+            read: false,
+            createdAt: new Date(),
+          });
             }
           }
         }
