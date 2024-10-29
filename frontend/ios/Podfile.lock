@@ -1559,6 +1559,10 @@ PODS:
     - React-logger (= 0.75.4)
     - React-perflogger (= 0.75.4)
     - React-utils (= 0.75.4)
+  - rn-ihealth (1.7.0):
+    - React-Core
+  - RNBluetoothStateManager (1.3.5):
+    - React-Core
   - RNDateTimePicker (8.0.1):
     - React-Core
   - RNScreens (3.34.0):
@@ -1663,6 +1667,8 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "rn-ihealth (from `../node_modules/@ihealth/ihealthlibrary-react-native`)"
+  - RNBluetoothStateManager (from `../node_modules/react-native-bluetooth-state-manager`)
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1818,6 +1824,10 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  rn-ihealth:
+    :path: "../node_modules/@ihealth/ihealthlibrary-react-native"
+  RNBluetoothStateManager:
+    :path: "../node_modules/react-native-bluetooth-state-manager"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNScreens:
@@ -1900,6 +1910,8 @@ SPEC CHECKSUMS:
   React-utils: cbe8b8b3d7b2ac282e018e46f0e7b25cdc87c5a0
   ReactCodegen: 4bcb34e6b5ebf6eef5cee34f55aa39991ea1c1f1
   ReactCommon: 6a952e50c2a4b694731d7682aaa6c79bc156e4ad
+  rn-ihealth: caae9455a0c8f33a2d02fea9064a748609244f2a
+  RNBluetoothStateManager: 724f2c76b04e0a2b840dfd7305b68f614bc01c81
   RNDateTimePicker: b6a9b35a785ecbe12b4e7d6de5439d0aa4614146
   RNScreens: 19719a9c326e925498ac3b2d35c4e50fe87afc06
   RNSVG: af3907ac5d4fa26a862b75a16d8f15bc74f2ceda
