@@ -30,6 +30,7 @@ import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import Sheet from "../../organisms/Sheet";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import InputFieldForBsl from "../../atoms/InputFieldForBsl";
+import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";

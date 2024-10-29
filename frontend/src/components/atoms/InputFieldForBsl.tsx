@@ -5,7 +5,7 @@ import {
   InputField,
   InputSlot,
 } from "@gluestack-ui/themed";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
 interface InputFieldForBslProps {
   value: string;
@@ -15,6 +15,8 @@ interface InputFieldForBslProps {
 
 const InputFieldForBsl: FC<InputFieldForBslProps> = (props) => {
   const { value, onChangeText, isDisabled } = props;
+
+  const [isPressed, setIsPressed] = useState(false);
 
   return (
     <FormControl isRequired isDisabled={isDisabled}>
@@ -27,7 +29,8 @@ const InputFieldForBsl: FC<InputFieldForBslProps> = (props) => {
         pr="$4"
         borderRadius={10}
         bg="$neutralWhite"
-        borderColor="$primaryIndigo10"
+        borderColor={isPressed ? "$primaryIndigo20" : "$primaryIndigo10"}
+        $active-borderColor="$primaryIndigo20"
         $focus-borderColor="$primaryIndigo20"
         $focus-bgColor="$primaryIndigo5"
         $disabled-borderColor="$neutralDark5"
@@ -42,6 +45,8 @@ const InputFieldForBsl: FC<InputFieldForBslProps> = (props) => {
           color="$neutralDark60"
           $focus-color="$primaryIndigo80"
           $disabled-color="$neutralDark15"
+          onPressIn={() => setIsPressed(true)}
+          onPressOut={() => setIsPressed(false)}
         />
         <InputSlot>
           <Text

@@ -11,6 +11,7 @@ import {
 import React, { FC } from "react";
 
 import { BellCustom, SearchCustom } from "../svgs/svgs";
+import InputFieldGeneral from "../atoms/InputFieldGeneral";
 
 interface HeaderBasicProps {
   routeName: "Home" | "Insights" | "Logs" | "BadgeScreen";
@@ -70,16 +71,28 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       {(routeName === "Insights" ||
         routeName === "Logs" ||
         routeName === "BadgeScreen") && (
-        <Input flex={1}>
-          <InputSlot pl="$3">
-            <SearchCustom color="#4800FF" />
-          </InputSlot>
-          <InputField
-            placeholder="Search"
+        <>
+          {/* <Input flex={1}>
+            <InputSlot pl="$3">
+              <SearchCustom color="#4800FF" />
+            </InputSlot>
+            <InputField
+              placeholder="Search"
+              value={searchValue}
+              onChangeText={onChangeSearchValue}
+            />
+          </Input> */}
+
+          <InputFieldGeneral
             value={searchValue}
             onChangeText={onChangeSearchValue}
+            isRequired={true}
+            isDisabled={false}
+            isInvalid={false}
+            placeholder="Search"
+            iconLeft={SearchCustom}
           />
-        </Input>
+        </>
       )}
 
       <HStack alignItems="center" space="md">
