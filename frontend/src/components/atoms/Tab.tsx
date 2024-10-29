@@ -9,6 +9,7 @@ interface TabProps {
   onPress: () => void;
   iconLeft?: FC<SvgProps>;
   iconRight?: FC<SvgProps>;
+  fontSize?: number;
   flex?: 1 | 0;
   style?: {};
 }
@@ -21,6 +22,7 @@ const Tab: FC<TabProps> = (props) => {
     onPress,
     iconLeft: IconComponentLeft,
     iconRight: IconComponentRight,
+    fontSize = 12,
     flex = 0,
     style,
   } = props;
@@ -80,7 +82,7 @@ const Tab: FC<TabProps> = (props) => {
         )}
         <ButtonText
           fontFamily="$bold"
-          fontSize={12}
+          fontSize={fontSize}
           color={customStyle.color}
           $active-color={customStyle.$active.color}
           $focus-color={customStyle.$focus.color}

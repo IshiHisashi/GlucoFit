@@ -214,6 +214,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     height: 90,
     paddingBottom: 5,
+    // box-shadow: 0px -3px 13.3px 0px rgba(34, 4, 118, 0.04);
+    shadowColor: "#220476",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.04,
+    shadowRadius: 13.3,
+    elevation: 5, // for Android shadow
   },
   tabItem: {
     flex: 1,
