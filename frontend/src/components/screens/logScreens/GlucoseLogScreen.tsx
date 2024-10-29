@@ -29,6 +29,7 @@ import AddNotesSection from "../../organisms/AddNotesSection";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import Sheet from "../../organisms/Sheet";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
+import InputFieldForBsl from "../../atoms/InputFieldForBsl";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -269,22 +270,11 @@ const GlucoseLogScreen: React.FC = () => {
           <VStack space="sm" alignItems="center">
             <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
-            <FormControl isRequired>
-              <Input variant="outline" size="md" w="$56">
-                <InputField
-                  value={glucoseLevel}
-                  onChangeText={setGlucoseLevel}
-                  keyboardType="numeric"
-                  // placeholder="Input your glucose level..."
-                  // w="$full"
-                  // textAlign="center"
-                  fontSize="$2xl"
-                />
-                <InputSlot pr="$3">
-                  <Text>mmol/L</Text>
-                </InputSlot>
-              </Input>
-            </FormControl>
+            <InputFieldForBsl
+              value={glucoseLevel}
+              onChangeText={setGlucoseLevel}
+              isDisabled={false}
+            />
           </VStack>
 
           <VStack
