@@ -14,6 +14,7 @@
     "@gluestack-style/react": "^1.0.57",
     "@gluestack-ui/config": "^1.1.20",
     "@gluestack-ui/themed": "^1.1.52",
+    "@ihealth/ihealthlibrary-react-native": "^1.7.0",
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
@@ -23,6 +24,7 @@
     "debug": "^4.3.7",
     "expo": "~51.0.28",
     "expo-font": "~12.0.10",
+    "expo-linear-gradient": "~13.0.2",
     "expo-module-scripts": "^3.5.2",
     "expo-secure-store": "^13.0.2",
     "expo-status-bar": "~1.12.1",
@@ -38,7 +40,6 @@
     "react-native-svg": "^13.4.0",
     "react-native-timer-picker": "^1.10.3",
     "react-native-webview": "13.8.6",
-    "expo-linear-gradient": "~13.0.2",
     "victory-native": "^37.0.3-next.0",
     "webidl-conversions": "^7.0.0"
   },

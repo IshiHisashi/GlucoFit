@@ -12,6 +12,7 @@ export type AppStackParamList = {
   ActivityLog: { mutatedLog?: string };
   MedicineLog: { mutatedLog?: string };
   GlucoseLog: { mutatedLog?: string };
+  AutoLog: { mutatedLog?: string };
   Note: {
     initialNote: { title: string; content: string };
     onSave: (note: { title: string; content: string }) => void;
