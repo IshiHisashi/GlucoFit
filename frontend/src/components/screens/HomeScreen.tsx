@@ -33,6 +33,7 @@ import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
 import {
   AnalysisCustom,
+  AngleRightCustom,
   BellCustom,
   CapsuleDark,
   HeartrateDark,
@@ -40,6 +41,7 @@ import {
 } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
+import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -439,14 +441,15 @@ const HomeScreen: React.FC = () => {
               <Text fontSize="$lg" fontFamily="$bold">
                 Logs for today
               </Text>
-              <Pressable
+              <GlucoButtonNoOutline
+                text="See more"
+                isFocused={false}
+                isDisabled={false}
                 onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-              >
-                <HStack alignItems="center" space="xs">
-                  <Text>See more</Text>
-                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-                </HStack>
-              </Pressable>
+                iconRight={AngleRightCustom}
+                styleForHstack={{ gap: 1 }}
+                styleForText={{ fontFamily: "$regular" }}
+              />
             </HStack>
 
             {logsForToday &&
@@ -544,14 +547,15 @@ const HomeScreen: React.FC = () => {
                   ? weeklyBslData.getWeeklyBSLData.dateRange
                   : "N/A"}
               </Text>
-              <Pressable
+              <GlucoButtonNoOutline
+                text="See more"
+                isFocused={false}
+                isDisabled={false}
                 onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-              >
-                <HStack alignItems="center" space="xs">
-                  <Text>See more</Text>
-                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-                </HStack>
-              </Pressable>
+                iconRight={AngleRightCustom}
+                styleForHstack={{ gap: 1 }}
+                styleForText={{ fontFamily: "$regular" }}
+              />
             </HStack>
 
             <HStack

@@ -8,7 +8,8 @@ interface GlucoButtonProps {
   isFocused: boolean;
   isDisabled: boolean;
   onPress: () => void;
-  icon?: FC<SvgProps>;
+  iconLeft?: FC<SvgProps>;
+  iconRight?: FC<SvgProps>;
   buttonSize?: "small" | "medium";
   flex?: 1 | 0;
   style?: {};
@@ -21,7 +22,8 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
     isFocused,
     isDisabled,
     onPress,
-    icon: IconComponent,
+    iconLeft: IconComponentLeft,
+    iconRight: IconComponentRight,
     buttonSize,
     flex = 0,
     style,
@@ -103,7 +105,7 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
       style={style}
     >
       <HStack space="sm" alignItems="center">
-        {IconComponent && <IconComponent color={getIconColor()} />}
+        {IconComponentLeft && <IconComponentLeft color={getIconColor()} />}
         <ButtonText
           fontFamily="$bold"
           fontSize={buttonSize === "small" ? 14 : 17}
@@ -114,6 +116,7 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
         >
           {text}
         </ButtonText>
+        {IconComponentRight && <IconComponentRight color={getIconColor()} />}
       </HStack>
     </Button>
   );
