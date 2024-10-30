@@ -224,8 +224,10 @@ const GlucoseLogScreen: React.FC = () => {
       console.log("Mutation result:", result.data.createTestResultWithInsights);
       navigation.navigate("Tabs", {
         screen: "Home",
-        mutatedLog: "bsl",
-        insight: result.data.createTestResultWithInsights[0],
+        params: {
+          mutatedLog: "bsl",
+          insight: result.data.createTestResultWithInsights[0],
+        },
       });
     } catch (e) {
       console.error("Error creating test result:", e);

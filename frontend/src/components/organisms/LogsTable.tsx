@@ -27,7 +27,7 @@ interface noteData {
 }
 
 interface LogsTableProps {
-  title: string;
+  title?: string;
   subTitle?: string;
   onPressTitleRightButton?: () => void;
   rowsData?: rowData[];
@@ -55,11 +55,13 @@ const LogsTable: FC<LogsTableProps> = (props) => {
       p="$4"
       bg="$neutralWhite"
     >
-      <LogsTableTitle
-        title={title}
-        subTitle={subTitle}
-        onPressTitleRightButton={onPressTitleRightButton}
-      />
+      {title && (
+        <LogsTableTitle
+          title={title}
+          subTitle={subTitle}
+          onPressTitleRightButton={onPressTitleRightButton}
+        />
+      )}
 
       {tableType === "logs" &&
         rowsData?.length > 0 &&
