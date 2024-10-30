@@ -8,10 +8,10 @@ export type TabParamList = {
 
 export type AppStackParamList = {
   Tabs: { screen?: keyof TabParamList; mutatedLog?: string };
-  CarbsLog: { mutatedLog?: string };
-  ActivityLog: { mutatedLog?: string };
-  MedicineLog: { mutatedLog?: string };
-  GlucoseLog: { mutatedLog?: string };
+  CarbsLog: { logId?: string };
+  ActivityLog: { logId?: string };
+  MedicineLog: { logId?: string };
+  GlucoseLog: { logId?: string };
   Note: {
     initialNote: { title: string; content: string };
     onSave: (note: { title: string; content: string }) => void;
