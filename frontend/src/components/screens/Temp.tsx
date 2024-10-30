@@ -9,6 +9,7 @@ import { HeaderWithBackButton } from "../headers/HeaderWithBackButton";
 import NotificationRow from "../molcules/NotificationRow";
 import { EditCustom } from "../svgs/svgs";
 import SettingsCard from "../molcules/SettingsCard";
+import ToggleCard from "../molcules/ToggleCard";
 
 type TempNavigationProps = NativeStackNavigationProp<AppStackParamList, "Temp">;
 
@@ -56,14 +57,21 @@ const Temp: FC = () => {
 
   const settingsCardSampleData = [
     {
-      onPress: () => {
-        console.log("pressed");
-      },
+      onPress: () => console.log("pressed"),
       icon: EditCustom,
       text: "Placeholder",
       description: "Description",
       isDisabled: false,
       isFocused: false,
+    },
+  ];
+
+  const toggleCardSampleData = [
+    {
+      text: "Placeholder",
+      description: "Description",
+      onToggle: (value: boolean) => console.log("Toggle:", value),
+      isEnabled: false,
     },
   ];
 
@@ -86,7 +94,15 @@ const Temp: FC = () => {
 
         <Text>setting cards</Text>
         {settingsCardSampleData?.length > 0 &&
-          settingsCardSampleData.map((obj) => <SettingsCard obj={obj} />)}
+          settingsCardSampleData.map((obj, index) => (
+            <SettingsCard obj={{ ...obj, key: index }} />
+          ))}
+
+        <Text>toggle cards</Text>
+        {toggleCardSampleData?.length > 0 &&
+          toggleCardSampleData.map((obj, index) => (
+            <ToggleCard obj={{ ...obj, key: index }} />
+          ))}
       </ScrollView>
     </SafeAreaView>
   );
