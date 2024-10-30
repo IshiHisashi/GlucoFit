@@ -12,6 +12,7 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // - Bookmark (light, dark, custom)
 // - Capsule (light, dark, custom)
 // - Check (custom)
+// - Edit (custom)
 // - Eye (custom)
 // - EyeSlash (custom)
 // - File (light, dark, custom)
@@ -355,6 +356,28 @@ export const CheckCustom: FC = ({
       stroke={color}
       strokeWidth={strokeWidth}
       d="M18.71 7.21a.999.999 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1.022 1.022 0 0 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a.999.999 0 0 0 0-1.47Z"
+    />
+  </Svg>
+);
+
+export const EditCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M5 18h4.24a1.002 1.002 0 0 0 .71-.29l6.92-6.93L19.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83-6.94 6.93a.999.999 0 0 0-.29.71V17a1 1 0 0 0 1 1Zm9.76-13.59 2.83 2.83-1.42 1.42-2.83-2.83 1.42-1.42ZM6 13.17l5.93-5.93 2.83 2.83L8.83 16H6v-2.83ZM21 20H3a1 1 0 1 0 0 2h18a1 1 0 0 0 0-2Z"
     />
   </Svg>
 );

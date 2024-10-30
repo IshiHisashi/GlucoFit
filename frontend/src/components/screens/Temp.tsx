@@ -7,6 +7,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AppStackParamList } from "../../types/navigation";
 import { HeaderWithBackButton } from "../headers/HeaderWithBackButton";
 import NotificationRow from "../molcules/NotificationRow";
+import { EditCustom } from "../svgs/svgs";
+import SettingsCard from "../molcules/SettingsCard";
 
 type TempNavigationProps = NativeStackNavigationProp<AppStackParamList, "Temp">;
 
@@ -52,6 +54,19 @@ const Temp: FC = () => {
     },
   ];
 
+  const settingsCardSampleData = [
+    {
+      onPress: () => {
+        console.log("pressed");
+      },
+      icon: EditCustom,
+      text: "Placeholder",
+      description: "Description",
+      isDisabled: false,
+      isFocused: false,
+    },
+  ];
+
   return (
     <SafeAreaView>
       <ScrollView bg="$neutralWhite">
@@ -65,8 +80,13 @@ const Temp: FC = () => {
           temp screen to show components for notification and settings
         </Text>
 
+        <Text>notification rows</Text>
         {notificationSampleData?.length > 0 &&
           notificationSampleData.map((obj) => <NotificationRow obj={obj} />)}
+
+        <Text>setting cards</Text>
+        {settingsCardSampleData?.length > 0 &&
+          settingsCardSampleData.map((obj) => <SettingsCard obj={obj} />)}
       </ScrollView>
     </SafeAreaView>
   );
