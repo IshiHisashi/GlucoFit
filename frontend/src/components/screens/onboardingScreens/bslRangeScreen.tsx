@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dimensions } from "react-native";
-import { View, Text, ScrollView } from "@gluestack-ui/themed";
+import { View, Text } from "@gluestack-ui/themed";
 import OnbordingLayout from "../../organisms/OnboardingLayout";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
@@ -23,12 +23,10 @@ const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="Let’s start with your personal details for smarter insights"
-        supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        comment="What is your blood sugar range?"
         progressValue={75}
-        onPress={() => navigation.navigate("ConnectIhelathScreen")}
+        onPress={() => navigation.navigate("NotificationConfigScreen")}
       >
-        <Text textAlign="center">Dual-slider will be here...hold on</Text>
         <View mx="auto" p={20} mt={30}>
           <MultiSlider
             values={[multiSliderValue[0], multiSliderValue[1]]}

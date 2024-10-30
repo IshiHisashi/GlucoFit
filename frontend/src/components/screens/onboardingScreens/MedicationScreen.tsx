@@ -16,35 +16,22 @@ const MedicationScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="Let’s start with your personal details for smarter insights"
-        supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        comment="Are you taking any medication to manage your condition?"
         progressValue={50}
         onPress={() => navigation.navigate("MedicineListScreen")}
       >
-        <View flexDirection="column" gap={8}>
+        <View flexDirection="column" gap={16}>
           <PressableOption
             selectedOption={selectedOption}
             onSelect={handleSelectOption}
             value="oral"
-            label="Yes, I’m on oral medication"
+            label="Yes, I’m on medication"
           />
           <PressableOption
             selectedOption={selectedOption}
             onSelect={handleSelectOption}
             value="insulin"
-            label="Yes, I’m on insulinc"
-          />
-          <PressableOption
-            selectedOption={selectedOption}
-            onSelect={handleSelectOption}
-            value="both"
-            label="Yes, I’m on both"
-          />
-          <PressableOption
-            selectedOption={selectedOption}
-            onSelect={handleSelectOption}
-            value="Neither"
-            label="Neither"
+            label="No, I currently don't"
           />
         </View>
       </OnbordingLayout>

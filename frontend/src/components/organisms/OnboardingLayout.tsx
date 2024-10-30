@@ -102,7 +102,13 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
               />
             </View>
           )}
-          <Button width="100%" left={16} onPress={onPress}>
+          <Button
+            width="100%"
+            left={16}
+            onPress={onPress}
+            backgroundColor="#4800FF"
+            borderRadius={50}
+          >
             <ButtonText>{btnText}</ButtonText>
           </Button>
           {addLater && (

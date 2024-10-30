@@ -16,12 +16,13 @@ const DiabeticTypeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="Let’s start with your personal details for smarter insights"
-        supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        comment="Are you diagnosed with Type 2 Diabetes or Prediabetes?"
+        supplimentalComment="The app targets Type 2 and prediabetes only, as Type 1 requires different care approach."
         progressValue={37.5}
         onPress={() => navigation.navigate("MedicationScreen")}
+        character
       >
-        <View flexDirection="column" gap={8}>
+        <View flexDirection="column" gap={16}>
           <PressableOption
             selectedOption={selectedOption}
             onSelect={handleSelectOption}

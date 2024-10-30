@@ -11,18 +11,13 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="Let’s start with your personal details for smarter insights"
-        supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
+        comment="Nice to meet you, Angie! We would like to know more about you."
         progressValue={25}
         onPress={() => navigation.navigate("DiabeticTypeScreen")}
       >
-        <View width="100%" flexDirection="row" gap={16}>
-          <View flexGrow={1} flexBasis="0%">
-            <Input labelText="Height" />
-          </View>
-          <View flexGrow={1} flexBasis="0%">
-            <Input labelText="Weight" />
-          </View>
+        <View width="100%" flexDirection="column" gap={16}>
+          <Input labelText="Height" />
+          <Input labelText="Weight" />
         </View>
       </OnbordingLayout>
     </View>

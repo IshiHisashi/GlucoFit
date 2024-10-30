@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from "react";
-import { Text, Pressable } from "@gluestack-ui/themed";
+import { View, Text, Pressable, Image } from "@gluestack-ui/themed";
 
 type InputProps = {
   label: string;
@@ -15,13 +15,29 @@ const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {
   return (
     <Pressable
       borderWidth={1}
-      borderColor={isSelected ? "blue" : "gray"}
-      backgroundColor={isSelected ? "blue" : "white"}
-      p={16}
+      borderColor={isSelected ? "#8A5CFF" : "white"}
+      backgroundColor={isSelected ? "#FAF8FF" : "white"}
+      px={16}
+      py={14}
       borderRadius={8}
       onPress={() => onSelect(value)}
     >
-      <Text color={isSelected ? "white" : "black"}>{label}</Text>
+      <View
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Text color={isSelected ? "#3100AD" : "black"}>{label}</Text>
+        {isSelected && (
+          <Image
+            source={require("../../../assets/checkmark.png")}
+            resizeMode="contain"
+            w={15}
+            h={10}
+            alt="check mark"
+          />
+        )}
+      </View>
       {children}
     </Pressable>
   );

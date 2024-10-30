@@ -15,7 +15,7 @@ const OnboardingTitleScreen: React.FC<Props> = ({ navigation }) => {
         h="100%"
         p={16}
       >
-        <View marginTop={103} flexDirection="column" gap={10}>
+        <View marginTop={200} flexDirection="column" gap={10}>
           <Image
             source={require("../../../../assets/OnbordingChar.png")}
             resizeMode="contain"
@@ -35,7 +35,8 @@ const OnboardingTitleScreen: React.FC<Props> = ({ navigation }) => {
             Let's start your journey to better diabetic management
           </Text>
           <Button
-            bgColor="#888"
+            backgroundColor="#4800FF"
+            borderRadius={50}
             onPress={() => navigation.navigate("NameBdScreen")}
           >
             <ButtonText>Continue</ButtonText>

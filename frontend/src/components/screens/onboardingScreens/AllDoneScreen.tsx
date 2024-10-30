@@ -22,19 +22,27 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
     <View>
       <Center p={16} flexDirection="column" gap={16} height="100%">
         <Image
-          source={require("../../../../assets/OnbordingChar.png")}
+          source={require("../../../../assets/allset.png")}
           resizeMode="contain"
           mx="auto"
-          width={100}
+          width={200}
+          height={200}
           alt="Character is winking during the onboarding process"
         />
-        <Text fontWeight="bold">You're all set, done!!</Text>
+        <Text fontWeight="bold" fontSize={28}>
+          You’re all set, Angie!
+        </Text>
         <Text textAlign="center">
           You’re ready for personalized insights and a healthier journey with
           GlucoFit.
         </Text>
         <View position="absolute" bottom={30} width="100%">
-          <Button width="100%" onPress={() => navigation.navigate("Home")}>
+          <Button
+            width="100%"
+            backgroundColor="#4800FF"
+            borderRadius={50}
+            onPress={() => navigation.navigate("Home")}
+          >
             <ButtonText>Go to home</ButtonText>
           </Button>
         </View>

@@ -7,7 +7,7 @@ import DiabeticTypeScreen from "../screens/onboardingScreens/DiabeticTypeScreen"
 import MedicationScreen from "../screens/onboardingScreens/MedicationScreen";
 import MedicineListScreen from "../screens/onboardingScreens/MedicineListScreen";
 import BslRangeScreen from "../screens/onboardingScreens/bslRangeScreen";
-import ConnectIhelathScreen from "../screens/onboardingScreens/ConnectIhelathScreen";
+import NotificationConfigScreen from "../screens/onboardingScreens/NotificationConfigScreen";
 import AllDoneScreen from "../screens/onboardingScreens/AllDoneScreen";
 import type { OnboardingStackParamList } from "../../types/navigation";
 
@@ -22,7 +22,8 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "Onboarding",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -31,7 +32,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -40,7 +41,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -49,7 +50,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -58,7 +59,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -67,7 +68,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -76,16 +77,16 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
-        name="ConnectIhelathScreen"
-        component={ConnectIhelathScreen}
+        name="NotificationConfigScreen"
+        component={NotificationConfigScreen}
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
       <Stack.Screen
@@ -94,7 +95,7 @@ const OnboardingStack: React.FC = () => {
         options={{
           title: "",
           headerBackTitleVisible: false,
-          headerTintColor: "#555",
+          headerTintColor: "#4800FF",
         }}
       />
     </Stack.Navigator>
