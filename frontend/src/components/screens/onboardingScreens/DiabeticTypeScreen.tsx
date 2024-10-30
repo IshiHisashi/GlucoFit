@@ -10,17 +10,18 @@ type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
 const DiabeticTypeScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData, updateOnboardingData } = useOnboarding();
-  const [selectedOption, setSelectedOption] = useState<number | undefined>(
-    onboardingData?.diabates_type
+  const [selectedOption, setSelectedOption] = useState<string | undefined>(
+    onboardingData?.diabates_type?.toString() ?? undefined
   );
 
   const handleSelectOption = (option: string) => {
-    const numericValue = parseInt(option);
-    setSelectedOption(numericValue);
+    setSelectedOption(option);
   };
 
-  const hanldleNext = () => {
-    updateOnboardingData({ diabates_type: selectedOption });
+  const handleNext = () => {
+    updateOnboardingData({
+      diabates_type: selectedOption ? parseInt(selectedOption) : undefined,
+    });
     navigation.navigate("MedicationScreen");
   };
   return (
@@ -29,7 +30,7 @@ const DiabeticTypeScreen: React.FC<Props> = ({ navigation }) => {
         comment="Are you diagnosed with Type 2 Diabetes or Prediabetes?"
         supplimentalComment="The app targets Type 2 and prediabetes only, as Type 1 requires different care approach."
         progressValue={37.5}
-        onPress={hanldleNext}
+        onPress={handleNext}
         character
       >
         <View flexDirection="column" gap={16}>

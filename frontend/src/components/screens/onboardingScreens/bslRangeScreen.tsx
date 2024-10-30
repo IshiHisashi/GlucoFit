@@ -3,21 +3,26 @@ import { Dimensions } from "react-native";
 import { View, Text } from "@gluestack-ui/themed";
 import OnbordingLayout from "../../organisms/OnboardingLayout";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { OnboardingStackParamList } from "../../../types/navigation";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import type { OnboardingStackParamList } from "../../../types/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
 const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+  const { onboardingData, updateOnboardingData } = useOnboarding();
   const [multiSliderValue, setMultiSliderValue] = useState<number[]>([
     1.1, 33.3,
   ]);
   const nonCollidingMultiSliderValuesChange = (values: any) =>
     setMultiSliderValue(values);
 
-  const handleSelectOption = (option: string) => {
-    setSelectedOption(option);
+  const handleNext = () => {
+    updateOnboardingData({
+      minimum_bsl: multiSliderValue[0],
+      maximum_bsl: multiSliderValue[1],
+    });
+    navigation.navigate("NotificationConfigScreen");
   };
 
   return (
@@ -25,7 +30,7 @@ const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
       <OnbordingLayout
         comment="What is your blood sugar range?"
         progressValue={75}
-        onPress={() => navigation.navigate("NotificationConfigScreen")}
+        onPress={handleNext}
       >
         <View mx="auto" p={20} mt={30}>
           <MultiSlider

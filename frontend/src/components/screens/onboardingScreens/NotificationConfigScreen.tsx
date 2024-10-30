@@ -10,19 +10,21 @@ type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
 const NotificationConfigScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData, updateOnboardingData } = useOnboarding();
-  const [selectedOption, setSelectedOption] = useState<boolean | undefined>(
-    onboardingData?.notification
+
+  const [selectedOption, setSelectedOption] = useState<string | undefined>(
+    onboardingData?.notification ? "yes" : "no"
   );
 
   const handleSelectOption = (option: string) => {
-    const boolOption = option === "yes" ? true : false;
-    setSelectedOption(boolOption);
+    setSelectedOption(option);
   };
 
   const handleNext = () => {
-    updateOnboardingData({ notification: selectedOption });
+    const notification = selectedOption === "yes";
+    updateOnboardingData({ notification });
     navigation.navigate("AllDoneScreen");
   };
+
   return (
     <View>
       <OnbordingLayout

@@ -22,7 +22,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
       medicine_name: medicineName,
       log_timestamp: medicineTime,
     });
-    navigation.navigate("DiabeticTypeScreen");
+    navigation.navigate("BslRangeScreen");
   };
   return (
     <View>
