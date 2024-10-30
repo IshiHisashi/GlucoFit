@@ -22,6 +22,9 @@ export const userTypeDefs = gql`
   type User {
     id: ID!
     name: String!
+    birthday: Date
+    height: Float
+    weight: Float
     age: Int
     diabates_type: Int
     email: String
@@ -79,6 +82,9 @@ export const userTypeDefs = gql`
     createUser(
       name: String!
       age: Int
+      birthday: Date
+      height: Float
+      weight: Float
       diabates_type: Int
       email: String
       phone_number: String
@@ -112,6 +118,9 @@ export const userTypeDefs = gql`
       id: ID!
       name: String
       age: Int
+      birthday: Date
+      height: Float
+      weight: Float
       diabates_type: Int
       email: String
       phone_number: String
