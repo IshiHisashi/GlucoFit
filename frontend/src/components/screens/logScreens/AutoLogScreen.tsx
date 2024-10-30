@@ -1,4 +1,4 @@
-import { Text, View } from "@gluestack-ui/themed"
+import { AddIcon, Button, ButtonIcon, ButtonText, Text, View } from "@gluestack-ui/themed"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { useNavigation } from "@react-navigation/native";
@@ -107,6 +107,14 @@ const AutoLogScreen: React.FC = () => {
     navigation.navigate("GlucoseLog",{
       BGL: BGL,
       fromAuto: true
+    });
+  }
+
+  const moveToManualEntry = () => {
+    setModalVisible(false)
+    navigation.navigate("GlucoseLog",{
+      BGL: 0,
+      fromAuto: false
     });
   }
 
@@ -251,6 +259,16 @@ const AutoLogScreen: React.FC = () => {
           { parsedRes?.action }
           { parsedRes?.RESULT_VALUE }
         </Text>
+        <Button
+          size="md"
+          variant="outline"
+          marginHorizontal={20}
+          borderRadius={20}
+          onPress={() => moveToManualEntry()}
+        >
+          <ButtonText>Manually log your readings</ButtonText>
+          <ButtonIcon as={AddIcon} />
+        </Button>
       </View>
     </SafeAreaView>
 
