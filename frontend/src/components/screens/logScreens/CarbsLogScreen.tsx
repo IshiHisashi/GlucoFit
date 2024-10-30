@@ -28,11 +28,11 @@ const CREATE_CARBS_LOG = gql`
       log_timestamp: $logTimestamp
       note: $note
     ) {
-      carbs
       log_timestamp
+      carbs
+      id
       note {
-        content
-        title
+        note_title
         note_description
       }
     }
@@ -104,8 +104,7 @@ const CarbsLogScreen: React.FC = () => {
           carbs: Number(carbs),
           logTimestamp: combinedDateTime,
           note: {
-            title: note.title,
-            content: note.content,
+            note_title: note.title,
             note_description: note.content,
           },
         },
