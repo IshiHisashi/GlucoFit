@@ -10,6 +10,8 @@ import { client } from "./apollo";
 import Test from "./src/components/testPages/Test";
 import AppStack from "./src/components/stacks/AppStack";
 import extendedConfig from "./theme.config";
+import { AuthProvider } from "./src/context/AuthContext";
+import RootStack from "./src/components/stacks/RootStack";
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -26,8 +28,11 @@ const App: React.FC = () => {
     <SafeAreaProvider>
       <GluestackUIProvider config={extendedConfig}>
         <ApolloProvider client={client}>
-          <StatusBar style="auto" />
-          <AppStack />
+          <AuthProvider>
+            {/* <StatusBar style="auto" /> */}
+            <RootStack />
+            {/* <AppStack /> */}
+          </AuthProvider>
         </ApolloProvider>
       </GluestackUIProvider>
     </SafeAreaProvider>

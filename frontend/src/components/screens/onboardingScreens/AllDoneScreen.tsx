@@ -35,7 +35,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           // birthday: onboardingData?.birthday,
           height: onboardingData?.height,
           weight: onboardingData?.weight,
-          // diabates_type: onboardingData?.diabates_type,
+          diabates_type: onboardingData?.diabates_type,
           maximum_bsl: onboardingData?.maximum_bsl,
           minimum_bsl: onboardingData?.minimum_bsl,
           notificaiton: onboardingData?.notification,

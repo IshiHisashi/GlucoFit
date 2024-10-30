@@ -7,7 +7,7 @@ import {
   Button,
   ButtonText,
 } from "@gluestack-ui/themed";
-import { ApolloClient, InMemoryCache, gql, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
 
@@ -25,7 +25,7 @@ const SIGNUP_MUTATION = gql`
 `;
 
 const SignupScreen: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
+  const[(email, setEmail)] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
 

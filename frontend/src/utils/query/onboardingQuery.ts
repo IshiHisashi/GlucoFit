@@ -27,33 +27,9 @@ export const UPDATE_USER_MUTATION = gql`
     ) {
       id
       name
-      #   birthday
-      #   maximum_bsl
-      #   minimum_bsl
-      #   notification
-      #   diabates_type
-      #   height
-      #   weight
-      #   badges {
-      #     badgeId {
-      #       id
-      #       badge_name
-      #     }
-      #     achieved
-      #   }
     }
   }
 `;
-// id: userId,
-// name: onboardingData?.name,
-// // birthday: onboardingData?.birthday,
-// height: onboardingData?.height,
-// weight: onboardingData?.weight,
-// // diabates_type: onboardingData?.diabates_type,
-// maximum_bsl: onboardingData?.maximum_bsl,
-// minimum_bsl: onboardingData?.minimum_bsl,
-// notificaiton: onboardingData?.notification,
-// badges,
 
 // Static
 export const badges = [
@@ -83,10 +59,7 @@ export const ADD_MEDICINE_MUTATION = gql`
       unit: $unit
       log_timestamp: $log_timestamp
     ) {
-      #   user_id
       medicine_name
-      #   dosage
-      #   unit
       log_timestamp
     }
   }

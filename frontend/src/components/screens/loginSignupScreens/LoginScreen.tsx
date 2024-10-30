@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -7,15 +7,15 @@ import {
   Button,
   ButtonText,
 } from "@gluestack-ui/themed";
-import {
-  ApolloClient,
-  InMemoryCache,
-  gql,
-  useMutation,
-  ApolloProvider,
-} from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
+import { AuthContext } from "../../../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { TabParamList } from "../../../types/navigation";
+
+type Props = NativeStackScreenProps<TabParamList>;
 
 // GraphQL Mutation for Login
 const LOGIN_MUTATION = gql`
@@ -30,10 +30,11 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
-const LoginScreen: React.FC = () => {
+const LoginScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const navigation = useNavigation();
+  const { LogIn } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
   const handleLogin = async () => {
@@ -43,11 +44,13 @@ const LoginScreen: React.FC = () => {
     }
     try {
       const { data } = await login({ variables: { email, password } });
+      // alert(`Login successful! Token saved.`);
       const accessToken = data.login.accessToken;
       const refreshToken = data.login.refreshToken;
-      await saveToken("accessToken", accessToken);
+      console.log("exe");
       await saveToken("refreshToken", refreshToken);
-      alert(`Login successful! Token saved.`);
+      await LogIn(accessToken);
+      // navigation.navigate("Home");
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed");

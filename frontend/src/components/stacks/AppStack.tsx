@@ -16,55 +16,50 @@ import Temp from "../screens/Temp";
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack: React.FC = () => (
-  <NavigationContainer>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Tabs"
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CarbsLog"
-        component={CarbsLogScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ActivityLog"
-        component={ActivityLogScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="MedicineLog"
-        component={MedicineLogScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="GlucoseLog"
-        component={GlucoseLogScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Note"
-        component={NoteScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Article"
-        component={ArticleWebViewScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="RecentInsights"
-        component={RecentInsightsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Temp"
-        component={Temp}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  </NavigationContainer>
+  // <NavigationContainer>
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Tabs"
+      component={TabNavigator}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CarbsLog"
+      component={CarbsLogScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ActivityLog"
+      component={ActivityLogScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="MedicineLog"
+      component={MedicineLogScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="GlucoseLog"
+      component={GlucoseLogScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Note"
+      component={NoteScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Article"
+      component={ArticleWebViewScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="RecentInsights"
+      component={RecentInsightsScreen}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+  // </NavigationContainer>
 );
 
 export default AppStack;
