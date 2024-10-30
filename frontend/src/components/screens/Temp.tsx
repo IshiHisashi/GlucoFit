@@ -10,6 +10,7 @@ import NotificationRow from "../molcules/NotificationRow";
 import { EditCustom } from "../svgs/svgs";
 import SettingsCard from "../molcules/SettingsCard";
 import ToggleCard from "../molcules/ToggleCard";
+import ProfileCard from "../molcules/ProfileCard";
 
 type TempNavigationProps = NativeStackNavigationProp<AppStackParamList, "Temp">;
 
@@ -103,6 +104,14 @@ const Temp: FC = () => {
           toggleCardSampleData.map((obj, index) => (
             <ToggleCard obj={{ ...obj, key: index }} />
           ))}
+
+        <Text>profile card</Text>
+        <ProfileCard
+          name="user's name"
+          profileImageUrl=""
+          onPressProfileCard={() => console.log("go to profile edit page")}
+          onPressProfilePic={() => console.log("open image picker")}
+        />
       </ScrollView>
     </SafeAreaView>
   );

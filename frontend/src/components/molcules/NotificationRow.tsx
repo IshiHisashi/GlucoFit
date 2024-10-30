@@ -36,6 +36,7 @@ const NotificationRow: FC<NotificationRowProps> = (props) => {
       mx="$4"
       borderBottomWidth={1}
       borderBottomColor="#EEEEEE"
+      bg="$neutralWhite"
     >
       <HStack justifyContent="space-between" alignItems="center">
         <HStack alignItems="flex-start" space="sm">
