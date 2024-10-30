@@ -18,6 +18,7 @@ export type AppStackParamList = {
   };
   Article: { url: string; title: string };
   RecentInsights: undefined;
+  Temp: undefined;
 };
 
 export type LoginSignupStackParamList = {

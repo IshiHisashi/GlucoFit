@@ -17,7 +17,7 @@ import { AngleRightCustom } from "../svgs/svgs";
 import MedicineListCard from "../molcules/MedicineListCard";
 
 interface LogsTableRowDirectInputProps {
-  obj: pickerData;
+  obj: PickerData;
 }
 
 const LogsTableRowDirectInput: FC<LogsTableRowDirectInputProps> = (props) => {
@@ -53,7 +53,7 @@ const LogsTableRowDirectInput: FC<LogsTableRowDirectInputProps> = (props) => {
   );
 };
 
-interface rowData {
+interface RowData {
   id: string;
   icon: any;
   text: string;
@@ -63,19 +63,19 @@ interface rowData {
   onPressRow?: () => void;
 }
 
-interface pickerData {
+interface PickerData {
   setShowPicker?: Dispatch<SetStateAction<boolean>>;
   onChangeText?: Dispatch<SetStateAction<string>>;
   text: string;
   value: Date | string | { hours: number; minutes: number };
 }
 
-interface noteData {
+interface NoteData {
   noteExcerpt: string;
   onPressNote: () => void;
 }
 
-interface medicineData {
+interface MedicineData {
   id: string;
   medicine_name: string;
   dosage: string;
@@ -88,10 +88,10 @@ interface LogsTableProps {
   title?: string;
   subTitle?: string;
   onPressTitleRightButton?: () => void;
-  rowsData?: rowData[];
-  pickerData?: pickerData[];
-  noteData?: noteData;
-  medicinesData?: medicineData[];
+  rowsData?: RowData[];
+  pickerData?: PickerData[];
+  noteData?: NoteData;
+  medicinesData?: MedicineData[];
   tableType?: "logs" | "pickers" | "notes" | "medicines";
 }
 

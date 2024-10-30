@@ -8,14 +8,14 @@ import {
 import React, { Dispatch, FC, SetStateAction } from "react";
 import { AngleRightCustom } from "../svgs/svgs";
 
-interface pickerData {
+interface PickerData {
   setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
   value: Date | string | { hours: number; minutes: number };
 }
 
 interface PickerOpenerRowProps {
-  obj: pickerData;
+  obj: PickerData;
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {

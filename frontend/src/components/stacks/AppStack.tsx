@@ -11,6 +11,7 @@ import NoteScreen from "../screens/logScreens/NoteScreen";
 import { AppStackParamList } from "../../types/navigation";
 import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsScreen";
+import Temp from "../screens/Temp";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -55,6 +56,11 @@ const AppStack: React.FC = () => (
       <Stack.Screen
         name="RecentInsights"
         component={RecentInsightsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Temp"
+        component={Temp}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

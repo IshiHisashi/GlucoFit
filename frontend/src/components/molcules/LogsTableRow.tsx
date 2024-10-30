@@ -2,7 +2,7 @@ import { Text } from "@gluestack-ui/themed";
 import { HStack, Pressable, Box, VStack } from "@gluestack-ui/themed";
 import React, { FC } from "react";
 
-interface rowData {
+interface RowData {
   id: string;
   icon: any;
   text: string;
@@ -13,7 +13,7 @@ interface rowData {
 }
 
 interface LogsTableRowProps {
-  obj: rowData;
+  obj: RowData;
 }
 
 const LogsTableRow: FC<LogsTableRowProps> = (props) => {

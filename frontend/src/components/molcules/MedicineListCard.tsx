@@ -4,7 +4,7 @@ import React, { FC } from "react";
 import { CheckCustom } from "../svgs/svgs";
 import Tab from "../atoms/Tab";
 
-interface medicineData {
+interface MmedicineData {
   id: string;
   medicine_name: string;
   dosage: string;
@@ -14,7 +14,7 @@ interface medicineData {
 }
 
 interface MedicineListCardProps {
-  obj: medicineData;
+  obj: MmedicineData;
 }
 
 const MedicineListCard: FC<MedicineListCardProps> = (props) => {

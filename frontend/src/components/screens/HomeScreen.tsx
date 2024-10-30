@@ -4,12 +4,9 @@ import {
   ButtonText,
   Center,
   HStack,
-  Icon,
-  MoonIcon,
   Pressable,
   Text,
   VStack,
-  ChevronRightIcon,
   ScrollView,
   View,
   useToast,
@@ -18,7 +15,7 @@ import {
   ToastDescription,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
   useFocusEffect,
@@ -31,14 +28,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import {
-  AnalysisCustom,
-  AngleRightCustom,
-  BellCustom,
-  CapsuleDark,
-  HeartrateDark,
-  TimesCustom,
-} from "../svgs/svgs";
+import { AnalysisCustom, TimesCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
@@ -473,6 +463,7 @@ const HomeScreen: React.FC = () => {
         <HeaderBasic
           routeName={route.name as "Home"}
           userName={userData?.getUser.name}
+          navigation={navigation}
         />
         <VStack p="$4" space="md">
           <VStack

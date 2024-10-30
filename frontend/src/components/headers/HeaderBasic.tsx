@@ -9,6 +9,7 @@ import {
   InputSlot,
 } from "@gluestack-ui/themed";
 import React, { FC } from "react";
+import { NavigationProp } from "@react-navigation/native";
 
 import { BellCustom, SearchCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
@@ -18,10 +19,12 @@ interface HeaderBasicProps {
   userName?: string;
   searchValue?: string;
   onChangeSearchValue?: (value: string) => void;
+  navigation?: NavigationProp<any>;
 }
 
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
-  const { routeName, userName, searchValue, onChangeSearchValue } = props;
+  const { routeName, userName, searchValue, onChangeSearchValue, navigation } =
+    props;
 
   const headerStyles = {
     Home: {
@@ -99,7 +102,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
         <Pressable onPress={() => {}}>
           <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
         </Pressable>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => navigation?.navigate("Temp")}>
           <BellCustom color={currentStyle.notificationColor} size={27} />
         </Pressable>
       </HStack>
