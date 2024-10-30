@@ -1,14 +1,14 @@
-import { Text } from "@gluestack-ui/themed";
+import { Pressable, Text } from "@gluestack-ui/themed";
 import { HStack, VStack } from "@gluestack-ui/themed";
 import React, { FC } from "react";
 
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
-import { AngleRightCustom } from "../svgs/svgs";
+import { AngleRightCustom, PlusCustom } from "../svgs/svgs";
 
 interface LogsTableProps {
   title: string;
-  subTitle: string;
-  onPressTitleRightButton: () => void;
+  subTitle?: string;
+  onPressTitleRightButton?: () => void;
 }
 
 const LogsTableTitle: FC<LogsTableProps> = (props) => {
@@ -20,19 +20,29 @@ const LogsTableTitle: FC<LogsTableProps> = (props) => {
         <Text fontSize={20} fontFamily="$bold" color="$neutralDark90">
           {title}
         </Text>
-        <GlucoButtonNoOutline
-          text="See more"
-          isFocused={false}
-          isDisabled={false}
-          onPress={onPressTitleRightButton}
-          iconRight={AngleRightCustom}
-          styleForHstack={{ gap: 1 }}
-          styleForText={{ fontFamily: "$regular", fontSize: 12 }}
-        />
+
+        {onPressTitleRightButton && title === "Add Notes" ? (
+          <Pressable onPress={onPressTitleRightButton}>
+            <PlusCustom color="#313131" />
+          </Pressable>
+        ) : onPressTitleRightButton ? (
+          <GlucoButtonNoOutline
+            text="See more"
+            isFocused={false}
+            isDisabled={false}
+            onPress={onPressTitleRightButton}
+            iconRight={AngleRightCustom}
+            styleForHstack={{ gap: 1 }}
+            styleForText={{ fontFamily: "$regular", fontSize: 12 }}
+          />
+        ) : null}
       </HStack>
-      <Text fontSize={12} color="$neutralDark40">
-        {subTitle}
-      </Text>
+
+      {subTitle && (
+        <Text fontSize={12} color="$neutralDark40">
+          {subTitle}
+        </Text>
+      )}
     </VStack>
   );
 };

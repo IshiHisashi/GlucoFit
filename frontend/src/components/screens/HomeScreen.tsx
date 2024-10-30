@@ -51,6 +51,7 @@ import {
   IconForGlucoseLogSad,
   IconForMedicineLog,
 } from "../svgs/svgsForLogsTableIcons";
+import LogsTableTitle from "../molcules/LogsTableTitle";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -544,26 +545,18 @@ const HomeScreen: React.FC = () => {
 
           <VStack
             borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-            p="$2"
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
+            p="$4"
+            bg="$neutralWhite"
           >
-            <HStack alignItems="center" justifyContent="space-between" p="$2">
-              <Text>
-                {weeklyBslData
-                  ? weeklyBslData.getWeeklyBSLData.dateRange
-                  : "N/A"}
-              </Text>
-              <GlucoButtonNoOutline
-                text="See more"
-                isFocused={false}
-                isDisabled={false}
-                onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-                iconRight={AngleRightCustom}
-                styleForHstack={{ gap: 1 }}
-                styleForText={{ fontFamily: "$regular" }}
-              />
-            </HStack>
+            <LogsTableTitle
+              title="Weekly Snapshots"
+              subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+              onPressTitleRightButton={() =>
+                navigation.navigate("Tabs", { screen: "Logs" })
+              }
+            />
 
             <HStack
               alignItems="center"
@@ -576,7 +569,7 @@ const HomeScreen: React.FC = () => {
                     ? weeklyBslData.getWeeklyBSLData.weeklyAverage
                     : "N/A"}
                 </Text>
-                <Text>mg/dL</Text>
+                <Text>mmol/L</Text>
                 <Text>Average</Text>
               </Center>
 

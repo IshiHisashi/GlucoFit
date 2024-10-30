@@ -7,7 +7,7 @@ export type TabParamList = {
 };
 
 export type AppStackParamList = {
-  Tabs: { screen?: keyof TabParamList; mutatedLog?: string };
+  Tabs: { screen?: keyof TabParamList; mutatedLog?: string; insight?: string };
   CarbsLog: { logId?: string };
   ActivityLog: { logId?: string };
   MedicineLog: { logId?: string };

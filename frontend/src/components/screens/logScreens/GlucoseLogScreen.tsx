@@ -13,6 +13,7 @@ import {
   InputSlot,
   AddIcon,
   View,
+  ScrollView,
 } from "@gluestack-ui/themed";
 import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
@@ -23,14 +24,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import GlucoFitFaceSample from "../../../../assets/GlucoFit-Face-sample.png";
-import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
-import AddNotesSection from "../../organisms/AddNotesSection";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import Sheet from "../../organisms/Sheet";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import InputFieldForBsl from "../../atoms/InputFieldForBsl";
-import InputFieldGeneral from "../../atoms/InputFieldGeneral";
+import LogsTable from "../../organisms/LogsTable";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -225,10 +224,8 @@ const GlucoseLogScreen: React.FC = () => {
       console.log("Mutation result:", result.data.createTestResultWithInsights);
       navigation.navigate("Tabs", {
         screen: "Home",
-        params: {
-          mutatedLog: "bsl",
-          insight: result.data.createTestResultWithInsights[0],
-        },
+        mutatedLog: "bsl",
+        insight: result.data.createTestResultWithInsights[0],
       });
     } catch (e) {
       console.error("Error creating test result:", e);
@@ -259,16 +256,33 @@ const GlucoseLogScreen: React.FC = () => {
   // if (error) return `Error! ${error.message}`;
   // console.log(data);
 
+  const pickerData = [
+    { setShowPicker: setIsDatePickerOpen, text: "Date", value: date },
+    { setShowPicker: setIsTimePickerOpen, text: "Time", value: time },
+    {
+      setShowPicker: setIsTimePeriodPickerOpen,
+      text: "Time Period",
+      value: timePeriod,
+    },
+  ];
+
   return (
     <SafeAreaView>
       <View height="$full">
-        <HeaderWithBackButton
-          navigation={navigation}
-          text="Add Blood Glucose"
-          rightIconOnPress={() => {}}
-        />
-        <VStack p="$4">
-          <VStack space="sm" alignItems="center">
+        <ScrollView>
+          <HeaderWithBackButton
+            navigation={navigation}
+            text="Add Blood Glucose"
+            // rightIconOnPress={() => {}}
+          />
+          {/* <VStack p="$4"> */}
+          <VStack
+            space="sm"
+            alignItems="center"
+            p="$4"
+            py="$12"
+            bg="$neutralWhite"
+          >
             <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
             <InputFieldForBsl
@@ -278,36 +292,26 @@ const GlucoseLogScreen: React.FC = () => {
             />
           </VStack>
 
-          <VStack
-            space="sm"
-            mt="$8"
-            borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-          >
-            <Text fontSize="$lg" fontWeight="$bold" p="$3">
-              Schedule
-            </Text>
+          <VStack space="xl" p="$4" py="$10" bg="$neutralDark5">
+            <LogsTable
+              title="Schedule"
+              pickerData={pickerData}
+              tableType="pickers"
+            />
 
-            <PickerOpenerRow
-              setShowPicker={setIsDatePickerOpen}
-              text="Date"
-              value={date}
-            />
-            <PickerOpenerRow
-              setShowPicker={setIsTimePickerOpen}
-              text="Time"
-              value={time}
-            />
-            <PickerOpenerRow
-              setShowPicker={setIsTimePeriodPickerOpen}
-              text="Time Period"
-              value={timePeriod}
+            <LogsTable
+              title="Add Notes"
+              onPressTitleRightButton={handleOpenNote}
+              noteData={{
+                noteExcerpt: note.title,
+                onPressNote: handleOpenNote,
+              }}
+              tableType="notes"
             />
           </VStack>
-
-          <AddNotesSection onPress={handleOpenNote} noteExcerpt={note.title} />
-        </VStack>
+          {/* </VStack> */}
+          <View height="$16" />
+        </ScrollView>
 
         <ButtonFixedBottom
           onPress={handleSubmitCreate}
