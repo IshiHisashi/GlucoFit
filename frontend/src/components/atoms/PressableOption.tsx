@@ -4,7 +4,7 @@ import { View, Text, Pressable, Image } from "@gluestack-ui/themed";
 type InputProps = {
   label: string;
   value: string;
-  selectedOption: string;
+  selectedOption: string | number | boolean | undefined;
   onSelect: (value: string) => void;
 };
 

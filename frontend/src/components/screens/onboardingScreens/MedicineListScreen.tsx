@@ -1,25 +1,28 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "@gluestack-ui/themed";
+import { View } from "@gluestack-ui/themed";
 import OnbordingLayout from "../../organisms/OnboardingLayout";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 import Input from "../../atoms/onboarding/input";
+import { useOnboarding } from "../../../context/OnboardingContext";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
-const options = [
-  { value: "mcg", label: "mcg" },
-  { value: "g", label: "g" },
-  { value: "mg", label: "mg" },
-  { value: "mL", label: "mL" },
-  { value: "%", label: "%" },
-];
-
 const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+  const { onboardingData, updateOnboardingData } = useOnboarding();
+  const [medicineName, setMedicineName] = useState<string | undefined>(
+    onboardingData?.medicine_name
+  );
+  const [medicineTime, setMedicintTime] = useState<Date | undefined>(
+    onboardingData.log_timestamp
+  );
 
-  const handleSelectOption = (option: string) => {
-    setSelectedOption(option);
+  const handleNext = () => {
+    updateOnboardingData({
+      medicine_name: medicineName,
+      log_timestamp: medicineTime,
+    });
+    navigation.navigate("DiabeticTypeScreen");
   };
   return (
     <View>
@@ -27,12 +30,12 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
         comment="Can you tell me more about your medication?"
         supplimentalComment="You can always add or update your prescription details later in your account profile"
         progressValue={62.5}
-        onPress={() => navigation.navigate("BslRangeScreen")}
+        onPress={handleNext}
         character
       >
         <View width="100%" flexDirection="column" gap={16}>
-          <Input labelText="Medicine Name" />
-          <Input labelText="Time" />
+          <Input labelText="Medicine Name" onChange={setMedicineName} />
+          <Input labelText="Time" onChange={setMedicintTime} />
         </View>
       </OnbordingLayout>
     </View>

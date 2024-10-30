@@ -13,24 +13,31 @@ const MedicationScreen: React.FC<Props> = ({ navigation }) => {
   const handleSelectOption = (option: string) => {
     setSelectedOption(option);
   };
+  const handleNext = () => {
+    if (selectedOption === "yes") {
+      navigation.navigate("MedicineListScreen");
+    } else {
+      navigation.navigate("BslRangeScreen");
+    }
+  };
   return (
     <View>
       <OnbordingLayout
         comment="Are you taking any medication to manage your condition?"
         progressValue={50}
-        onPress={() => navigation.navigate("MedicineListScreen")}
+        onPress={handleNext}
       >
         <View flexDirection="column" gap={16}>
           <PressableOption
             selectedOption={selectedOption}
             onSelect={handleSelectOption}
-            value="oral"
+            value="yes"
             label="Yes, I’m on medication"
           />
           <PressableOption
             selectedOption={selectedOption}
             onSelect={handleSelectOption}
-            value="insulin"
+            value="no"
             label="No, I currently don't"
           />
         </View>

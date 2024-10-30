@@ -1,25 +1,39 @@
-import React from "react";
-import { View, Text } from "@gluestack-ui/themed";
+import React, { useState } from "react";
+import { View } from "@gluestack-ui/themed";
 import OnbordingLayout from "../../organisms/OnboardingLayout";
 import Input from "../../atoms/onboarding/input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
+import { useOnboarding } from "../../../context/OnboardingContext";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
 const NameBdScreen: React.FC<Props> = ({ navigation }) => {
+  const { onboardingData, updateOnboardingData } = useOnboarding();
+  const [name, setName] = useState<string | undefined>(
+    onboardingData.name || ""
+  );
+  const [birthday, setBirthday] = useState<Date | undefined>(
+    onboardingData.birthday || ""
+  );
+
+  const handleNext = () => {
+    updateOnboardingData({ name, birthday });
+    console.log(onboardingData);
+    navigation.navigate("HightWeightScreen");
+  };
   return (
     <View>
       <OnbordingLayout
         comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
         progressValue={12.5}
-        onPress={() => navigation.navigate("HightWeightScreen")}
+        onPress={handleNext}
         character
       >
         <View width="100%" flexDirection="column" gap={16}>
-          <Input labelText="Name" />
-          <Input labelText="Birthday" />
+          <Input labelText="Name" onChange={setName} />
+          <Input labelText="Birthday" onChange={setBirthday} />
         </View>
       </OnbordingLayout>
     </View>
