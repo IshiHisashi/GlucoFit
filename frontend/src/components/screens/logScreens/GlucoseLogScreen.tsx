@@ -1,20 +1,4 @@
-import {
-  ButtonText,
-  FormControl,
-  HStack,
-  Icon,
-  Image,
-  Input,
-  InputField,
-  Pressable,
-  Text,
-  VStack,
-  Button,
-  InputSlot,
-  AddIcon,
-  View,
-  ScrollView,
-} from "@gluestack-ui/themed";
+import { Image, VStack, View, ScrollView } from "@gluestack-ui/themed";
 import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";

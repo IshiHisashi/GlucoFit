@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  ButtonText,
-  Center,
-  Text,
-  View,
-  VStack,
-} from "@gluestack-ui/themed";
+import { View } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
@@ -14,7 +6,6 @@ import { gql, useMutation } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-import PickerOpenerRow from "../../molcules/PickerOpenerRow";
 import { AppStackParamList } from "../../../types/navigation";
 import Sheet from "../../organisms/Sheet";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";

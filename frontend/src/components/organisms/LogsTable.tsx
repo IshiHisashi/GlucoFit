@@ -1,9 +1,56 @@
-import { HStack, Text, VStack, Pressable, Box } from "@gluestack-ui/themed";
+import {
+  HStack,
+  Text,
+  VStack,
+  Pressable,
+  Box,
+  Input,
+  InputField,
+  InputSlot,
+} from "@gluestack-ui/themed";
 import React, { Dispatch, FC, SetStateAction } from "react";
 
 import LogsTableTitle from "../molcules/LogsTableTitle";
 import LogsTableRow from "../molcules/LogsTableRow";
 import PickerOpenerRow from "../molcules/PickerOpenerRow";
+import { AngleRightCustom } from "../svgs/svgs";
+
+interface LogsTableRowDirectInputProps {
+  obj: pickerData;
+}
+
+const LogsTableRowDirectInput: FC<LogsTableRowDirectInputProps> = (props) => {
+  const { obj } = props;
+
+  return (
+    <HStack
+      justifyContent="space-between"
+      alignItems="center"
+      py="$3"
+      borderBottomWidth={1}
+      borderBottomColor="#EEEEEE"
+    >
+      <Text fontFamily="$semibold" fontSize={17} color="$neutralDark90">
+        {obj.text}
+      </Text>
+      <HStack alignItems="center">
+        <Input variant="outline" size="md" w="$40">
+          <InputField
+            placeholder="---"
+            value={obj.value as string}
+            onChangeText={obj.onChangeText}
+            keyboardType="numeric"
+            textAlign="right"
+          />
+          <InputSlot pr="$3">
+            <Text>g</Text>
+          </InputSlot>
+        </Input>
+        <AngleRightCustom color="#313131" />
+      </HStack>
+    </HStack>
+  );
+};
 
 interface rowData {
   id: string;
@@ -16,7 +63,8 @@ interface rowData {
 }
 
 interface pickerData {
-  setShowPicker: Dispatch<SetStateAction<boolean>>;
+  setShowPicker?: Dispatch<SetStateAction<boolean>>;
+  onChangeText?: Dispatch<SetStateAction<string>>;
   text: string;
   value: Date | string | { hours: number; minutes: number };
 }
@@ -69,7 +117,10 @@ const LogsTable: FC<LogsTableProps> = (props) => {
 
       {tableType === "pickers" &&
         pickerData?.length > 0 &&
-        pickerData.map((obj) => <PickerOpenerRow obj={obj} />)}
+        pickerData.map((obj) => {
+          if (obj.setShowPicker) return <PickerOpenerRow obj={obj} />;
+          if (obj.onChangeText) return <LogsTableRowDirectInput obj={obj} />;
+        })}
 
       {tableType === "notes" && noteData?.noteExcerpt && (
         <Pressable
