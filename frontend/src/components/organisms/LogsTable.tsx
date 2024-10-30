@@ -14,6 +14,7 @@ import LogsTableTitle from "../molcules/LogsTableTitle";
 import LogsTableRow from "../molcules/LogsTableRow";
 import PickerOpenerRow from "../molcules/PickerOpenerRow";
 import { AngleRightCustom } from "../svgs/svgs";
+import MedicineListCard from "../molcules/MedicineListCard";
 
 interface LogsTableRowDirectInputProps {
   obj: pickerData;
@@ -74,6 +75,15 @@ interface noteData {
   onPressNote: () => void;
 }
 
+interface medicineData {
+  id: string;
+  medicine_name: string;
+  dosage: string;
+  unit: string;
+  isSelected: boolean;
+  onPressMedicine: () => void;
+}
+
 interface LogsTableProps {
   title?: string;
   subTitle?: string;
@@ -81,7 +91,8 @@ interface LogsTableProps {
   rowsData?: rowData[];
   pickerData?: pickerData[];
   noteData?: noteData;
-  tableType?: "logs" | "pickers" | "notes";
+  medicinesData?: medicineData[];
+  tableType?: "logs" | "pickers" | "notes" | "medicines";
 }
 
 const LogsTable: FC<LogsTableProps> = (props) => {
@@ -92,6 +103,7 @@ const LogsTable: FC<LogsTableProps> = (props) => {
     rowsData,
     pickerData,
     noteData,
+    medicinesData,
     tableType = "logs",
   } = props;
 
@@ -136,6 +148,10 @@ const LogsTable: FC<LogsTableProps> = (props) => {
           </HStack>
         </Pressable>
       )}
+
+      {tableType === "medicines" &&
+        medicinesData?.length > 0 &&
+        medicinesData.map((obj) => <MedicineListCard obj={obj} />)}
     </VStack>
   );
 };
