@@ -48,7 +48,8 @@ const NoteScreen: FC = () => {
         <HeaderWithBackButton
           navigation={navigation}
           text="Add Notes"
-          rightIconOnPress={() => {}}
+          rightIconOnPress={handleSave}
+          disabled={!(title && content)}
         />
         <ScrollView h="$full">
           <VStack h="$full" style={{ height: 600 }}>
@@ -73,11 +74,11 @@ const NoteScreen: FC = () => {
           <View h={120} />
         </ScrollView>
 
-        <ButtonFixedBottom
+        {/* <ButtonFixedBottom
           onPress={handleSave}
           isDisabled={!(title && content)}
           text="Save"
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
