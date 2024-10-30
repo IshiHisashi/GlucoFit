@@ -92,6 +92,7 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
   return (
     <Button
       borderRadius="$full"
+      height={buttonSize === "small" ? 43 : buttonSize === "medium" ? 47 : 52}
       width={
         buttonSize === "small" ? 110 : buttonSize === "medium" ? 214 : "$auto"
       }
