@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  Button,
-  ButtonText,
-  Image,
-} from "@gluestack-ui/themed";
+import { Text, View, Button, ButtonText, Image } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 
@@ -21,13 +15,21 @@ const OnboardingTitleScreen: React.FC<Props> = ({ navigation }) => {
         h="100%"
         p={16}
       >
-        <Text textAlign="center">glucofit</Text>
-        <Image
-          source={require("../../../../assets/OnbordingChar.png")}
-          resizeMode="contain"
-          mx="auto"
-          alt="Character is winking during the onboarding process"
-        />
+        <View marginTop={103} flexDirection="column" gap={10}>
+          <Image
+            source={require("../../../../assets/OnbordingChar.png")}
+            resizeMode="contain"
+            mx="auto"
+            alt="Character is winking during the onboarding process"
+          />
+          <Image
+            source={require("../../../../assets/logo_onbording.png")}
+            resizeMode="contain"
+            w={288}
+            mx="auto"
+            alt="Character is winking during the onboarding process"
+          />
+        </View>
         <View flexDirection="column" gap={30}>
           <Text textAlign="center">
             Let's start your journey to better diabetic management

@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from "react";
 import {
   View,
-  Box,
-  Icon,
   Text,
+  Box,
+  VStack,
   Button,
   ButtonText,
   Image,
@@ -17,6 +17,7 @@ type OnboardingLayoutProps = {
   btnText?: string;
   progressValue?: number;
   onPress?: () => void;
+  character?: boolean;
   addLater?: boolean;
 };
 
@@ -30,6 +31,7 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
     addLater = false,
     progressValue,
     onPress,
+    character,
     children,
   } = props;
   return (
@@ -44,20 +46,62 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
       >
         <ProgressFilledTrack bg="#4800FF" />
       </Progress>
-      <View p={16} flexDirection="column" gap={16} height="100%">
-        <Text textAlign="center">{comment}</Text>
-        {/* <CommentBox /> */}
-        <Image
-          source={require("../../../assets/OnbordingChar.png")}
-          resizeMode="contain"
-          mx="auto"
-          alt="Character is winking during the onboarding process"
-        />
-        <Text fontSize={12} textAlign="center">
-          {supplimentalComment}
+      <View px={16} flexDirection="column" height="100%">
+        <Text fontSize="$3xl" my={30}>
+          {comment}
         </Text>
         {children}
         <View position="absolute" bottom={30} width="100%">
+          {/* Tooltip */}
+          {character && (
+            <View>
+              <VStack space="sm" alignItems="center" bottom={40}>
+                <Box
+                  bg="#FAF8FF"
+                  p={10}
+                  rounded={10}
+                  width={280}
+                  height={80}
+                  // style={{
+                  //   shadowColor: "#000",
+                  //   shadowOffset: { width: 0, height: 1 },
+                  //   shadowOpacity: 0.25,
+                  //   shadowRadius: 3.84,
+                  //   elevation: 5,
+                  // }}
+                  zIndex={0}
+                >
+                  <Text
+                    color="#232323"
+                    fontSize={14}
+                    fontWeight={700}
+                    textAlign="center"
+                  >
+                    {supplimentalComment}
+                  </Text>
+                </Box>
+                <Box
+                  bg="#FAF8FF"
+                  h={23}
+                  w={23}
+                  position="absolute"
+                  top={70}
+                  right={120}
+                  transform="rotate(45deg)"
+                  zIndex={10}
+                />
+              </VStack>
+              {/* Icon image */}
+              <Image
+                source={require("../../../assets/OnbordingChar.png")}
+                resizeMode="contain"
+                // mx="auto"
+                alt="Character is winking during the onboarding process"
+                bottom={30}
+                left={250}
+              />
+            </View>
+          )}
           <Button width="100%" left={16} onPress={onPress}>
             <ButtonText>{btnText}</ButtonText>
           </Button>
@@ -73,44 +117,3 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
 };
 
 export default OnbordingLayout;
-
-const CommentBox = () => {
-  return (
-    <Box alignItems="center" justifyContent="center" position="relative">
-      {/* Tooltip-like box with text */}
-      <Box
-        bg="#F1EAFE"
-        padding="16px"
-        borderRadius="10px"
-        position="relative"
-        shadow="4"
-        width="250px"
-      >
-        <Text fontSize="16px" color="#4800FF" textAlign="center">
-          Let’s start with your personal details for smarter insights
-        </Text>
-
-        {/* Triangle at the bottom center */}
-        <Box
-          position="absolute"
-          bottom={-10}
-          left="50%"
-          transform={[{ translateX: -10 }]}
-          width={0}
-          height={0}
-          borderLeftWidth={10}
-          borderRightWidth={10}
-          borderBottomWidth={10}
-          borderLeftColor="transparent"
-          borderRightColor="transparent"
-          borderBottomColor="#F1EAFE"
-        />
-      </Box>
-
-      {/* Icon below the tooltip */}
-      <Box marginTop="20px">
-        <Icon name="cube" color="#4800FF" size={48} />
-      </Box>
-    </Box>
-  );
-};

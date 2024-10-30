@@ -15,6 +15,7 @@ const NameBdScreen: React.FC<Props> = ({ navigation }) => {
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
         progressValue={12.5}
         onPress={() => navigation.navigate("HightWeightScreen")}
+        character
       >
         <View width="100%" flexDirection="column" gap={16}>
           <Input labelText="Name" />
