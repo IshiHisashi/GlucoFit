@@ -25,6 +25,7 @@ import { StyleSheet } from "react-native";
 
 import PickerOptionCard from "../molcules/PickerOptionCard";
 import DurationPicker from "../atoms/DurationPicker";
+import { TimesCustom } from "../svgs/svgs";
 
 interface SheetProps {
   isOpen: boolean;
@@ -52,9 +53,14 @@ const Sheet: FC<SheetProps> = (props) => {
   const [note, setNote] = useState(value);
 
   return (
-    <Actionsheet isOpen={isOpen} onClose={onClose} zIndex={999}>
+    <Actionsheet
+      isOpen={isOpen}
+      onClose={onClose}
+      zIndex={999}
+      borderRadius={0}
+    >
       <ActionsheetBackdrop />
-      <ActionsheetContent zIndex={999} p="$4" pb="$8">
+      <ActionsheetContent zIndex={999} p="$4" pb="$8" borderRadius={0}>
         {/* <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper> */}
@@ -62,14 +68,16 @@ const Sheet: FC<SheetProps> = (props) => {
         <HStack
           justifyContent="space-between"
           alignItems="center"
-          style={styles.modalHeader}
           width="$full"
+          mb="$8"
         >
           <Pressable onPress={() => onClose(false)}>
-            <Icon as={ArrowLeftIcon} size="sm" />
+            <TimesCustom color="#4800FF" size={32} />
           </Pressable>
-          <Text style={styles.modalTitle}>{title}</Text>
-          <Box width={24} />
+          <Text fontFamily="$bold" fontSize={20}>
+            {title}
+          </Text>
+          <Box width={32} />
         </HStack>
 
         {sheetContentType === "picker" && (
@@ -82,7 +90,6 @@ const Sheet: FC<SheetProps> = (props) => {
                     setValue(el);
                     onClose(false);
                   }}
-                  icon={CalendarDaysIcon}
                   text={el}
                   isSelected={value === el}
                 />
@@ -119,15 +126,5 @@ const Sheet: FC<SheetProps> = (props) => {
     </Actionsheet>
   );
 };
-
-const styles = StyleSheet.create({
-  modalHeader: {
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});
 
 export default Sheet;
