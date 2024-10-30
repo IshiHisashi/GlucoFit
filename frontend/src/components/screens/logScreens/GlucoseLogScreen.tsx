@@ -18,7 +18,7 @@ import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -133,7 +133,15 @@ type GlucoseLogScreenNavigationProps = NativeStackNavigationProp<
   "GlucoseLog"
 >;
 
-const GlucoseLogScreen: React.FC = () => {
+type ResultScreenRouteProp = RouteProp<AppStackParamList, "Result">;
+
+type Props = {
+  navigation: GlucoseLogScreenNavigationProps;
+  route: ResultScreenRouteProp;
+};
+
+const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
+  const { BGL, fromAuto } = route.params;
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
@@ -269,10 +277,10 @@ const GlucoseLogScreen: React.FC = () => {
           <VStack space="sm" alignItems="center">
             <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
-            <FormControl isRequired>
+            <FormControl isRequired isDisabled={fromAuto ? true : false}>
               <Input variant="outline" size="md" w="$56">
                 <InputField
-                  value={glucoseLevel}
+                  value={fromAuto ? BGL.toString() : glucoseLevel}
                   onChangeText={setGlucoseLevel}
                   keyboardType="numeric"
                   // placeholder="Input your glucose level..."
@@ -302,16 +310,19 @@ const GlucoseLogScreen: React.FC = () => {
               setShowPicker={setIsDatePickerOpen}
               text="Date"
               value={date}
+              disabled={fromAuto ? true : false}
             />
             <PickerOpenerRow
               setShowPicker={setIsTimePickerOpen}
               text="Time"
               value={time}
+              disabled={fromAuto ? true : false}
             />
             <PickerOpenerRow
               setShowPicker={setIsTimePeriodPickerOpen}
               text="Time Period"
               value={timePeriod}
+              disabled={false}
             />
           </VStack>
 

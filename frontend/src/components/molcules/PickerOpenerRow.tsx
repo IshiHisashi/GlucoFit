@@ -12,15 +12,17 @@ interface PickerOpenerRowProps {
   text: string;
   value: Date | string | { hours: number; minutes: number };
   independent?: boolean;
+  disabled: boolean
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { setShowPicker, text, value, independent = false } = props;
+  const { setShowPicker, text, value, independent = false, disabled } = props;
   return (
     <Pressable
       onPress={() => {
         setShowPicker(true);
       }}
+      disabled={disabled}
     >
       <HStack
         justifyContent="space-between"

@@ -104,7 +104,10 @@ const AutoLogScreen: React.FC = () => {
 
   const moveToResult = () => {
     setModalVisible(false)
-    navigation.navigate('GlucoseLog');
+    navigation.navigate("GlucoseLog",{
+      BGL: BGL,
+      fromAuto: true
+    });
   }
 
 
@@ -133,6 +136,7 @@ const AutoLogScreen: React.FC = () => {
                   <Image 
                     source={require('../../../../assets/autoLogImgs/loading.png')}
                     style={{width: 30, height: 30}}
+                    alt="loading"
                   />
                   <Text>
                     Calculating your blood glucose level...
@@ -145,6 +149,7 @@ const AutoLogScreen: React.FC = () => {
                     <Image 
                       source={require('../../../../assets/autoLogImgs/gluco-chan.png')}
                       style={{width: 44, height: 40}}
+                      alt="smiling emoji"
                     />
                     <Text>
                       { BGL } mmol/L
@@ -159,6 +164,7 @@ const AutoLogScreen: React.FC = () => {
                     <Image 
                       source={require('../../../../assets/autoLogImgs/error-measure.png')}
                       style={{width: 30, height: 30}}
+                      alt="error warning"
                     />
                     <Text>
                       Oops! We couldn't process your reading.The test strip may be contaminated or not have enough blood sample. Please try again.
@@ -180,6 +186,7 @@ const AutoLogScreen: React.FC = () => {
             <Image 
               source={require('../../../../assets/autoLogImgs/ready-to-measure.png')}
               style={{width: 200, height: 200}}
+              alt="check mark ready to measure"
             />
             <Text>
               Strip is in place. Waiting for your blood sample.
@@ -193,6 +200,7 @@ const AutoLogScreen: React.FC = () => {
                 <Image 
                   source={require('../../../../assets/autoLogImgs/strip-error.png')}
                   style={{width: 200, height: 200}}
+                  alt="error wrning"
                 />
                 <Text>
                   Strip is not inserted properly.
@@ -208,6 +216,7 @@ const AutoLogScreen: React.FC = () => {
                   <Image 
                     source={require('../../../../assets/autoLogImgs/strip-error.png')}
                     style={{width: 200, height: 200}}
+                    alt="error warning"
                   />
                   <Text>
                     Strip is already used or unknown moisture detected, discard the test strip and repeat the test with a new strip.
@@ -219,6 +228,7 @@ const AutoLogScreen: React.FC = () => {
                   <Image 
                     source={require('../../../../assets/autoLogImgs/insert-strip.png')}
                     style={{width: 200, height: 200}}
+                    alt="device with strip in"
                   />
                   <Text>
                     Insert test strip in the glucometer and prepare your blood sample.
@@ -230,6 +240,7 @@ const AutoLogScreen: React.FC = () => {
               <Image 
                 source={require('../../../../assets/autoLogImgs/connect-device.png')}
                 style={{width: 200, height: 200}}
+                alt="device illustration"
               />
               <Text>
                 Make sure the bluetooth is turned on and the glucometer is nearby.

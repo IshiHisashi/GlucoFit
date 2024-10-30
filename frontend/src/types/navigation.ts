@@ -19,6 +19,7 @@ export type AppStackParamList = {
   };
   Article: { url: string; title: string };
   RecentInsights: undefined;
+  Result: { BGL: number; fromAuto: boolean };
 };
 
 export type LoginSignupStackParamList = {
