@@ -3,9 +3,9 @@ import { getToken, saveToken, deleteToken } from "../utils/utilAuth";
 
 type AuthContextProps = {
   userToken: string | null;
-  userID: string | null;
+  userId: string | null;
   LogIn: (token: string) => Promise<void>;
-  setUserID: (id: string) => void;
+  setUserId: (id: string) => void;
   SignOut: () => Promise<void>;
 };
 
@@ -15,26 +15,26 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<AuthContextProps>({
   userToken: null,
-  userID: null,
+  userId: null,
   LogIn: async () => {},
-  setUserID: () => {},
+  setUserId: () => {},
   SignOut: async () => {},
 });
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
-  const [userID, setUserID] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch token from storage on app load
     const loadAuthData = async () => {
       const token = await getToken("accessToken");
-      const id = await getToken("userID");
+      const id = await getToken("userId");
       if (token) {
         setUserToken(token);
       }
       if (id) {
-        setUserID(id);
+        setUserId(id);
       }
     };
     loadAuthData();
@@ -49,12 +49,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const SignOut = async () => {
     await deleteToken("accessToken");
     setUserToken(null);
-    setUserID(null);
+    setUserId(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ userToken, userID, LogIn, setUserID, SignOut }}
+      value={{ userToken, userId, LogIn, setUserId, SignOut }}
     >
       {children}
     </AuthContext.Provider>

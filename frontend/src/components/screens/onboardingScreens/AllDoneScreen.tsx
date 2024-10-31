@@ -26,9 +26,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData } = useOnboarding();
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [addMedicineToList] = useMutation(ADD_MEDICINE_MUTATION);
-  const { userID } = useContext(AuthContext);
-
-  const userId = userID;
+  const { userId } = useContext(AuthContext);
   const handleOnPress = async () => {
     try {
       const { data: updateUserData } = await updateUser({
