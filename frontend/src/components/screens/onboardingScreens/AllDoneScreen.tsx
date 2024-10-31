@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -16,16 +16,19 @@ import {
   ADD_MEDICINE_MUTATION,
   badges,
 } from "../../../utils/query/onboardingQuery";
+import { AuthContext } from "../../../context/AuthContext";
 
 type Props = NativeStackScreenProps<TabParamList>;
 
-const userId = "6721d6a4c224096cb3192029";
+// const userId = "6721d6a4c224096cb3192029";
 
 const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData } = useOnboarding();
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [addMedicineToList] = useMutation(ADD_MEDICINE_MUTATION);
+  const { userID } = useContext(AuthContext);
 
+  const userId = userID;
   const handleOnPress = async () => {
     try {
       const { data: updateUserData } = await updateUser({
@@ -42,16 +45,18 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           badges: badges.length > 0 ? badges : [],
         },
       });
-
-      const { data: addMedicineData } = await addMedicineToList({
-        variables: {
-          user_id: userId,
-          medicine_name: onboardingData?.medicine_name,
-          // log_timestamp: onboardingData?.log_timestamp,
-        },
-      });
       console.log(`user updated : ${updateUserData}`);
-      console.log(`medicine registered : ${addMedicineData}`);
+
+      if (onboardingData.medicine_name) {
+        const { data: addMedicineData } = await addMedicineToList({
+          variables: {
+            user_id: userId,
+            medicine_name: onboardingData?.medicine_name,
+            // log_timestamp: onboardingData?.log_timestamp,
+          },
+        });
+        console.log(`medicine registered : ${addMedicineData}`);
+      }
       navigation.navigate("Home");
     } catch (error: any) {
       console.log(onboardingData);
