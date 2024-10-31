@@ -4,6 +4,7 @@ import OnbordingLayout from "../../organisms/OnboardingLayout";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 import Input from "../../atoms/onboarding/input";
+import TimeInput from "../../atoms/TimeInput";
 import { useOnboarding } from "../../../context/OnboardingContext";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
@@ -13,7 +14,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
   const [medicineName, setMedicineName] = useState<string | undefined>(
     onboardingData?.medicine_name
   );
-  const [medicineTime, setMedicintTime] = useState<Date | undefined>(
+  const [medicineTime, setMedicineTime] = useState<Date | undefined>(
     onboardingData.log_timestamp
   );
 
@@ -24,6 +25,9 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
     });
     navigation.navigate("BslRangeScreen");
   };
+
+  console.log(medicineTime);
+
   return (
     <View>
       <OnbordingLayout
@@ -35,7 +39,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
       >
         <View width="100%" flexDirection="column" gap={16}>
           <Input labelText="Medicine Name" onChange={setMedicineName} />
-          <Input labelText="Time" onChange={setMedicintTime} />
+          <TimeInput onChange={setMedicineTime} value={medicineTime} />
         </View>
       </OnbordingLayout>
     </View>
