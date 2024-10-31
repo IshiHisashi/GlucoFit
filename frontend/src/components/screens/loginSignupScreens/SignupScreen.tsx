@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
+  Image,
   Text,
   InputIcon,
   EyeOffIcon,
@@ -12,6 +13,7 @@ import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { LoginSignupStackParamList } from "../../../types/navigation";
+import { AuthContext } from "../../../context/AuthContext";
 
 type Props = NativeStackScreenProps<LoginSignupStackParamList>;
 
@@ -22,6 +24,7 @@ const SIGNUP_MUTATION = gql`
       accessToken
       refreshToken
       user {
+        id
         email
       }
     }
@@ -32,6 +35,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
+  const { setUserID } = useContext(AuthContext);
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -45,8 +49,10 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       });
       const accessToken = data.signUp.accessToken;
       const refreshToken = data.signUp.refreshToken;
+      const userID = data.signUp.user.id;
       await saveToken("accessToken", accessToken);
       await saveToken("refreshToken", refreshToken);
+      setUserID(userID);
       alert(`Signup successful! Token saved.`);
       navigation.navigate("OnboardingStack");
     } catch (err: any) {
@@ -67,7 +73,23 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View flexDirection="column" gap={20} p={16}>
-      <Text textAlign="center" fontSize={24} fontWeight={600}>
+      <View marginTop={80} flexDirection="column">
+        <Image
+          source={require("../../../../assets/OnbordingChar.png")}
+          resizeMode="contain"
+          w={68}
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+        <Image
+          source={require("../../../../assets/logo_onbording.png")}
+          resizeMode="contain"
+          w={190}
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+      </View>
+      <Text textAlign="center" fontSize={28}>
         Create an account
       </Text>
       <Input labelText="Email" onChange={setEmail} />

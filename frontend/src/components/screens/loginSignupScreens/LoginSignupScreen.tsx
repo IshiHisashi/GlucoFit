@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import { View, Text, Button, ButtonText, Image } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { LoginSignupStackParamList } from "../../../types/navigation";
 import { AuthContext } from "../../../context/AuthContext";
@@ -11,10 +11,22 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View flexDirection="column" gap={50} p={16}>
-      <Text textAlign="center" fontSize={30} fontWeight={600}>
-        GlucoFit
-      </Text>
-      <View w={250} h={250} backgroundColor="#888" alignSelf="center"></View>
+      <View marginTop={200} flexDirection="column" gap={10}>
+        <Image
+          source={require("../../../../assets/OnbordingChar.png")}
+          resizeMode="contain"
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+        <Image
+          source={require("../../../../assets/logo_onbording.png")}
+          resizeMode="contain"
+          w={238}
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+      </View>
+      {/* btn section */}
       <View flexDirection="column" gap={8}>
         <Button bgColor="#888" onPress={() => navigation.navigate("Login")}>
           <ButtonText>Go to Login</ButtonText>

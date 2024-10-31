@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import {
   View,
+  Image,
   Text,
   InputIcon,
   EyeOffIcon,
@@ -24,6 +25,7 @@ const LOGIN_MUTATION = gql`
       accessToken
       refreshToken
       user {
+        id
         email
       }
     }
@@ -34,7 +36,7 @@ const LoginScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigation = useNavigation();
-  const { LogIn } = useContext(AuthContext);
+  const { LogIn, setUserID } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
   const handleLogin = async () => {
@@ -44,13 +46,13 @@ const LoginScreen: React.FC<Props> = () => {
     }
     try {
       const { data } = await login({ variables: { email, password } });
-      // alert(`Login successful! Token saved.`);
       const accessToken = data.login.accessToken;
       const refreshToken = data.login.refreshToken;
-      console.log("exe");
+      const userID = data.login.user.id;
       await saveToken("refreshToken", refreshToken);
       await LogIn(accessToken);
-      // navigation.navigate("Home");
+      setUserID(userID);
+      navigation.navigate("Home");
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed");
@@ -59,8 +61,24 @@ const LoginScreen: React.FC<Props> = () => {
 
   return (
     <View flexDirection="column" gap={20} p={16}>
-      <Text textAlign="center" fontSize={24} fontWeight={600}>
-        Welcome back
+      <View marginTop={80} flexDirection="column">
+        <Image
+          source={require("../../../../assets/OnbordingChar.png")}
+          resizeMode="contain"
+          w={68}
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+        <Image
+          source={require("../../../../assets/logo_onbording.png")}
+          resizeMode="contain"
+          w={190}
+          mx="auto"
+          alt="Character is winking during the onboarding process"
+        />
+      </View>
+      <Text textAlign="center" fontSize={28}>
+        Welcome back!
       </Text>
       <Input labelText="Email" onChange={setEmail} />
       <Input labelText="Password" onChange={setPassword}>
