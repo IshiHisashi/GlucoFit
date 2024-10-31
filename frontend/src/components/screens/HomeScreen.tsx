@@ -4,12 +4,9 @@ import {
   ButtonText,
   Center,
   HStack,
-  Icon,
-  MoonIcon,
   Pressable,
   Text,
   VStack,
-  ChevronRightIcon,
   ScrollView,
   View,
   useToast,
@@ -18,7 +15,7 @@ import {
   ToastDescription,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect } from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
   useFocusEffect,
@@ -31,15 +28,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import {
-  AnalysisCustom,
-  BellCustom,
-  CapsuleDark,
-  HeartrateDark,
-  TimesCustom,
-} from "../svgs/svgs";
+import { AnalysisCustom, TimesCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
+import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
+import LogsTable from "../organisms/LogsTable";
+import {
+  IconForActivityLog,
+  IconForFoodLog,
+  IconForGlucoseLogHappy,
+  IconForGlucoseLogNeutral,
+  IconForGlucoseLogSad,
+  IconForMedicineLog,
+} from "../svgs/svgsForLogsTableIcons";
+import LogsTableTitle from "../molcules/LogsTableTitle";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -66,6 +68,7 @@ const GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY = gql`
     getTestResultsAndAverageForToday(user_id: $userId) {
       averageBsl
       testResults {
+        id
         bsl
         log_timestamp
       }
@@ -77,6 +80,7 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
   query GetActivitiesForToday($userId: ID!) {
     getTodayActivityLogs(user_id: $userId) {
       duration
+      id
       log_timestamp
     }
   }
@@ -85,8 +89,13 @@ const GET_ACTIVITIES_FOR_TODAY = gql`
 const GET_MEDICINES_FOR_TODAY = gql`
   query GetMedicinesForToday($userId: ID!) {
     getTodayMedicineLogs(user_id: $userId) {
-      log_timestamp
+      medicine_id {
+        unit
+        medicine_name
+      }
       amount
+      log_timestamp
+      id
     }
   }
 `;
@@ -95,6 +104,7 @@ const GET_CARBS_FOR_TODAY = gql`
   query GetCarbsForToday($userId: ID!) {
     getTodayDietLogs(userID: $userId) {
       carbs
+      id
       log_timestamp
     }
   }
@@ -341,15 +351,16 @@ const HomeScreen: React.FC = () => {
     medicinesData &&
     carbsData
   ) {
-    logsForToday = [
+    const logsForTodayRaw = [
       ...bslResultsAndAverageData.getTestResultsAndAverageForToday.testResults,
       ...activitiesData.getTodayActivityLogs,
       ...medicinesData.getTodayMedicineLogs,
       ...carbsData.getTodayDietLogs,
     ];
+    console.log("raw data:", logsForTodayRaw);
 
-    logsForToday.length > 1 &&
-      logsForToday.sort((obj1, obj2) => {
+    logsForTodayRaw.length > 1 &&
+      logsForTodayRaw.sort((obj1, obj2) => {
         if (obj1.log_timestamp < obj2.log_timestamp) {
           return -1;
         } else if (obj1.log_timestamp > obj2.log_timestamp) {
@@ -358,6 +369,91 @@ const HomeScreen: React.FC = () => {
           return 0;
         }
       });
+
+    logsForToday = logsForTodayRaw.map((obj) => {
+      switch (obj.__typename) {
+        case "TestResults": {
+          const threshold = bslForXData.getAverageBslXAxisValue || 5.6;
+          const icon =
+            obj.bsl > threshold ? (
+              <IconForGlucoseLogSad />
+            ) : obj.bsl < threshold ? (
+              <IconForGlucoseLogHappy />
+            ) : (
+              <IconForGlucoseLogNeutral />
+            );
+          return {
+            id: obj.id,
+            icon: icon,
+            text: "Blood Glucose",
+            subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            }),
+            value: obj.bsl,
+            unit: "mmol/L",
+            onPressRow: () =>
+              navigation.navigate("GlucoseLog", {
+                logId: obj.id,
+              }),
+          };
+        }
+        case "ActivityLogs":
+          return {
+            id: obj.id,
+            icon: <IconForActivityLog />,
+            text: "Activity",
+            subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            }),
+            value: obj.duration,
+            unit: "mins",
+            onPressRow: () =>
+              navigation.navigate("ActivityLog", {
+                logId: obj.id,
+              }),
+          };
+        case "MedicineLog":
+          return {
+            id: obj.id,
+            icon: <IconForMedicineLog />,
+            text: obj.medicine_id.medicine_name,
+            subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            }),
+            value: obj.amount,
+            unit: obj.medicine_id.unit,
+            onPressRow: () =>
+              navigation.navigate("MedicineLog", {
+                logId: obj.id,
+              }),
+          };
+        case "DietLog":
+          return {
+            id: obj.id,
+            icon: <IconForFoodLog />,
+            text: "Food Intake",
+            subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            }),
+            value: obj.carbs,
+            unit: "g",
+            onPressRow: () =>
+              navigation.navigate("CarbsLog", {
+                logId: obj.id,
+              }),
+          };
+        default:
+          return null;
+      }
+    });
     console.log("sorted:", logsForToday);
   }
 
@@ -367,6 +463,7 @@ const HomeScreen: React.FC = () => {
         <HeaderBasic
           routeName={route.name as "Home"}
           userName={userData?.getUser.name}
+          navigation={navigation}
         />
         <VStack p="$4" space="md">
           <VStack
@@ -428,131 +525,29 @@ const HomeScreen: React.FC = () => {
             </Button>
           </VStack>
 
-          {/* will be replaced by log table component ---------------------------------- */}
-          <VStack
-            borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-            p="$2"
-          >
-            <HStack alignItems="center" justifyContent="space-between" p="$2">
-              <Text fontSize="$lg" fontFamily="$bold">
-                Logs for today
-              </Text>
-              <Pressable
-                onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-              >
-                <HStack alignItems="center" space="xs">
-                  <Text>See more</Text>
-                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-                </HStack>
-              </Pressable>
-            </HStack>
-
-            {logsForToday &&
-              logsForToday.map((obj, index) => (
-                <Pressable onPress={() => {}} key={index}>
-                  <HStack justifyContent="space-between" p="$2">
-                    <HStack alignItems="center" space="sm">
-                      <Box
-                        width={40}
-                        height={40}
-                        borderRadius="$full"
-                        bg="#E0E0E0"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        {obj.__typename === "TestResults" && (
-                          <Icon as={MoonIcon} size="md" />
-                        )}
-                        {obj.__typename === "ActivityLogs" && (
-                          <Icon as={HeartrateDark} size="md" />
-                        )}
-                        {obj.__typename === "MedicineLog" && (
-                          <Icon as={CapsuleDark} size="md" />
-                          // <CapsuleDark />
-                        )}
-                        {obj.__typename === "DietLog" && (
-                          <Icon as={MoonIcon} size="md" />
-                        )}
-                      </Box>
-                      <VStack space="xs">
-                        <Text fontFamily="$bold">
-                          {obj.__typename === "TestResults" && "Blood Glucose"}
-                          {obj.__typename === "ActivityLogs" && "Activity"}
-                          {obj.__typename === "MedicineLog" && "Medicine"}
-                          {obj.__typename === "DietLog" && "Carbs"}
-                        </Text>
-                        <Text>
-                          {new Date(obj.log_timestamp).toLocaleString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                    <HStack alignItems="center" space="xs">
-                      {obj.__typename === "TestResults" && (
-                        <>
-                          <Text size="3xl" fontFamily="$bold">
-                            {obj.bsl}
-                          </Text>
-                          <Text>mmol/L</Text>
-                        </>
-                      )}
-                      {obj.__typename === "ActivityLogs" && (
-                        <>
-                          <Text size="3xl" fontFamily="$bold">
-                            {obj.duration}
-                          </Text>
-                          <Text>mins</Text>
-                        </>
-                      )}
-                      {obj.__typename === "MedicineLog" && (
-                        <>
-                          <Text size="3xl" fontFamily="$bold">
-                            {obj.amount}
-                          </Text>
-                          <Text>mg</Text>
-                        </>
-                      )}
-                      {obj.__typename === "DietLog" && (
-                        <>
-                          <Text size="3xl" fontFamily="$bold">
-                            {obj.carbs}
-                          </Text>
-                          <Text>g</Text>
-                        </>
-                      )}
-                    </HStack>
-                  </HStack>
-                </Pressable>
-              ))}
-          </VStack>
-          {/* ---------------------------------------------------------------------- */}
+          <LogsTable
+            title="Logs for today"
+            subTitle="date date"
+            onPressTitleRightButton={() =>
+              navigation.navigate("Tabs", { screen: "Logs" })
+            }
+            rowsData={logsForToday}
+          />
 
           <VStack
             borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-            p="$2"
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
+            p="$4"
+            bg="$neutralWhite"
           >
-            <HStack alignItems="center" justifyContent="space-between" p="$2">
-              <Text>
-                {weeklyBslData
-                  ? weeklyBslData.getWeeklyBSLData.dateRange
-                  : "N/A"}
-              </Text>
-              <Pressable
-                onPress={() => navigation.navigate("Tabs", { screen: "Logs" })}
-              >
-                <HStack alignItems="center" space="xs">
-                  <Text>See more</Text>
-                  <Icon as={ChevronRightIcon} size="sm" mr="$2" />
-                </HStack>
-              </Pressable>
-            </HStack>
+            <LogsTableTitle
+              title="Weekly Snapshots"
+              subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+              onPressTitleRightButton={() =>
+                navigation.navigate("Tabs", { screen: "Logs" })
+              }
+            />
 
             <HStack
               alignItems="center"
@@ -565,7 +560,7 @@ const HomeScreen: React.FC = () => {
                     ? weeklyBslData.getWeeklyBSLData.weeklyAverage
                     : "N/A"}
                 </Text>
-                <Text>mg/dL</Text>
+                <Text>mmol/L</Text>
                 <Text>Average</Text>
               </Center>
 

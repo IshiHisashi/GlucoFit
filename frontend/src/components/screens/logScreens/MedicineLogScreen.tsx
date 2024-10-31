@@ -1,25 +1,14 @@
-import {
-  Button,
-  ButtonText,
-  CalendarDaysIcon,
-  SunIcon,
-  ScrollView,
-  Text,
-  VStack,
-  View,
-  Box,
-} from "@gluestack-ui/themed";
+import { ScrollView, View } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import ListCard from "../../molcules/ListCard";
 import { AppStackParamList } from "../../../types/navigation";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { CapsuleDark } from "../../svgs/svgs";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
+import LogsTable from "../../organisms/LogsTable";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -84,6 +73,13 @@ const MedicineLogScreen: React.FC = () => {
     variables: { userId },
   });
   // medsListData && console.log("meds:", medsListData.getUserMedicineList);
+  const medicinesData = medsListData?.getUserMedicineList.map((obj) => {
+    return {
+      ...obj,
+      isSelected: selectedMeds.some((med) => med.id === obj.id),
+      onPressMedicine: () => toggleMedSelection(obj.id, obj.dosage),
+    };
+  });
 
   const [createMedicineLog, { data, loading, error }] =
     useMutation(CREATE_MEDICINE_LOG);
@@ -137,23 +133,8 @@ const MedicineLogScreen: React.FC = () => {
           text="Medicine"
           rightIconOnPress={() => {}}
         />
-        <ScrollView p="$4" pb="$16">
-          <VStack space="md">
-            {medsListData &&
-              medsListData.getUserMedicineList.length > 0 &&
-              medsListData.getUserMedicineList.map((obj) => (
-                <ListCard
-                  key={obj.id}
-                  text={obj.medicine_name}
-                  isSelected={selectedMeds.some((med) => med.id === obj.id)}
-                  iconLeft={CapsuleDark}
-                  // iconRightOn={CalendarDaysIcon}
-                  // iconRightOff={SunIcon}
-                  badge={[`${obj.dosage}${obj.unit}`]}
-                  onPress={() => toggleMedSelection(obj.id, obj.dosage)}
-                />
-              ))}
-          </VStack>
+        <ScrollView p="$4" pt="$8" pb="$16">
+          <LogsTable medicinesData={medicinesData} tableType="medicines" />
           <View h={120} />
         </ScrollView>
 

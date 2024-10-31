@@ -1,6 +1,8 @@
 import { Box, Button, ButtonText } from "@gluestack-ui/themed";
 import React, { FC } from "react";
 
+import GlucoButton from "../atoms/GlucoButton";
+
 interface ButtonFixedBottomProps {
   onPress: () => void;
   isDisabled: boolean;
@@ -17,12 +19,16 @@ const ButtonFixedBottom: FC<ButtonFixedBottomProps> = (props) => {
       left={0}
       right={0}
       p="$4"
-      pb="$8"
+      // pb="$8"
       bg="$white"
     >
-      <Button onPress={onPress} isDisabled={isDisabled}>
-        <ButtonText>{text}</ButtonText>
-      </Button>
+      <GlucoButton
+        buttonType="primary"
+        text={text}
+        isFocused={false}
+        isDisabled={isDisabled}
+        onPress={onPress}
+      />
     </Box>
   );
 };

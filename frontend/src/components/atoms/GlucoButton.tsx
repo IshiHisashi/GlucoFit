@@ -5,9 +5,12 @@ import { SvgProps } from "react-native-svg";
 interface GlucoButtonProps {
   buttonType: "primary" | "secondary";
   text: string;
+  isFocused: boolean;
   isDisabled: boolean;
   onPress: () => void;
-  icon?: FC<SvgProps>;
+  iconLeft?: FC<SvgProps>;
+  iconRight?: FC<SvgProps>;
+  buttonSize?: "small" | "medium";
   flex?: 1 | 0;
   style?: {};
 }
@@ -16,9 +19,12 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
   const {
     buttonType,
     text,
+    isFocused,
     isDisabled,
     onPress,
-    icon: IconComponent,
+    iconLeft: IconComponentLeft,
+    iconRight: IconComponentRight,
+    buttonSize,
     flex = 0,
     style,
   } = props;
@@ -79,12 +85,18 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
   const getIconColor = () => {
     if (isDisabled) return currentStyle.$disabled.colorForSvg;
     if (isPressed) return currentStyle.$active.colorForSvg;
+    if (isFocused) return currentStyle.$focus.colorForSvg;
     return currentStyle.colorForSvg;
   };
 
   return (
     <Button
       borderRadius="$full"
+      height={buttonSize === "small" ? 43 : buttonSize === "medium" ? 47 : 52}
+      width={
+        buttonSize === "small" ? 110 : buttonSize === "medium" ? 214 : "$auto"
+      }
+      // maxWidth={347}
       flex={flex}
       isDisabled={isDisabled}
       onPress={onPress}
@@ -94,9 +106,10 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
       style={style}
     >
       <HStack space="sm" alignItems="center">
-        {IconComponent && <IconComponent color={getIconColor()} />}
+        {IconComponentLeft && <IconComponentLeft color={getIconColor()} />}
         <ButtonText
           fontFamily="$bold"
+          fontSize={buttonSize === "small" ? 14 : 17}
           color={currentStyle.color}
           $active-color={currentStyle.$active.color}
           $focus-color={currentStyle.$focus.color}
@@ -104,6 +117,7 @@ const GlucoButton: FC<GlucoButtonProps> = (props) => {
         >
           {text}
         </ButtonText>
+        {IconComponentRight && <IconComponentRight color={getIconColor()} />}
       </HStack>
     </Button>
   );

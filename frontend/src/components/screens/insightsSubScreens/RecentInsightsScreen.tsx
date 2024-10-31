@@ -9,6 +9,7 @@ import {
   Spinner,
   View,
   VStack,
+  Text,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,8 +19,13 @@ import { Animated, Dimensions } from "react-native";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import GlucoButton from "../../atoms/GlucoButton";
 import { AppStackParamList } from "../../../types/navigation";
-import { Text } from "@gluestack-ui/themed";
 import InsightCard from "../../molcules/InsightCard";
+import Tab from "../../atoms/Tab";
+import {
+  CapsuleCustom,
+  HeartbeatCustom,
+  RestaurantCustom,
+} from "../../svgs/svgs";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -195,35 +201,39 @@ const RecentInsightsScreen: FC = () => {
             bg="$neutralWhite"
           >
             <HStack space="sm" p="$4">
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="All"
-                isDisabled={currentFilter === "All"}
+                isFocused={currentFilter === "All"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("All")}
               />
-              {/* <GlucoButton
-              buttonType="primary"
-              text="Favorite"
-              isDisabled={currentFilter === "Favorite"}
-              onPress={() => setCurrentFilter("Favorite")}
-            /> */}
-              <GlucoButton
-                buttonType="primary"
+              {/* <Tab
+                text="Favorite"
+                isFocused={currentFilter === "Favorite"}
+                isDisabled={false}
+                onPress={() => setCurrentFilter("Favorite")}
+                iconLeft={BookmarkCustom}
+              /> */}
+              <Tab
                 text="Food"
-                isDisabled={currentFilter === "Food"}
+                isFocused={currentFilter === "Food"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Food")}
+                iconLeft={RestaurantCustom}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Medication"
-                isDisabled={currentFilter === "Medication"}
+                isFocused={currentFilter === "Medication"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Medication")}
+                iconLeft={CapsuleCustom}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Wellness"
-                isDisabled={currentFilter === "Wellness"}
+                isFocused={currentFilter === "Wellness"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Wellness")}
+                iconLeft={HeartbeatCustom}
               />
             </HStack>
           </ScrollView>

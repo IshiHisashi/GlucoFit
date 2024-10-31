@@ -8,10 +8,11 @@ interface HeaderWithBackButtonProps {
   navigation: NavigationProp<any>;
   text: string;
   rightIconOnPress?: () => void;
+  disabled?: boolean;
 }
 
 export const HeaderWithBackButton: FC<HeaderWithBackButtonProps> = (props) => {
-  const { navigation, text, rightIconOnPress } = props;
+  const { navigation, text, rightIconOnPress, disabled = false } = props;
 
   return (
     <HStack
@@ -33,7 +34,12 @@ export const HeaderWithBackButton: FC<HeaderWithBackButtonProps> = (props) => {
         <AngleLeftCustom color="#4800FF" size={32} />
       </Pressable>
 
-      <Text flex={1} textAlign="center" fontFamily="$bold">
+      <Text
+        flex={1}
+        textAlign="center"
+        fontFamily="$bold"
+        color="$neutralDark90"
+      >
         {text}
       </Text>
 
@@ -44,9 +50,15 @@ export const HeaderWithBackButton: FC<HeaderWithBackButtonProps> = (props) => {
           height={32}
           alignItems="center"
           justifyContent="center"
+          disabled={disabled}
         >
           {text === "Add Notes" ? (
-            <Text color="$primaryIndigo60">Done</Text>
+            <Text
+              color={disabled ? "$neutralDark40" : "$primaryIndigo60"}
+              fontFamily="$bold"
+            >
+              Done
+            </Text>
           ) : (
             <PenCustom color="#4800FF" size={20} />
           )}

@@ -11,17 +11,23 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // - Bell (custom)
 // - Bookmark (light, dark, custom)
 // - Capsule (light, dark, custom)
+// - Check (custom)
+// - Edit (custom)
+// - Eye (custom)
+// - EyeSlash (custom)
 // - File (light, dark, custom)
 // - Fire (light, dark, custom)
 // - Heartbeat (light, dark, custom)
 // - Heartrate (light, dark, custom)
 // - Home (light, dark, custom)
+// - Info (custom)
 // - Medal (light, dark, custom)
 // - Pen (custom)
 // - Plus (light, dark, custom)
 // - Restaurant (light, dark, custom)
 // - Search (custom)
 // - Times (custom)
+// - Tear (custom)
 
 interface IconProps extends SvgProps {
   color?: string;
@@ -332,6 +338,94 @@ export const CapsuleCustom: FC = ({
   </Svg>
 );
 
+export const CheckCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M18.71 7.21a.999.999 0 0 0-1.42 0l-7.45 7.46-3.13-3.14A1.022 1.022 0 0 0 5.29 13l3.84 3.84a1 1 0 0 0 1.42 0l8.16-8.16a.999.999 0 0 0 0-1.47Z"
+    />
+  </Svg>
+);
+
+export const EditCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M5 18h4.24a1.002 1.002 0 0 0 .71-.29l6.92-6.93L19.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83-6.94 6.93a.999.999 0 0 0-.29.71V17a1 1 0 0 0 1 1Zm9.76-13.59 2.83 2.83-1.42 1.42-2.83-2.83 1.42-1.42ZM6 13.17l5.93-5.93 2.83 2.83L8.83 16H6v-2.83ZM21 20H3a1 1 0 1 0 0 2h18a1 1 0 0 0 0-2Z"
+    />
+  </Svg>
+);
+
+export const EyeCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M21.92 11.6C19.9 6.91 16.1 4 12 4s-7.9 2.91-9.92 7.6a1 1 0 0 0 0 .8C4.1 17.09 7.9 20 12 20s7.9-2.91 9.92-7.6a.999.999 0 0 0 0-.8ZM12 18c-3.17 0-6.17-2.29-7.9-6C5.83 8.29 8.83 6 12 6s6.17 2.29 7.9 6c-1.73 3.71-4.73 6-7.9 6Zm0-10a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"
+    />
+  </Svg>
+);
+
+export const EyeSlashCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M10.94 6.08c.35-.054.705-.08 1.06-.08 3.18 0 6.17 2.29 7.91 6a15.23 15.23 0 0 1-.9 1.64 1 1 0 0 0 .05 1.152 1 1 0 0 0 1.65-.102 15.78 15.78 0 0 0 1.21-2.3 1 1 0 0 0 0-.79C19.9 6.91 16.1 4 12 4a7.77 7.77 0 0 0-1.4.12 1.014 1.014 0 1 0 .34 2v-.04ZM3.71 2.29a1.004 1.004 0 1 0-1.42 1.42l3.1 3.09a14.62 14.62 0 0 0-3.31 4.8 1 1 0 0 0 0 .8C4.1 17.09 7.9 20 12 20a9.26 9.26 0 0 0 5.05-1.54l3.24 3.25a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095l-18-18Zm6.36 9.19 2.45 2.45a2 2 0 0 1-2.45-2.45ZM12 18c-3.18 0-6.17-2.29-7.9-6a12.09 12.09 0 0 1 2.7-3.79L8.57 10A4 4 0 0 0 14 15.43L15.59 17A7.24 7.24 0 0 1 12 18Z"
+    />
+  </Svg>
+);
+
 export const FileLight: FC = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -622,6 +716,28 @@ export const HomeCustom: FC = ({
   </Svg>
 );
 
+export const InfoCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.01 8.01 0 0 1-8 8Zm0-8.5a1 1 0 0 0-1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-1-1Zm0-4a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"
+    />
+  </Svg>
+);
+
 export const MedalLight: FC = (props: SvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -858,6 +974,28 @@ export const TimesCustom: FC = ({
       stroke={color}
       strokeWidth={strokeWidth}
       d="m13.41 12 4.3-4.29a1.004 1.004 0 0 0-1.42-1.42L12 10.59l-4.29-4.3a1.004 1.004 0 1 0-1.42 1.42l4.3 4.29-4.3 4.29a.999.999 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L13.41 12Z"
+    />
+  </Svg>
+);
+
+export const TearCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M12.56 2.17a1 1 0 0 0-1.12 0c-.3.2-7.19 5-7.19 12.08a7.75 7.75 0 0 0 15.5 0c0-7.2-6.9-11.89-7.19-12.08ZM12 20a5.76 5.76 0 0 1-5.75-5.75c0-5 4.21-8.77 5.75-10 1.55 1.21 5.75 5 5.75 10A5.76 5.76 0 0 1 12 20Z"
     />
   </Svg>
 );

@@ -6,47 +6,56 @@ import {
   Text,
 } from "@gluestack-ui/themed";
 import React, { Dispatch, FC, SetStateAction } from "react";
+import { AngleRightCustom } from "../svgs/svgs";
 
-interface PickerOpenerRowProps {
+interface PickerData {
   setShowPicker: Dispatch<SetStateAction<boolean>>;
   text: string;
   value: Date | string | { hours: number; minutes: number };
-  independent?: boolean;
+}
+
+interface PickerOpenerRowProps {
+  obj: PickerData;
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { setShowPicker, text, value, independent = false } = props;
+  const { obj } = props;
   return (
     <Pressable
       onPress={() => {
-        setShowPicker(true);
+        obj.setShowPicker(true);
       }}
+      py="$3"
+      borderBottomWidth={1}
+      borderBottomColor="#EEEEEE"
     >
       <HStack
         justifyContent="space-between"
-        p="$3"
-        borderColor="$borderLight200"
-        style={
-          independent
-            ? {
-                borderWidth: 1,
-                borderRadius: 5,
-              }
-            : { borderTopWidth: 1 }
-        }
+        alignItems="center"
+        // borderColor="$borderLight200"
+        // style={
+        //   independent
+        //     ? {
+        //         borderWidth: 1,
+        //         borderRadius: 5,
+        //       }
+        //     : { borderTopWidth: 1 }
+        // }
       >
-        <Text>{text}</Text>
+        <Text fontFamily="$semibold" fontSize={17} color="$neutralDark90">
+          {obj.text}
+        </Text>
         <HStack alignItems="center">
-          <Text mr="$2">
-            {typeof value === "string"
-              ? value
-              : text === "Duration"
-                ? `${value.hours} h ${value.minutes} m`
-                : text === "Date"
-                  ? value.toDateString()
-                  : value.toTimeString()}
+          <Text fontSize={16} color="$neutralDark80">
+            {typeof obj.value === "string"
+              ? obj.value
+              : obj.text === "Duration"
+                ? `${obj.value.hours} h ${obj.value.minutes} m`
+                : obj.text === "Date"
+                  ? obj.value.toDateString()
+                  : obj.value.toTimeString()}
           </Text>
-          <Icon as={ChevronRightIcon} size="sm" />
+          <AngleRightCustom color="#313131" />
         </HStack>
       </HStack>
     </Pressable>

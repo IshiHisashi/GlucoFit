@@ -9,18 +9,22 @@ import {
   InputSlot,
 } from "@gluestack-ui/themed";
 import React, { FC } from "react";
+import { NavigationProp } from "@react-navigation/native";
 
 import { BellCustom, SearchCustom } from "../svgs/svgs";
+import InputFieldGeneral from "../atoms/InputFieldGeneral";
 
 interface HeaderBasicProps {
   routeName: "Home" | "Insights" | "Logs" | "BadgeScreen";
   userName?: string;
   searchValue?: string;
   onChangeSearchValue?: (value: string) => void;
+  navigation?: NavigationProp<any>;
 }
 
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
-  const { routeName, userName, searchValue, onChangeSearchValue } = props;
+  const { routeName, userName, searchValue, onChangeSearchValue, navigation } =
+    props;
 
   const headerStyles = {
     Home: {
@@ -70,23 +74,35 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       {(routeName === "Insights" ||
         routeName === "Logs" ||
         routeName === "BadgeScreen") && (
-        <Input flex={1}>
-          <InputSlot pl="$3">
-            <SearchCustom color="#4800FF" />
-          </InputSlot>
-          <InputField
-            placeholder="Search"
+        <>
+          {/* <Input flex={1}>
+            <InputSlot pl="$3">
+              <SearchCustom color="#4800FF" />
+            </InputSlot>
+            <InputField
+              placeholder="Search"
+              value={searchValue}
+              onChangeText={onChangeSearchValue}
+            />
+          </Input> */}
+
+          <InputFieldGeneral
             value={searchValue}
             onChangeText={onChangeSearchValue}
+            isRequired={true}
+            isDisabled={false}
+            isInvalid={false}
+            placeholder="Search"
+            iconLeft={SearchCustom}
           />
-        </Input>
+        </>
       )}
 
       <HStack alignItems="center" space="md">
         <Pressable onPress={() => {}}>
           <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
         </Pressable>
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={() => navigation?.navigate("Temp")}>
           <BellCustom color={currentStyle.notificationColor} size={27} />
         </Pressable>
       </HStack>

@@ -10,6 +10,7 @@ import {
   VStack,
   Box,
   SectionList,
+  Icon,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
@@ -19,6 +20,14 @@ import { Animated } from "react-native";
 
 import GlucoButton from "../atoms/GlucoButton";
 import HeaderBasic from "../headers/HeaderBasic";
+import Tab from "../atoms/Tab";
+import {
+  AnalysisCustom,
+  CapsuleCustom,
+  HeartrateCustom,
+  RestaurantCustom,
+  TearCustom,
+} from "../svgs/svgs";
 
 // hardcode for now
 const userId = "670de7a6e96ff53059a49ba8";
@@ -408,35 +417,39 @@ const LogsScreen: React.FC = () => {
             bg="$neutralWhite"
           >
             <HStack space="sm" p="$4">
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="All"
-                isDisabled={currentFilter === "All"}
+                isFocused={currentFilter === "All"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("All")}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Glucose"
-                isDisabled={currentFilter === "Glucose"}
+                isFocused={currentFilter === "Glucose"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Glucose")}
+                iconLeft={TearCustom}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Activity"
-                isDisabled={currentFilter === "Activity"}
+                isFocused={currentFilter === "Activity"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Activity")}
+                iconLeft={HeartrateCustom}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Food"
-                isDisabled={currentFilter === "Food"}
+                isFocused={currentFilter === "Food"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Food")}
+                iconLeft={RestaurantCustom}
               />
-              <GlucoButton
-                buttonType="primary"
+              <Tab
                 text="Medicine"
-                isDisabled={currentFilter === "Medicine"}
+                isFocused={currentFilter === "Medicine"}
+                isDisabled={false}
                 onPress={() => setCurrentFilter("Medicine")}
+                iconLeft={CapsuleCustom}
               />
             </HStack>
           </ScrollView>
