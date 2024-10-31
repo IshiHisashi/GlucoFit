@@ -10,6 +10,10 @@ import {
 import { gql, useMutation } from "@apollo/client";
 import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { LoginSignupStackParamList } from "../../../types/navigation";
+
+type Props = NativeStackScreenProps<LoginSignupStackParamList>;
 
 // GraphQL Mutation for Signup
 const SIGNUP_MUTATION = gql`
@@ -24,7 +28,7 @@ const SIGNUP_MUTATION = gql`
   }
 `;
 
-const SignupScreen: React.FC = () => {
+const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
@@ -44,6 +48,7 @@ const SignupScreen: React.FC = () => {
       await saveToken("accessToken", accessToken);
       await saveToken("refreshToken", refreshToken);
       alert(`Signup successful! Token saved.`);
+      navigation.navigate("OnboardingStack");
     } catch (err: any) {
       console.error("Signup error:", err);
       if (err.networkError) {
