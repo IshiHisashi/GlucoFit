@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 const RootStack = () => {
   const { userToken } = useContext(AuthContext);
-  console.log(userToken);
+  console.log("Token is " + userToken);
 
   return (
     <NavigationContainer>

@@ -25,7 +25,7 @@ const SIGNUP_MUTATION = gql`
 `;
 
 const SignupScreen: React.FC = () => {
-  const[(email, setEmail)] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
 

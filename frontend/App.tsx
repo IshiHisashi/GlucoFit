@@ -29,8 +29,8 @@ const App: React.FC = () => {
       <GluestackUIProvider config={extendedConfig}>
         <ApolloProvider client={client}>
           <AuthProvider>
-            {/* <StatusBar style="auto" /> */}
             <RootStack />
+            {/* <StatusBar style="auto" /> */}
             {/* <AppStack /> */}
           </AuthProvider>
         </ApolloProvider>
