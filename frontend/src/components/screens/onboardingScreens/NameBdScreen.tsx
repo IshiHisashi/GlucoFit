@@ -5,6 +5,7 @@ import Input from "../../atoms/onboarding/input";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
+import InputFieldGeneralOnb from "../../atoms/InputField_Onb";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
@@ -32,8 +33,24 @@ const NameBdScreen: React.FC<Props> = ({ navigation }) => {
         character
       >
         <View width="100%" flexDirection="column" gap={16}>
-          <Input labelText="Name" onChange={setName} />
-          <Input labelText="Birthday" onChange={setBirthday} />
+          <InputFieldGeneralOnb
+            isRequired
+            isDisabled={false}
+            isInvalid={false}
+            value={name}
+            onChangeText={setName}
+            label="Name"
+          />
+          <InputFieldGeneralOnb
+            isRequired
+            isDisabled={false}
+            isInvalid={false}
+            value={name}
+            onChangeText={setName}
+            label="Name"
+          />
+          {/* <Input labelText="Name" onChange={setName} /> */}
+          {/* <Input labelText="Birthday" onChange={setBirthday} /> */}
         </View>
       </OnbordingLayout>
     </View>

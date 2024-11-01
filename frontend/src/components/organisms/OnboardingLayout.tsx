@@ -10,6 +10,7 @@ import {
   Progress,
   ProgressFilledTrack,
 } from "@gluestack-ui/themed";
+import GlucoButton from "../atoms/GlucoButton";
 
 type OnboardingLayoutProps = {
   comment?: string;
@@ -102,15 +103,16 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
               />
             </View>
           )}
-          <Button
-            width="100%"
-            left={16}
-            onPress={onPress}
-            backgroundColor="#4800FF"
-            borderRadius={50}
-          >
-            <ButtonText>{btnText}</ButtonText>
-          </Button>
+          <View paddingLeft={28}>
+            <GlucoButton
+              buttonType="primary"
+              text="Continue"
+              isFocused={false}
+              isDisabled={false}
+              onPress={onPress}
+            />
+          </View>
+
           {addLater && (
             <Text textAlign="center" pl={32} py={8}>
               Add later
