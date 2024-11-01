@@ -9,6 +9,7 @@ export const articlesTypeDefs = gql`
     article_url: String!
     article_genre: String!
     diabetes_type: String!
+    isFavorite: Boolean!
   }
 
   type ArticlesConnection {
@@ -42,9 +43,9 @@ export const articlesTypeDefs = gql`
   }
 
   extend type Query {
-    getArticle(id: ID!): Articles
+    getArticle(id: ID!, userId: ID!): Articles
     getArticles: [Articles!]!
-    getAllArticlesPagination(cursor: String, limit: Int): ArticlesConnection
+    getAllArticlesPagination(cursor: String, limit: Int, userId: ID!): ArticlesConnection
     getUserArticlesPagination(
       userId: ID!
       cursor: String

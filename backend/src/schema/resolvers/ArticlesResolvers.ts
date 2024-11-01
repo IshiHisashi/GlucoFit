@@ -17,122 +17,119 @@ interface PageInfo {
 }
 
 interface ArticlesConnection {
-  edges: IArticles[];
+  edges: IArticlesWithFavorite[];
   pageInfo: PageInfo;
+}
+
+interface IArticlesWithFavorite extends IArticles {
+  isFavorite: boolean;
 }
 
 const articlesResolvers = {
   Query: {
     getArticle: async (
       _: any,
-      { id }: { id: string }
-    ): Promise<IArticles | null> => {
-      return await Articles.findById(id);
+      { id, userId }: { id: string; userId: string }
+    ): Promise<IArticlesWithFavorite | null> => {
+      const article = await Articles.findById(id);
+      if (!article) {
+        return null;
+      }
+
+      // Check if the article is in user's favorites
+      const user = await User.findById(userId);
+      const isFavorite = user ? user.favourite_articles.includes(id) : false;
+
+      // Return the article with isFavorite flag
+      return { ...article.toObject(), isFavorite } as IArticlesWithFavorite;
     },
+
 
     getArticles: async (): Promise<IArticles[]> => {
       return await Articles.find();
     },
 
-    getAllArticlesPagination: async (
-      _: any,
-      { cursor, limit }: GetInsightsArgs
-    ): Promise<ArticlesConnection> => {
-      const defaultLimit = 10;
-
-      const startIndex = cursor ? parseInt(cursor) : 0;
-
-      const itemsPerPage = limit || defaultLimit;
-
-      const articles = await Articles.find()
-        .skip(startIndex)
-        .limit(itemsPerPage)
-        .exec();
-      if (articles.length === 0) {
+      getAllArticlesPagination: async (
+        _: any,
+        { cursor, limit, userId }: { cursor?: string; limit?: number; userId: string }
+      ): Promise<ArticlesConnection> => {
+        const defaultLimit = 10;
+        const startIndex = cursor ? parseInt(cursor) : 0;
+        const itemsPerPage = limit || defaultLimit;
+  
+        const articles = await Articles.find()
+          .skip(startIndex)
+          .limit(itemsPerPage)
+          .exec();
+  
+        const user = await User.findById(userId);
+        const favouriteArticles = user ? user.favourite_articles : [];
+  
+        const articlesWithFavorite: IArticlesWithFavorite[] = articles.map((article) => ({
+          ...article.toObject(),
+          isFavorite: favouriteArticles.includes(article._id.toString()),
+        })) as IArticlesWithFavorite[];
+  
+        const hasNextPage = articles.length === itemsPerPage;
+        const newCursor = hasNextPage ? (startIndex + itemsPerPage).toString() : null;
+  
         return {
-          edges: [],
+          edges: articlesWithFavorite,
           pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
+            hasNextPage,
+            endCursor: newCursor,
           },
         };
-      }
-      const hasNextPage = articles.length === itemsPerPage;
-      const newCursor = hasNextPage
-        ? (startIndex + itemsPerPage).toString()
-        : null;
-
-      return {
-        edges: articles as IArticles[],
-        pageInfo: {
-          hasNextPage,
-          endCursor: newCursor,
-        },
-      };
-    },
-
-    getUserArticlesPagination: async (
-      _: any,
-      { userId, cursor, limit, classification }: GetInsightsArgs
-    ): Promise<ArticlesConnection> => {
-      const defaultLimit = 10;
-
-      const user: IUser | null = await User.findById(userId);
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      let articleIds: string[];
-      if (classification === "recent") {
-        articleIds = user.recently_read_articles_array;
-      } else if (classification === "favorite") {
-        articleIds = user.favourite_articles;
-      } else {
-        articleIds = [];
-      }
-
-      const startIndex = cursor ? parseInt(cursor) : 0;
-      const itemsPerPage = limit || defaultLimit;
-      const paginatedIds = articleIds.slice(
-        startIndex,
-        startIndex + itemsPerPage
-      );
-
-      const articles = await Articles.find({
-        _id: { $in: paginatedIds },
-      }).exec();
-      const orderedArticles = paginatedIds
-        .map((id) => {
-          const article = articles.find(
-            (article) => article._id.toString() === id.toString()
-          );
-          return article;
-        })
-        .filter(Boolean);
-
-      if (orderedArticles.length === 0) {
+      },
+      getUserArticlesPagination: async (
+        _: any,
+        { userId, cursor, limit, classification }: GetInsightsArgs
+      ): Promise<ArticlesConnection> => {
+        const defaultLimit = 10;
+        const user = await User.findById(userId);
+        if (!user) {
+          throw new Error("User not found");
+        }
+  
+        let articleIds: string[];
+        if (classification === "recent") {
+          articleIds = user.recently_read_articles_array;
+        } else if (classification === "favorite") {
+          articleIds = user.favourite_articles;
+        } else {
+          articleIds = [];
+        }
+  
+        const startIndex = cursor ? parseInt(cursor) : 0;
+        const itemsPerPage = limit || defaultLimit;
+        const paginatedIds = articleIds.slice(startIndex, startIndex + itemsPerPage);
+  
+        const articles = await Articles.find({
+          _id: { $in: paginatedIds },
+        }).exec();
+  
+        // Add 'isFavorite' field to each article
+        const articlesWithFavorite: IArticlesWithFavorite[] = paginatedIds.map((id) => {
+          const article = articles.find((a) => a._id.toString() === id.toString());
+          if (!article) return null;
+  
+          return {
+            ...article.toObject(),
+            isFavorite: user.favourite_articles.includes(id),
+          };
+        }).filter(Boolean) as IArticlesWithFavorite[];
+  
+        const hasNextPage = startIndex + itemsPerPage < articleIds.length;
+        const newCursor = hasNextPage ? (startIndex + itemsPerPage).toString() : null;
+  
         return {
-          edges: [],
+          edges: articlesWithFavorite,
           pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
+            hasNextPage,
+            endCursor: newCursor,
           },
         };
-      }
-
-      const hasNextPage = startIndex + itemsPerPage < articleIds.length;
-      const newCursor = hasNextPage
-        ? (startIndex + itemsPerPage).toString()
-        : null;
-
-      return {
-        edges: orderedArticles as IArticles[],
-        pageInfo: {
-          hasNextPage,
-          endCursor: newCursor,
-        },
-      };
-    },
+      },
   },
   Mutation: {
     createArticle: async (
