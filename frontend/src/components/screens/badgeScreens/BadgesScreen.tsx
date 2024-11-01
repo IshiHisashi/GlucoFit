@@ -102,8 +102,8 @@ const BadgesScreen: React.FC = () => {
     }
   };
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  // if (loading) return <Text>Loading...</Text>;
+  // if (error) return <Text>Error: {error.message}</Text>;
 
   const switchModal = () => {
     setModalVisible(!modalVisible);
