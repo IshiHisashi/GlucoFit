@@ -18,6 +18,7 @@ export interface IUser extends Document {
   height: number; // added
   weight: number; // added
   age: number; // no use
+  has_onboarded: boolean;
   diabates_type: number;
   email: string;
   phone_number: string; //no use
@@ -61,6 +62,7 @@ const userSchema = new Schema<IUser>({
   age: {
     type: Number,
   },
+  has_onboarded: { type: Boolean },
   diabates_type: { type: Number },
   email: { type: String },
   phone_number: { type: String },

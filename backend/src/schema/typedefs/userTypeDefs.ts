@@ -26,6 +26,7 @@ export const userTypeDefs = gql`
     height: Float
     weight: Float
     age: Int
+    has_onboarded: Boolean
     diabates_type: Int
     email: String
     phone_number: String
@@ -85,6 +86,7 @@ export const userTypeDefs = gql`
       birthday: Date
       height: Float
       weight: Float
+      has_onboarded: Boolean
       diabates_type: Int
       email: String
       phone_number: String
@@ -121,6 +123,7 @@ export const userTypeDefs = gql`
       birthday: Date
       height: Float
       weight: Float
+      has_onboarded: Boolean
       diabates_type: Int
       email: String
       phone_number: String

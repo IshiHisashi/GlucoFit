@@ -12,6 +12,7 @@ export const UPDATE_USER_MUTATION = gql`
     $height: Float
     $weight: Float
     $badges: [BadgeInput]
+    $has_onboarded: Boolean
   ) {
     updateUser(
       id: $id
@@ -24,6 +25,7 @@ export const UPDATE_USER_MUTATION = gql`
       height: $height
       weight: $weight
       badges: $badges
+      has_onboarded: $has_onboarded
     ) {
       id
       name
@@ -61,6 +63,16 @@ export const ADD_MEDICINE_MUTATION = gql`
     ) {
       medicine_name
       log_timestamp
+    }
+  }
+`;
+
+export const GET_USER_HAS_ONBOARDED = gql`
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      name
+      has_onboarded
     }
   }
 `;

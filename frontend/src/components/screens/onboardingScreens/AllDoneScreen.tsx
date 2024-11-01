@@ -36,6 +36,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           minimum_bsl: onboardingData?.minimum_bsl,
           notificaiton: onboardingData?.notification,
           badges: badges.length > 0 ? badges : [],
+          has_onboarded: true,
         },
       });
       console.log(`user updated : ${updateUserData}`);
