@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "@gluestack-ui/themed";
+import { View, Text, Image } from "@gluestack-ui/themed";
+import { useQuery } from "@apollo/client";
+import { GET_STREAK_LAST_7_DAYS } from "../../utils/query/badgeProgressQuery";
+
+const userId = "670db268582e7e887e447288";
 
 const getLast7Days = (): string[] => {
   const days = [];
@@ -32,12 +36,16 @@ const getDayOfWeek = (dateString: string): string => {
 const WeeklyStreak: React.FC = () => {
   const [daysHasLog, setDaysHasLog] = useState<string[]>(["1", "2"]);
 
-  useEffect(() => {
-    // fetch graphQL
+  // fetch graphQL
+  const { loading, error, data } = useQuery(GET_STREAK_LAST_7_DAYS, {
+    variables: { userId: userId },
+  });
 
-    // HardCord for now
-    setDaysHasLog(["2024-10-06", "2024-10-12", "2024-10-20"]);
-  }, []);
+  console.log(data)
+
+  useEffect(() => {
+    setDaysHasLog(data.getTestResultsLast7Days);
+  }, [data]);
 
   const last7Days = getLast7Days();
   return (
@@ -56,7 +64,7 @@ const WeeklyStreak: React.FC = () => {
         {last7Days.map((day) => (
           <View key={day}>
             <Text textAlign="center">
-              {daysHasLog.includes(day) ? "Yes" : "No"}
+              {daysHasLog.includes(day) ? <Image width={32} height={32} source={require("../../../assets/icons/check.png")} /> : <Image width={32} height={32} source={require("../../../assets/icons/blank_check.png")} />}
             </Text>
             <Text textAlign="center">{getDayOfWeek(day).substring(0, 3)}</Text>
           </View>
