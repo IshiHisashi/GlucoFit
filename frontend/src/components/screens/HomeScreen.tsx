@@ -13,9 +13,11 @@ import {
   Toast,
   ToastTitle,
   ToastDescription,
+  Modal,
+  Image,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect } from "react";
-import { useWindowDimensions } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { useWindowDimensions, Share, Alert } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
   useFocusEffect,
@@ -62,6 +64,8 @@ const TotalSteps = () => {
 
   return <Text>{data.getTotalStepsForToday} Steps</Text>;
 };
+
+// =========== queries ==============
 
 const GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY = gql`
   query GetBslResultsAndAverageForToday($userId: ID!) {
@@ -142,16 +146,37 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 type RouteParams = {
   mutatedLog?: string;
   insight?: any;
+  badges?: any
 };
+
+interface ModalData {
+  badge_desc: string;
+  badge_name: string;
+  badge_image_address: string;
+  id: string;
+}
+
+interface Badges {
+  badges: ModalData[];
+}
+
+interface BadgeImages {
+  [key: string]: any; 
+}
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
-  console.log(route.name);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [toastReady, setToastReady] = useState<boolean>(false);
+  const [currentModalIndex, setCurrentModalIndex] = useState(0);
+  console.log(route);
 
   const { width } = useWindowDimensions();
 
   const toast = useToast();
+
+  // ================= Data rendering =====================
 
   const {
     data: userData,
@@ -241,78 +266,83 @@ const HomeScreen: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    if (route.params?.insight) {
-      toast.show({
-        placement: "bottom",
-        duration: null,
-        render: ({ id }) => {
-          const toastId = "toast-" + id;
-          return (
-            <Toast
-              nativeID={toastId}
-              bg="$secondaryY70"
-              bottom="$16"
-              width="90%"
-              // left="$4"
-              // right="$4"
-            >
-              <Pressable
-                onPress={() => {
-                  toast.close(id);
-                  navigation.setParams({ insight: undefined });
-                  openArticle(
-                    route.params.insight.article_url,
-                    route.params.insight.article_name
-                  );
-                }}
-              >
-                <HStack
-                  justifyContent="space-between"
-                  alignItems="center"
-                  space="sm"
-                >
-                  <HStack alignItems="center" space="sm">
-                    <Box
-                      width={34}
-                      height={34}
-                      borderRadius="$full"
-                      bg="$secondaryY5"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      <AnalysisCustom color="#E5BA2D" size={24} />
-                    </Box>
-                    <VStack space="xs" width={200}>
-                      <ToastTitle numberOfLines={2}>
-                        {route.params.insight.article_name}
-                      </ToastTitle>
-                      <ToastDescription>See quick tips</ToastDescription>
-                    </VStack>
-                  </HStack>
+  // ================= Insight logic ======================
 
-                  <Pressable
-                    onPress={() => {
-                      toast.close(id);
-                      // Clean up route params
-                      navigation.setParams({ insight: undefined });
-                    }}
+  useEffect(() => {
+    if (toastReady) {
+      if (route.params?.insight) {
+        toast.show({
+          placement: "bottom",
+          duration: null,
+          render: ({ id }) => {
+            const toastId = "toast-" + id;
+            return (
+              <Toast
+                nativeID={toastId}
+                bg="$secondaryY70"
+                bottom="$16"
+                width="90%"
+                // left="$4"
+                // right="$4"
+              >
+                <Pressable
+                  onPress={() => {
+                    toast.close(id);
+                    navigation.setParams({ insight: undefined });
+                    openArticle(
+                      route.params.insight.article_url,
+                      route.params.insight.article_name
+                    );
+                  }}
+                >
+                  <HStack
+                    justifyContent="space-between"
+                    alignItems="center"
+                    space="sm"
                   >
-                    <TimesCustom color="#000000" size={24} />
-                  </Pressable>
-                </HStack>
-              </Pressable>
-            </Toast>
-          );
-        },
-      });
-      // Clean up route params after showing toast
-      navigation.setParams({
-        mutatedLog: route.params.mutatedLog,
-        insight: undefined,
-      });
+                    <HStack alignItems="center" space="sm">
+                      <Box
+                        width={34}
+                        height={34}
+                        borderRadius="$full"
+                        bg="$secondaryY5"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <AnalysisCustom color="#E5BA2D" size={24} />
+                      </Box>
+                      <VStack space="xs" width={200}>
+                        <ToastTitle numberOfLines={2}>
+                          {route.params.insight.article_name}
+                        </ToastTitle>
+                        <ToastDescription>See quick tips</ToastDescription>
+                      </VStack>
+                    </HStack>
+
+                    <Pressable
+                      onPress={() => {
+                        toast.close(id);
+                        // Clean up route params
+                        navigation.setParams({ insight: undefined });
+                      }}
+                    >
+                      <TimesCustom color="#000000" size={24} />
+                    </Pressable>
+                  </HStack>
+                </Pressable>
+              </Toast>
+            );
+          },
+        });
+        // Clean up route params after showing toast
+        navigation.setParams({
+          mutatedLog: route.params.mutatedLog,
+          insight: undefined,
+        });
+      }
     }
-  }, [route.params?.insight, toast, navigation, route.params?.mutatedLog]);
+
+  }, [route.params?.insight, toast, navigation, route.params?.mutatedLog, toastReady]);
 
   useFocusEffect(
     useCallback(() => {
@@ -457,6 +487,71 @@ const HomeScreen: React.FC = () => {
     console.log("sorted:", logsForToday);
   }
 
+  // ==================== Badge modal logic section =====================
+
+  // Badge images key value pair for now. Will be replaced with by remote location.
+
+  const badgeImages: BadgeImages = {
+    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/670b2125cb185c3905515da2.png'),
+    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/670b2149cb185c3905515da4.png'),
+    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/670b215bcb185c3905515da6.png'),
+    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/670b216fcb185c3905515da8.png'),
+    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/670b2188cb185c3905515daa.png'),
+    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/670b2192cb185c3905515dac.png'),
+    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/670b2199cb185c3905515dae.png'),
+    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/670b21a8cb185c3905515db0.png'),
+    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/670b21b1cb185c3905515db2.png'),
+  };
+
+  // When coming to Home and has badges param, open modal
+  useEffect(() => {
+    if (route.params?.badges.length > 0) {
+      setModalVisible(true);
+      console.log("modal on")
+    } else {
+      console.log("modal not working")
+    }
+  },[navigation, route.params?.badges])
+
+  // Sequential badges modal
+  const handleClose = () => {
+    if (currentModalIndex < route.params?.badges.length - 1) {
+      setCurrentModalIndex(currentModalIndex + 1);
+    } else {
+      setModalVisible(false);
+      setToastReady(true);
+    }
+  }
+
+  // Go to Badges screen
+  const moveToBadges = () => {
+    setModalVisible(!modalVisible);
+    navigation.navigate("Tabs", {
+      screen: "BadgeScreen"
+    })
+  }
+
+  // Just share functionality
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          "You will be able to share things from hereeee!",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -466,6 +561,40 @@ const HomeScreen: React.FC = () => {
           navigation={navigation}
         />
         <VStack p="$4" space="md">
+        {route.params?.badges?.length > 0 && (
+          <Modal isOpen={modalVisible} onClose={() => handleClose()} >
+            <Modal.Content position="absolute" bottom={120} height="70%" borderRadius={20} backgroundColor="white">
+              <Modal.CloseButton />
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', flexGrow: 1}}
+              >
+                <Button onPress={() => handleClose()} >
+                  <ButtonText>
+                    Close
+                  </ButtonText>
+                </Button>
+                <Text textAlign="center">Congratulations!</Text>
+                <Text textAlign="center">You unlocked a new badge</Text>
+                <View style={{ flexBasis: '100%', alignItems: 'center', marginBottom: 10 }}>
+                  <Image w={120} h={120} source={badgeImages[route.params?.badges[currentModalIndex]?.id]} alt={route.params?.badges[currentModalIndex].badge_name} marginBottom={8} />
+                  <Text color="$black" fontSize={20} textAlign="center" >{ route.params?.badges[currentModalIndex].badge_name }</Text>
+                  <Text textAlign="center">{ route.params?.badges[currentModalIndex].badge_desc }</Text>
+                </View>
+                <Button onPress={() => onShare()}>
+                  <ButtonText>
+                    Share
+                  </ButtonText>
+                </Button>
+                <Button onPress={() => moveToBadges()}>
+                  <ButtonText>
+                    View All Badges
+                  </ButtonText>
+                </Button>                
+              </View>
+            </Modal.Content>
+          </Modal>
+        )}
+
           <VStack
             space="sm"
             borderWidth={1}

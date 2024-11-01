@@ -16,73 +16,84 @@ import InputFieldForBsl from "../../atoms/InputFieldForBsl";
 import LogsTable from "../../organisms/LogsTable";
 
 // hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+const userId = "670db268582e7e887e447288";
 
-const GET_TEST_RESULTS = gql`
-  query GetTestResults {
-    getTestResults {
-      bsl
-      confirmed
-      id
-      log_timestamp
-      note {
-        note_description
-      }
-    }
-  }
-`;
+// const GET_TEST_RESULTS = gql`
+//   query GetTestResults {
+//     getTestResults {
+//       bsl
+//       confirmed
+//       id
+//       log_timestamp
+//       note {
+//         note_description
+//       }
+//     }
+//   }
+// `;
 
-const CREATE_TEST_RESULT = gql`
-  mutation CreateTestResult(
-    $userId: ID!
-    $bsl: Float!
-    $note: NoteInput!
-    $logTimestamp: Date
-    $timePeriod: String
+// const CREATE_TEST_RESULT = gql`
+//   mutation CreateTestResult(
+//     $userId: ID!
+//     $bsl: Float!
+//     $note: NoteInput!
+//     $logTimestamp: Date
+//     $timePeriod: String
+//     $confirmed: Boolean
+//   ) {
+//     createTestResult(
+//       user_id: $userId
+//       bsl: $bsl
+//       note: $note
+//       log_timestamp: $logTimestamp
+//       time_period: $timePeriod
+//       confirmed: $confirmed
+//     ) {
+//       bsl
+//       confirmed
+//       log_timestamp
+//       note {
+//         content
+//         note_description
+//         title
+//       }
+//       time_period
+//     }
+//   }
+// `;
+
+const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
+  mutation Mutation(
+    $userId: ID!, 
+    $bsl: Float!, 
+    $note: NoteInput, 
+    $logTimestamp: Date, 
+    $timePeriod: String, 
     $confirmed: Boolean
   ) {
     createTestResult(
-      user_id: $userId
-      bsl: $bsl
-      note: $note
-      log_timestamp: $logTimestamp
-      time_period: $timePeriod
+      user_id: $userId, 
+      bsl: $bsl, 
+      note: $note, 
+      log_timestamp: $logTimestamp, 
+      time_period: $timePeriod, 
       confirmed: $confirmed
     ) {
-      bsl
-      confirmed
-      log_timestamp
-      note {
-        content
-        note_description
-        title
+      articlesToShow {
+        article_name
+        id
+        diabetes_type
+        article_url
+        article_thumbnail_address
+        article_genre
+        article_desc
       }
-      time_period
-    }
-  }
-`;
-
-const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
-  mutation CreateTestResultWithInsights(
-    $userId: ID!
-    $bsl: Float!
-    $note: NoteInput!
-    $logTimestamp: Date
-    $timePeriod: String
-    $confirmed: Boolean
-  ) {
-    createTestResultWithInsights(
-      user_id: $userId
-      bsl: $bsl
-      note: $note
-      log_timestamp: $logTimestamp
-      time_period: $timePeriod
-      confirmed: $confirmed
-    ) {
-      article_genre
-      article_name
-      article_url
-      id
+      badgesToShow {
+        badge_desc
+        badge_name
+        badge_image_address
+        id
+      }
     }
   }
 `;
@@ -205,12 +216,14 @@ const GlucoseLogScreen: React.FC = () => {
           confirmed: true,
         },
       });
-      console.log("Mutation result:", result.data.createTestResultWithInsights);
+      console.log("Mutation result:", result.data.createTestResult);
+
       navigation.navigate("Tabs", {
         screen: "Home",
         params: {
           mutatedLog: "bsl",
-          insight: result.data.createTestResultWithInsights[0],
+          insight: result.data.createTestResult.articlesToShow[0],
+          badges: result.data.createTestResult.badgesToShow
         },
       });
     } catch (e) {
