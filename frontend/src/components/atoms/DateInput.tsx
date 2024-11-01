@@ -79,6 +79,7 @@ const DateInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
             onPressOut={() => setIsPressed(false)}
             onPress={() => setIsDatePickerOpen(true)}
             placeholder={"MM / DD / YYYY"}
+            placeholderTextColor="$neutralDark60"
           />
         </Input>
         <DateTimePickerModal

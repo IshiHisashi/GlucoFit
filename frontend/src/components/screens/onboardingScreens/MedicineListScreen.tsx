@@ -36,6 +36,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
         progressValue={62.5}
         onPress={handleNext}
         character
+        disabled={false}
       >
         <View width="100%" flexDirection="column" gap={16}>
           <HStack>

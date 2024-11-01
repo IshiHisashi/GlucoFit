@@ -4,8 +4,6 @@ import {
   Text,
   Box,
   VStack,
-  Button,
-  ButtonText,
   Image,
   Progress,
   ProgressFilledTrack,
@@ -20,6 +18,7 @@ type OnboardingLayoutProps = {
   onPress?: () => void;
   character?: boolean;
   addLater?: boolean;
+  disabled?: boolean;
 };
 
 const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
@@ -33,6 +32,7 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
     progressValue,
     onPress,
     character,
+    disabled = "false",
     children,
   } = props;
   return (
@@ -113,7 +113,7 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
               buttonType="primary"
               text="Continue"
               isFocused={false}
-              isDisabled={false}
+              isDisabled={disabled ? true : false}
               onPress={onPress}
             />
           </View>

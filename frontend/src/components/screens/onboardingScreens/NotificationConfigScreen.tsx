@@ -31,6 +31,7 @@ const NotificationConfigScreen: React.FC<Props> = ({ navigation }) => {
         comment="Stay on Track! Would you like reminders for logging?"
         progressValue={87.5}
         onPress={handleNext}
+        disabled={false}
       >
         <View flexDirection="column" gap={16}>
           <PressableOption

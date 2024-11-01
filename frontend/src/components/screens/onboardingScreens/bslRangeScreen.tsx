@@ -31,6 +31,7 @@ const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
         comment="What is your blood sugar range?"
         progressValue={75}
         onPress={handleNext}
+        disabled={false}
       >
         <View mx="auto" p={20} mt={30}>
           <MultiSlider

@@ -37,6 +37,7 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
         comment={`Nice to meet you, ${onboardingData.name}! We would like to know more about you.`}
         progressValue={25}
         onPress={handleNext}
+        disabled={false}
       >
         <View flexDirection="column" gap={12}>
           <HStack>

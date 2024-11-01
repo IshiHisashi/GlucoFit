@@ -84,6 +84,7 @@ const TimeInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
             onPressOut={() => setIsPressed(false)}
             onPress={onPress}
             placeholder={placeHolder}
+            placeholderTextColor="$neutralDark60"
           />
           <HStack alignItems="center" space="xs">
             <PlusCustom

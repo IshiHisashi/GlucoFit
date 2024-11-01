@@ -35,6 +35,7 @@ const NameBdScreen: React.FC<Props> = ({ navigation }) => {
         progressValue={12.5}
         onPress={handleNext}
         character
+        disabled={name && name.length > 0 ? false : true}
       >
         <View flexDirection="column" gap={12}>
           <HStack>
