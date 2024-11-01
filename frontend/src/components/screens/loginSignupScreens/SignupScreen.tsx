@@ -35,7 +35,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
-  const { setUserID } = useContext(AuthContext);
+  const { setUserId } = useContext(AuthContext);
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -52,7 +52,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       const userID = data.signUp.user.id;
       await saveToken("accessToken", accessToken);
       await saveToken("refreshToken", refreshToken);
-      setUserID(userID);
+      setUserId(userID);
       alert(`Signup successful! Token saved.`);
       navigation.navigate("OnboardingStack");
     } catch (err: any) {

@@ -36,7 +36,7 @@ const LoginScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigation = useNavigation();
-  const { LogIn, setUserID } = useContext(AuthContext);
+  const { LogIn, setUserId } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
   const handleLogin = async () => {
@@ -51,7 +51,7 @@ const LoginScreen: React.FC<Props> = () => {
       const userID = data.login.user.id;
       await saveToken("refreshToken", refreshToken);
       await LogIn(accessToken);
-      setUserID(userID);
+      setUserId(userID);
       navigation.navigate("Home");
     } catch (error) {
       console.error("Login error:", error);

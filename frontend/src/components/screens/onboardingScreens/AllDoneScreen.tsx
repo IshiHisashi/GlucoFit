@@ -25,7 +25,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
         variables: {
           id: userId,
           name: onboardingData?.name,
-          // birthday: onboardingData?.birthday,
+          birthday: onboardingData?.birthday,
           height: onboardingData?.height,
           weight: onboardingData?.weight,
           diabates_type: onboardingData?.diabates_type,
@@ -42,7 +42,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           variables: {
             user_id: userId,
             medicine_name: onboardingData?.medicine_name,
-            // log_timestamp: onboardingData?.log_timestamp,
+            log_timestamp: onboardingData?.log_timestamp,
           },
         });
         console.log(`medicine registered : ${addMedicineData}`);
