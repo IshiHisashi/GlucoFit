@@ -72,7 +72,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       p={16}
     >
       <View>
-        <View marginTop={50} flexDirection="column">
+        <View marginTop={80} marginBottom={30} flexDirection="column">
           <Image
             source={require("../../../../assets/OnbordingChar.png")}
             resizeMode="contain"
@@ -88,7 +88,13 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             alt="Character is winking during the onboarding process"
           />
         </View>
-        <Text color="black" textAlign="center" fontSize={28} fontFamily="$bold">
+        <Text
+          marginBottom={40}
+          color="black"
+          textAlign="center"
+          fontSize={28}
+          fontFamily="$bold"
+        >
           Create an account
         </Text>
         <View flexDirection="column" gap={20}>
