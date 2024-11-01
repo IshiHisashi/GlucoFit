@@ -7,6 +7,7 @@ import {
   EyeOffIcon,
   Button,
   ButtonText,
+  HStack,
 } from "@gluestack-ui/themed";
 import { gql, useMutation } from "@apollo/client";
 import Input from "../../atoms/onboarding/input";
@@ -15,6 +16,9 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { TabParamList } from "../../../types/navigation";
+import InputFieldGeneral from "../../atoms/InputFieldGeneral";
+import { EyeCustom, EyeSlashCustom } from "../../svgs/svgs";
+import GlucoButton from "../../atoms/GlucoButton";
 
 type Props = NativeStackScreenProps<TabParamList>;
 
@@ -60,33 +64,76 @@ const LoginScreen: React.FC<Props> = () => {
   };
 
   return (
-    <View flexDirection="column" gap={20} p={16}>
-      <View marginTop={80} flexDirection="column">
-        <Image
-          source={require("../../../../assets/OnbordingChar.png")}
-          resizeMode="contain"
-          w={68}
-          mx="auto"
-          alt="Character is winking during the onboarding process"
+    <View
+      height="100%"
+      flexDirection="column"
+      justifyContent="space-between"
+      p={16}
+    >
+      <View>
+        <View marginTop={50} flexDirection="column">
+          <Image
+            source={require("../../../../assets/OnbordingChar.png")}
+            resizeMode="contain"
+            w={68}
+            mx="auto"
+            alt="Character is winking during the onboarding process"
+          />
+          <Image
+            source={require("../../../../assets/logo_onbording.png")}
+            resizeMode="contain"
+            w={190}
+            mx="auto"
+            alt="Character is winking during the onboarding process"
+          />
+        </View>
+        <Text color="black" textAlign="center" fontSize={28} fontFamily="$bold">
+          Welcome back!
+        </Text>
+        <View flexDirection="column" gap={20}>
+          <HStack>
+            <InputFieldGeneral
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              // errorMessage="this is error message"
+            />
+          </HStack>
+          <HStack>
+            <InputFieldGeneral
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              type="password"
+              // errorMessage="this is error message"
+              iconRight={EyeSlashCustom}
+            />
+          </HStack>
+        </View>
+      </View>
+
+      <View marginBottom={0} flexDirection="column" gap={16}>
+        <GlucoButton
+          buttonType="primary"
+          text="Sign in"
+          isFocused={false}
+          isDisabled={false}
+          onPress={handleLogin}
         />
-        <Image
-          source={require("../../../../assets/logo_onbording.png")}
-          resizeMode="contain"
-          w={190}
-          mx="auto"
-          alt="Character is winking during the onboarding process"
+        <GlucoButton
+          buttonType="secondary"
+          text="New user? Create an account."
+          isFocused={false}
+          isDisabled={false}
+          onPress={() => navigation.navigate("Signup")}
         />
       </View>
-      <Text textAlign="center" fontSize={28}>
-        Welcome back!
-      </Text>
-      <Input labelText="Email" onChange={setEmail} />
-      <Input labelText="Password" onChange={setPassword}>
-        <InputIcon as={EyeOffIcon} height={40} />
-      </Input>
-      <Button bgColor="#888" onPress={handleLogin} disabled={loading}>
-        <ButtonText>Sign in</ButtonText>
-      </Button>
     </View>
   );
 };
