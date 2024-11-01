@@ -19,7 +19,9 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData } = useOnboarding();
   const [updateUser] = useMutation(UPDATE_USER_MUTATION);
   const [addMedicineToList] = useMutation(ADD_MEDICINE_MUTATION);
-  const { userId, LogIn } = useContext(AuthContext);
+  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+
+  console.log(userId);
   const handleOnPress = async () => {
     try {
       const { data: updateUserData } = await updateUser({
@@ -48,6 +50,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
         });
         console.log(`medicine registered : ${addMedicineData}`);
       }
+      setOnboardingComplete();
       const token = await getToken("accessToken");
       await LogIn(token);
       navigation.navigate("Home");

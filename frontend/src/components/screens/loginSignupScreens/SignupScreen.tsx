@@ -56,6 +56,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       await saveToken("accessToken", accessToken);
       await saveToken("refreshToken", refreshToken);
       setUserId(userID);
+      console.log("sign up : ", userID);
       alert(`Signup successful! Token saved.`);
       navigation.navigate("OnboardingStack");
     } catch (err: any) {

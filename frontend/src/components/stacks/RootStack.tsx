@@ -5,12 +5,12 @@ import AppStack from "./AppStack";
 import { AuthContext } from "../../context/AuthContext";
 
 const RootStack = () => {
-  const { userToken } = useContext(AuthContext);
+  const { userToken, hasCompletedOnboarding } = useContext(AuthContext);
   console.log("Token is " + userToken);
 
   return (
     <NavigationContainer>
-      {userToken ? <AppStack /> : <AuthStack />}
+      {userToken && hasCompletedOnboarding ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
