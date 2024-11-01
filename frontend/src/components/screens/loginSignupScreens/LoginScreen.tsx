@@ -1,14 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  View,
-  Image,
-  Text,
-  InputIcon,
-  EyeOffIcon,
-  Button,
-  ButtonText,
-  HStack,
-} from "@gluestack-ui/themed";
+import { View, Image, Text, HStack } from "@gluestack-ui/themed";
 import { gql, useMutation } from "@apollo/client";
 import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
@@ -19,6 +10,7 @@ import type { TabParamList } from "../../../types/navigation";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 import { EyeCustom, EyeSlashCustom } from "../../svgs/svgs";
 import GlucoButton from "../../atoms/GlucoButton";
+import { validateEmail } from "../../../utils/utilEmailValidatoin";
 
 type Props = NativeStackScreenProps<TabParamList>;
 
@@ -39,9 +31,17 @@ const LOGIN_MUTATION = gql`
 const LoginScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(false);
   const navigation = useNavigation();
   const { LogIn, setUserId } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
+
+  const isPasswordInvalid = password.length < 6;
+
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    setIsEmailInvalid(!validateEmail(text));
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -95,11 +95,13 @@ const LoginScreen: React.FC<Props> = () => {
             <InputFieldGeneral
               label="Email"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               isRequired={true}
               isDisabled={false}
-              isInvalid={false}
-              // errorMessage="this is error message"
+              isInvalid={isEmailInvalid}
+              errorMessage={
+                isEmailInvalid ? "Please provide a valid email address" : ""
+              }
             />
           </HStack>
           <HStack>
@@ -109,9 +111,13 @@ const LoginScreen: React.FC<Props> = () => {
               onChangeText={setPassword}
               isRequired={true}
               isDisabled={false}
-              isInvalid={false}
+              isInvalid={isPasswordInvalid}
               type="password"
-              // errorMessage="this is error message"
+              errorMessage={
+                isPasswordInvalid
+                  ? "Password must be at least 6 characters long"
+                  : ""
+              }
               iconRight={EyeSlashCustom}
             />
           </HStack>
@@ -123,7 +129,7 @@ const LoginScreen: React.FC<Props> = () => {
           buttonType="primary"
           text="Sign in"
           isFocused={false}
-          isDisabled={false}
+          isDisabled={isEmailInvalid || isPasswordInvalid ? true : false}
           onPress={handleLogin}
         />
         <GlucoButton

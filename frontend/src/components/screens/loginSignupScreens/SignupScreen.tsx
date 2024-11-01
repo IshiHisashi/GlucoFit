@@ -8,6 +8,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 import { EyeCustom, EyeSlashCustom } from "../../svgs/svgs";
 import GlucoButton from "../../atoms/GlucoButton";
+import { validateEmail } from "../../../utils/utilEmailValidatoin";
 
 type Props = NativeStackScreenProps<LoginSignupStackParamList>;
 
@@ -28,8 +29,16 @@ const SIGNUP_MUTATION = gql`
 const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(false);
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
   const { setUserId } = useContext(AuthContext);
+
+  const isPasswordInvalid = password.length < 6;
+
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    setIsEmailInvalid(!validateEmail(text));
+  };
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -50,17 +59,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       alert(`Signup successful! Token saved.`);
       navigation.navigate("OnboardingStack");
     } catch (err: any) {
-      console.error("Signup error:", err);
-      if (err.networkError) {
-        console.error("Network Error:", err.networkError);
-      }
-      if (err.graphQLErrors) {
-        err.graphQLErrors.forEach(({ message, locations, path }) => {
-          console.error(
-            `GraphQL error: Message: ${message}, Location: ${locations}, Path: ${path}`
-          );
-        });
-      }
+      console.error("Signup error", error);
       alert("Signup failed");
     }
   };
@@ -97,11 +96,13 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             <InputFieldGeneral
               label="Email"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               isRequired={true}
               isDisabled={false}
-              isInvalid={false}
-              // errorMessage="this is error message"
+              isInvalid={isEmailInvalid}
+              errorMessage={
+                isEmailInvalid ? "Please provide a valid email address" : ""
+              }
             />
           </HStack>
           <HStack>
@@ -111,9 +112,13 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
               onChangeText={setPassword}
               isRequired={true}
               isDisabled={false}
-              isInvalid={false}
+              isInvalid={isPasswordInvalid}
               type="password"
-              // errorMessage="this is error message"
+              errorMessage={
+                isPasswordInvalid
+                  ? "Password must be at least 6 characters long"
+                  : ""
+              }
               iconRight={EyeSlashCustom}
             />
           </HStack>
@@ -125,7 +130,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
           buttonType="primary"
           text="Get Started!"
           isFocused={false}
-          isDisabled={false}
+          isDisabled={!isEmailInvalid && !isPasswordInvalid ? false : true}
           onPress={handleSignUp}
         />
         <GlucoButton
