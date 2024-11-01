@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken, saveToken, deleteToken } from "../utils/utilAuth";
 import { jwtDecode } from "jwt-decode";
 import { useQuery } from "@apollo/client";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import { GET_USER_HAS_ONBOARDED } from "../utils/query/onboardingQuery";
 
 type AuthContextProps = {
@@ -19,6 +20,11 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
+const client = new ApolloClient({
+  uri: "http://localhost:3000/graphql",
+  cache: new InMemoryCache(),
+});
+
 export const AuthContext = createContext<AuthContextProps>({
   userToken: null,
   userId: null,
@@ -34,16 +40,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [shouldCheckOnboarding, setShouldCheckOnboarding] = useState(false);
-
-  const userOnboardingStatus = ({ userId }: { userId: string }) => {
-    // Use the useQuery hook to fetch the user data
-    const { loading, error, data } = useQuery(GET_USER_HAS_ONBOARDED, {
-      variables: { id: userId },
-    });
-    const { has_onboarded } = data.getUser;
-
-    return has_onboarded;
-  };
 
   useEffect(() => {
     // Fetch token from storage on app load
@@ -79,22 +75,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadAuthData();
   }, []);
 
-  const { loading, error, data } = useQuery(GET_USER_HAS_ONBOARDED, {
-    variables: { id: userId },
-    skip: !userId || !shouldCheckOnboarding,
-  });
+  const fetchUserOnboardingStatus = async (id: string) => {
+    try {
+      const { data } = await client.query({
+        query: GET_USER_HAS_ONBOARDED,
+        variables: { id },
+      });
+      return data.getUser.has_onboarded;
+    } catch (error) {
+      console.error("Error fetching onboarding status:", error);
+      return false;
+    }
+  };
 
   const LogIn = async (token: string) => {
-    if (!loading && data) {
-      const has_onboarded = data.getUser.has_onboarded;
-      if (has_onboarded) {
-        setHasCompletedOnboarding(true);
-        AsyncStorage.setItem("hasCompletedOnboarding", "true");
-      }
-    }
     console.log("login executed");
     await saveToken("accessToken", token);
     setUserToken(token);
+
+    // Decode the token to extract userId and check onboarding status
+    try {
+      const decodedToken: any = jwtDecode(token);
+      const id = decodedToken.userId;
+      if (id) {
+        setUserId(id);
+        const hasOnboarded = await fetchUserOnboardingStatus(id);
+        console.log("hasOnboarded", hasOnboarded);
+        if (hasOnboarded) {
+          setHasCompletedOnboarding(true);
+          await AsyncStorage.setItem("hasCompletedOnboarding", "true");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to decode token or fetch onboarding status", error);
+    }
   };
 
   const setOnboardingComplete = async () => {
@@ -110,6 +124,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await deleteToken("accessToken");
     setUserToken(null);
     setUserId(null);
+    setHasCompletedOnboarding(false);
     await AsyncStorage.setItem("hasCompletedOnboarding", "false");
   };
 

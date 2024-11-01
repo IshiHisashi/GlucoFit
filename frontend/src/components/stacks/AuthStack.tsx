@@ -10,14 +10,16 @@ const Stack = createNativeStackNavigator();
 
 const AuthStack = () => {
   const { userToken, hasCompletedOnboarding } = useContext(AuthContext);
-  console.log("hascompleted: ", hasCompletedOnboarding);
-  console.log("token", userToken);
+  console.log(
+    "hasCompletedOnboarding that AuthStack recognizes",
+    hasCompletedOnboarding
+  );
 
   return (
     <Stack.Navigator
-    // initialRouteName={
-    //   !hasCompletedOnboarding && userToken ? "OnboardingStack" : "LoginSignup"
-    // }
+      initialRouteName={
+        !hasCompletedOnboarding && userToken ? "OnboardingStack" : "LoginSignup"
+      }
     >
       <Stack.Screen
         name="LoginSignup"

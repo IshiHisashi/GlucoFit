@@ -56,7 +56,7 @@ const LoginScreen: React.FC<Props> = () => {
       await saveToken("refreshToken", refreshToken);
       await LogIn(accessToken);
       setUserId(userID);
-      console.log(hasCompletedOnboarding);
+      console.log("hascomletedOnboarding", hasCompletedOnboarding);
       hasCompletedOnboarding
         ? navigation.navigate("Home")
         : navigation.navigate("OnboardingStack");

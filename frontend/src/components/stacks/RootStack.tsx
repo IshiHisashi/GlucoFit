@@ -6,7 +6,9 @@ import { AuthContext } from "../../context/AuthContext";
 
 const RootStack = () => {
   const { userToken, hasCompletedOnboarding } = useContext(AuthContext);
-  console.log("Token is " + userToken);
+  console.log(
+    "hasCompletetonboarind that rootstack recognizes " + hasCompletedOnboarding
+  );
 
   return (
     <NavigationContainer>
