@@ -18,49 +18,49 @@ import LogsTable from "../../organisms/LogsTable";
 // hardcode for now
 const userId = "670db268582e7e887e447288";
 
-const GET_TEST_RESULTS = gql`
-  query GetTestResults {
-    getTestResults {
-      bsl
-      confirmed
-      id
-      log_timestamp
-      note {
-        note_description
-      }
-    }
-  }
-`;
+// const GET_TEST_RESULTS = gql`
+//   query GetTestResults {
+//     getTestResults {
+//       bsl
+//       confirmed
+//       id
+//       log_timestamp
+//       note {
+//         note_description
+//       }
+//     }
+//   }
+// `;
 
-const CREATE_TEST_RESULT = gql`
-  mutation CreateTestResult(
-    $userId: ID!
-    $bsl: Float!
-    $note: NoteInput!
-    $logTimestamp: Date
-    $timePeriod: String
-    $confirmed: Boolean
-  ) {
-    createTestResult(
-      user_id: $userId
-      bsl: $bsl
-      note: $note
-      log_timestamp: $logTimestamp
-      time_period: $timePeriod
-      confirmed: $confirmed
-    ) {
-      bsl
-      confirmed
-      log_timestamp
-      note {
-        content
-        note_description
-        title
-      }
-      time_period
-    }
-  }
-`;
+// const CREATE_TEST_RESULT = gql`
+//   mutation CreateTestResult(
+//     $userId: ID!
+//     $bsl: Float!
+//     $note: NoteInput!
+//     $logTimestamp: Date
+//     $timePeriod: String
+//     $confirmed: Boolean
+//   ) {
+//     createTestResult(
+//       user_id: $userId
+//       bsl: $bsl
+//       note: $note
+//       log_timestamp: $logTimestamp
+//       time_period: $timePeriod
+//       confirmed: $confirmed
+//     ) {
+//       bsl
+//       confirmed
+//       log_timestamp
+//       note {
+//         content
+//         note_description
+//         title
+//       }
+//       time_period
+//     }
+//   }
+// `;
 
 const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
   mutation Mutation(

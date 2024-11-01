@@ -4,7 +4,7 @@ export type TabParamList = {
   FAB: undefined;
   TestStack: undefined;
   Logs: undefined;
-  Badges: undefined;
+  BadgeScreen: undefined;
 };
 
 export type AppStackParamList = {
