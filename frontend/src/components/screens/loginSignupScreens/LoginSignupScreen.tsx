@@ -34,7 +34,7 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
         />
       </View>
       {/* btn section */}
-      <View marginBottom={0} flexDirection="column" gap={16}>
+      <View marginBottom={48} flexDirection="column" gap={16}>
         <GlucoButton
           buttonType="primary"
           text="Sign up"

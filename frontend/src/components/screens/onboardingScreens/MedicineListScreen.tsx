@@ -41,9 +41,10 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
         <View width="100%" flexDirection="column" gap={16}>
           <HStack>
             <InputFieldGeneral
-              label="Medicibe Name"
+              label="Medicine Name"
               value={medicineName}
               onChangeText={setMedicineName}
+              placeHolder="Metformin"
               isRequired={true}
               isDisabled={false}
               isInvalid={false}

@@ -75,14 +75,7 @@ const LoginScreen: React.FC<Props> = () => {
           <Image
             source={require("../../../../assets/OnbordingChar.png")}
             resizeMode="contain"
-            w={68}
-            mx="auto"
-            alt="Character is winking during the onboarding process"
-          />
-          <Image
-            source={require("../../../../assets/logo_onbording.png")}
-            resizeMode="contain"
-            w={190}
+            w={97}
             mx="auto"
             alt="Character is winking during the onboarding process"
           />
@@ -130,7 +123,7 @@ const LoginScreen: React.FC<Props> = () => {
         </View>
       </View>
 
-      <View marginBottom={0} flexDirection="column" gap={16}>
+      <View marginBottom={48} flexDirection="column" gap={16}>
         <GlucoButton
           buttonType="primary"
           text="Sign in"
