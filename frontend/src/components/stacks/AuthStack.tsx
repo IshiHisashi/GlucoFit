@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginSignupScreen from "../screens/loginSignupScreens/LoginSignupScreen";
 import SignupScreen from "../screens/loginSignupScreens/SignupScreen";
 import LoginScreen from "../screens/loginSignupScreens/LoginScreen";
 import OnboardingStack from "./OnboardingStack";
+import { AuthContext } from "../../context/AuthContext";
 
 const Stack = createNativeStackNavigator();
 
 const AuthStack = () => {
+  const { userToken, hasCompletedOnboarding } = useContext(AuthContext);
+  console.log("hascompleted: ", hasCompletedOnboarding);
+  console.log("token", userToken);
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    // initialRouteName={
+    //   !hasCompletedOnboarding && userToken ? "OnboardingStack" : "LoginSignup"
+    // }
+    >
       <Stack.Screen
         name="LoginSignup"
         component={LoginSignupScreen}

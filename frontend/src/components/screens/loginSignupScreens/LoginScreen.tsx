@@ -33,7 +33,7 @@ const LoginScreen: React.FC<Props> = () => {
   const [password, setPassword] = useState<string>("");
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(true);
   const navigation = useNavigation();
-  const { LogIn, setUserId } = useContext(AuthContext);
+  const { LogIn, setUserId, hasCompletedOnboarding } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);
 
   const isPasswordInvalid = password.length < 6;
@@ -56,7 +56,10 @@ const LoginScreen: React.FC<Props> = () => {
       await saveToken("refreshToken", refreshToken);
       await LogIn(accessToken);
       setUserId(userID);
-      navigation.navigate("Home");
+      console.log(hasCompletedOnboarding);
+      hasCompletedOnboarding
+        ? navigation.navigate("Home")
+        : navigation.navigate("OnboardingStack");
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed");
