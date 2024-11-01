@@ -1,7 +1,8 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { View, Text, Image, Modal, Button, Pressable, HStack, } from "@gluestack-ui/themed";
 import React, { useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
+import { GET_NUM_FAVORITE_ARTICLE, QUERY_FOR_STREAK_ACTIVITYLOGS, QUERY_FOR_STREAK_BY_TIME_RANGE, QUERY_FOR_STREAK_STARTER } from "../../../utils/query/badgeProgressQuery";
 
 const userId = "670db268582e7e887e447288";
 
@@ -32,6 +33,77 @@ const BadgesScreen: React.FC = () => {
   const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
     variables: { getUserBadgeId: userId },
   });
+
+  const [loadStreakData, { data: streakData }] = useLazyQuery(
+    QUERY_FOR_STREAK_STARTER,
+    { variables: { userId, withThreshold: false } }
+  );
+  const [loadStreakBslRangeData, { data: streakBslRangeData }] = useLazyQuery(
+    QUERY_FOR_STREAK_STARTER,
+    { variables: { userId, withThreshold: true } }
+  );
+  const [loadStreakEarlyBirdData, { data: streakEarlyBirdData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    { variables: { userId, startHour: 6, endHour: 8 } }
+  );
+  const [loadStreakNightOwlData, { data: streakNightOwlData }] = useLazyQuery(
+    QUERY_FOR_STREAK_BY_TIME_RANGE,
+    { variables: { userId, startHour: 20, endHour: 24 } }
+  );
+  const [loadStreakActivityLogslData, { data: streakActivityLogsData }] =
+    useLazyQuery(QUERY_FOR_STREAK_ACTIVITYLOGS, { variables: { userId } });
+  const [loadNumArticleData, { data: numArticleData }] = useLazyQuery(
+    GET_NUM_FAVORITE_ARTICLE,
+    { variables: { id: userId } }
+  );
+
+  const badgeLoaders: Record<string, () => void> = {
+    "First Steps": loadStreakData,
+    "Streak Starter": loadStreakData,
+    "Healthy Habit": loadStreakBslRangeData,
+    "Early Bird": loadStreakEarlyBirdData,
+    "Night Owl": loadStreakNightOwlData,
+    "Glucose Guru": loadStreakBslRangeData,
+    "Check-in Champion": loadStreakData,
+    "Fitness Streak": loadStreakActivityLogslData,
+    "Knowledge Seeker": loadNumArticleData,
+  };
+
+  useEffect(() => {
+    if (data?.getUserBadge?.badges) {
+      data.getUserBadge.badges.forEach((badge: any) => {
+        const loadBadgeData = badgeLoaders[badge.badgeId.badge_name];
+        if (loadBadgeData) loadBadgeData();
+      });
+    }
+  }, [data]);
+
+  const getBadgeProgress = (badgeName: string) => {
+    switch (badgeName) {
+      case "First Steps":
+      case "Streak Starter":
+      case "Check-in Champion":
+        return JSON.stringify(streakData?.getStreakTestResults);
+      case "Healthy Habit":
+      case "Glucose Guru":
+        return JSON.stringify(streakBslRangeData?.getStreakTestResults);
+      case "Early Bird":
+        return JSON.stringify(streakEarlyBirdData?.getStreakByTimeRange);
+      case "Night Owl":
+        return JSON.stringify(streakNightOwlData?.getStreakByTimeRange);
+      case "Fitness Streak":
+        return JSON.stringify(streakActivityLogsData?.getStreakActivityLogs);
+      case "Knowledge Seeker":
+        return JSON.stringify(
+          numArticleData?.getUser.favourite_articles?.length
+        );
+      default:
+        return "tbc";
+    }
+  };
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
 
   const switchModal = () => {
     setModalVisible(!modalVisible);
@@ -131,7 +203,7 @@ const BadgesScreen: React.FC = () => {
                           Unlocked on
                         </Text>
                         <Text textAlign="center">
-                          {b.badgeId.last_updated ? b.badgeId.last_updated : '09 / 25 / 2024 (hard coded)'}
+                          09 / 25 / 2024 (hard coded)
                         </Text>
                       </View>
                     :
@@ -140,7 +212,7 @@ const BadgesScreen: React.FC = () => {
                           Your Progress
                         </Text>
                         <Text textAlign="center">
-                          {b.badgeId.last_updated ? b.badgeId.last_updated : '3/10 (hard coded)'}
+                          {getBadgeProgress(b.badgeId.badge_name)} / {b.badgeId.criteria.value}
                         </Text>
                       </View>
                     }
