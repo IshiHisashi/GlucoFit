@@ -142,6 +142,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 type RouteParams = {
   mutatedLog?: string;
   insight?: any;
+  badges?: any
 };
 
 const HomeScreen: React.FC = () => {
@@ -524,6 +525,19 @@ const HomeScreen: React.FC = () => {
               <ButtonText>Connect device</ButtonText>
             </Button>
           </VStack>
+
+          {
+            route.params?.badges[0] !== undefined && route.params?.badges[0] !== null
+          ?
+            route.params.badges.map(b => (
+              <View>
+                <Text>{ b.badge_name }</Text>
+                <Text>{ b.badge_desc }</Text>
+              </View>
+            ))
+          :
+            <Text>"No badges eh?"</Text>
+          }
 
           <LogsTable
             title="Logs for today"
