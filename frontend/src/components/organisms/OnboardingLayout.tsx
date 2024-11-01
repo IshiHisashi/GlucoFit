@@ -48,7 +48,12 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
         <ProgressFilledTrack bg="#4800FF" />
       </Progress>
       <View px={16} flexDirection="column" height="100%">
-        <Text fontSize="$3xl" my={30}>
+        <Text
+          fontSize="$3xl"
+          my={30}
+          fontFamily="$bold"
+          color="$primaryIndigo90"
+        >
           {comment}
         </Text>
         {children}
@@ -73,9 +78,9 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
                   zIndex={0}
                 >
                   <Text
-                    color="#232323"
+                    color="$neutralDark80"
                     fontSize={14}
-                    fontWeight={700}
+                    fontFamily="$bold"
                     textAlign="center"
                   >
                     {supplimentalComment}

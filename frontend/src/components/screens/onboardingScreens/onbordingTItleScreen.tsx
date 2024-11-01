@@ -31,7 +31,7 @@ const OnboardingTitleScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
         <View flexDirection="column" gap={30}>
-          <Text textAlign="center">
+          <Text textAlign="center" fontFamily="$bold">
             Let's start your journey to better diabetic management
           </Text>
           <Button

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View } from "@gluestack-ui/themed";
+import { View, HStack } from "@gluestack-ui/themed";
 import OnbordingLayout from "../../organisms/OnboardingLayout";
-import Input from "../../atoms/onboarding/input";
+import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
@@ -34,13 +34,33 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="Nice to meet you, Angie! We would like to know more about you."
+        comment={`Nice to meet you, ${onboardingData.name}! We would like to know more about you.`}
         progressValue={25}
         onPress={handleNext}
       >
-        <View width="100%" flexDirection="column" gap={16}>
-          <Input labelText="Height" onChange={handleHeightChange} />
-          <Input labelText="Weight" onChange={handleWeightChange} />
+        <View flexDirection="column" gap={12}>
+          <HStack>
+            <InputFieldGeneral
+              label="Height"
+              value={height}
+              onChangeText={handleHeightChange}
+              isRequired={false}
+              isDisabled={false}
+              isInvalid={false}
+              unit="cm."
+            />
+          </HStack>
+          <HStack>
+            <InputFieldGeneral
+              label="Weight"
+              value={weight}
+              onChangeText={handleWeightChange}
+              isRequired={false}
+              isDisabled={false}
+              isInvalid={false}
+              unit="kls."
+            />
+          </HStack>
         </View>
       </OnbordingLayout>
     </View>
