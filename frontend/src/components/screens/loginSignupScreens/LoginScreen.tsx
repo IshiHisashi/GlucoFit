@@ -31,7 +31,7 @@ const LOGIN_MUTATION = gql`
 const LoginScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(false);
+  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(true);
   const navigation = useNavigation();
   const { LogIn, setUserId } = useContext(AuthContext);
   const [login, { loading, error }] = useMutation(LOGIN_MUTATION);

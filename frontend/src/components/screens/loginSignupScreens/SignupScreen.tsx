@@ -29,7 +29,7 @@ const SIGNUP_MUTATION = gql`
 const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(false);
+  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>(true);
   const [signUp, { loading, error }] = useMutation(SIGNUP_MUTATION);
   const { setUserId } = useContext(AuthContext);
 
