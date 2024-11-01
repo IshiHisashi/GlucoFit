@@ -40,7 +40,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
         <View width="100%" flexDirection="column" gap={16}>
           <HStack>
             <InputFieldGeneral
-              label="Height"
+              label="Medicibe Name"
               value={medicineName}
               onChangeText={setMedicineName}
               isRequired={true}
@@ -48,7 +48,12 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
               isInvalid={false}
             />
           </HStack>
-          <TimeInput onChange={setMedicineTime} value={medicineTime} />
+          <TimeInput
+            labelText="Time"
+            onChange={setMedicineTime}
+            value={medicineTime}
+            placeHolder="Add time"
+          />
         </View>
       </OnbordingLayout>
     </View>

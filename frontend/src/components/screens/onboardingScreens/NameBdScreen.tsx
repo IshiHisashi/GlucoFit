@@ -5,17 +5,22 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
 import { useOnboarding } from "../../../context/OnboardingContext";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
+import TimeInput from "../../atoms/TimeInput";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateInput from "../../atoms/DateInput";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
 const NameBdScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData, updateOnboardingData } = useOnboarding();
   const [name, setName] = useState<string | undefined>(
-    onboardingData.name || ""
+    onboardingData.name || undefined
   );
   const [birthday, setBirthday] = useState<Date | undefined>(
-    onboardingData.birthday || ""
+    onboardingData.birthday || undefined
   );
+
+  console.log(birthday);
 
   const handleNext = () => {
     updateOnboardingData({ name, birthday });
@@ -43,17 +48,12 @@ const NameBdScreen: React.FC<Props> = ({ navigation }) => {
               placeholder="Preferred Name"
             />
           </HStack>
-          <HStack>
-            <InputFieldGeneral
-              label="Birthday"
-              value={birthday}
-              onChangeText={setBirthday}
-              isRequired={false}
-              isDisabled={false}
-              isInvalid={false}
-              placeholder="MM / DD / YYYY"
-            />
-          </HStack>
+          <DateInput
+            labelText="Birthday"
+            onChange={setBirthday}
+            value={birthday}
+            placeHolder="MM / DD / YYYY"
+          />
         </View>
       </OnbordingLayout>
     </View>

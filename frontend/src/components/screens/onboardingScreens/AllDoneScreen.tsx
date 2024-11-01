@@ -1,12 +1,5 @@
 import React, { useContext } from "react";
-import {
-  View,
-  Text,
-  Button,
-  ButtonText,
-  Image,
-  Center,
-} from "@gluestack-ui/themed";
+import { View, Text, Image, Center } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { TabParamList } from "../../../types/navigation";
 import { useMutation } from "@apollo/client";
@@ -17,10 +10,9 @@ import {
   badges,
 } from "../../../utils/query/onboardingQuery";
 import { AuthContext } from "../../../context/AuthContext";
+import GlucoButton from "../../atoms/GlucoButton";
 
 type Props = NativeStackScreenProps<TabParamList>;
-
-// const userId = "6721d6a4c224096cb3192029";
 
 const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
   const { onboardingData } = useOnboarding();
@@ -73,24 +65,23 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           height={200}
           alt="Character is winking during the onboarding process"
         />
-        <Text fontWeight="bold" fontSize={28}>
-          You’re all set, Angie!
+        <Text color="$neutralDark90" fontFamily="$bold" fontSize={28}>
+          {`You’re all set, ${onboardingData.name}!`}
         </Text>
-        <Text textAlign="center">
+        <Text color="$neutralDark60" textAlign="center">
           You’re ready for personalized insights and a healthier journey with
           GlucoFit.
         </Text>
-        <View position="absolute" bottom={30} width="100%">
-          <Button
-            width="100%"
-            backgroundColor="#4800FF"
-            borderRadius={50}
-            onPress={handleOnPress}
-          >
-            <ButtonText>Go to home</ButtonText>
-          </Button>
-        </View>
       </Center>
+      <View position="absolute" bottom={30} width="100%" paddingHorizontal={28}>
+        <GlucoButton
+          buttonType="primary"
+          text="Continue"
+          isFocused={false}
+          isDisabled={false}
+          onPress={handleOnPress}
+        />
+      </View>
     </View>
   );
 };

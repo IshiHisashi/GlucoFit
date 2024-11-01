@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, Button, ButtonText, Image } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { OnboardingStackParamList } from "../../../types/navigation";
+import GlucoButton from "../../atoms/GlucoButton";
 
 type Props = NativeStackScreenProps<OnboardingStackParamList>;
 
@@ -30,17 +31,24 @@ const OnboardingTitleScreen: React.FC<Props> = ({ navigation }) => {
             alt="Character is winking during the onboarding process"
           />
         </View>
-        <View flexDirection="column" gap={30}>
-          <Text textAlign="center" fontFamily="$bold">
+        <View flexDirection="column" gap={63} mb={53}>
+          <Text
+            textAlign="center"
+            fontFamily="$bold"
+            color="$neutralDark90"
+            fontSize="$xl"
+          >
             Let's start your journey to better diabetic management
           </Text>
-          <Button
-            backgroundColor="#4800FF"
-            borderRadius={50}
-            onPress={() => navigation.navigate("NameBdScreen")}
-          >
-            <ButtonText>Continue</ButtonText>
-          </Button>
+          <View width="100%" paddingHorizontal={28}>
+            <GlucoButton
+              buttonType="primary"
+              text="Continue"
+              isFocused={false}
+              isDisabled={false}
+              onPress={() => navigation.navigate("NameBdScreen")}
+            />
+          </View>
         </View>
       </View>
     </>
