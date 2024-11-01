@@ -654,26 +654,6 @@ const HomeScreen: React.FC = () => {
             </Button>
           </VStack>
 
-          {
-            route.params?.badges[0] !== undefined && route.params?.badges[0] !== null
-          ?
-            route.params.badges.map(b => (
-              <View>
-                <Text>{ b.badge_name }</Text>
-                <Text>{ b.badge_desc }</Text>
-              </View>
-            ))
-          :
-            <Text>"No badges eh?"</Text>
-          }
-          {/* <Button
-            onPress={() => switchModal()}
-          >
-            <ButtonText>
-              Show modal
-            </ButtonText>
-          </Button> */}
-
           <LogsTable
             title="Logs for today"
             subTitle="date date"
