@@ -222,7 +222,7 @@ const GlucoseLogScreen: React.FC = () => {
         screen: "Home",
         params: {
           mutatedLog: "bsl",
-          insight: result.data.createTestResult.articlesToShow,
+          insight: result.data.createTestResult.articlesToShow[0],
           badges: result.data.createTestResult.badgesToShow
         },
       });

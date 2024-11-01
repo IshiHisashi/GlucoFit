@@ -13,9 +13,11 @@ import {
   Toast,
   ToastTitle,
   ToastDescription,
+  Modal,
+  Image,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect } from "react";
-import { useWindowDimensions } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { useWindowDimensions, Share, Alert } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
   useFocusEffect,
@@ -148,7 +150,8 @@ type RouteParams = {
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
-  console.log(route.name);
+  console.log(route);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const { width } = useWindowDimensions();
 
@@ -458,6 +461,36 @@ const HomeScreen: React.FC = () => {
     console.log("sorted:", logsForToday);
   }
 
+  const switchModal = () => {
+    setModalVisible(!modalVisible);
+  }
+
+  const moveToBadges = () => {
+    navigation.navigate("Tabs", {
+      screen: "Badges"
+    })
+  }
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          "You will be able to share things from hereeee!",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -467,6 +500,37 @@ const HomeScreen: React.FC = () => {
           navigation={navigation}
         />
         <VStack p="$4" space="md">
+          <Modal isOpen={modalVisible} onClose={() => switchModal()}>
+            <Modal.Content position="absolute" bottom={120} height="70%" borderRadius={20} backgroundColor="white">
+              <Modal.CloseButton />
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', flexGrow: 1}}
+              >
+                <Button onPress={switchModal} >
+                  <ButtonText>
+                    Close
+                  </ButtonText>
+                </Button>
+                <Text textAlign="center">Congratulations!</Text>
+                <Text textAlign="center">You unlocked a new badge</Text>
+                <View style={{ flexBasis: '100%', alignItems: 'center', marginBottom: 10 }}>
+                  <Image w={120} h={120} source={require("../../../assets/badgesWithIds/670b2125cb185c3905515da2.png")} alt="whatever the name" marginBottom={8} />
+                  <Text color="$black" fontSize={20} textAlign="center" >Streak Starter</Text>
+                  <Text textAlign="center">Description here. Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit nulla quos commodi culpa beatae error minus quam, quod aut quas.</Text>
+                </View>
+                <Button onPress={() => onShare()}>
+                  <ButtonText>
+                    Share
+                  </ButtonText>
+                </Button>
+                <Button onPress={() => moveToBadges()}>
+                  <ButtonText>
+                    View All Badges
+                  </ButtonText>
+                </Button>                
+              </View>
+            </Modal.Content>
+          </Modal>
           <VStack
             space="sm"
             borderWidth={1}
@@ -538,6 +602,13 @@ const HomeScreen: React.FC = () => {
           :
             <Text>"No badges eh?"</Text>
           }
+          <Button
+            onPress={() => switchModal()}
+          >
+            <ButtonText>
+              Show modal
+            </ButtonText>
+          </Button>
 
           <LogsTable
             title="Logs for today"
