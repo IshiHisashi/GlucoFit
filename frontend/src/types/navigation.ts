@@ -13,6 +13,7 @@ export type AppStackParamList = {
   MedicineLog: { mutatedLog?: string };
   GlucoseLog: { mutatedLog?: string };
   AutoLog: { mutatedLog?: string };
+  OfflineLogs: { mutatedLog?: string, mac: string };
   Note: {
     initialNote: { title: string; content: string };
     onSave: (note: { title: string; content: string }) => void;
@@ -20,6 +21,7 @@ export type AppStackParamList = {
   Article: { url: string; title: string };
   RecentInsights: undefined;
   Result: { BGL: number; fromAuto: boolean };
+  DeviceInfo: { mac: string; };
 };
 
 export type LoginSignupStackParamList = {
