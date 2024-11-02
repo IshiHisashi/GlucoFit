@@ -14,7 +14,7 @@ import {
   AddIcon,
   View,
 } from "@gluestack-ui/themed";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -158,6 +158,13 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
 
+  useEffect(() => {
+    if (fromAuto) {
+      setGlucoseLevel(BGL.toString());
+    }
+    
+  }, [])
+
   // GMT
   console.log(date);
   console.log(new Date().toLocaleString());
@@ -277,15 +284,16 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
           <VStack space="sm" alignItems="center">
             <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
-            <FormControl isRequired isDisabled={fromAuto ? true : false}>
+            <FormControl isRequired >
               <Input variant="outline" size="md" w="$56">
                 <InputField
                   value={fromAuto ? BGL.toString() : glucoseLevel}
-                  onChangeText={setGlucoseLevel}
+                  onChangeText={fromAuto ? undefined : setGlucoseLevel}
                   keyboardType="numeric"
                   // placeholder="Input your glucose level..."
                   // w="$full"
                   // textAlign="center"
+                  editable={!fromAuto} 
                   fontSize="$2xl"
                 />
                 <InputSlot pr="$3">

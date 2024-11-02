@@ -16,13 +16,12 @@ interface PickerOpenerRowProps {
 }
 
 const PickerOpenerRow: FC<PickerOpenerRowProps> = (props) => {
-  const { setShowPicker, text, value, independent = false, disabled } = props;
+  const { setShowPicker, text, value, independent = false, disabled = false } = props;
   return (
     <Pressable
       onPress={() => {
-        setShowPicker(true);
+        if (!disabled) setShowPicker(true);
       }}
-      disabled={disabled}
     >
       <HStack
         justifyContent="space-between"
