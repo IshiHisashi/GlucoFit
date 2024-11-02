@@ -1,6 +1,7 @@
 import React, { FC, useState, type PropsWithChildren } from "react";
 import {
   HStack,
+  VStack,
   View,
   Text,
   Input,
@@ -8,7 +9,7 @@ import {
   FormControl,
 } from "@gluestack-ui/themed";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { PlusCustom } from "../svgs/svgs";
+import { PlusCustom, PlusCircleCustom } from "../svgs/svgs";
 
 type TimeInputProps = {
   value?: string | Date;
@@ -86,13 +87,13 @@ const TimeInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
             placeholder={placeHolder}
             placeholderTextColor="$neutralDark60"
           />
-          <HStack alignItems="center" space="xs">
-            <PlusCustom
+          <VStack justifyContent="center" space="xs">
+            <PlusCircleCustom
               size={20}
               color={getIconColor()}
               onPress={() => setIsTimePickerOpen(true)}
             />
-          </HStack>
+          </VStack>
         </Input>
         <DateTimePickerModal
           isVisible={isTimePickerOpen}
