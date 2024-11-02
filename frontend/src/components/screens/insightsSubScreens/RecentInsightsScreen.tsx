@@ -13,7 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Animated, Dimensions } from "react-native";
 
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
@@ -61,6 +61,27 @@ const GET_RECENT_ARTICLES = gql`
   }
 `;
 
+const TOGGLE_FAVOURITE = gql`
+  mutation ToggleFavouriteArticle($userId: ID!, $articleId: ID!) {
+    toggleFavouriteArticle(userId: $userId, articleId: $articleId) {
+      message
+      badge {
+        id
+        badge_name
+        badge_desc
+        badge_image_address
+        criteria {
+          value
+          comparison
+          kind
+          note
+        }
+        last_updated
+      }
+    }
+  }
+`;
+
 type RecentInsightsScreenNavigationProps =
   NativeStackNavigationProp<AppStackParamList>;
 
@@ -97,6 +118,8 @@ const RecentInsightsScreen: FC = () => {
   );
   data && console.log("data:", data.getUserArticlesPagination);
   console.log("endCursor:", endCursor);
+
+  const [toggleFavouriteArticle] = useMutation(TOGGLE_FAVOURITE);
 
   useEffect(() => {
     const filteredArticles = articles.filter((obj) => {
@@ -170,7 +193,11 @@ const RecentInsightsScreen: FC = () => {
       description={item.article_desc}
       image={item.article_thumbnail_address}
       height={180}
-      onPressBookmark={() => {}}
+      onPressBookmark={() =>
+        toggleFavouriteArticle({
+          variables: { userId, articleId: item.id },
+        })
+      }
       onPressCard={() => openArticle(item.article_url, item.article_name)}
     />
   );

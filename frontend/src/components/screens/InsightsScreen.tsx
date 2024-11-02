@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Dimensions } from "react-native";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import GlucoButton from "../atoms/GlucoButton";
@@ -67,18 +67,40 @@ const GET_RECENT_ARTICLES = gql`
 `;
 
 const GET_ARTICLES = gql`
-  query GetArticles($cursor: String, $limit: Int) {
-    getAllArticlesPagination(cursor: $cursor, limit: $limit) {
+  query GetAllArticlesPagination($userId: ID!, $limit: Int, $cursor: String) {
+    getAllArticlesPagination(userId: $userId, limit: $limit, cursor: $cursor) {
       edges {
         article_genre
         article_name
         article_thumbnail_address
         article_url
         id
+        isFavorite
       }
       pageInfo {
-        endCursor
         hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+const TOGGLE_FAVOURITE = gql`
+  mutation ToggleFavouriteArticle($userId: ID!, $articleId: ID!) {
+    toggleFavouriteArticle(userId: $userId, articleId: $articleId) {
+      message
+      badge {
+        id
+        badge_name
+        badge_desc
+        badge_image_address
+        criteria {
+          value
+          comparison
+          kind
+          note
+        }
+        last_updated
       }
     }
   }
@@ -157,6 +179,8 @@ const InsightsScreen: React.FC = () => {
       "END CURSOR:",
       articlesData.getAllArticlesPagination.pageInfo.endCursor
     );
+
+  const [toggleFavouriteArticle] = useMutation(TOGGLE_FAVOURITE);
 
   useEffect(() => {
     const filteredArticles = articles.filter((obj) => {
@@ -330,7 +354,11 @@ const InsightsScreen: React.FC = () => {
                           image={obj.article_thumbnail_address}
                           width={250}
                           height={150}
-                          onPressBookmark={() => {}}
+                          onPressBookmark={() =>
+                            toggleFavouriteArticle({
+                              variables: { userId, articleId: obj.id },
+                            })
+                          }
                           onPressCard={() =>
                             openArticle(obj.article_url, obj.article_name)
                           }
@@ -356,7 +384,11 @@ const InsightsScreen: React.FC = () => {
                       image={obj.article_thumbnail_address}
                       width={itemWidth}
                       height={120}
-                      onPressBookmark={() => {}}
+                      onPressBookmark={() =>
+                        toggleFavouriteArticle({
+                          variables: { userId, articleId: obj.id },
+                        })
+                      }
                       onPressCard={() =>
                         openArticle(obj.article_url, obj.article_name)
                       }
@@ -380,7 +412,11 @@ const InsightsScreen: React.FC = () => {
                     image={obj.article_thumbnail_address}
                     width={itemWidth}
                     height={120}
-                    onPressBookmark={() => {}}
+                    onPressBookmark={() =>
+                      toggleFavouriteArticle({
+                        variables: { userId, articleId: obj.id },
+                      })
+                    }
                     onPressCard={() =>
                       openArticle(obj.article_url, obj.article_name)
                     }
