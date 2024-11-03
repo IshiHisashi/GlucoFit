@@ -48,7 +48,7 @@ const CarbsLogScreen: React.FC = () => {
   const navigation = useNavigation<CarbsLogScreenNavigationProps>();
 
   const [mealType, setMealType] = useState("");
-  const mealTypes = ["Breakfast", "Lunch", "Dinner", "Other"];
+  const mealTypes = ["Breakfast", "Lunch", "Dinner", "Others"];
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [carbs, setCarbs] = useState<string>("");

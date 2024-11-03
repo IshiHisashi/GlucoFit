@@ -36,7 +36,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       notificationColor: "#3D00D6",
     },
     Logs: {
-      bg: "$primaryIndigo5",
+      bg: "$neutralWhite",
       notificationColor: "#3D00D6",
     },
     BadgeScreen: {
@@ -63,49 +63,55 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       alignItems="center"
     >
       {routeName === "Home" && (
-        <VStack>
-          <Text fontSize="$3xl" fontFamily="$bold" color="$neutralWhite">
-            Hi, {userName || "there"}!
-          </Text>
-          <Text color="$neutralWhite">Today, {formattedDate}</Text>
-        </VStack>
-      )}
-
-      {(routeName === "Insights" ||
-        routeName === "Logs" ||
-        routeName === "BadgeScreen") && (
         <>
-          {/* <Input flex={1}>
-            <InputSlot pl="$3">
-              <SearchCustom color="#4800FF" />
-            </InputSlot>
-            <InputField
-              placeholder="Search"
-              value={searchValue}
-              onChangeText={onChangeSearchValue}
-            />
-          </Input> */}
+          <VStack>
+            <Text fontSize={28} fontFamily="$bold" color="$neutralWhite">
+              Hi, {userName || "there"}!
+            </Text>
+            <Text color="$neutralWhite" fontSize={13}>
+              Today, {formattedDate}
+            </Text>
+          </VStack>
 
-          <InputFieldGeneral
-            value={searchValue}
-            onChangeText={onChangeSearchValue}
-            isRequired={true}
-            isDisabled={false}
-            isInvalid={false}
-            placeholder="Search"
-            iconLeft={SearchCustom}
-          />
+          <HStack alignItems="center" space="md">
+            <Pressable onPress={() => {}}>
+              <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
+            </Pressable>
+            <Pressable onPress={() => navigation?.navigate("Temp")}>
+              <BellCustom color={currentStyle.notificationColor} size={27} />
+            </Pressable>
+          </HStack>
         </>
       )}
 
-      <HStack alignItems="center" space="md">
-        <Pressable onPress={() => {}}>
-          <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
-        </Pressable>
-        <Pressable onPress={() => navigation?.navigate("Temp")}>
-          <BellCustom color={currentStyle.notificationColor} size={27} />
-        </Pressable>
-      </HStack>
+      {routeName === "Logs" && (
+        <>
+          <View />
+          <Text
+            fontSize={20}
+            fontFamily="$bold"
+            color="$neutralDark90"
+            textAlign="center"
+          >
+            Logs History
+          </Text>
+          <View />
+        </>
+      )}
+
+      {(routeName === "Insights" ||
+        // routeName === "Logs" ||
+        routeName === "BadgeScreen") && (
+        <InputFieldGeneral
+          value={searchValue}
+          onChangeText={onChangeSearchValue}
+          isRequired={true}
+          isDisabled={false}
+          isInvalid={false}
+          placeholder="Search"
+          iconLeft={SearchCustom}
+        />
+      )}
     </HStack>
   );
 };
