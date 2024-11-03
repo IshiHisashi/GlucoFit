@@ -21,19 +21,29 @@ export interface IMedicineLog extends Document {
 const userMedicineListSchema = new Schema<IUserMedicineList>({
   user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   medicine_name: { type: String, required: true },
-  dosage: { type: String, required: true }, // Dosage amount
-  unit: { type: String, required: true },   // Unit for dosage (e.g., mg, mL)
-  log_timestamp: { type: Date, required: true }, 
+  dosage: { type: String }, // Dosage amount
+  unit: { type: String }, // Unit for dosage (e.g., mg, mL)
+  log_timestamp: { type: Date },
 });
 
 // Create schema for MedicineLog
 const medicineLogSchema = new Schema<IMedicineLog>({
   user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  medicine_id: { type: Schema.Types.ObjectId, ref: "UserMedicineList", required: true }, // Reference to UserMedicineList
+  medicine_id: {
+    type: Schema.Types.ObjectId,
+    ref: "UserMedicineList",
+    required: true,
+  }, // Reference to UserMedicineList
   amount: { type: Number, required: true }, // Actual amount taken
   log_timestamp: { type: Date, required: true },
 });
 
 // Export models
-export const UserMedicineList = model<IUserMedicineList>("UserMedicineList", userMedicineListSchema);
-export const MedicineLog = model<IMedicineLog>("MedicineLog", medicineLogSchema);
+export const UserMedicineList = model<IUserMedicineList>(
+  "UserMedicineList",
+  userMedicineListSchema
+);
+export const MedicineLog = model<IMedicineLog>(
+  "MedicineLog",
+  medicineLogSchema
+);

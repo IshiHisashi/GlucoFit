@@ -21,7 +21,13 @@ const Input: React.FC<PropsWithChildren<InputProps>> = (props) => {
         {labelText}
       </Text>
       <InputGlueStack px={10}>
-        <InputField onChangeText={onChange} autoCapitalize="none" />
+        <InputField
+          onChangeText={onChange}
+          autoCapitalize="none"
+          onPress={() => {
+            console.log("xxx");
+          }}
+        />
         {children}
       </InputGlueStack>
       {bottomText && <Text fontSize={12}>{bottomText}</Text>}

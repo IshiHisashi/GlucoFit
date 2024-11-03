@@ -8,21 +8,25 @@ export const userTypeDefs = gql`
   type Badge {
     badgeId: Badges
     achieved: Boolean
-    progress: Float
+    # progress: Float
   }
 
   # Input type for mutations
   input BadgeInput {
     badgeId: ID!
-    achieved: Boolean
-    progress: Float
+    achieved: Boolean!
+    # progress: Float
   }
 
   # User type for querying
   type User {
     id: ID!
     name: String!
+    birthday: Date
+    height: Float
+    weight: Float
     age: Int
+    has_onboarded: Boolean
     diabates_type: Int
     email: String
     phone_number: String
@@ -79,6 +83,10 @@ export const userTypeDefs = gql`
     createUser(
       name: String!
       age: Int
+      birthday: Date
+      height: Float
+      weight: Float
+      has_onboarded: Boolean
       diabates_type: Int
       email: String
       phone_number: String
@@ -100,7 +108,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [BadgeInput!]
+      badges: [BadgeInput!]!
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean
@@ -112,6 +120,10 @@ export const userTypeDefs = gql`
       id: ID!
       name: String
       age: Int
+      birthday: Date
+      height: Float
+      weight: Float
+      has_onboarded: Boolean
       diabates_type: Int
       email: String
       phone_number: String
@@ -133,7 +145,7 @@ export const userTypeDefs = gql`
       apple_health_id: String
       android_health_token: String
       android_health_id: String
-      badges: [BadgeInput!]
+      badges: [BadgeInput]
       read_article_history_array: [String]
       recently_read_articles_array: [String]
       active_status: Boolean

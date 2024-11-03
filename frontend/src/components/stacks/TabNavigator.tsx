@@ -8,7 +8,7 @@ import InsightsScreen from "../screens/InsightsScreen";
 import LogsScreen from "../screens/LogsScreen";
 import TestStack from "./TestStack";
 import BadgeScreen from "../screens/badgeScreens/BadgeScreen";
-import LoginSignupStack from "../navs/LoginSignupStack";
+import LoginSignupStack from "./LoginSignupStack";
 import {
   AnalysisCustom,
   AwardCustom,
@@ -75,11 +75,11 @@ const TabNavigator: React.FC = () => (
         headerShown: false,
       }}
     />
-    {/* <Tab.Screen
+    <Tab.Screen
       name="LoginSignupScreen"
       component={LoginSignupStack}
       options={{ title: "Welcome", headerShown: false }}
-    /> */}
+    />
   </Tab.Navigator>
 );
 
