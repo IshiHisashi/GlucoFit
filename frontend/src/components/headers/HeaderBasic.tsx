@@ -32,7 +32,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       notificationColor: "#ffffff",
     },
     Insights: {
-      bg: "$primaryIndigo5",
+      bg: "$neutralWhite",
       notificationColor: "#3D00D6",
     },
     Logs: {
