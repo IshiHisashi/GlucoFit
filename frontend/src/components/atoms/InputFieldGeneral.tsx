@@ -107,6 +107,7 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
         <InputField
           value={value}
           onChangeText={onChangeText}
+          autoCapitalize="none"
           type={type || "text"}
           keyboardType={keyboardType}
           placeholder={placeholder}

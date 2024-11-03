@@ -5,15 +5,15 @@ export const medicineLogTypeDefs = gql`
     id: ID!
     user_id: User!
     medicine_name: String!
-    dosage: String!
-    unit: String!
-    log_timestamp: Date!
+    dosage: String
+    unit: String
+    log_timestamp: Date
   }
 
   type MedicineLog {
     id: ID!
-    user_id: User!  # Linked to User
-    medicine_id: UserMedicineList!  # Linked to User's medicine list
+    user_id: User! # Linked to User
+    medicine_id: UserMedicineList! # Linked to User's medicine list
     amount: Float!
     log_timestamp: Date!
   }
@@ -21,9 +21,9 @@ export const medicineLogTypeDefs = gql`
     id: ID!
     user_id: User!
     medicine_name: String!
-    dosage: String!
-    unit: String!
-    log_timestamp: Date!
+    dosage: String
+    unit: String
+    log_timestamp: Date
   }
   extend type Query {
     getMedicineLog(id: ID!): MedicineLog
@@ -34,25 +34,24 @@ export const medicineLogTypeDefs = gql`
   }
 
   extend type Mutation {
-
-  addMedicineToList(
-    user_id: ID!
-    medicine_name: String!
-    dosage: String!
-    unit: String!
-    log_timestamp: Date!
-  ): UserMedicineList!
+    addMedicineToList(
+      user_id: ID!
+      medicine_name: String!
+      dosage: String
+      unit: String
+      log_timestamp: Date
+    ): UserMedicineList!
 
     createMedicineLog(
       user_id: ID!
-      medicine_id: ID!  # Refers to a specific medicine from UserMedicineList
+      medicine_id: ID! # Refers to a specific medicine from UserMedicineList
       amount: Float!
       log_timestamp: Date!
     ): MedicineLog!
 
     updateMedicineLog(
       id: ID!
-      medicine_id: ID  # Optional update to link a different medicine
+      medicine_id: ID # Optional update to link a different medicine
       amount: Float
       log_timestamp: Date
     ): MedicineLog!

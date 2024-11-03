@@ -18,6 +18,10 @@ import {
   GET_NUM_FAVORITE_ARTICLE,
 } from "../../utils/query/badgeProgressQuery";
 
+interface BadgeImages {
+  [key: string]: any; 
+}
+
 const userId = "670db268582e7e887e447288";
 
 const ProgressBudgeSection: React.FC = () => {
@@ -114,6 +118,19 @@ const ProgressBudgeSection: React.FC = () => {
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
+  // This will go away once we put the data online
+  const badgeImages: BadgeImages = {
+    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/670b2125cb185c3905515da2.png'),
+    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/670b2149cb185c3905515da4.png'),
+    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/670b215bcb185c3905515da6.png'),
+    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/670b216fcb185c3905515da8.png'),
+    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/670b2188cb185c3905515daa.png'),
+    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/670b2192cb185c3905515dac.png'),
+    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/670b2199cb185c3905515dae.png'),
+    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/670b21a8cb185c3905515db0.png'),
+    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/670b21b1cb185c3905515db2.png'),
+  };
+
   return (
     <View
       flexDirection="column"
@@ -151,21 +168,22 @@ const ProgressBudgeSection: React.FC = () => {
             borderColor="#ddd"
             borderBottomWidth={1}
             p={12}
+            flexWrap="nowrap"
           >
             <View flexDirection="row" gap={8} alignItems="center">
               {/* NEED TO BE REPLACED CONDITIONALLY */}
               <Image
-                source={require("../../../assets/badges/knowledgeSeeker.png")}
+                source={badgeImages[badge.badgeId.id]}
                 alt="Local Image"
                 w={40}
                 h={40}
               />
-              <View>
+              <View flexShrink={1} flexBasis={"$3/5"}>
                 <Text>{badge.badgeId.badge_name}</Text>
-                <Text fontSize={10}>badge description</Text>
+                <Text fontSize={10}>{badge.badgeId.badge_desc}</Text>
               </View>
             </View>
-            <Text>
+            <Text flexGrow={1} marginLeft={10}>
               {getBadgeProgress(badge.badgeId.badge_name)} /{" "}
               {badge.badgeId.criteria.value}
             </Text>

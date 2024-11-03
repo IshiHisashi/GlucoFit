@@ -14,28 +14,32 @@ interface Badge {
 export interface IUser extends Document {
   _id: ObjectId;
   name: string;
-  age: number;
+  birthday: Date; // added
+  height: number; // added
+  weight: number; // added
+  age: number; // no use
+  has_onboarded: boolean;
   diabates_type: number;
   email: string;
-  phone_number: string;
+  phone_number: string; //no use
   password: string;
   maximum_bsl: number;
   minimum_bsl: number;
-  bsl_goal: number;
-  footsteps_goal: number;
-  test_streak_counter: number;
-  stable_bsl_counter: number;
+  bsl_goal: number; // where to use?
+  footsteps_goal: number; // where to use?
+  test_streak_counter: number; // where to use?
+  stable_bsl_counter: number; // where to use?
   notification: boolean;
   latest_log_timestamp: Date;
   last_insulin_intake: Date;
-  iHealth_user_id: string;
-  iHealth_access_token: string;
-  iHealth_refresh_token: String;
-  ihealth_device_id: string;
-  apple_health_token: string;
-  apple_health_id: string;
-  android_health_token: string;
-  android_health_id: string;
+  iHealth_user_id: string; //no use
+  iHealth_access_token: string; //no use
+  iHealth_refresh_token: String; // no use
+  ihealth_device_id: string; // no use
+  apple_health_token: string; // no use
+  apple_health_id: string; // no use
+  android_health_token: string; // no use
+  android_health_id: string; // no use
   badges: Badge[];
   read_article_history_array: string[];
   recently_read_articles_array: string[];
@@ -50,9 +54,15 @@ const userSchema = new Schema<IUser>({
     type: String,
     // required: true,
   },
+  birthday: {
+    type: Date,
+  },
+  height: { type: Number },
+  weight: { type: Number },
   age: {
     type: Number,
   },
+  has_onboarded: { type: Boolean },
   diabates_type: { type: Number },
   email: { type: String },
   phone_number: { type: String },

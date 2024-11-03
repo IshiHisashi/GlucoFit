@@ -26,4 +26,17 @@ export type LoginSignupStackParamList = {
   LoginSignup: undefined;
   Login: undefined;
   Signup: undefined;
+  OnboardingStack: undefined;
+};
+
+export type OnboardingStackParamList = {
+  Onboarding: undefined;
+  NameBdScreen: undefined;
+  HightWeightScreen: undefined;
+  DiabeticTypeScreen: undefined;
+  MedicationScreen: undefined;
+  MedicineListScreen: undefined;
+  BslRangeScreen: undefined;
+  NotificationConfigScreen: undefined;
+  AllDoneScreen: undefined;
 };
