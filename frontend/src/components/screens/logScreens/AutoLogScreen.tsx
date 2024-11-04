@@ -290,7 +290,9 @@ const AutoLogScreen: React.FC = () => {
           variant="solid"
           marginHorizontal={20}
           borderRadius={20}
+          disabled={!(parsedRes?.action)}
           onPress={() => moveToOfflineLogs()}
+          backgroundColor={!(parsedRes?.action) ? "$coolGray300" : "$blue600" }
         >
           <ButtonIcon as={AddIcon} />
           <ButtonText>Upload offline readings</ButtonText>
