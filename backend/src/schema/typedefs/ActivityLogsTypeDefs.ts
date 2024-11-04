@@ -5,8 +5,8 @@ export const activityLogsTypeDefs = gql`
     id: ID!
     user_id: User! # Linked to User
     footsteps: Int
+    activityType: String!
     duration: Int!
-    time_period: String
     log_timestamp: Date!
   }
 
@@ -38,15 +38,16 @@ export const activityLogsTypeDefs = gql`
     createActivityLog(
       user_id: ID!
       footsteps: Int
+      activityType: String!
       duration: Int!
-      time_period: String
+      log_timestamp: Date
     ): Badges
 
     updateActivityLog(
       id: ID!
       footsteps: Int
+      activityType: String!
       duration: Int
-      time_period: String
       log_timestamp: Date
     ): ActivityLogs!
 
