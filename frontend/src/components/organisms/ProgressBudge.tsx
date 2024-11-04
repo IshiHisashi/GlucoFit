@@ -22,9 +22,13 @@ interface BadgeImages {
   [key: string]: any; 
 }
 
+interface ProgressBudgeSectionProps {
+  goToBadges: () => void;
+}
+
 const userId = "670db268582e7e887e447288";
 
-const ProgressBudgeSection: React.FC = () => {
+const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({goToBadges}) => {
   //-------------- TO AKI FROM ISHI ------------
   // Conditional fetching is done in the following idea.
   // 1) Fetch unachieved badges initially.
@@ -131,6 +135,10 @@ const ProgressBudgeSection: React.FC = () => {
     "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/670b21b1cb185c3905515db2.png'),
   };
 
+  const switchToBadges = () => {
+    goToBadges();
+  }
+
   return (
     <View
       flexDirection="column"
@@ -138,7 +146,8 @@ const ProgressBudgeSection: React.FC = () => {
       borderColor="#ccc"
       borderWidth={1}
       rounded={10}
-      padding={10}
+      padding={20}
+      backgroundColor="white"
     >
       {/* Section header */}
       <View

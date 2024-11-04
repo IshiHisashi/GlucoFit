@@ -19,7 +19,6 @@ export const GET_ALL_BADGES_INFO_BY_USER = gql`
           last_updated
         }
         achieved
-        progress
       }
     }
   }

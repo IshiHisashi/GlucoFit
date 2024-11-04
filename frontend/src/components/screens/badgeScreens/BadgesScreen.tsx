@@ -18,7 +18,6 @@ interface Badge {
     id: string;
     last_updated: string | null;
   };
-  progress: string | null;
 }
 
 interface BadgeImages {
@@ -135,7 +134,7 @@ const BadgesScreen: React.FC = () => {
   }, [data])
 
   return (
-    <View>
+    <View padding={16}>
       <Text fontSize={22} color="black" fontWeight={"$bold"}>Collected Badges</Text>
       {/* I have to make this part scrollable horizontally */}
       <HStack>

@@ -36,6 +36,16 @@ const getDayOfWeek = (dateString: string): string => {
 const WeeklyStreak: React.FC = () => {
   const [daysHasLog, setDaysHasLog] = useState<string[]>(["1", "2"]);
 
+  const today = new Date();
+  const sixDaysAgo = new Date(today);
+  sixDaysAgo.setDate(today.getDate() - 6);
+
+  function getMonthName(monthNumber: number) {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    return monthNames[monthNumber - 1] || "Invalid month";
+  }
+
   // fetch graphQL
   const { loading, error, data } = useQuery(GET_STREAK_LAST_7_DAYS, {
     variables: { userId: userId },
@@ -52,12 +62,16 @@ const WeeklyStreak: React.FC = () => {
       borderColor="#ccc"
       borderWidth={1}
       rounded={10}
-      padding={10}
+      padding={20}
       flexDirection="column"
-      gap={10}
+      backgroundColor="white"
+      marginTop={16}
     >
-      <Text fontSize={20} fontWeight="$semibold">
+      <Text fontSize={20} fontWeight="$semibold" color="black" >
         Weekly Streak
+      </Text>
+      <Text marginBottom={20}>
+        {getMonthName(sixDaysAgo.getMonth())} {sixDaysAgo.getDate()} - {getMonthName(today.getMonth())} {today.getDate()}. {today.getFullYear()}
       </Text>
       <View flexDirection="row" gap={10} justifyContent="space-between">
         {last7Days.map((day) => (
