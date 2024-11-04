@@ -38,7 +38,7 @@ const BadgeScreen: React.FC = () => {
           />
         </View>
         {/* I HAVE TO MODIFY THIS HEIGHT ISSUE HERE!!! JUST TEMPORARY MEASURE DONE */}
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {selectScreen === "streaks" && <StreakScreen changeScreen={screenToBadge}/>}
           {selectScreen === "badges" && <BadgesScreen />}
         </ScrollView>
