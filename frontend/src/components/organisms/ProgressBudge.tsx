@@ -22,9 +22,13 @@ interface BadgeImages {
   [key: string]: any; 
 }
 
+interface ProgressBudgeSectionProps {
+  goToBadges: () => void;
+}
+
 const userId = "670db268582e7e887e447288";
 
-const ProgressBudgeSection: React.FC = () => {
+const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({goToBadges}) => {
   //-------------- TO AKI FROM ISHI ------------
   // Conditional fetching is done in the following idea.
   // 1) Fetch unachieved badges initially.
@@ -120,16 +124,20 @@ const ProgressBudgeSection: React.FC = () => {
 
   // This will go away once we put the data online
   const badgeImages: BadgeImages = {
-    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/670b2125cb185c3905515da2.png'),
-    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/670b2149cb185c3905515da4.png'),
-    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/670b215bcb185c3905515da6.png'),
-    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/670b216fcb185c3905515da8.png'),
-    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/670b2188cb185c3905515daa.png'),
-    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/670b2192cb185c3905515dac.png'),
-    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/670b2199cb185c3905515dae.png'),
-    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/670b21a8cb185c3905515db0.png'),
-    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/670b21b1cb185c3905515db2.png'),
+    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/FirstStep.png'),
+    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/StreakStarter.png'),
+    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/HealthyHabit.png'),
+    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/EarlyBird.png'),
+    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/NightOwl.png'),
+    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/FitnessStreak.png'),
+    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/StableStar.png'),
+    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/CheckIn.png'),
+    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/KnowledgeSeeker.png'),
   };
+
+  const switchToBadges = () => {
+    goToBadges();
+  }
 
   return (
     <View
@@ -138,7 +146,8 @@ const ProgressBudgeSection: React.FC = () => {
       borderColor="#ccc"
       borderWidth={1}
       rounded={10}
-      padding={10}
+      padding={20}
+      backgroundColor="white"
     >
       {/* Section header */}
       <View

@@ -57,6 +57,7 @@ const CalenderStreak: React.FC = () => {
       borderWidth={1}
       rounded={10}
       padding={10}
+      backgroundColor="white"
     >
       <Calendar 
         // onDayPress={day => {

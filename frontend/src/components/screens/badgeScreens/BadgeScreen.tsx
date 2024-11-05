@@ -12,17 +12,16 @@ const BadgeScreen: React.FC = () => {
   const route = useRoute<{ key: string; name: string }>();
   const [selectScreen, setSelectScreen] = useState<string>("streaks");
 
+  const screenToBadge = () => {
+    setSelectScreen("badges");
+  }
+
   return (
     <SafeAreaView>
-      <View padding={16} flexDirection="column" gap={16}>
+      <View flexDirection="column" gap={16} backgroundColor="white" marginBottom={130}>
         {/* Header */}
-        <HeaderBasic
-          routeName={route.name as "BadgeScreen"}
-          searchValue={""}
-          onChangeSearchValue={() => {}}
-        />
         {/* Toggle */}
-        <View flexDirection="row" width="$full" gap={10}>
+        <View flexDirection="row" width="$full" gap={10} padding={16} paddingBottom={0}>
           <GlucoButton
             buttonType="primary"
             text="Streaks"
@@ -39,8 +38,8 @@ const BadgeScreen: React.FC = () => {
           />
         </View>
         {/* I HAVE TO MODIFY THIS HEIGHT ISSUE HERE!!! JUST TEMPORARY MEASURE DONE */}
-        <ScrollView h={"$4/5"}>
-          {selectScreen === "streaks" && <StreakScreen />}
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {selectScreen === "streaks" && <StreakScreen changeScreen={screenToBadge}/>}
           {selectScreen === "badges" && <BadgesScreen />}
         </ScrollView>
       </View>
