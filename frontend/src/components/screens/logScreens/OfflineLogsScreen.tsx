@@ -88,6 +88,10 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     return `${formattedDate}, ${formattedTime}`;
   }
 
+  const onSubmit = () => {
+    
+  }
+
   return (
     <SafeAreaView>
       <View height="$full">
