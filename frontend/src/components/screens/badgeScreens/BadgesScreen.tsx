@@ -197,7 +197,7 @@ const BadgesScreen: React.FC = () => {
       <Modal isOpen={modalVisible}>
         <View
           position="absolute"
-          bottom={95}
+          bottom={0}
           width="100%"
           height="40%"
           borderTopRightRadius={20}
@@ -205,44 +205,71 @@ const BadgesScreen: React.FC = () => {
           backgroundColor="white"
           style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', flexGrow: 1}}
         >
-          <Button onPress={switchModal}>
-            <Text>
-              Close
-            </Text>
-          </Button>
           {
             badgeData.map( b => {
               if ( b.badgeId.id === selectedBadge ) {
                 return (
-                  <View style={{ flexBasis: '100%', alignItems: 'center', marginBottom: 10 }}>
-                    <Image w={120} h={120} source={badgeImages[b.badgeId.id]} opacity={b.achieved ? 1 : 0.5} alt={b.badgeId.badge_name} marginBottom={8} />
-                    <Text color="$black" fontSize={20} textAlign="center" >{b.badgeId.badge_name}</Text>
-                    <Text textAlign="center" >{b.badgeId.badge_desc}</Text>
+                  <Center>
+                    { b.achieved === true ? 
+                        <Image 
+                          w={120} 
+                          h={120} 
+                          source={badgeImages[b.badgeId.id]} 
+                          alt={b.badgeId.badge_name} 
+                          marginBottom={8}
+                          position="absolute"
+                          top={-60}
+                          left="50%"
+                          transform={[{translateX: -60}]}
+                          borderRadius={60}
+                          borderWidth={4}
+                          borderColor="white"
+                        />
+                      :
+                        <Image 
+                          w={120} 
+                          h={120} 
+                          source={notAchieveBadgeImages[b.badgeId.id]} 
+                          alt={b.badgeId.badge_name} 
+                          marginBottom={8}
+                          position="absolute"
+                          top={-60}
+                          left="50%"
+                          transform={[{translateX: -60}]}
+                          borderRadius={60}
+                          borderWidth={4}
+                          borderColor="white"
+                        />
+                    }
+                    <Text color="$black" fontSize={20} textAlign="center" marginTop={40}>{b.badgeId.badge_name}</Text>
+                    <Text textAlign="center" marginTop={10} marginBottom={30}>{b.badgeId.badge_desc}</Text>
                     {b.achieved ? 
                       <View>
-                        <Text textAlign="center">
-                          Unlocked on
-                        </Text>
-                        <Text textAlign="center">
-                          09 / 25 / 2024 (hard coded)
+                        <Text textAlign="center" color="black">
+                          Unlocked
                         </Text>
                       </View>
                     :
                       <View>
-                        <Text textAlign="center">
+                        <Text textAlign="center" color="black">
                           Your Progress
                         </Text>
-                        <Text textAlign="center">
+                        <Text textAlign="center" color="black">
                           {getBadgeProgress(b.badgeId.badge_name)} / {b.badgeId.criteria.value}
                         </Text>
                       </View>
                     }
-                  </View>            
+                    <Button onPress={switchModal} marginTop={30}>
+                      <Text>
+                        Close
+                      </Text>
+                    </Button>
+                  </Center>            
                 )
               }
               return null
             })
-          } 
+          }
 
         </View>
       </Modal>
