@@ -10,6 +10,7 @@ type Note {
   type DietLog {
     id: ID! # This is the MongoDB _id
     userID: String!
+    time_period: String! 
     note: Note
     carbs: Float!
     log_timestamp: Date!
@@ -24,6 +25,7 @@ type Note {
   extend type Mutation {
     createDietLog(
       userID: String!
+      time_period: String! 
       note: NoteInput
       carbs: Float!
       log_timestamp: Date!
@@ -31,6 +33,7 @@ type Note {
 
     updateDietLog(
       id: ID! # Using MongoDB _id
+      time_period: String
       note: NoteInput
       carbs: Float
     ): DietLog!

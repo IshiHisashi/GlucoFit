@@ -5,7 +5,7 @@ import { ActivityLogs } from "../../model/ActivityLogs";
 import { DietLogs } from "../../model/DietLogs";
 import { MedicineLog, UserMedicineList } from "../../model/MedicineLog";
 import { User } from "../../model/User";
-import { Notification } from "../../model/Notification"; 
+import { Notification } from "../../model/Notification";
 import {
   calculateStreak,
   calculateStreakByTimeRange,
@@ -32,14 +32,14 @@ const checkMedicineLog = async (user_id: string) => {
     .exec();
 
   if (!latestMedicineLog) {
-    throw new Error("No medicine log found for this user");
+    return false;
   }
 
   // Extract the medicine_id from the latest medicine log
   const { medicine_id } = latestMedicineLog;
 
   if (!medicine_id) {
-    throw new Error("No medicine_id found in the latest medicine log");
+    return false;
   }
 
   // Get the relevant medicine from UserMedicineList using the medicine_id
@@ -49,9 +49,7 @@ const checkMedicineLog = async (user_id: string) => {
   }).exec();
 
   if (!userMedicine) {
-    throw new Error(
-      "No corresponding medicine found in the user's medicine list"
-    );
+    return false;
   }
 
   // Compare timestamps
@@ -506,16 +504,16 @@ const testResultsResolvers = {
                 user.recently_read_articles_array.push(medicationArticle._id);
                 await user.save(); // Save the user document with updated article array
               }
-               // Add notification for new medication insight
-          await Notification.create({
-            user_id: user._id,
-            title: "New Insights",
-            message: "Your latest medication insights are here",
-            description: "Medication insight notification",
-            type:"Medication",
-            read: false,
-            createdAt: new Date(),
-          });
+              // Add notification for new medication insight
+              await Notification.create({
+                user_id: user._id,
+                title: "New Insights",
+                message: "Your latest medication insights are here",
+                description: "Medication insight notification",
+                type: "Medication",
+                read: false,
+                createdAt: new Date(),
+              });
             }
           }
 
@@ -539,7 +537,7 @@ const testResultsResolvers = {
                 user_id: user._id,
                 title: "New Insights",
                 message: "Your latest food insights are here",
-                type:"Food",
+                type: "Food",
                 description: "Food insight notification",
                 read: false,
                 createdAt: new Date(),
@@ -565,16 +563,16 @@ const testResultsResolvers = {
                 user.recently_read_articles_array.push(wellnessArticle._id);
                 await user.save();
               }
-                // Add notification for new wellness insight
-          await Notification.create({
-            user_id: user._id,
-            title: "New Insights",
-            message: "Your latest wellness insights are here",
-            description: "Wellness insight notification",
-            type:"Wellness",
-            read: false,
-            createdAt: new Date(),
-          });
+              // Add notification for new wellness insight
+              await Notification.create({
+                user_id: user._id,
+                title: "New Insights",
+                message: "Your latest wellness insights are here",
+                description: "Wellness insight notification",
+                type: "Wellness",
+                read: false,
+                createdAt: new Date(),
+              });
             }
           }
         }

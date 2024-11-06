@@ -492,15 +492,15 @@ const HomeScreen: React.FC = () => {
   // Badge images key value pair for now. Will be replaced with by remote location.
 
   const badgeImages: BadgeImages = {
-    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/670b2125cb185c3905515da2.png'),
-    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/670b2149cb185c3905515da4.png'),
-    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/670b215bcb185c3905515da6.png'),
-    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/670b216fcb185c3905515da8.png'),
-    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/670b2188cb185c3905515daa.png'),
-    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/670b2192cb185c3905515dac.png'),
-    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/670b2199cb185c3905515dae.png'),
-    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/670b21a8cb185c3905515db0.png'),
-    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/670b21b1cb185c3905515db2.png'),
+    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/FirstStep.png'),
+    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/StreakStarter.png'),
+    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/HealthyHabit.png'),
+    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/EarlyBird.png'),
+    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/NightOwl.png'),
+    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/FitnessStreak.png'),
+    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/StableStar.png'),
+    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/CheckIn.png'),
+    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/KnowledgeSeeker.png'),
   };
 
   // When coming to Home and has badges param, open modal
@@ -553,7 +553,7 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#4800FF" }}>
+    <SafeAreaView style={{ backgroundColor: "#4800FF" }} showsVerticalScrollIndicator={false}>
       <HeaderBasic
         routeName={route.name as "Home"}
         userName={userData?.getUser.name}

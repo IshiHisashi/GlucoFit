@@ -20,7 +20,7 @@ const activityLogsResolvers = {
       return await ActivityLogs.find({ user_id }).populate("user_id");
     },
 
-    // Query to get total footsteps for today for a specific user
+    //Query to get total footsteps for today for a specific user
     getTotalStepsForToday: async (
       _: any,
       { user_id }: { user_id: string }
@@ -98,11 +98,13 @@ const activityLogsResolvers = {
       {
         user_id,
         footsteps,
+        activityType,
         duration,
         time_period,
       }: {
         user_id: string;
         footsteps: number;
+        activityType: 'Walking' | 'Running' | 'Cycling' | 'Others';
         duration: number;
         time_period: string;
       }
@@ -112,6 +114,7 @@ const activityLogsResolvers = {
         const newActivityLog = new ActivityLogs({
           user_id,
           footsteps,
+          activityType,
           duration,
           time_period,
           log_timestamp: new Date(),
