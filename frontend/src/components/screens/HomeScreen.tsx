@@ -553,13 +553,13 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <HeaderBasic
-          routeName={route.name as "Home"}
-          userName={userData?.getUser.name}
-          navigation={navigation}
-        />
+    <SafeAreaView style={{ backgroundColor: "#4800FF" }}>
+      <HeaderBasic
+        routeName={route.name as "Home"}
+        userName={userData?.getUser.name}
+        navigation={navigation}
+      />
+      <ScrollView bg="$neutralDark5" h="106%">
         <VStack p="$4" space="md">
         {route.params?.badges?.length > 0 && (
           <Modal isOpen={modalVisible} onClose={() => handleClose()} >
@@ -598,9 +598,10 @@ const HomeScreen: React.FC = () => {
           <VStack
             space="sm"
             borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
             p="$4"
+            bg="$neutralWhite"
           >
             <HStack alignItems="center" justifyContent="space-between">
               {bslResultsAndAverageData && (
@@ -639,19 +640,6 @@ const HomeScreen: React.FC = () => {
                 }
               />
             )}
-          </VStack>
-
-          <VStack
-            borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-            p="$4"
-          >
-            <Text>Do you want to connect your device?</Text>
-            <Text>Supporting text here</Text>
-            <Button>
-              <ButtonText>Connect device</ButtonText>
-            </Button>
           </VStack>
 
           <LogsTable
@@ -703,6 +691,8 @@ const HomeScreen: React.FC = () => {
             </HStack>
           </VStack>
         </VStack>
+
+        <View h={100} />
       </ScrollView>
     </SafeAreaView>
   );

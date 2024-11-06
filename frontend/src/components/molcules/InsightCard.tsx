@@ -1,7 +1,7 @@
 import { Box, HStack, VStack } from "@gluestack-ui/themed";
 import { Image } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   BookmarkCustom,
   BookmarkFilledCustom,
@@ -38,6 +38,8 @@ const InsightCard: FC<InsightCardProps> = (props) => {
     isFavourite,
   } = props;
 
+  const [isFavouriteOnUI, setIsFavouriteOnUI] = useState(isFavourite);
+
   return (
     <Pressable
       key={key}
@@ -62,9 +64,12 @@ const InsightCard: FC<InsightCardProps> = (props) => {
           bg="$neutralDark5"
           p="$2.5"
           borderRadius="$full"
-          onPress={onPressBookmark}
+          onPress={() => {
+            onPressBookmark();
+            setIsFavouriteOnUI(!isFavouriteOnUI);
+          }}
         >
-          {isFavourite ? (
+          {isFavouriteOnUI ? (
             <BookmarkFilledCustom size={20} />
           ) : (
             <BookmarkCustom color="#5E5E5E" size={20} />

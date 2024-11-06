@@ -52,6 +52,7 @@ const GET_RECENT_ARTICLES = gql`
         article_thumbnail_address
         article_name
         article_desc
+        isFavorite
       }
       pageInfo {
         endCursor
@@ -106,6 +107,7 @@ const RecentInsightsScreen: FC = () => {
         cursor: null,
         classification: "recent",
       },
+      fetchPolicy: "network-only",
       onCompleted: (data) => {
         setArticles((prev) => [
           ...prev,
@@ -196,9 +198,23 @@ const RecentInsightsScreen: FC = () => {
       onPressBookmark={() =>
         toggleFavouriteArticle({
           variables: { userId, articleId: item.id },
+          refetchQueries: [
+            {
+              query: GET_RECENT_ARTICLES,
+              variables: {
+                userId: userId,
+                limit: 5,
+                cursor: null,
+                classification: "recent",
+              },
+              fetchPolicy: "network-only",
+            },
+          ],
+          awaitRefetchQueries: true,
         })
       }
       onPressCard={() => openArticle(item.article_url, item.article_name)}
+      isFavourite={item.isFavorite}
     />
   );
 

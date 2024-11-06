@@ -247,7 +247,7 @@ const LogsScreen: React.FC = () => {
       const processedLogs = logs.map((obj) => {
         switch (obj.__typename) {
           case "TestResults": {
-            const threshold = bslForXData.getAverageBslXAxisValue || 5.6;
+            const threshold = bslForXData?.getAverageBslXAxisValue || 5.6;
             const icon =
               obj.bsl > threshold ? (
                 <IconForGlucoseLogSad />
@@ -399,7 +399,7 @@ const LogsScreen: React.FC = () => {
         })
       );
     }
-  }, [logs, bslForXData.getAverageBslXAxisValue, navigation, currentFilter]);
+  }, [logs, bslForXData?.getAverageBslXAxisValue, navigation, currentFilter]);
 
   const loadMoreLogs = useCallback(async () => {
     if (!hasMore || loading) return;
