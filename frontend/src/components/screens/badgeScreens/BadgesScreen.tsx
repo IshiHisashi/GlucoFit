@@ -1,10 +1,9 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { View, Text, Image, Modal, Button, Pressable, HStack, ScrollView, Center, } from "@gluestack-ui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
 import { GET_NUM_FAVORITE_ARTICLE, QUERY_FOR_STREAK_ACTIVITYLOGS, QUERY_FOR_STREAK_BY_TIME_RANGE, QUERY_FOR_STREAK_STARTER } from "../../../utils/query/badgeProgressQuery";
-
-const userId = "670db268582e7e887e447288";
+import { AuthContext } from "../../../context/AuthContext";
 
 interface Badge {
   __typename: string;
@@ -28,6 +27,7 @@ const BadgesScreen: React.FC = () => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<String>();
+  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
 
   const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
     variables: { getUserBadgeId: userId },

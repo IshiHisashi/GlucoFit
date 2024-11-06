@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, Image } from "@gluestack-ui/themed";
 import { useQuery } from "@apollo/client";
 import { GET_STREAK_LAST_7_DAYS } from "../../utils/query/badgeProgressQuery";
-
-const userId = "670db268582e7e887e447288";
+import { AuthContext } from "../../context/AuthContext";
 
 const getLast7Days = (): string[] => {
   const days = [];
   const today = new Date();
+  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
 
   for (let i = 6; i >= 0; i--) {
     const currentDay = new Date(today);

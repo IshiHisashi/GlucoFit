@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import {
   QUERY_FOR_STREAK_ACTIVITYLOGS,
   GET_NUM_FAVORITE_ARTICLE,
 } from "../../utils/query/badgeProgressQuery";
+import { AuthContext } from "../../context/AuthContext";
 
 interface BadgeImages {
   [key: string]: any; 
@@ -26,9 +27,9 @@ interface ProgressBudgeSectionProps {
   goToBadges: () => void;
 }
 
-const userId = "670db268582e7e887e447288";
-
 const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({goToBadges}) => {
+  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+
   //-------------- TO AKI FROM ISHI ------------
   // Conditional fetching is done in the following idea.
   // 1) Fetch unachieved badges initially.
