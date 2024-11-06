@@ -65,6 +65,14 @@ export const testResultsTypeDefs = gql`
       confirmed: Boolean
     ): TestResultResponse
 
+    createOfflineTestResult(
+      user_id: ID!
+      bsl: Float!
+      log_timestamp: Date
+      time_period: String
+      confirmed: Boolean
+    ): Boolean
+
     updateTestResult(
       id: ID!
       bsl: Float

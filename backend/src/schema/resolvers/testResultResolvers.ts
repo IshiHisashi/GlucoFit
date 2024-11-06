@@ -709,6 +709,36 @@ const testResultsResolvers = {
         throw new Error("Failed to create test result and fetch insights");
       }
     },
+    createOfflineTestResult: async (
+      _: any,
+      {
+        user_id,
+        bsl,
+        time_period,
+        log_timestamp,
+        confirmed,
+      }: {
+        user_id: string;
+        bsl: number;
+        time_period: string;
+        log_timestamp: Date;
+        confirmed: boolean;
+      }
+    ): Promise<void> => {
+      const newTestResult = new TestResults({
+        user_id,
+        bsl,
+        log_timestamp,
+        time_period,
+        confirmed,
+      });
+      await newTestResult.save();
+      try {
+      } catch (err) {
+        console.error("Error creating offline test result:", err);
+        throw new Error("Failed to create offline test result");
+      }
+    },
     updateTestResult: async (
       _: any,
       { id, ...args }: { id: string } & Partial<ITestResults>
