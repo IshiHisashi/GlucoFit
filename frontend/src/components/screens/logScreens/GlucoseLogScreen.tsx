@@ -1,5 +1,5 @@
 import { Image, VStack, View, ScrollView } from "@gluestack-ui/themed";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -14,69 +14,23 @@ import Sheet from "../../organisms/Sheet";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import InputFieldForBsl from "../../atoms/InputFieldForBsl";
 import LogsTable from "../../organisms/LogsTable";
-
-// hardcode for now
-const userId = "670db268582e7e887e447288";
-
-// const GET_TEST_RESULTS = gql`
-//   query GetTestResults {
-//     getTestResults {
-//       bsl
-//       confirmed
-//       id
-//       log_timestamp
-//       note {
-//         note_description
-//       }
-//     }
-//   }
-// `;
-
-// const CREATE_TEST_RESULT = gql`
-//   mutation CreateTestResult(
-//     $userId: ID!
-//     $bsl: Float!
-//     $note: NoteInput!
-//     $logTimestamp: Date
-//     $timePeriod: String
-//     $confirmed: Boolean
-//   ) {
-//     createTestResult(
-//       user_id: $userId
-//       bsl: $bsl
-//       note: $note
-//       log_timestamp: $logTimestamp
-//       time_period: $timePeriod
-//       confirmed: $confirmed
-//     ) {
-//       bsl
-//       confirmed
-//       log_timestamp
-//       note {
-//         content
-//         note_description
-//         title
-//       }
-//       time_period
-//     }
-//   }
-// `;
+import { AuthContext } from "../../../context/AuthContext";
 
 const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
   mutation Mutation(
-    $userId: ID!, 
-    $bsl: Float!, 
-    $note: NoteInput, 
-    $logTimestamp: Date, 
-    $timePeriod: String, 
+    $userId: ID!
+    $bsl: Float!
+    $note: NoteInput
+    $logTimestamp: Date
+    $timePeriod: String
     $confirmed: Boolean
   ) {
     createTestResult(
-      user_id: $userId, 
-      bsl: $bsl, 
-      note: $note, 
-      log_timestamp: $logTimestamp, 
-      time_period: $timePeriod, 
+      user_id: $userId
+      bsl: $bsl
+      note: $note
+      log_timestamp: $logTimestamp
+      time_period: $timePeriod
       confirmed: $confirmed
     ) {
       articlesToShow {
@@ -131,6 +85,7 @@ type GlucoseLogScreenNavigationProps = NativeStackNavigationProp<
 
 const GlucoseLogScreen: React.FC = () => {
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
+  const { userId } = useContext(AuthContext);
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
@@ -223,7 +178,7 @@ const GlucoseLogScreen: React.FC = () => {
         params: {
           mutatedLog: "bsl",
           insight: result.data.createTestResult.articlesToShow[0],
-          badges: result.data.createTestResult.badgesToShow
+          badges: result.data.createTestResult.badgesToShow,
         },
       });
     } catch (e) {
