@@ -210,22 +210,37 @@ const BadgesScreen: React.FC = () => {
               if ( b.badgeId.id === selectedBadge ) {
                 return (
                   <Center>
-                    <Image 
-                      w={120} 
-                      h={120} 
-                      source={badgeImages[b.badgeId.id]} 
-                      opacity={b.achieved ? 1 : 0.5} 
-                      alt={b.badgeId.badge_name} 
-                      marginBottom={8}
-                      position="absolute"
-                      top={-60}
-                      left="50%"
-                      transform={[{translateX: -60}]}
-                      borderRadius={60}
-                      borderWidth={4}
-                      borderColor="black"
-
-                    />
+                    { b.achieved === true ? 
+                        <Image 
+                          w={120} 
+                          h={120} 
+                          source={badgeImages[b.badgeId.id]} 
+                          alt={b.badgeId.badge_name} 
+                          marginBottom={8}
+                          position="absolute"
+                          top={-60}
+                          left="50%"
+                          transform={[{translateX: -60}]}
+                          borderRadius={60}
+                          borderWidth={4}
+                          borderColor="white"
+                        />
+                      :
+                        <Image 
+                          w={120} 
+                          h={120} 
+                          source={notAchieveBadgeImages[b.badgeId.id]} 
+                          alt={b.badgeId.badge_name} 
+                          marginBottom={8}
+                          position="absolute"
+                          top={-60}
+                          left="50%"
+                          transform={[{translateX: -60}]}
+                          borderRadius={60}
+                          borderWidth={4}
+                          borderColor="white"
+                        />
+                    }
                     <Text color="$black" fontSize={20} textAlign="center" marginTop={40}>{b.badgeId.badge_name}</Text>
                     <Text textAlign="center" marginTop={10} marginBottom={30}>{b.badgeId.badge_desc}</Text>
                     {b.achieved ? 
