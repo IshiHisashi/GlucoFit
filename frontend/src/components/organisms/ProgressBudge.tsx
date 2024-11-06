@@ -20,15 +20,17 @@ import {
 import { AuthContext } from "../../context/AuthContext";
 
 interface BadgeImages {
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 interface ProgressBudgeSectionProps {
   goToBadges: () => void;
 }
 
-const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({goToBadges}) => {
-  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
+  goToBadges,
+}) => {
+  const { userId } = useContext(AuthContext);
 
   //-------------- TO AKI FROM ISHI ------------
   // Conditional fetching is done in the following idea.
@@ -125,20 +127,20 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({goToBadges})
 
   // This will go away once we put the data online
   const badgeImages: BadgeImages = {
-    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/FirstStep.png'),
-    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/StreakStarter.png'),
-    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/HealthyHabit.png'),
-    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/EarlyBird.png'),
-    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/NightOwl.png'),
-    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/FitnessStreak.png'),
-    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/StableStar.png'),
-    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/CheckIn.png'),
-    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/KnowledgeSeeker.png'),
+    "670b2125cb185c3905515da2": require("../../../assets/badgesWithIds/FirstStep.png"),
+    "670b2149cb185c3905515da4": require("../../../assets/badgesWithIds/StreakStarter.png"),
+    "670b215bcb185c3905515da6": require("../../../assets/badgesWithIds/HealthyHabit.png"),
+    "670b216fcb185c3905515da8": require("../../../assets/badgesWithIds/EarlyBird.png"),
+    "670b2188cb185c3905515daa": require("../../../assets/badgesWithIds/NightOwl.png"),
+    "670b2192cb185c3905515dac": require("../../../assets/badgesWithIds/FitnessStreak.png"),
+    "670b2199cb185c3905515dae": require("../../../assets/badgesWithIds/StableStar.png"),
+    "670b21a8cb185c3905515db0": require("../../../assets/badgesWithIds/CheckIn.png"),
+    "670b21b1cb185c3905515db2": require("../../../assets/badgesWithIds/KnowledgeSeeker.png"),
   };
 
   const switchToBadges = () => {
     goToBadges();
-  }
+  };
 
   return (
     <View

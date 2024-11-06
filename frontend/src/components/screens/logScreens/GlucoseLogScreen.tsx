@@ -18,19 +18,19 @@ import { AuthContext } from "../../../context/AuthContext";
 
 const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
   mutation Mutation(
-    $userId: ID!, 
-    $bsl: Float!, 
-    $note: NoteInput, 
-    $logTimestamp: Date, 
-    $timePeriod: String, 
+    $userId: ID!
+    $bsl: Float!
+    $note: NoteInput
+    $logTimestamp: Date
+    $timePeriod: String
     $confirmed: Boolean
   ) {
     createTestResult(
-      user_id: $userId, 
-      bsl: $bsl, 
-      note: $note, 
-      log_timestamp: $logTimestamp, 
-      time_period: $timePeriod, 
+      user_id: $userId
+      bsl: $bsl
+      note: $note
+      log_timestamp: $logTimestamp
+      time_period: $timePeriod
       confirmed: $confirmed
     ) {
       articlesToShow {
@@ -85,7 +85,7 @@ type GlucoseLogScreenNavigationProps = NativeStackNavigationProp<
 
 const GlucoseLogScreen: React.FC = () => {
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
-  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
@@ -178,7 +178,7 @@ const GlucoseLogScreen: React.FC = () => {
         params: {
           mutatedLog: "bsl",
           insight: result.data.createTestResult.articlesToShow[0],
-          badges: result.data.createTestResult.badgesToShow
+          badges: result.data.createTestResult.badgesToShow,
         },
       });
     } catch (e) {

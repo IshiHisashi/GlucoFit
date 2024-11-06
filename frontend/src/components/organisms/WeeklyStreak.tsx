@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/AuthContext";
 const getLast7Days = (): string[] => {
   const days = [];
   const today = new Date();
-  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   for (let i = 6; i >= 0; i--) {
     const currentDay = new Date(today);
@@ -41,7 +41,20 @@ const WeeklyStreak: React.FC = () => {
   sixDaysAgo.setDate(today.getDate() - 6);
 
   function getMonthName(monthNumber: number) {
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
     return monthNames[monthNumber - 1] || "Invalid month";
   }
@@ -50,7 +63,7 @@ const WeeklyStreak: React.FC = () => {
   const { loading, error, data } = useQuery(GET_STREAK_LAST_7_DAYS, {
     variables: { userId: userId },
   });
-  console.log(data)
+  console.log(data);
 
   useEffect(() => {
     setDaysHasLog(data?.getTestResultsLast7Days);
@@ -67,17 +80,33 @@ const WeeklyStreak: React.FC = () => {
       backgroundColor="white"
       marginTop={16}
     >
-      <Text fontSize={20} fontWeight="$semibold" color="black" >
+      <Text fontSize={20} fontWeight="$semibold" color="black">
         Weekly Streak
       </Text>
       <Text marginBottom={20}>
-        {getMonthName(sixDaysAgo.getMonth())} {sixDaysAgo.getDate()} - {getMonthName(today.getMonth())} {today.getDate()}. {today.getFullYear()}
+        {getMonthName(sixDaysAgo.getMonth())} {sixDaysAgo.getDate()} -{" "}
+        {getMonthName(today.getMonth())} {today.getDate()}.{" "}
+        {today.getFullYear()}
       </Text>
       <View flexDirection="row" gap={10} justifyContent="space-between">
         {last7Days.map((day) => (
           <View key={day}>
             <Text textAlign="center">
-              {daysHasLog?.includes(day) ? <Image width={32} height={32} source={require("../../../assets/icons/check.png")} alt="checked" /> : <Image width={32} height={32} source={require("../../../assets/icons/blank_check.png")} alt="not checked" />}
+              {daysHasLog?.includes(day) ? (
+                <Image
+                  width={32}
+                  height={32}
+                  source={require("../../../assets/icons/check.png")}
+                  alt="checked"
+                />
+              ) : (
+                <Image
+                  width={32}
+                  height={32}
+                  source={require("../../../assets/icons/blank_check.png")}
+                  alt="not checked"
+                />
+              )}
             </Text>
             <Text textAlign="center">{getDayOfWeek(day).substring(0, 3)}</Text>
           </View>

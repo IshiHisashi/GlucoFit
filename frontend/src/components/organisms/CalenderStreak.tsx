@@ -1,21 +1,24 @@
 import { useQuery } from "@apollo/client";
 import { View, Text } from "@gluestack-ui/themed";
 import React, { useContext, useEffect, useState } from "react";
-import { Calendar } from 'react-native-calendars';
+import { Calendar } from "react-native-calendars";
 import { GET_ALL_DATES_WITH_LOG_IN_A_MONTH } from "../../utils/query/badgesScreenQueries";
 import { AuthContext } from "../../context/AuthContext";
 
 interface LogDates {
-  getTestResultsDatesByMonth: String[]
+  getTestResultsDatesByMonth: String[];
 }
 
 const CalenderStreak: React.FC = () => {
-
   const [logDates, setLogDates] = useState<LogDates[]>([]);
-  const [markedDates, setMarkedDates] = useState<any[]>([])
-  const [currentMonth, setCurrentMonth] = useState<Number>(new Date().getMonth() + 1);
-  const [currentYear, setCurrentYear] = useState<Number>(new Date().getFullYear());
-  const { userId, LogIn, setOnboardingComplete } = useContext(AuthContext);
+  const [markedDates, setMarkedDates] = useState<any[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<Number>(
+    new Date().getMonth() + 1
+  );
+  const [currentYear, setCurrentYear] = useState<Number>(
+    new Date().getFullYear()
+  );
+  const { userId } = useContext(AuthContext);
 
   const handleMonthChange = (month: any) => {
     console.log(month);
@@ -37,18 +40,20 @@ const CalenderStreak: React.FC = () => {
   useEffect(() => {
     if (data?.getTestResultsDatesByMonth) {
       setLogDates(data.getTestResultsDatesByMonth);
-      console.log('logdates', data.getTestResultsDatesByMonth)      
+      console.log("logdates", data.getTestResultsDatesByMonth);
     }
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
-    const formattedDate = logDates.reduce((acc, date) => {
-      acc[date] = { selected: true, selectedColor: 'orange'  }; // Highlighted date with a dot
-      return acc;
-    }, {} as Record<string, any>);
+    const formattedDate = logDates.reduce(
+      (acc, date) => {
+        acc[date] = { selected: true, selectedColor: "orange" }; // Highlighted date with a dot
+        return acc;
+      },
+      {} as Record<string, any>
+    );
     setMarkedDates(formattedDate);
-  }, [logDates])
-
+  }, [logDates]);
 
   return (
     <View
@@ -60,13 +65,13 @@ const CalenderStreak: React.FC = () => {
       padding={10}
       backgroundColor="white"
     >
-      <Calendar 
+      <Calendar
         // onDayPress={day => {
         //   setSelected(day.dateString);
         // }}
         onMonthChange={handleMonthChange}
         markedDates={{
-          ...markedDates
+          ...markedDates,
         }}
       />
     </View>
