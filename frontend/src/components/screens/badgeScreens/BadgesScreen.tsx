@@ -272,7 +272,7 @@ const BadgesScreen: React.FC = () => {
       <Modal isOpen={modalVisible}>
         <View
           position="absolute"
-          bottom={95}
+          bottom={0}
           width="100%"
           height="40%"
           borderTopRightRadius={20}
