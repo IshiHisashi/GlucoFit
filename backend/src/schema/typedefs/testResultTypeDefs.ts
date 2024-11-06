@@ -73,6 +73,8 @@ export const testResultsTypeDefs = gql`
       confirmed: Boolean
     ): Boolean
 
+    rewardBadgeOffline(user_id: ID!): [Badges!]!
+
     updateTestResult(
       id: ID!
       bsl: Float
