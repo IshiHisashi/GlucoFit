@@ -775,113 +775,108 @@ const testResultsResolvers = {
               badgesToShow.push(badgeDetails);
             }
           }
-        } else {
-          if (unachivedBadgeArr.includes("670b2149cb185c3905515da4")) {
-            // Badge | Starter Streek
-            // 1. Calculate streak number
-            const streakCount = await calculateStreak(user_id, false);
-            // 2. If streak satisfies, update the badge status
-            if (streakCount >= 7) {
-              await updateUserBadgeById(
-                user_id,
-                "670b2149cb185c3905515da4",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b2149cb185c3905515da4"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
-            }
-          }
-          if (unachivedBadgeArr.includes("670b215bcb185c3905515da6")) {
-            // Badge | Healty Habit
-            const streakCount = await calculateStreak(user_id, true);
-            if (streakCount >= 5) {
-              await updateUserBadgeById(
-                user_id,
-                "670b215bcb185c3905515da6",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b215bcb185c3905515da6"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
-            }
-          }
-          if (unachivedBadgeArr.includes("670b216fcb185c3905515da8")) {
-            // Badge | Early Bird
-            const streakCount = await calculateStreakByTimeRange(user_id, 6, 8);
-            if (streakCount >= 10) {
-              await updateUserBadgeById(
-                user_id,
-                "670b216fcb185c3905515da8",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b216fcb185c3905515da8"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
-            }
-          }
-          if (unachivedBadgeArr.includes("670b2188cb185c3905515daa")) {
-            // Badge | Night Owl
-            const streakCount = await calculateStreakByTimeRange(
+        }
+        if (unachivedBadgeArr.includes("670b2149cb185c3905515da4")) {
+          // Badge | Starter Streek
+          // 1. Calculate streak number
+          const streakCount = await calculateStreak(user_id, false);
+          // 2. If streak satisfies, update the badge status
+          if (streakCount >= 7) {
+            await updateUserBadgeById(
               user_id,
-              20,
-              24
+              "670b2149cb185c3905515da4",
+              true
             );
-            if (streakCount >= 10) {
-              await updateUserBadgeById(
-                user_id,
-                "670b2188cb185c3905515daa",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b2188cb185c3905515daa"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
+            const badgeDetails = (await Badges.findById(
+              "670b2149cb185c3905515da4"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
             }
           }
-          if (unachivedBadgeArr.includes("670b2199cb185c3905515dae")) {
-            // Badge | GlucoseGulu
-            const streakCount = await calculateStreak(user_id, true);
-            if (streakCount >= 30) {
-              await updateUserBadgeById(
-                user_id,
-                "670b2199cb185c3905515dae",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b2199cb185c3905515dae"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
+        }
+        if (unachivedBadgeArr.includes("670b215bcb185c3905515da6")) {
+          // Badge | Healty Habit
+          const streakCount = await calculateStreak(user_id, true);
+          if (streakCount >= 5) {
+            await updateUserBadgeById(
+              user_id,
+              "670b215bcb185c3905515da6",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b215bcb185c3905515da6"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
             }
           }
-          if (unachivedBadgeArr.includes("670b21a8cb185c3905515db0")) {
-            // Badge | Check-in Champion
-            const streakCount = await calculateStreak(user_id, false);
-            if (streakCount >= 100) {
-              await updateUserBadgeById(
-                user_id,
-                "670b21a8cb185c3905515db0",
-                true
-              );
-              const badgeDetails = (await Badges.findById(
-                "670b21a8cb185c3905515db0"
-              )) as IBadges | null;
-              if (badgeDetails) {
-                badgesToShow.push(badgeDetails);
-              }
+        }
+        if (unachivedBadgeArr.includes("670b216fcb185c3905515da8")) {
+          // Badge | Early Bird
+          const streakCount = await calculateStreakByTimeRange(user_id, 6, 8);
+          if (streakCount >= 10) {
+            await updateUserBadgeById(
+              user_id,
+              "670b216fcb185c3905515da8",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b216fcb185c3905515da8"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b2188cb185c3905515daa")) {
+          // Badge | Night Owl
+          const streakCount = await calculateStreakByTimeRange(user_id, 20, 24);
+          if (streakCount >= 10) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2188cb185c3905515daa",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2188cb185c3905515daa"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b2199cb185c3905515dae")) {
+          // Badge | GlucoseGulu
+          const streakCount = await calculateStreak(user_id, true);
+          if (streakCount >= 30) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2199cb185c3905515dae",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2199cb185c3905515dae"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b21a8cb185c3905515db0")) {
+          // Badge | Check-in Champion
+          const streakCount = await calculateStreak(user_id, false);
+          if (streakCount >= 100) {
+            await updateUserBadgeById(
+              user_id,
+              "670b21a8cb185c3905515db0",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b21a8cb185c3905515db0"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
             }
           }
         }
