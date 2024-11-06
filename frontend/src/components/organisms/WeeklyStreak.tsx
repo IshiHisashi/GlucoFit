@@ -7,7 +7,6 @@ import { AuthContext } from "../../context/AuthContext";
 const getLast7Days = (): string[] => {
   const days = [];
   const today = new Date();
-  const { userId } = useContext(AuthContext);
 
   for (let i = 6; i >= 0; i--) {
     const currentDay = new Date(today);
@@ -35,6 +34,7 @@ const getDayOfWeek = (dateString: string): string => {
 
 const WeeklyStreak: React.FC = () => {
   const [daysHasLog, setDaysHasLog] = useState<string[]>(["1", "2"]);
+  const { userId } = useContext(AuthContext);
 
   const today = new Date();
   const sixDaysAgo = new Date(today);
