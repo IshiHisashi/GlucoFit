@@ -65,6 +65,16 @@ export const testResultsTypeDefs = gql`
       confirmed: Boolean
     ): TestResultResponse
 
+    createOfflineTestResult(
+      user_id: ID!
+      bsl: Float!
+      log_timestamp: Date
+      time_period: String
+      confirmed: Boolean
+    ): Boolean
+
+    rewardBadgeOffline(user_id: ID!): [Badges!]!
+
     updateTestResult(
       id: ID!
       bsl: Float
