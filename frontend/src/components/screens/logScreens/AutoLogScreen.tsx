@@ -11,7 +11,7 @@ import useConnectAPI  from '../../api/useConnectAPI';
 import { useEffect, useState } from "react";
 import useDeviceAPI from "../../api/useDeviceAPI";
 import deviceAPIs from '../../api/getAPIs';
-import { Modal, StyleSheet } from "react-native";
+import { Alert, Modal, StyleSheet } from "react-native";
 import { Image } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
 
@@ -158,8 +158,7 @@ const AutoLogScreen: React.FC = () => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            // Alert.alert('Modal has been closed.');
-            alert('Modal has been closed.');
+            Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.centeredView}>
