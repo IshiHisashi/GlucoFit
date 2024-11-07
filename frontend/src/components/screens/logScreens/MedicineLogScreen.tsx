@@ -61,7 +61,7 @@ const MedicineLogScreen: React.FC = () => {
 
   const navigation = useNavigation<MedicineLogScreenProps>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
-  console.log("ROUTE ON MED LOG:", route.params.logId);
+  console.log("ROUTE ON MED LOG:", route.params?.logId);
   const { userId } = useContext(AuthContext);
 
   const {

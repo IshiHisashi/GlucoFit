@@ -109,6 +109,7 @@ const GET_CARBS_FOR_TODAY = gql`
       carbs
       id
       log_timestamp
+      time_period
     }
   }
 `;
@@ -473,7 +474,7 @@ const HomeScreen: React.FC = () => {
           return {
             id: obj.id,
             icon: <IconForFoodLog />,
-            text: "Food Intake",
+            text: obj.time_period,
             subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
               hour: "numeric",
               minute: "numeric",
@@ -675,7 +676,11 @@ const HomeScreen: React.FC = () => {
 
           <LogsTable
             title="Logs for today"
-            subTitle="date date"
+            subTitle={new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
             onPressTitleRightButton={() =>
               navigation.navigate("Tabs", { screen: "Logs" })
             }

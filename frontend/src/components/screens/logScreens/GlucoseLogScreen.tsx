@@ -255,8 +255,24 @@ const GlucoseLogScreen: React.FC = () => {
   // console.log(data);
 
   const pickerData = [
-    { setShowPicker: setIsDatePickerOpen, text: "Date", value: date },
-    { setShowPicker: setIsTimePickerOpen, text: "Time", value: time },
+    {
+      setShowPicker: setIsDatePickerOpen,
+      text: "Date",
+      value: date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      }),
+    },
+    {
+      setShowPicker: setIsTimePickerOpen,
+      text: "Time",
+      value: time.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }),
+    },
     {
       setShowPicker: setIsTimePeriodPickerOpen,
       text: "Time Period",
