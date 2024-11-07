@@ -184,7 +184,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
               }}
               text="Activity"
             />
-            <SubMenuItem
+            {/* <SubMenuItem
               onPress={() => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
@@ -194,14 +194,14 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
                 });
               }}
               text="Blood Glucose"
-            />
+            /> */}
             <SubMenuItem
               onPress={() => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
                 navigation.navigate("AutoLog");
               }}
-              text="Automatic log"
+              text="Blood Glucose"
             />
           </ModalBody>
           <View style={styles.fabContainer}>
