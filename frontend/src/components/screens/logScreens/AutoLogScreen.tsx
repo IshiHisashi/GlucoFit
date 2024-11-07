@@ -1,4 +1,4 @@
-import { AddIcon, Button, ButtonIcon, ButtonText, Text, View } from "@gluestack-ui/themed"
+import { AddIcon, Button, ButtonIcon, ButtonText, EditIcon, Text, View } from "@gluestack-ui/themed"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { useNavigation } from "@react-navigation/native";
@@ -106,6 +106,13 @@ const AutoLogScreen: React.FC = () => {
     navigation.navigate("GlucoseLog",{
       BGL: BGL,
       fromAuto: true
+    });
+  }
+
+  const moveToOfflineLogs = () => {
+    setModalVisible(false)
+    navigation.navigate("OfflineLogs",{
+      mac: onConnectedState.mac,
     });
   }
 
@@ -276,13 +283,23 @@ const AutoLogScreen: React.FC = () => {
         </Text>
         <Button
           size="md"
+          variant="solid"
+          marginHorizontal={20}
+          borderRadius={20}
+          onPress={() => moveToOfflineLogs()}
+        >
+          <ButtonIcon as={AddIcon} />
+          <ButtonText>Upload offline readings</ButtonText>
+        </Button>        
+        <Button
+          size="md"
           variant="outline"
           marginHorizontal={20}
           borderRadius={20}
           onPress={() => moveToManualEntry()}
         >
           <ButtonText>Manually log your readings</ButtonText>
-          <ButtonIcon as={AddIcon} />
+          <ButtonIcon as={EditIcon} />
         </Button>
       </View>
     </SafeAreaView>

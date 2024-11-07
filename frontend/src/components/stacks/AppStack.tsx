@@ -12,6 +12,7 @@ import { AppStackParamList } from "../../types/navigation";
 import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsScreen";
 import AutoLogScreen from "../screens/logScreens/AutoLogScreen"
+import OfflineLogsScreen from "../screens/logScreens/OfflineLogsScreen";
 import Temp from "../screens/Temp";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -47,6 +48,11 @@ const AppStack: React.FC = () => (
     <Stack.Screen
       name="AutoLog"
       component={AutoLogScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="OfflineLogs"
+      component={OfflineLogsScreen}
       options={{ headerShown: false }}
     />
     <Stack.Screen
