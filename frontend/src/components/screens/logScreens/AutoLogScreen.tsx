@@ -19,6 +19,7 @@ type AutoLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
   "AutoLog"
 >;
+
 const AutoLogScreen: React.FC = () => {
   const navigation = useNavigation<AutoLogScreenNavigationProps>();
   const [bluetoothState, setBluetoothState] = useState<any>(null);
@@ -286,7 +287,9 @@ const AutoLogScreen: React.FC = () => {
           variant="solid"
           marginHorizontal={20}
           borderRadius={20}
+          disabled={!(parsedRes?.action)}
           onPress={() => moveToOfflineLogs()}
+          backgroundColor={!(parsedRes?.action) ? "$coolGray400" : "$blue600" }
         >
           <ButtonIcon as={AddIcon} />
           <ButtonText>Upload offline readings</ButtonText>
