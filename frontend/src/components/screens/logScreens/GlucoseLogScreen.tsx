@@ -1,5 +1,5 @@
 import { Image, VStack, View, ScrollView } from "@gluestack-ui/themed";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -52,28 +52,45 @@ const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
   }
 `;
 
+const GET_TEST_RESULTS = gql`
+  query GetTestResult($getTestResultId: ID!) {
+    getTestResult(id: $getTestResultId) {
+      bsl
+      id
+      log_timestamp
+      note {
+        note_title
+        # note_description
+        # when activating note_description, error occurs.
+      }
+      time_period
+    }
+  }
+`;
+
 const UPDATE_TEST_RESULT = gql`
   mutation UpdateTestResult(
     $updateTestResultId: ID!
     $bsl: Float
     $note: NoteInput
-    $log_timestamp: Date
-    $confirmed: Boolean
+    $logTimestamp: Date
+    $timePeriod: String
   ) {
     updateTestResult(
       id: $updateTestResultId
       bsl: $bsl
       note: $note
-      log_timestamp: $log_timestamp
-      confirmed: $confirmed
+      log_timestamp: $logTimestamp
+      time_period: $timePeriod
     ) {
-      id
       bsl
+      id
+      log_timestamp
       note {
+        note_title
         note_description
       }
-      log_timestamp
-      confirmed
+      time_period
     }
   }
 `;
@@ -90,6 +107,8 @@ type RouteParams = {
 const GlucoseLogScreen: React.FC = () => {
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  console.log("ROUTE ON GLUCO LOG:", route.params?.logId);
+  const logId = route.params?.logId;
   const { userId } = useContext(AuthContext);
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
@@ -104,21 +123,41 @@ const GlucoseLogScreen: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
-  const [isNoteOpen, setIsNoteOpen] = useState(false);
 
   // GMT
   console.log(date);
   console.log(new Date().toLocaleString());
 
-  const [
-    createTestResult,
-    { data: createData, loading: createLoading, error: createError },
-  ] = useMutation(CREATE_TEST_RESULT_WITH_INSIGHTS);
+  const { data: existingLogData, loading: queryLoading } = useQuery(
+    GET_TEST_RESULTS,
+    {
+      variables: { getTestResultId: logId },
+      skip: !logId,
+    }
+  );
 
-  const [
-    updateTestResult,
-    { data: updateData, loading: updateLoading, error: updateError },
-  ] = useMutation(UPDATE_TEST_RESULT);
+  const [createTestResult] = useMutation(CREATE_TEST_RESULT_WITH_INSIGHTS);
+  const [updateTestResult] = useMutation(UPDATE_TEST_RESULT);
+
+  useEffect(() => {
+    if (existingLogData?.getTestResult) {
+      const log = existingLogData.getTestResult;
+      const logDate = new Date(log.log_timestamp);
+
+      setGlucoseLevel(log.bsl.toString());
+      setTimePeriod(log.time_period);
+      setDate(logDate);
+      setTime(logDate);
+
+      // Set note if it exists
+      if (log.note) {
+        setNote({
+          title: log.note.note_title || "",
+          content: log.note.note_description || "",
+        });
+      }
+    }
+  }, [existingLogData]);
 
   const onChangeDate = (selectedDate: Date) => {
     const currentDate = selectedDate || date;
@@ -163,50 +202,50 @@ const GlucoseLogScreen: React.FC = () => {
       );
       console.log("date being sent:", combinedDateTime);
 
-      const result = await createTestResult({
-        variables: {
-          userId: userId,
-          logTimestamp: combinedDateTime,
-          timePeriod: timePeriod,
-          bsl: Number(glucoseLevel),
-          note: {
-            note_description: note.content,
-            note_title: note.title,
+      if (logId) {
+        const result = await updateTestResult({
+          variables: {
+            updateTestResultId: logId,
+            bsl: Number(glucoseLevel),
+            timePeriod: timePeriod,
+            logTimestamp: combinedDateTime,
+            note: {
+              note_title: note.title,
+              note_description: note.content,
+            },
           },
-          confirmed: true,
-        },
-      });
-      console.log("Mutation result:", result.data.createTestResult);
-
-      navigation.navigate("Tabs", {
-        screen: "Home",
-        params: {
-          mutatedLog: "bsl",
-          insight: result.data.createTestResult.articlesToShow[0],
-          badges: result.data.createTestResult.badgesToShow,
-        },
-      });
+        });
+        console.log("Update result:", result);
+        navigation.navigate("Tabs", {
+          screen: "Home",
+          params: { mutatedLog: "bsl" },
+        });
+      } else {
+        const result = await createTestResult({
+          variables: {
+            userId: userId,
+            logTimestamp: combinedDateTime,
+            timePeriod: timePeriod,
+            bsl: Number(glucoseLevel),
+            note: {
+              note_description: note.content,
+              note_title: note.title,
+            },
+            confirmed: true,
+          },
+        });
+        console.log("Create result:", result.data.createTestResult);
+        navigation.navigate("Tabs", {
+          screen: "Home",
+          params: {
+            mutatedLog: "bsl",
+            insight: result.data.createTestResult.articlesToShow[0],
+            badges: result.data.createTestResult.badgesToShow,
+          },
+        });
+      }
     } catch (e) {
       console.error("Error creating test result:", e);
-    }
-  };
-
-  const handleSubmitUpdate = async () => {
-    try {
-      const result = await updateTestResult({
-        variables: {
-          updateTestResultId: userId,
-          bsl: 100,
-          note: {
-            note_description: "Updated!",
-          },
-          log_timestamp: new Date().toISOString(),
-          confirmed: true,
-        },
-      });
-      console.log("Update result:", result);
-    } catch (error) {
-      console.error("Error updating test result", error);
     }
   };
 
