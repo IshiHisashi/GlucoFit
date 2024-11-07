@@ -93,6 +93,7 @@ interface LogsTableProps {
   noteData?: NoteData;
   medicinesData?: MedicineData[];
   tableType?: "logs" | "pickers" | "notes" | "medicines";
+  styleForLogsContainer?: {};
 }
 
 const LogsTable: FC<LogsTableProps> = (props) => {
@@ -105,6 +106,7 @@ const LogsTable: FC<LogsTableProps> = (props) => {
     noteData,
     medicinesData,
     tableType = "logs",
+    styleForLogsContainer,
   } = props;
 
   return (
@@ -114,6 +116,7 @@ const LogsTable: FC<LogsTableProps> = (props) => {
       borderRadius={10}
       p="$4"
       bg="$neutralWhite"
+      style={styleForLogsContainer}
     >
       {title && (
         <LogsTableTitle

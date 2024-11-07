@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   FlatList,
@@ -13,7 +13,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Animated, Dimensions } from "react-native";
 
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
@@ -26,9 +26,7 @@ import {
   HeartbeatCustom,
   RestaurantCustom,
 } from "../../svgs/svgs";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../../context/AuthContext";
 
 type FilterType = "All" | "Favorite" | "Food" | "Medication" | "Wellness";
 
@@ -52,10 +50,32 @@ const GET_RECENT_ARTICLES = gql`
         article_thumbnail_address
         article_name
         article_desc
+        isFavorite
       }
       pageInfo {
         endCursor
         hasNextPage
+      }
+    }
+  }
+`;
+
+const TOGGLE_FAVOURITE = gql`
+  mutation ToggleFavouriteArticle($userId: ID!, $articleId: ID!) {
+    toggleFavouriteArticle(userId: $userId, articleId: $articleId) {
+      message
+      badge {
+        id
+        badge_name
+        badge_desc
+        badge_image_address
+        criteria {
+          value
+          comparison
+          kind
+          note
+        }
+        last_updated
       }
     }
   }
@@ -66,6 +86,7 @@ type RecentInsightsScreenNavigationProps =
 
 const RecentInsightsScreen: FC = () => {
   const navigation = useNavigation<RecentInsightsScreenNavigationProps>();
+  const { userId } = useContext(AuthContext);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -85,6 +106,7 @@ const RecentInsightsScreen: FC = () => {
         cursor: null,
         classification: "recent",
       },
+      fetchPolicy: "network-only",
       onCompleted: (data) => {
         setArticles((prev) => [
           ...prev,
@@ -97,6 +119,8 @@ const RecentInsightsScreen: FC = () => {
   );
   data && console.log("data:", data.getUserArticlesPagination);
   console.log("endCursor:", endCursor);
+
+  const [toggleFavouriteArticle] = useMutation(TOGGLE_FAVOURITE);
 
   useEffect(() => {
     const filteredArticles = articles.filter((obj) => {
@@ -170,8 +194,26 @@ const RecentInsightsScreen: FC = () => {
       description={item.article_desc}
       image={item.article_thumbnail_address}
       height={180}
-      onPressBookmark={() => {}}
+      onPressBookmark={() =>
+        toggleFavouriteArticle({
+          variables: { userId, articleId: item.id },
+          refetchQueries: [
+            {
+              query: GET_RECENT_ARTICLES,
+              variables: {
+                userId: userId,
+                limit: 5,
+                cursor: null,
+                classification: "recent",
+              },
+              fetchPolicy: "network-only",
+            },
+          ],
+          awaitRefetchQueries: true,
+        })
+      }
       onPressCard={() => openArticle(item.article_url, item.article_name)}
+      isFavourite={item.isFavorite}
     />
   );
 

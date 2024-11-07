@@ -3,6 +3,7 @@ import { HStack, Pressable, Box, VStack } from "@gluestack-ui/themed";
 import React, { FC } from "react";
 
 interface RowData {
+  __typename?: string;
   id: string;
   icon: any;
   text: string;
@@ -53,7 +54,7 @@ const LogsTableRow: FC<LogsTableRowProps> = (props) => {
             {obj.value}
           </Text>
           {obj.unit && (
-            <Text color="$neutralDark50" fontSize={12}>
+            <Text color="$neutralDark50" fontSize={12} marginTop={-6}>
               {obj.unit}
             </Text>
           )}
