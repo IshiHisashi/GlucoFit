@@ -188,7 +188,10 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
               onPress={() => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
-                navigation.navigate("GlucoseLog");
+                navigation.navigate("GlucoseLog",{
+                  BGL: 5.2,
+                  fromAuto: true
+                });
               }}
               text="Blood Glucose"
             />

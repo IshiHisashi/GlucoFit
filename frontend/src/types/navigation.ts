@@ -12,7 +12,7 @@ export type AppStackParamList = {
   CarbsLog: { logId?: string };
   ActivityLog: { logId?: string };
   MedicineLog: { logId?: string };
-  GlucoseLog: { logId?: string };
+  GlucoseLog: { BGL?: number; fromAuto?: boolean, logId?: string };
   AutoLog: { mutatedLog?: string };
   Note: {
     initialNote: { title: string; content: string };
@@ -20,6 +20,7 @@ export type AppStackParamList = {
   };
   Article: { url: string; title: string };
   RecentInsights: undefined;
+  // Result: { BGL: number; fromAuto: boolean, logId: string };
   Temp: undefined;
 };
 
