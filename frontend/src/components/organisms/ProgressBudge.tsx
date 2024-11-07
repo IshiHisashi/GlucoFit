@@ -32,19 +32,6 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
 }) => {
   const { userId } = useContext(AuthContext);
 
-  //-------------- TO AKI FROM ISHI ------------
-  // Conditional fetching is done in the following idea.
-  // 1) Fetch unachieved badges initially.
-  // 2) Then, depending on the result, the necessary functions are executed to show corresponding progress. This is done by 'useLazyQuery'
-  // 3) So, LazyQueries are defined
-  // 4) Define (map) badge name with these lazyqueries.
-  // 5) Define (map) badge name with the retrieved data (number as progress).
-
-  // Remaining task to hand over.
-  // - image needs to be dynamic
-  // - badge description should be added
-  // - fetch optimization (if any)
-
   // 1).Fetch user badges using useQuery
   const { loading, error, data } = useQuery(GET_USER_ON_PROGRESS_BADGES, {
     variables: { id: userId },
