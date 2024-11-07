@@ -101,14 +101,33 @@ const AutoLogScreen: React.FC = () => {
 
   const moveToResult = () => {
     setModalVisible(false)
+    const disconnectFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'disConnect', onConnectedState.mac);
+    disconnectFunc(onConnectedState.mac);
     navigation.navigate("GlucoseLog",{
       BGL: BGL,
       fromAuto: true
     });
   }
 
+  // Disconnect a device off the phone
+  useEffect(() => {
+    if (onConnectedState?.mac) {
+      const disconnectFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'disConnect', onConnectedState.mac);
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        disconnectFunc(onConnectedState.mac);
+      })
+      return () => {
+        unsubscribe();
+      }
+    }
+  }, [navigation, onConnectedState])
+
   const moveToManualEntry = () => {
     setModalVisible(false)
+    if (onConnectedState?.mac) {
+      const disconnectFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'disConnect', onConnectedState.mac);
+      disconnectFunc(onConnectedState.mac);
+    }
     navigation.navigate("GlucoseLog",{
       BGL: 0,
       fromAuto: false
