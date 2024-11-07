@@ -90,7 +90,6 @@ const ActivityLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
-  const { userId } = useContext(AuthContext);
 
   const navigation = useNavigation<ActivityLogScreenProps>();
 
