@@ -1,5 +1,5 @@
 import { View } from "@gluestack-ui/themed";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { gql, useMutation } from "@apollo/client";
@@ -11,23 +11,23 @@ import Sheet from "../../organisms/Sheet";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import LogsTable from "../../organisms/LogsTable";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../../context/AuthContext";
 
 const CREATE_ACTIVITY_LOG = gql`
   mutation CreateActivityLog(
-    $userId: ID!
-    $duration: Int!
-    $logTimestamp: Date!
+    $userId: ID!, 
+    $activityType: String!, 
+    $duration: Int!, 
+    $logTimestamp: Date
   ) {
     createActivityLog(
-      user_id: $userId
-      duration: $duration
+      user_id: $userId, 
+      activityType: $activityType,
+      duration: $duration, 
       log_timestamp: $logTimestamp
     ) {
-      duration
-      log_timestamp
+      badge_desc
+      badge_name
       id
     }
   }
@@ -51,6 +51,7 @@ const ActivityLogScreen: React.FC = () => {
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const { userId } = useContext(AuthContext);
 
   const navigation = useNavigation<ActivityLogScreenProps>();
 
@@ -79,14 +80,18 @@ const ActivityLogScreen: React.FC = () => {
       const log = await createActivityLog({
         variables: {
           userId: userId,
+          activityType: activity,
           duration: duration.hours * 60 + duration.minutes,
           logTimestamp: combinedDateTime,
         },
       });
       console.log("Mutation result:", log);
+
       navigation.navigate("Tabs", {
         screen: "Home",
         params: { mutatedLog: "activity" },
+        insight: "",
+        badges: log.data.createActivityLog,
       });
     } catch (error) {
       console.error("Error creating activity log:", error);
