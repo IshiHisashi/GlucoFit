@@ -12,7 +12,7 @@ import {
   FlatList,
   Icon,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -39,9 +39,7 @@ import {
 } from "../svgs/svgsForLogsTableIcons";
 import { AppStackParamList } from "../../types/navigation";
 import LogsTable from "../organisms/LogsTable";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../context/AuthContext";
 
 interface BaseLog {
   id: string;
@@ -155,6 +153,7 @@ const GET_AVERAGE_BSL_FOR_X = gql`
 const LogsScreen: React.FC = () => {
   const navigation = useNavigation<LogsScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string }>();
+  const { userId } = useContext(AuthContext);
 
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 

@@ -13,7 +13,7 @@ import {
   set,
   FlatList,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   useFocusEffect,
@@ -36,9 +36,7 @@ import InsightCard from "../molcules/InsightCard";
 import { AppStackParamList } from "../../types/navigation";
 import Tab from "../atoms/Tab";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../context/AuthContext";
 
 type FilterType = "All" | "Favorite" | "Food" | "Medication" | "Wellness";
 
@@ -117,6 +115,7 @@ type InsightsScreenNavigationProps =
 const InsightsScreen: React.FC = () => {
   const navigation = useNavigation<InsightsScreenNavigationProps>();
   const route = useRoute<{ key: string; name: string }>();
+  const { userId } = useContext(AuthContext);
 
   // test pull down refresh
   const [refreshing, setRefreshing] = useState(false);

@@ -16,7 +16,7 @@ import {
   Modal,
   Image,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useWindowDimensions, Share, Alert } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
@@ -44,26 +44,24 @@ import {
   IconForMedicineLog,
 } from "../svgs/svgsForLogsTableIcons";
 import LogsTableTitle from "../molcules/LogsTableTitle";
+import { AuthContext } from "../../context/AuthContext";
 
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+// const TotalSteps = () => {
+//   const GET_TOTAL_STEPS_FOR_TODAY = gql`
+//     query GetTotalStepsForToday($userId: ID!) {
+//       getTotalStepsForToday(user_id: $userId)
+//     }
+//   `;
 
-const TotalSteps = () => {
-  const GET_TOTAL_STEPS_FOR_TODAY = gql`
-    query GetTotalStepsForToday($userId: ID!) {
-      getTotalStepsForToday(user_id: $userId)
-    }
-  `;
+//   const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
+//     variables: { userId },
+//   });
 
-  const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
-    variables: { userId },
-  });
+//   if (loading) return <Text>Loading...</Text>;
+//   if (error) return <Text>N/A Steps</Text>;
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>N/A Steps</Text>;
-
-  return <Text>{data.getTotalStepsForToday} Steps</Text>;
-};
+//   return <Text>{data.getTotalStepsForToday} Steps</Text>;
+// };
 
 // =========== queries ==============
 
@@ -168,6 +166,8 @@ interface BadgeImages {
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  const { userId } = useContext(AuthContext);
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [toastReady, setToastReady] = useState<boolean>(false);
   const [currentModalIndex, setCurrentModalIndex] = useState(0);
@@ -652,7 +652,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
                 </VStack>
               )}
-              <TotalSteps />
+              {/* <TotalSteps /> */}
             </HStack>
 
             {bslResultsAndAverageData && (

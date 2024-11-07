@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   FlatList,
@@ -26,9 +26,7 @@ import {
   HeartbeatCustom,
   RestaurantCustom,
 } from "../../svgs/svgs";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../../context/AuthContext";
 
 type FilterType = "All" | "Favorite" | "Food" | "Medication" | "Wellness";
 
@@ -88,6 +86,7 @@ type RecentInsightsScreenNavigationProps =
 
 const RecentInsightsScreen: FC = () => {
   const navigation = useNavigation<RecentInsightsScreenNavigationProps>();
+  const { userId } = useContext(AuthContext);
 
   const [refreshing, setRefreshing] = useState(false);
 

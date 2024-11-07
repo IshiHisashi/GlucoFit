@@ -1,5 +1,5 @@
 import { View, VStack } from "@gluestack-ui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -11,9 +11,7 @@ import Sheet from "../../organisms/Sheet";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import LogsTable from "../../organisms/LogsTable";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+import { AuthContext } from "../../../context/AuthContext";
 
 const CREATE_CARBS_LOG = gql`
   mutation CreateCarbsLog(
@@ -97,6 +95,7 @@ const CarbsLogScreen: React.FC = () => {
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
   console.log("ROUTE ON CARBS LOG:", route.params?.logId);
   const logId = route.params?.logId;
+  const { userId } = useContext(AuthContext);
 
   const [mealType, setMealType] = useState("");
   const mealTypes = ["Breakfast", "Lunch", "Dinner", "Others"];
