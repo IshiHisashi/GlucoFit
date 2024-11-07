@@ -511,7 +511,7 @@ const HomeScreen: React.FC = () => {
 
   // When coming to Home and has badges param, open modal
   useEffect(() => {
-    if (route.params?.badges.length > 0) {
+    if (route.params?.badges?.length > 0) {
       setModalVisible(true);
       console.log("modal on");
     } else {
