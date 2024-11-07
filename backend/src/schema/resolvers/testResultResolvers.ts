@@ -709,6 +709,183 @@ const testResultsResolvers = {
         throw new Error("Failed to create test result and fetch insights");
       }
     },
+    createOfflineTestResult: async (
+      _: any,
+      {
+        user_id,
+        bsl,
+        time_period,
+        log_timestamp,
+        confirmed,
+      }: {
+        user_id: string;
+        bsl: number;
+        time_period: string;
+        log_timestamp: Date;
+        confirmed: boolean;
+      }
+    ): Promise<void> => {
+      const newTestResult = new TestResults({
+        user_id,
+        bsl,
+        log_timestamp,
+        time_period,
+        confirmed,
+      });
+      await newTestResult.save();
+      try {
+      } catch (err) {
+        console.error("Error creating offline test result:", err);
+        throw new Error("Failed to create offline test result");
+      }
+    },
+    rewardBadgeOffline: async (
+      _: any,
+      {
+        user_id,
+      }: {
+        user_id: string;
+      }
+    ): Promise<IBadges[]> => {
+      try {
+        // Fetch the user and their current badges
+        const user = await User.findById(user_id);
+        if (!user) {
+          throw new Error("User not found");
+        }
+        const badges = user.badges;
+
+        const badgesToShow: IBadges[] = [];
+        const unachivedBadgeArr = badges
+          .filter((badge) => !badge.achieved)
+          .map((badge) => badge.badgeId.toString());
+        if (unachivedBadgeArr.includes("670b2125cb185c3905515da2")) {
+          const streakCount = await calculateStreak(user_id, false);
+          console.log(streakCount);
+          if (streakCount >= 1) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2125cb185c3905515da2",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2125cb185c3905515da2"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b2149cb185c3905515da4")) {
+          // Badge | Starter Streek
+          // 1. Calculate streak number
+          const streakCount = await calculateStreak(user_id, false);
+          // 2. If streak satisfies, update the badge status
+          if (streakCount >= 7) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2149cb185c3905515da4",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2149cb185c3905515da4"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b215bcb185c3905515da6")) {
+          // Badge | Healty Habit
+          const streakCount = await calculateStreak(user_id, true);
+          if (streakCount >= 5) {
+            await updateUserBadgeById(
+              user_id,
+              "670b215bcb185c3905515da6",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b215bcb185c3905515da6"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b216fcb185c3905515da8")) {
+          // Badge | Early Bird
+          const streakCount = await calculateStreakByTimeRange(user_id, 6, 8);
+          if (streakCount >= 10) {
+            await updateUserBadgeById(
+              user_id,
+              "670b216fcb185c3905515da8",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b216fcb185c3905515da8"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b2188cb185c3905515daa")) {
+          // Badge | Night Owl
+          const streakCount = await calculateStreakByTimeRange(user_id, 20, 24);
+          if (streakCount >= 10) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2188cb185c3905515daa",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2188cb185c3905515daa"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b2199cb185c3905515dae")) {
+          // Badge | GlucoseGulu
+          const streakCount = await calculateStreak(user_id, true);
+          if (streakCount >= 30) {
+            await updateUserBadgeById(
+              user_id,
+              "670b2199cb185c3905515dae",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b2199cb185c3905515dae"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        if (unachivedBadgeArr.includes("670b21a8cb185c3905515db0")) {
+          // Badge | Check-in Champion
+          const streakCount = await calculateStreak(user_id, false);
+          if (streakCount >= 100) {
+            await updateUserBadgeById(
+              user_id,
+              "670b21a8cb185c3905515db0",
+              true
+            );
+            const badgeDetails = (await Badges.findById(
+              "670b21a8cb185c3905515db0"
+            )) as IBadges | null;
+            if (badgeDetails) {
+              badgesToShow.push(badgeDetails);
+            }
+          }
+        }
+        return badgesToShow;
+      } catch (err) {
+        console.error("Error rewarding badges:", err);
+        throw new Error("Failed to reward badges");
+      }
+    },
     updateTestResult: async (
       _: any,
       { id, ...args }: { id: string } & Partial<ITestResults>
