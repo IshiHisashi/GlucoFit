@@ -24,34 +24,40 @@ type Props = {
   route: DeviceInfoProp;
 };
 
-// CHANGE THIS TO THE LATEST VERSION
 const CREATE_TEST_RESULT = gql`
-  mutation CreateTestResult(
+  mutation OfflineTestResult(
     $userId: ID!, 
     $bsl: Float!, 
-    $note: NoteInput, 
     $logTimestamp: Date, 
-    $timePeriod: String, 
     $confirmed: Boolean
   ) {
-    createTestResultWithInsights(
+    createOfflineTestResult(
       user_id: $userId, 
       bsl: $bsl, 
-      note: $note, 
       log_timestamp: $logTimestamp, 
-      time_period: $timePeriod, 
       confirmed: $confirmed
-    ) {
-      article_name
-    }
+    )
   }
 `;
+
+const CHECK_BADGE = gql`
+  mutation RewardBadgeOffline(
+    $userId: ID!
+  ) {
+    rewardBadgeOffline(
+      user_id: $userId
+    ) {
+      badge_desc
+      badge_name
+      id
+    }
+  }
+`
 
 const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
   const { mac } = route.params;
   const navigation = useNavigation<OfflineLogsScreenNavigationProps>();
   const { response } = useDeviceAPI();
-  const [parsedRes, setParsedRes] = useState<any>();
   const [offLineData, setOffLineData] = useState<any[]>([]);
   const [datesArray, setDatesArray] = useState<string[]>([]);
   const today = new Date();
@@ -67,6 +73,11 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     { data: createData, loading: createLoading, error: createError },
   ] = useMutation(CREATE_TEST_RESULT);
 
+  const [
+    checkBadge,
+    {data: badgeData, loading: badgeLoading, error: badgeError},
+  ] = useMutation(CHECK_BADGE);
+
   const type = "BG5S";
 
   iHealthAPI.sdkAuthWithLicense('com_glucofit_glucofit_ios.pem');
@@ -77,7 +88,6 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     if (response !== null && response !== "" ) {
       const resString = response;
       const parsedObj = JSON.parse(resString);
-      setParsedRes(parsedObj);
       if (parsedObj.GET_OFFLINEDATA?.history) {
         if (parsedObj.GET_OFFLINEDATA.history.length > 0) {
           setOffLineData(parsedObj.GET_OFFLINEDATA.history)
@@ -139,22 +149,34 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
             logTimestamp: dateTime,
             timePeriod: "Offline",
             bsl: getRoundedBSL(data.data_value),
-            note: {
-              note_description: "",
-              note_title: "",
-            },
             confirmed: true,
           },
         })
       })
+      // All the promise happening simultanously
       const results = await Promise.all(uploadPromises);
       console.log("All test results uploaded successfully:", results);
       setModalVisible(true);
-      // BADGE THING HERE! CHECK IF THERE IS ANY BADGES INFO TO SHOW.
+      
+      // Once uploading is done, check if there is any badges to award
+      const badges = await checkBadge({
+        variables: {
+          userId: userId,
+        }
+      })
+      setBadgeInfo(badges.data.rewardBadgeOffline);
+      
     } catch (e) {
       console.error("Error creating test result:", e);
     }
   };
+
+  const fakeData = [{
+    id: "670b2125cb185c3905515da2",
+    badge_name: "fake badge",
+    badge_desc: "fake description here. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda, minus eaque vero quisquam tenetur aut."
+  }]
+
   const backToHome = () => {
     setModalVisible(false)
     const disconnectFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'disConnect', mac);
@@ -165,6 +187,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
       params: {
         mutatedLog: "bsl",
         insight: null,
+        badges: badgeInfo.length > 0 ? badgeInfo : fakeData,
       },
     });
   }

@@ -572,7 +572,7 @@ const HomeScreen: React.FC = () => {
         <VStack p="$4" space="md">
         {route.params?.badges?.length > 0 && (
           <Modal isOpen={modalVisible} onClose={() => handleClose()} >
-            <Modal.Content position="absolute" bottom={120} height="70%" borderRadius={20} backgroundColor="white">
+            <Modal.Content position="absolute" bottom={40} height="86%" borderRadius={20} backgroundColor="white">
               <Modal.CloseButton />
               <View>
                 <Center>
