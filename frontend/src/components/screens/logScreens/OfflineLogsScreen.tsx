@@ -1,4 +1,4 @@
-import { AddIcon, Button, ButtonIcon, ButtonText, CheckIcon, Checkbox, CheckboxGroup, CheckboxIcon, CheckboxIndicator, CheckboxLabel, HStack, ScrollView, Text, VStack, View } from "@gluestack-ui/themed";
+import { AddIcon, Button, ButtonIcon, ButtonText, CheckIcon, Checkbox, CheckboxGroup, CheckboxIcon, CheckboxIndicator, CheckboxLabel, HStack, Image, Pressable, ScrollView, Text, VStack, View } from "@gluestack-ui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { RouteProp, useNavigation } from "@react-navigation/native";
@@ -6,8 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import iHealthAPI from "../../api/iHealthAPI";
 import useDeviceAPI from "../../api/useDeviceAPI";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import deviceAPIs from '../../api/getAPIs';
+import { gql, useMutation } from "@apollo/client";
+import { Modal, StyleSheet } from "react-native";
+import { AuthContext } from "../../../context/AuthContext";
 
 type OfflineLogsScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -21,6 +24,29 @@ type Props = {
   route: DeviceInfoProp;
 };
 
+// CHANGE THIS TO THE LATEST VERSION
+const CREATE_TEST_RESULT = gql`
+  mutation CreateTestResult(
+    $userId: ID!, 
+    $bsl: Float!, 
+    $note: NoteInput, 
+    $logTimestamp: Date, 
+    $timePeriod: String, 
+    $confirmed: Boolean
+  ) {
+    createTestResultWithInsights(
+      user_id: $userId, 
+      bsl: $bsl, 
+      note: $note, 
+      log_timestamp: $logTimestamp, 
+      time_period: $timePeriod, 
+      confirmed: $confirmed
+    ) {
+      article_name
+    }
+  }
+`;
+
 const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
   const { mac } = route.params;
   const navigation = useNavigation<OfflineLogsScreenNavigationProps>();
@@ -32,6 +58,14 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
   const [values, setValues] = useState<string[]>([])
+  const [badgeInfo, setBadgeInfo] = useState<any[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const { userId } = useContext(AuthContext);
+
+  const [
+    createTestResult,
+    { data: createData, loading: createLoading, error: createError },
+  ] = useMutation(CREATE_TEST_RESULT);
 
   const type = "BG5S";
 
@@ -57,7 +91,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     getOffLineData(mac);
   }, [])
 
-  const testFunc = (keys: any) => {
+  const handleChange = (keys: any) => {
     setValues(keys);
     console.log(keys);
   }
@@ -89,6 +123,52 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     return `${formattedDate}, ${formattedTime}`;
   }
 
+  const handleSubmit = async () => {
+    try {
+      if (offLineData.length === 0) return;
+      const getRoundedBSL = (value: number) => Math.round(value * 0.555) / 10;
+      // Filter offline data
+      const selectedData = offLineData.filter(data => values.includes(data.dataID));
+      const uploadPromises = selectedData.map(data => {
+        // Convert date time info to an ideal one
+        const dateTime = new Date(data.data_measure_time);
+        // Upload it
+        return createTestResult({
+          variables: {
+            userId: userId,
+            logTimestamp: dateTime,
+            timePeriod: "Offline",
+            bsl: getRoundedBSL(data.data_value),
+            note: {
+              note_description: "",
+              note_title: "",
+            },
+            confirmed: true,
+          },
+        })
+      })
+      const results = await Promise.all(uploadPromises);
+      console.log("All test results uploaded successfully:", results);
+      setModalVisible(true);
+      // BADGE THING HERE! CHECK IF THERE IS ANY BADGES INFO TO SHOW.
+    } catch (e) {
+      console.error("Error creating test result:", e);
+    }
+  };
+  const backToHome = () => {
+    setModalVisible(false)
+    const disconnectFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'disConnect', mac);
+    disconnectFunc(mac);
+    // This has to be replaced with the latest version of home thingy
+    navigation.navigate("Tabs", {
+      screen: "Home",
+      params: {
+        mutatedLog: "bsl",
+        insight: null,
+      },
+    });
+  }
+
   return (
     <SafeAreaView>
       <View height="$full">
@@ -97,11 +177,39 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
           text="Offline logging"
           rightIconOnPress={() => {}}
         />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={styles.viewStyle}>
+                <Image 
+                  source={require('../../../../assets/autoLogImgs/ready-to-measure.png')}
+                  style={{width: 30, height: 30}}
+                  alt="loading"
+                />
+                <Text>
+                  Yout readings were successfully uploaded!
+                </Text>
+              </View>              
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => backToHome()}>
+                <Text style={styles.textStyle}>Back to Home</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
         <ScrollView scrollIndicatorInsets={false}>
           <CheckboxGroup
             value={values}
             onChange={(keys) => {
-              testFunc(keys);
+              handleChange(keys);
             }}
           >
             <View flexDirection="column" gap={20} padding={20}>
@@ -191,6 +299,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
           margin={20} 
           isDisabled={values.length === 0}
           backgroundColor={values.length === 0 ? "$coolGray400" : "$blue600" }
+          onPress={() => handleSubmit()}
         >
           <ButtonIcon as={AddIcon} />
           <ButtonText>
@@ -201,4 +310,64 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  viewStyle: {
+    alignItems: 'center',
+  },
+  buttonStyle: {
+    backgroundColor: '#2089dc',
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+})
+
 export default OfflineLogsScreen;
