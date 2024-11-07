@@ -164,7 +164,7 @@ const AutoLogScreen: React.FC = () => {
                 <View style={styles.viewStyle}>
                   <Image 
                     source={require('../../../../assets/autoLogImgs/loading.png')}
-                    style={{width: 30, height: 30}}
+                    style={{marginBottom:20 , width: 30, height: 30}}
                     alt="loading"
                   />
                   <Text>
@@ -177,7 +177,7 @@ const AutoLogScreen: React.FC = () => {
                   <View style={styles.viewStyle}>
                     <Image 
                       source={require('../../../../assets/autoLogImgs/gluco-chan.png')}
-                      style={{width: 44, height: 40}}
+                      style={{marginBottom:20 , width: 44, height: 40}}
                       alt="smily face"
                     />
                     <Text>
@@ -192,7 +192,7 @@ const AutoLogScreen: React.FC = () => {
                   <View style={styles.viewStyle}>
                     <Image 
                       source={require('../../../../assets/autoLogImgs/error-measure.png')}
-                      style={{width: 30, height: 30}}
+                      style={{marginBottom:20 , width: 30, height: 30}}
                       alt="error icon"
                     />
                     <Text>
@@ -214,7 +214,7 @@ const AutoLogScreen: React.FC = () => {
           <View style={styles.viewStyle}>
             <Image 
               source={require('../../../../assets/autoLogImgs/ready-to-measure.png')}
-              style={{width: 200, height: 200}}
+              style={{marginBottom:20 , width: 200, height: 200}}
               alt="check mark ready to measure"
             />
             <Text>
@@ -228,7 +228,7 @@ const AutoLogScreen: React.FC = () => {
               <View style={styles.viewStyle}>
                 <Image 
                   source={require('../../../../assets/autoLogImgs/strip-error.png')}
-                  style={{width: 200, height: 200}}
+                  style={{marginBottom:20 , width: 200, height: 200}}
                   alt="error icon"
                 />
                 <Text>
@@ -244,7 +244,7 @@ const AutoLogScreen: React.FC = () => {
                 <View style={styles.viewStyle}>
                   <Image 
                     source={require('../../../../assets/autoLogImgs/strip-error.png')}
-                    style={{width: 200, height: 200}}
+                    style={{marginBottom:20 , width: 200, height: 200}}
                     alt="error icon"
                   />
                   <Text>
@@ -256,7 +256,7 @@ const AutoLogScreen: React.FC = () => {
                 <View style={styles.viewStyle}>
                   <Image 
                     source={require('../../../../assets/autoLogImgs/insert-strip.png')}
-                    style={{width: 200, height: 200}}
+                    style={{marginBottom:20 , width: 200, height: 200}}
                     alt="device with strip in"
                   />
                   <Text>
@@ -268,7 +268,7 @@ const AutoLogScreen: React.FC = () => {
             <View style={styles.viewStyle}>
               <Image 
                 source={require('../../../../assets/autoLogImgs/connect-device.png')}
-                style={{width: 200, height: 200}}
+                style={{marginBottom:20 , width: 200, height: 200}}
                 alt="device illustration"
               />
               <Text>
@@ -276,14 +276,12 @@ const AutoLogScreen: React.FC = () => {
               </Text>  
             </View>
         }
-        <Text>
-          { parsedRes?.action }
-          { parsedRes?.RESULT_VALUE }
-        </Text>
         <Button
           size="md"
           variant="solid"
           marginHorizontal={20}
+          marginTop={20}
+          marginBottom={10}
           borderRadius={20}
           disabled={!(parsedRes?.action)}
           onPress={() => moveToOfflineLogs()}
@@ -316,6 +314,7 @@ const styles = StyleSheet.create({
   },
   viewStyle: {
     alignItems: 'center',
+    paddingTop: 40
   },
   buttonStyle: {
     backgroundColor: '#2089dc',
