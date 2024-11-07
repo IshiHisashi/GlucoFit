@@ -84,6 +84,9 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
 
   const getOffLineData = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'getOfflineData', mac);
 
+  // This function deletes all the offline data stored in the device. So be careful to use this. 
+  const deleteOfflineData = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'deleteOfflineData', mac);
+
   useEffect(() => {
     if (response !== null && response !== "" ) {
       const resString = response;
