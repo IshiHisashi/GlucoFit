@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -129,8 +129,13 @@ type GlucoseLogScreenNavigationProps = NativeStackNavigationProp<
   "GlucoseLog"
 >;
 
+type RouteParams = {
+  logId?: string;
+};
+
 const GlucoseLogScreen: React.FC = () => {
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
+  const route = useRoute<{ key: string; name: string; params: RouteParams }>();
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());

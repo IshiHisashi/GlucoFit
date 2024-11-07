@@ -1,6 +1,6 @@
 import { ScrollView, View } from "@gluestack-ui/themed";
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -58,12 +58,18 @@ type MedicineLogScreenProps = NativeStackNavigationProp<
   "MedicineLog"
 >;
 
+type RouteParams = {
+  logId?: string;
+};
+
 const MedicineLogScreen: React.FC = () => {
   const [selectedMeds, setSelectedMeds] = useState<
     { id: string; dosage: number }[]
   >([]);
 
   const navigation = useNavigation<MedicineLogScreenProps>();
+  const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  console.log("ROUTE ON MED LOG:", route.params.logId);
 
   const {
     data: medsListData,
