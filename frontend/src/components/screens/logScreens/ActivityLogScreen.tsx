@@ -161,9 +161,22 @@ const ActivityLogScreen: React.FC = () => {
         });
         console.log("Create result:", log);
       }
+      
+      const fakeData = [{
+        badge_desc: "This is fake data",
+        badge_name: "Fake badge here!",
+        id: "670b2125cb185c3905515da2"
+      }] 
+       
       navigation.navigate("Tabs", {
         screen: "Home",
-        params: { mutatedLog: "activity" },
+        params: { 
+          mutatedLog: "activity",
+          insight: "",
+          // badges: log.data.createActivityLog,
+          badges: fakeData
+        },
+
       });
     } catch (error) {
       console.error("Error creating activity log:", error);
