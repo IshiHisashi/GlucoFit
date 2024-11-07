@@ -27,7 +27,7 @@ const LogsTableTitle: FC<LogsTableProps> = (props) => {
           </Pressable>
         ) : onPressTitleRightButton ? (
           <GlucoButtonNoOutline
-            text="See more"
+            text="Show more"
             isFocused={false}
             isDisabled={false}
             onPress={onPressTitleRightButton}

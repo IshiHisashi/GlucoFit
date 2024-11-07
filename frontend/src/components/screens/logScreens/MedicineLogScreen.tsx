@@ -1,6 +1,6 @@
 import { ScrollView, View } from "@gluestack-ui/themed";
-import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,15 +9,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import LogsTable from "../../organisms/LogsTable";
-
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
-
-// dummy data
-const medicines = [
-  { name: "Apotokishin", dosage: 16, unit: "mg", frequency: "Everyday" },
-  { name: "Kakkonto", dosage: 18, unit: "mg", frequency: "Everyday" },
-];
+import { AuthContext } from "../../../context/AuthContext";
 
 const GET_MEDICINES_LIST = gql`
   query GetMedicinesList($userId: ID!) {
@@ -58,12 +50,19 @@ type MedicineLogScreenProps = NativeStackNavigationProp<
   "MedicineLog"
 >;
 
+type RouteParams = {
+  logId?: string;
+};
+
 const MedicineLogScreen: React.FC = () => {
   const [selectedMeds, setSelectedMeds] = useState<
     { id: string; dosage: number }[]
   >([]);
 
   const navigation = useNavigation<MedicineLogScreenProps>();
+  const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  console.log("ROUTE ON MED LOG:", route.params?.logId);
+  const { userId } = useContext(AuthContext);
 
   const {
     data: medsListData,

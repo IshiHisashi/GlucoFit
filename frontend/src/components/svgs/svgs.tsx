@@ -275,7 +275,29 @@ export const BookmarkCustom: FC = ({
       fill={color}
       stroke={color}
       strokeWidth={strokeWidth}
-      d="M16 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.5.87l5.5-3.18 5.5 3.18a1 1 0 0 0 .5.13 1 1 0 0 0 .5-.13A1 1 0 0 0 19 21V5a3 3 0 0 0-3-3Zm1 17.27-4.5-2.6a1 1 0 0 0-1 0L7 19.27V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v14.27Z"
+      d="M18 2H6a1 1 0 0 0-1 1v18a1 1 0 0 0 1.65.76L12 17.27l5.29 4.44A.999.999 0 0 0 18 22a.84.84 0 0 0 .38-.08A1 1 0 0 0 19 21V3a1 1 0 0 0-1-1Zm-1 16.86-4.36-3.66a1 1 0 0 0-1.28 0L7 18.86V4h10v14.86Z"
+    />
+  </Svg>
+);
+
+export const BookmarkFilledCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill="#4800FF"
+      fillRule="evenodd"
+      d="M6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-.62.92.84.84 0 0 1-.38.08.998.998 0 0 1-.71-.29L12 17.27l-5.35 4.49A1 1 0 0 1 5 21V3a1 1 0 0 1 1-1Z"
+      clipRule="evenodd"
     />
   </Svg>
 );

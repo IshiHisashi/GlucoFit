@@ -16,7 +16,7 @@ import {
   Modal,
   Image,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useWindowDimensions, Share, Alert } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
@@ -44,26 +44,24 @@ import {
   IconForMedicineLog,
 } from "../svgs/svgsForLogsTableIcons";
 import LogsTableTitle from "../molcules/LogsTableTitle";
+import { AuthContext } from "../../context/AuthContext";
 
-// hardcode for now
-const userId = "670de7a6e96ff53059a49ba8";
+// const TotalSteps = () => {
+//   const GET_TOTAL_STEPS_FOR_TODAY = gql`
+//     query GetTotalStepsForToday($userId: ID!) {
+//       getTotalStepsForToday(user_id: $userId)
+//     }
+//   `;
 
-const TotalSteps = () => {
-  const GET_TOTAL_STEPS_FOR_TODAY = gql`
-    query GetTotalStepsForToday($userId: ID!) {
-      getTotalStepsForToday(user_id: $userId)
-    }
-  `;
+//   const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
+//     variables: { userId },
+//   });
 
-  const { loading, error, data } = useQuery(GET_TOTAL_STEPS_FOR_TODAY, {
-    variables: { userId },
-  });
+//   if (loading) return <Text>Loading...</Text>;
+//   if (error) return <Text>N/A Steps</Text>;
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>N/A Steps</Text>;
-
-  return <Text>{data.getTotalStepsForToday} Steps</Text>;
-};
+//   return <Text>{data.getTotalStepsForToday} Steps</Text>;
+// };
 
 // =========== queries ==============
 
@@ -81,11 +79,12 @@ const GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY = gql`
 `;
 
 const GET_ACTIVITIES_FOR_TODAY = gql`
-  query GetActivitiesForToday($userId: ID!) {
+  query GetTodayActivityLogs($userId: ID!) {
     getTodayActivityLogs(user_id: $userId) {
       duration
       id
       log_timestamp
+      activityType
     }
   }
 `;
@@ -110,6 +109,7 @@ const GET_CARBS_FOR_TODAY = gql`
       carbs
       id
       log_timestamp
+      time_period
     }
   }
 `;
@@ -146,7 +146,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 type RouteParams = {
   mutatedLog?: string;
   insight?: any;
-  badges?: any
+  badges?: any;
 };
 
 interface ModalData {
@@ -161,12 +161,14 @@ interface Badges {
 }
 
 interface BadgeImages {
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const route = useRoute<{ key: string; name: string; params: RouteParams }>();
+  const { userId } = useContext(AuthContext);
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [toastReady, setToastReady] = useState<boolean>(false);
   const [currentModalIndex, setCurrentModalIndex] = useState(0);
@@ -341,8 +343,13 @@ const HomeScreen: React.FC = () => {
         });
       }
     }
-
-  }, [route.params?.insight, toast, navigation, route.params?.mutatedLog, toastReady]);
+  }, [
+    route.params?.insight,
+    toast,
+    navigation,
+    route.params?.mutatedLog,
+    toastReady,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -433,7 +440,7 @@ const HomeScreen: React.FC = () => {
           return {
             id: obj.id,
             icon: <IconForActivityLog />,
-            text: "Activity",
+            text: obj.activityType,
             subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
               hour: "numeric",
               minute: "numeric",
@@ -467,7 +474,7 @@ const HomeScreen: React.FC = () => {
           return {
             id: obj.id,
             icon: <IconForFoodLog />,
-            text: "Food Intake",
+            text: obj.time_period,
             subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
               hour: "numeric",
               minute: "numeric",
@@ -492,26 +499,26 @@ const HomeScreen: React.FC = () => {
   // Badge images key value pair for now. Will be replaced with by remote location.
 
   const badgeImages: BadgeImages = {
-    "670b2125cb185c3905515da2": require('../../../assets/badgesWithIds/FirstStep.png'),
-    "670b2149cb185c3905515da4": require('../../../assets/badgesWithIds/StreakStarter.png'),
-    "670b215bcb185c3905515da6": require('../../../assets/badgesWithIds/HealthyHabit.png'),
-    "670b216fcb185c3905515da8": require('../../../assets/badgesWithIds/EarlyBird.png'),
-    "670b2188cb185c3905515daa": require('../../../assets/badgesWithIds/NightOwl.png'),
-    "670b2192cb185c3905515dac": require('../../../assets/badgesWithIds/FitnessStreak.png'),
-    "670b2199cb185c3905515dae": require('../../../assets/badgesWithIds/StableStar.png'),
-    "670b21a8cb185c3905515db0": require('../../../assets/badgesWithIds/CheckIn.png'),
-    "670b21b1cb185c3905515db2": require('../../../assets/badgesWithIds/KnowledgeSeeker.png'),
+    "670b2125cb185c3905515da2": require("../../../assets/badgesWithIds/FirstStep.png"),
+    "670b2149cb185c3905515da4": require("../../../assets/badgesWithIds/StreakStarter.png"),
+    "670b215bcb185c3905515da6": require("../../../assets/badgesWithIds/HealthyHabit.png"),
+    "670b216fcb185c3905515da8": require("../../../assets/badgesWithIds/EarlyBird.png"),
+    "670b2188cb185c3905515daa": require("../../../assets/badgesWithIds/NightOwl.png"),
+    "670b2192cb185c3905515dac": require("../../../assets/badgesWithIds/FitnessStreak.png"),
+    "670b2199cb185c3905515dae": require("../../../assets/badgesWithIds/StableStar.png"),
+    "670b21a8cb185c3905515db0": require("../../../assets/badgesWithIds/CheckIn.png"),
+    "670b21b1cb185c3905515db2": require("../../../assets/badgesWithIds/KnowledgeSeeker.png"),
   };
 
   // When coming to Home and has badges param, open modal
   useEffect(() => {
-    if (route.params?.badges.length > 0) {
+    if (route.params?.badges?.length > 0) {
       setModalVisible(true);
-      console.log("modal on")
+      console.log("modal on");
     } else {
-      console.log("modal not working")
+      console.log("modal not working");
     }
-  },[navigation, route.params?.badges])
+  }, [navigation, route.params?.badges]);
 
   // Sequential badges modal
   const handleClose = () => {
@@ -521,22 +528,21 @@ const HomeScreen: React.FC = () => {
       setModalVisible(false);
       setToastReady(true);
     }
-  }
+  };
 
   // Go to Badges screen
   const moveToBadges = () => {
     setModalVisible(!modalVisible);
     navigation.navigate("Tabs", {
-      screen: "BadgeScreen"
-    })
-  }
+      screen: "BadgeScreen",
+    });
+  };
 
   // Just share functionality
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message:
-          "You will be able to share things from hereeee!",
+        message: "You will be able to share things from hereeee!",
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -553,54 +559,81 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <HeaderBasic
-          routeName={route.name as "Home"}
-          userName={userData?.getUser.name}
-          navigation={navigation}
-        />
+    <SafeAreaView
+      style={{ backgroundColor: "#4800FF" }}
+      showsVerticalScrollIndicator={false}
+    >
+      <HeaderBasic
+        routeName={route.name as "Home"}
+        userName={userData?.getUser.name}
+        navigation={navigation}
+      />
+      <ScrollView bg="$neutralDark5" h="106%">
         <VStack p="$4" space="md">
-        {route.params?.badges?.length > 0 && (
-          <Modal isOpen={modalVisible} onClose={() => handleClose()} >
-            <Modal.Content position="absolute" bottom={120} height="70%" borderRadius={20} backgroundColor="white">
-              <Modal.CloseButton />
-              <View
-                style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', flexGrow: 1}}
+          {route.params?.badges?.length > 0 && (
+            <Modal isOpen={modalVisible} onClose={() => handleClose()}>
+              <Modal.Content
+                position="absolute"
+                bottom={120}
+                height="70%"
+                borderRadius={20}
+                backgroundColor="white"
               >
-                <Button onPress={() => handleClose()} >
-                  <ButtonText>
-                    Close
-                  </ButtonText>
-                </Button>
-                <Text textAlign="center">Congratulations!</Text>
-                <Text textAlign="center">You unlocked a new badge</Text>
-                <View style={{ flexBasis: '100%', alignItems: 'center', marginBottom: 10 }}>
-                  <Image w={120} h={120} source={badgeImages[route.params?.badges[currentModalIndex]?.id]} alt={route.params?.badges[currentModalIndex].badge_name} marginBottom={8} />
-                  <Text color="$black" fontSize={20} textAlign="center" >{ route.params?.badges[currentModalIndex].badge_name }</Text>
-                  <Text textAlign="center">{ route.params?.badges[currentModalIndex].badge_desc }</Text>
+                <Modal.CloseButton />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                    flexGrow: 1,
+                  }}
+                >
+                  <Button onPress={() => handleClose()}>
+                    <ButtonText>Close</ButtonText>
+                  </Button>
+                  <Text textAlign="center">Congratulations!</Text>
+                  <Text textAlign="center">You unlocked a new badge</Text>
+                  <View
+                    style={{
+                      flexBasis: "100%",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Image
+                      w={120}
+                      h={120}
+                      source={
+                        badgeImages[route.params?.badges[currentModalIndex]?.id]
+                      }
+                      alt={route.params?.badges[currentModalIndex].badge_name}
+                      marginBottom={8}
+                    />
+                    <Text color="$black" fontSize={20} textAlign="center">
+                      {route.params?.badges[currentModalIndex].badge_name}
+                    </Text>
+                    <Text textAlign="center">
+                      {route.params?.badges[currentModalIndex].badge_desc}
+                    </Text>
+                  </View>
+                  <Button onPress={() => onShare()}>
+                    <ButtonText>Share</ButtonText>
+                  </Button>
+                  <Button onPress={() => moveToBadges()}>
+                    <ButtonText>View All Badges</ButtonText>
+                  </Button>
                 </View>
-                <Button onPress={() => onShare()}>
-                  <ButtonText>
-                    Share
-                  </ButtonText>
-                </Button>
-                <Button onPress={() => moveToBadges()}>
-                  <ButtonText>
-                    View All Badges
-                  </ButtonText>
-                </Button>                
-              </View>
-            </Modal.Content>
-          </Modal>
-        )}
+              </Modal.Content>
+            </Modal>
+          )}
 
           <VStack
             space="sm"
             borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
             p="$4"
+            bg="$neutralWhite"
           >
             <HStack alignItems="center" justifyContent="space-between">
               {bslResultsAndAverageData && (
@@ -620,7 +653,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
                 </VStack>
               )}
-              <TotalSteps />
+              {/* <TotalSteps /> */}
             </HStack>
 
             {bslResultsAndAverageData && (
@@ -641,22 +674,13 @@ const HomeScreen: React.FC = () => {
             )}
           </VStack>
 
-          <VStack
-            borderWidth={1}
-            borderColor="$borderLight200"
-            borderRadius="$md"
-            p="$4"
-          >
-            <Text>Do you want to connect your device?</Text>
-            <Text>Supporting text here</Text>
-            <Button>
-              <ButtonText>Connect device</ButtonText>
-            </Button>
-          </VStack>
-
           <LogsTable
             title="Logs for today"
-            subTitle="date date"
+            subTitle={new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
             onPressTitleRightButton={() =>
               navigation.navigate("Tabs", { screen: "Logs" })
             }
@@ -703,6 +727,8 @@ const HomeScreen: React.FC = () => {
             </HStack>
           </VStack>
         </VStack>
+
+        <View h={100} />
       </ScrollView>
     </SafeAreaView>
   );
