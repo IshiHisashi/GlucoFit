@@ -189,7 +189,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
                 navigation.navigate("GlucoseLog",{
-                  BGL: 5.2,
+                  BGL: "5.2",
                   fromAuto: true
                 });
               }}

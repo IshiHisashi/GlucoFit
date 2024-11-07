@@ -128,6 +128,13 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
 
+  useEffect(() => {
+    if (fromAuto) {
+      setGlucoseLevel(BGL.toString());
+    }
+    
+  }, [])
+
   // GMT
   console.log(date);
   console.log(new Date().toLocaleString());
