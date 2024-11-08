@@ -570,38 +570,71 @@ const HomeScreen: React.FC = () => {
       />
       <ScrollView bg="$neutralDark5" h="106%">
         <VStack p="$4" space="md">
-        {route.params?.badges?.length > 0 && (
-          <Modal isOpen={modalVisible} onClose={() => handleClose()} >
-            <Modal.Content position="absolute" bottom={40} height="86%" borderRadius={20} backgroundColor="white">
-              <Modal.CloseButton />
-              <View>
-                <Center>
-                  <Button onPress={() => handleClose()} flexGrow={1} backgroundColor="transparent">
-                    <ButtonText position="relative" top={0} left={120}>
-                      ✖️
-                    </ButtonText>
-                  </Button>
-                  <Text textAlign="center">Congratulations!</Text>
-                  <Text textAlign="center" fontSize={22} color="black" padding={20}>You unlocked a new badge</Text>
-                  <Image w={120} h={120} source={badgeImages[route.params?.badges[currentModalIndex]?.id]} alt={route.params?.badges[currentModalIndex].badge_name} marginBottom={8} />
-                  <Text color="$black" fontSize={20} textAlign="center" marginVertical={10} >{ route.params?.badges[currentModalIndex].badge_name }</Text>
-                  <Text textAlign="center" marginBottom={10}>{ route.params?.badges[currentModalIndex].badge_desc }</Text>
-                  <Button onPress={() => onShare()} width={180} marginBottom={10}>
-                    <ButtonText>
-                      Share
-                    </ButtonText>
-                  </Button>
-                  <Button onPress={() => moveToBadges()} width={180}>
-                    <ButtonText>
-                      View All Badges
-                    </ButtonText>
-                  </Button>                
-                </Center>                
-              </View>
-
-            </Modal.Content>
-          </Modal>
-        )}
+          {route.params?.badges?.length > 0 && (
+            <Modal isOpen={modalVisible} onClose={() => handleClose()}>
+              <Modal.Content
+                position="absolute"
+                bottom={40}
+                height="86%"
+                borderRadius={20}
+                backgroundColor="white"
+              >
+                <Modal.CloseButton />
+                <View>
+                  <Center>
+                    <Button
+                      onPress={() => handleClose()}
+                      flexGrow={1}
+                      backgroundColor="transparent"
+                    >
+                      <ButtonText position="relative" top={0} left={120}>
+                        ✖️
+                      </ButtonText>
+                    </Button>
+                    <Text textAlign="center">Congratulations!</Text>
+                    <Text
+                      textAlign="center"
+                      fontSize={22}
+                      color="black"
+                      padding={20}
+                    >
+                      You unlocked a new badge
+                    </Text>
+                    <Image
+                      w={120}
+                      h={120}
+                      source={
+                        badgeImages[route.params?.badges[currentModalIndex]?.id]
+                      }
+                      alt={route.params?.badges[currentModalIndex].badge_name}
+                      marginBottom={8}
+                    />
+                    <Text
+                      color="$black"
+                      fontSize={20}
+                      textAlign="center"
+                      marginVertical={10}
+                    >
+                      {route.params?.badges[currentModalIndex].badge_name}
+                    </Text>
+                    <Text textAlign="center" marginBottom={10}>
+                      {route.params?.badges[currentModalIndex].badge_desc}
+                    </Text>
+                    <Button
+                      onPress={() => onShare()}
+                      width={180}
+                      marginBottom={10}
+                    >
+                      <ButtonText>Share</ButtonText>
+                    </Button>
+                    <Button onPress={() => moveToBadges()} width={180}>
+                      <ButtonText>View All Badges</ButtonText>
+                    </Button>
+                  </Center>
+                </View>
+              </Modal.Content>
+            </Modal>
+          )}
           <VStack
             space="sm"
             borderWidth={1}
