@@ -410,7 +410,7 @@ const HomeScreen: React.FC = () => {
     logsForToday = logsForTodayRaw.map((obj) => {
       switch (obj.__typename) {
         case "TestResults": {
-          const threshold = bslForXData.getAverageBslXAxisValue || 5.6;
+          const threshold = bslForXData?.getAverageBslXAxisValue || 5.6;
           const icon =
             obj.bsl > threshold ? (
               <IconForGlucoseLogSad />
