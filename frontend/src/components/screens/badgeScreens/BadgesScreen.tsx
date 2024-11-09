@@ -38,7 +38,7 @@ interface BadgeImages {
   [key: string]: any;
 }
 
-const BadgesScreen: React.FC = () => {
+const BadgesScreen: React.FC = ({ navigation }) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<String>();
@@ -90,7 +90,7 @@ const BadgesScreen: React.FC = () => {
         if (loadBadgeData) loadBadgeData();
       });
     }
-  }, [data]);
+  }, [data, navigation]);
 
   const getBadgeProgress = (badgeName: string) => {
     switch (badgeName) {
@@ -285,72 +285,77 @@ const BadgesScreen: React.FC = () => {
             flexGrow: 1,
           }}
         >
-         {
-            badgeData.map( b => {
-              if ( b.badgeId.id === selectedBadge ) {
-                return (
-                  <Center>
-                    { b.achieved === true ? 
-                        <Image 
-                          w={120} 
-                          h={120} 
-                          source={badgeImages[b.badgeId.id]} 
-                          alt={b.badgeId.badge_name} 
-                          marginBottom={8}
-                          position="absolute"
-                          top={-60}
-                          left="50%"
-                          transform={[{translateX: -60}]}
-                          borderRadius={60}
-                          borderWidth={4}
-                          borderColor="white"
-                        />
-                      :
-                        <Image 
-                          w={120} 
-                          h={120} 
-                          source={notAchieveBadgeImages[b.badgeId.id]} 
-                          alt={b.badgeId.badge_name} 
-                          marginBottom={8}
-                          position="absolute"
-                          top={-60}
-                          left="50%"
-                          transform={[{translateX: -60}]}
-                          borderRadius={60}
-                          borderWidth={4}
-                          borderColor="white"
-                        />
-                    }
-                    <Text color="$black" fontSize={20} textAlign="center" marginTop={40}>{b.badgeId.badge_name}</Text>
-                    <Text textAlign="center" marginTop={10} marginBottom={30}>{b.badgeId.badge_desc}</Text>
-                    {b.achieved ? 
-                      <View>
-                        <Text textAlign="center" color="black">
-                          Unlocked
-                        </Text>
-                      </View>
-                    :
-                      <View>
-                        <Text textAlign="center" color="black">
-                          Your Progress
-                        </Text>
-                        <Text textAlign="center" color="black">
-                          {getBadgeProgress(b.badgeId.badge_name)} / {b.badgeId.criteria.value}
-                        </Text>
-                      </View>
-                    }
-                    <Button onPress={switchModal} marginTop={30}>
-                      <Text>
-                        Close
+          {badgeData.map((b) => {
+            if (b.badgeId.id === selectedBadge) {
+              return (
+                <Center>
+                  {b.achieved === true ? (
+                    <Image
+                      w={120}
+                      h={120}
+                      source={badgeImages[b.badgeId.id]}
+                      alt={b.badgeId.badge_name}
+                      marginBottom={8}
+                      position="absolute"
+                      top={-60}
+                      left="50%"
+                      transform={[{ translateX: -60 }]}
+                      borderRadius={60}
+                      borderWidth={4}
+                      borderColor="white"
+                    />
+                  ) : (
+                    <Image
+                      w={120}
+                      h={120}
+                      source={notAchieveBadgeImages[b.badgeId.id]}
+                      alt={b.badgeId.badge_name}
+                      marginBottom={8}
+                      position="absolute"
+                      top={-60}
+                      left="50%"
+                      transform={[{ translateX: -60 }]}
+                      borderRadius={60}
+                      borderWidth={4}
+                      borderColor="white"
+                    />
+                  )}
+                  <Text
+                    color="$black"
+                    fontSize={20}
+                    textAlign="center"
+                    marginTop={40}
+                  >
+                    {b.badgeId.badge_name}
+                  </Text>
+                  <Text textAlign="center" marginTop={10} marginBottom={30}>
+                    {b.badgeId.badge_desc}
+                  </Text>
+                  {b.achieved ? (
+                    <View>
+                      <Text textAlign="center" color="black">
+                        Unlocked
                       </Text>
-                      </Button>
-                  </Center>            
-                )
-              }
-              return null
-            })
-          }
-
+                    </View>
+                  ) : (
+                    <View>
+                      <Text textAlign="center" color="black">
+                        Your Progress
+                      </Text>
+                      <Text textAlign="center" color="black">
+                        {getBadgeProgress(b.badgeId.badge_name)} /{" "}
+                        {b.badgeId.criteria.value}
+                      </Text>
+                    </View>
+                  )}
+                  <Button onPress={switchModal} marginTop={30}>
+                    <Text>Close</Text>
+                  </Button>
+                </Center>
+              );
+            }
+            return null;
+          })}
         </View>
       </Modal>
     </View>

@@ -49,7 +49,7 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
           isDisabled={false}
           onPress={() => navigation.navigate("Login")}
         />
-        <HStack gap={16} justifyContent="center">
+        {/* <HStack gap={16} justifyContent="center">
           <Text
             color="#888"
             onPress={() => navigation.navigate("OnboardingStack")}
@@ -59,7 +59,7 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
           <Text color="#888" onPress={SignOut}>
             Sign Out
           </Text>
-        </HStack>
+        </HStack> */}
       </View>
     </View>
   );
