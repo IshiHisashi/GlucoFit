@@ -8,8 +8,9 @@ import {
   InputField,
   InputSlot,
 } from "@gluestack-ui/themed";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { NavigationProp } from "@react-navigation/native";
+import { AuthContext } from "../../context/AuthContext";
 
 import { BellCustom, SearchCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
@@ -25,6 +26,7 @@ interface HeaderBasicProps {
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
   const { routeName, userName, searchValue, onChangeSearchValue, navigation } =
     props;
+  const { SignOut } = useContext(AuthContext);
 
   const headerStyles = {
     Home: {
@@ -74,7 +76,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
           </VStack>
 
           <HStack alignItems="center" space="md">
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={SignOut}>
               <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
             </Pressable>
             <Pressable onPress={() => navigation?.navigate("Temp")}>

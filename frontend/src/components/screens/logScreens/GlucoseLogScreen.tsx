@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Platform } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -104,11 +104,15 @@ type RouteParams = {
   logId?: string;
 };
 
-const GlucoseLogScreen: React.FC = () => {
+type ResultScreenRouteProp = RouteProp<AppStackParamList, "GlucoseLog">;
+type Props = {
+  navigation: GlucoseLogScreenNavigationProps;
+  route: ResultScreenRouteProp;
+};
+const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
+  const { BGL, fromAuto, logId } = route.params;
   const navigation = useNavigation<GlucoseLogScreenNavigationProps>();
-  const route = useRoute<{ key: string; name: string; params: RouteParams }>();
   console.log("ROUTE ON GLUCO LOG:", route.params?.logId);
-  const logId = route.params?.logId;
   const { userId } = useContext(AuthContext);
 
   const [glucoseLevel, setGlucoseLevel] = useState("");
@@ -123,6 +127,13 @@ const GlucoseLogScreen: React.FC = () => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (fromAuto) {
+      setGlucoseLevel(BGL.toString());
+    }
+    
+  }, [])
 
   // GMT
   console.log(date);
@@ -300,7 +311,7 @@ const GlucoseLogScreen: React.FC = () => {
             <Image source={GlucoFitFaceSample} alt="GlucoFit face" size="xl" />
 
             <InputFieldForBsl
-              value={glucoseLevel}
+              value={fromAuto ? BGL.toString() : glucoseLevel}
               onChangeText={setGlucoseLevel}
               isDisabled={false}
             />

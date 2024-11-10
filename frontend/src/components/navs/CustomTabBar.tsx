@@ -184,11 +184,22 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
               }}
               text="Activity"
             />
+            {/* <SubMenuItem
+              onPress={() => {
+                // setIsSubMenuOpen(false);
+                toggleSubMenu();
+                navigation.navigate("GlucoseLog",{
+                  BGL: "0",
+                  fromAuto: false
+                });
+              }}
+              text="Blood Glucose"
+            /> */}
             <SubMenuItem
               onPress={() => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
-                navigation.navigate("GlucoseLog");
+                navigation.navigate("AutoLog");
               }}
               text="Blood Glucose"
             />
