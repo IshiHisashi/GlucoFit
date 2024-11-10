@@ -45,7 +45,7 @@ const AppStack: React.FC = () => (
       component={GlucoseLogScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen
+    {/* <Stack.Screen
       name="AutoLog"
       component={AutoLogScreen}
       options={{ headerShown: false }}
@@ -54,7 +54,7 @@ const AppStack: React.FC = () => (
       name="OfflineLogs"
       component={OfflineLogsScreen}
       options={{ headerShown: false }}
-    />
+    /> */}
     <Stack.Screen
       name="Note"
       component={NoteScreen}
