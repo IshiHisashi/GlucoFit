@@ -294,12 +294,12 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   return (
     <SafeAreaView>
       <View height="$full">
+        <HeaderWithBackButton
+          navigation={navigation}
+          text="Add Blood Glucose"
+          // rightIconOnPress={() => {}}
+        />
         <ScrollView>
-          <HeaderWithBackButton
-            navigation={navigation}
-            text="Add Blood Glucose"
-            // rightIconOnPress={() => {}}
-          />
           {/* <VStack p="$4"> */}
           <VStack
             space="sm"

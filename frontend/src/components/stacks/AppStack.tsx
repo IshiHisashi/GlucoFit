@@ -14,6 +14,7 @@ import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsSc
 import AutoLogScreen from "../screens/logScreens/AutoLogScreen"
 import OfflineLogsScreen from "../screens/logScreens/OfflineLogsScreen";
 import Temp from "../screens/Temp";
+import ProfileScreen from "../screens/profileScreens/ProfileScrenn";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -68,6 +69,11 @@ const AppStack: React.FC = () => (
     <Stack.Screen
       name="RecentInsights"
       component={RecentInsightsScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="Profile"
+      component={ProfileScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
