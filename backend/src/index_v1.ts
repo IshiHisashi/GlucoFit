@@ -8,6 +8,8 @@ import resolvers from "./schema/resolvers/resolvers";
 
 dotenv.config();
 
+//test
+
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
