@@ -109,6 +109,7 @@ const userResolvers = {
       const validOldPassword = await user.comparePassword(oldPassword);
       if (!validOldPassword) throw new Error("Old password is incorrect");
 
+      // middelware will hash the password
       user.password = newPassword;
 
       await user.save();
