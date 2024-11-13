@@ -15,6 +15,10 @@ import AutoLogScreen from "../screens/logScreens/AutoLogScreen"
 import OfflineLogsScreen from "../screens/logScreens/OfflineLogsScreen";
 import Temp from "../screens/Temp";
 import ProfileScreen from "../screens/profileScreens/ProfileScrenn";
+import EditProfileScreen from "../screens/profileScreens/EditProfileScreen";
+import ChangePasswordScreen from "../screens/profileScreens/ChangePasswordScreen";
+import ManageAccountScreen from "../screens/profileScreens/ManageAccount";
+import MedicationScreen from "../screens/profileScreens/Medication";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -74,6 +78,26 @@ const AppStack: React.FC = () => (
     <Stack.Screen 
       name="Profile"
       component={ProfileScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="EditProfile"
+      component={EditProfileScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="ChangePassword"
+      component={ChangePasswordScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="ManageAccount"
+      component={ManageAccountScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="Medications"
+      component={MedicationScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

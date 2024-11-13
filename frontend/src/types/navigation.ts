@@ -23,7 +23,11 @@ export type AppStackParamList = {
   RecentInsights: undefined;
   DeviceInfo: { mac: string; };
   Temp: undefined;
-  Profile: undefined
+  Profile: undefined;
+  EditProfile: undefined;
+  ChangePassword: undefined;
+  ManageAccount: undefined;
+  Medications: undefined;
 };
 
 export type LoginSignupStackParamList = {
