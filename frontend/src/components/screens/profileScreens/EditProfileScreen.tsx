@@ -7,6 +7,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { Pressable } from "@gluestack-ui/themed";
 import { gql, useQuery } from "@apollo/client";
+import InputFieldGeneral from "../../atoms/InputFieldGeneral";
+import DateInput from "../../atoms/DateInput";
 
 const GET_USER_GENERAL_DATA = gql`
   query GetUser(
@@ -55,6 +57,10 @@ const EditProfileScreen = () => {
     }
   }, [data])
 
+  useEffect(() => {
+    console.log(userBday);
+  }, [userBday])
+
   return (
     <SafeAreaView>
       <View height="$full">
@@ -64,6 +70,32 @@ const EditProfileScreen = () => {
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>
+          <InputFieldGeneral
+            label="Name"
+            value={userName}
+            onChangeText={setUserName}
+            isRequired={true}
+            isDisabled={false}
+            isInvalid={false}
+            placeholder="Preferred Name"
+          />
+          {/* 🚨 Fix this date input field later 🚨 */}
+          <DateInput 
+            value={userBday}
+            isDisabled={false}
+            labelText="Birthday"
+            onChange={setUserBday}
+            placeHolder="DD/MM/YYYY"
+          />
+          <InputFieldGeneral
+            label="Email"
+            value={userEmail}
+            onChangeText={setUserEmail}
+            isRequired={false}
+            isDisabled={false}
+            isInvalid={false}
+            placeholder="Preferred Name"
+          />
           <Text>Name: { userName }</Text>
           <Text>Birthday: { userBday }</Text>
           <Text>Email: { userEmail }</Text>

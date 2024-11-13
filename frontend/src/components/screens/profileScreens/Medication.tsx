@@ -64,7 +64,7 @@ const MedicationScreen = () => {
               renderItem={({ item }) => {
                 console.log(item);
                 return (
-                  <View padding={20} backgroundColor="white" borderRadius={10} marginBottom={10}>
+                  <View id="item.id" padding={20} backgroundColor="white" borderRadius={10} marginBottom={10}>
                     <Text>Name: { item.medicine_name }</Text>
                     <Text>Dosage: { item.dosage } {item.unit}</Text>
                     <Text>Medication id: { item.id }</Text>

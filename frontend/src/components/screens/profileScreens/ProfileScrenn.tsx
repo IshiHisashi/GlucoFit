@@ -37,7 +37,7 @@ const ProfileScreen = () => {
   )
 
   useEffect(() => {
-    if (data.getUser?.name) {
+    if (data?.getUser?.name) {
       setUserName(data.getUser.name);
     }
   }, [data])
@@ -57,12 +57,12 @@ const ProfileScreen = () => {
             borderRadius={10}
             padding={20}
           >
-            <Text>Name: { userName }</Text>        
+            <Text>Name: { userName !== "" ? userName : "loading" }</Text>        
             <Text>Edit Profile</Text>    
           </Pressable>
           <VStack>
             <Text>Health</Text>
-            <Pressable>
+            <Pressable onPress={() => navigation?.navigate("HealthData")}>
               <HStack justifyContent="space-between" width="100%">
                 <Text>Health Data</Text>
                 <Icon as={ChevronRightIcon}/>
@@ -74,7 +74,7 @@ const ProfileScreen = () => {
                 <Icon as={ChevronRightIcon}/>
               </HStack>
             </Pressable>
-            <Pressable>
+            <Pressable onPress={() => navigation?.navigate("DevAndApp")}>
               <HStack justifyContent="space-between" width="100%">
                 <Text>Dev and Apps</Text>
                 <Icon as={ChevronRightIcon}/>
