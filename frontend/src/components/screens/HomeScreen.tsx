@@ -699,7 +699,8 @@ const HomeScreen: React.FC = () => {
             borderWidth={1}
             borderColor="$primaryIndigo10"
             borderRadius={10}
-            p="$4"
+            px="$4"
+            py="$5"
             bg="$neutralWhite"
           >
             <LogsTableTitle

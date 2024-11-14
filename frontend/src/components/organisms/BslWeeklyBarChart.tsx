@@ -51,9 +51,9 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
   return (
     <View>
       <VictoryChart
-        width={width * 0.7}
-        height={229}
-        domainPadding={20}
+        width={width * 0.6}
+        height={100}
+        domainPadding={{ x: 15 }}
         padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
         domain={{ y: [yAxisMin - 2, yAxisMax - 2] }}
       >
