@@ -233,26 +233,34 @@ const testResultsResolvers = {
         if (startDayIndex === -1) {
           throw new Error("Invalid create_day");
         }
+        // =====
+        // // Get current date and calculate the start and end of the week
+        // const currentDate = new Date();
+        // const currentDayIndex = currentDate.getDay();
+        // const dayDifference = (currentDayIndex - startDayIndex + 7) % 7;
 
-        // Get current date and calculate the start and end of the week
-        const currentDate = new Date();
-        const currentDayIndex = currentDate.getDay();
-        const dayDifference = (currentDayIndex - startDayIndex + 7) % 7;
+        // const startOfWeek = new Date();
+        // startOfWeek.setDate(currentDate.getDate() - dayDifference);
+        // startOfWeek.setHours(0, 0, 0, 0);
 
-        const startOfWeek = new Date();
-        startOfWeek.setDate(currentDate.getDate() - dayDifference);
-        startOfWeek.setHours(0, 0, 0, 0);
+        // const endOfWeek = new Date(startOfWeek);
+        // endOfWeek.setDate(startOfWeek.getDate() + 6); // End of the week
+        // endOfWeek.setHours(23, 59, 59, 999);
+        // ====
 
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // End of the week
-        endOfWeek.setHours(23, 59, 59, 999);
+        // Define the date range for the past 7 days, ending today
+        const endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 6); // Start 7 days ago
+        startDate.setHours(0, 0, 0, 0);
 
         // Fetch BSL test results for this week
         const results = await TestResults.aggregate([
           {
             $match: {
               user_id: new Types.ObjectId(user_id),
-              log_timestamp: { $gte: startOfWeek, $lte: endOfWeek },
+              log_timestamp: { $gte: startDate, $lte: endDate },
             },
           },
           {
@@ -261,7 +269,7 @@ const testResultsResolvers = {
                 $dateToString: {
                   format: "%Y-%m-%dT%H:%M:%S",
                   date: "$log_timestamp",
-                  timezone: "America/Vancouver", // <-- Set the timezone to Vancouver
+                  timezone: "America/Vancouver",
                 },
               },
             },
@@ -269,34 +277,32 @@ const testResultsResolvers = {
 
           {
             $group: {
-              _id: { $dayOfWeek: { $toDate: "$localTimestamp" } }, // <-- Adjust to local time
+              _id: { $dayOfWeek: { $toDate: "$localTimestamp" } },
               averageBsl: { $avg: "$bsl" },
             },
           },
         ]);
 
-        // Map results based on day of the week
         const resultMap = new Map<number, number>();
         results.forEach((dayData) => {
-          // Convert MongoDB $dayOfWeek (1 = Sunday) to JS getDay() (0 = Sunday)
-          const dayIndex = dayData._id % 7; // Convert to match day index (Sun = 0, Mon = 1, etc.)
+          const dayIndex = dayData._id % 7;
           resultMap.set(
             dayIndex - 1,
             parseFloat(dayData.averageBsl.toFixed(1))
           );
         });
 
-        // Prepare the weekly data with defaults for missing days
         const formattedData = [];
         for (let i = 0; i < 7; i++) {
-          const dayIndex = (startDayIndex + i) % 7;
+          const day = new Date(startDate);
+          day.setDate(startDate.getDate() + i);
+          const dayIndex = day.getDay();
           formattedData.push({
-            day: dayMapping[dayIndex], // Day of the week
-            value: resultMap.get(dayIndex) || 0, // Default to 0 if no data
+            day: dayMapping[dayIndex],
+            value: resultMap.get(dayIndex) || 0,
           });
         }
 
-        // Calculate the weekly average
         const totalBSL = results.reduce(
           (acc, curr) => acc + curr.averageBsl,
           0
@@ -304,12 +310,10 @@ const testResultsResolvers = {
         const weeklyAverage =
           results.length > 0
             ? parseFloat((totalBSL / results.length).toFixed(1))
-            : 0; // Round to 1 decimal
+            : 0;
 
-        // Format the start and end dates in the format: "Sep 24 - Oct 30, 2024"
-        const formattedStartDate = format(startOfWeek, "MMM dd");
-        const formattedEndDate = format(endOfWeek, "MMM dd, yyyy");
-
+        const formattedStartDate = format(startDate, "MMM dd");
+        const formattedEndDate = format(endDate, "MMM dd, yyyy");
         const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
 
         return {

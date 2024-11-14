@@ -189,7 +189,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_USER, {
     variables: { getUserId: userId },
   });
-  console.log("USER :", userData);
+  // console.log("USER :", userData);
 
   const {
     data: bslResultsAndAverageData,
