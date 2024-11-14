@@ -569,6 +569,15 @@ const HomeScreen: React.FC = () => {
         navigation={navigation}
       />
       <ScrollView bg="$neutralDark5" h="106%">
+        <View
+          h={100}
+          bg="#4800FF"
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          zIndex={-1}
+        ></View>
         <VStack p="$4" space="md">
           {route.params?.badges?.length > 0 && (
             <Modal isOpen={modalVisible} onClose={() => handleClose()}>
@@ -635,6 +644,9 @@ const HomeScreen: React.FC = () => {
               </Modal.Content>
             </Modal>
           )}
+          {/* Overwapping purple bg */}
+
+          {/* Daily data */}
           <VStack
             space="sm"
             borderWidth={1}
@@ -681,7 +693,7 @@ const HomeScreen: React.FC = () => {
               />
             )}
           </VStack>
-
+          {/* Logs for Today */}
           <LogsTable
             title="Logs for today"
             subTitle={new Date().toLocaleDateString("en-US", {
@@ -694,7 +706,7 @@ const HomeScreen: React.FC = () => {
             }
             rowsData={logsForToday}
           />
-
+          {/* Weekly SnapShotes */}
           <VStack
             borderWidth={1}
             borderColor="$primaryIndigo10"
