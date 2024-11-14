@@ -137,6 +137,8 @@ const GET_USER = gql`
   query GetUser($getUserId: ID!) {
     getUser(id: $getUserId) {
       name
+      maximum_bsl
+      minimum_bsl
     }
   }
 `;
@@ -187,6 +189,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_USER, {
     variables: { getUserId: userId },
   });
+  console.log("USER :", userData);
 
   const {
     data: bslResultsAndAverageData,
@@ -219,7 +222,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_ACTIVITIES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
+  // activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
 
   const {
     data: medicinesData,
@@ -229,7 +232,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_MEDICINES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
+  // medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
 
   const {
     data: carbsData,
@@ -239,7 +242,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_CARBS_FOR_TODAY, {
     variables: { userId: userId },
   });
-  carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
+  // carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
 
   const {
     data: weeklyBslData,
@@ -733,19 +736,21 @@ const HomeScreen: React.FC = () => {
                 {bslResultsAndAverageData && (
                   <HStack alignItems="center" space="xs">
                     <Text fontSize="$5xl" fontFamily="$bold">
-                      {latestBsl.bsl.toFixed(1)}
+                      {latestBsl.bsl ? latestBsl.bsl?.toFixed(1) : "-"}
                     </Text>
                     <VStack>
                       <Text>mmol/L</Text>
                       <Text>
-                        {new Date(latestBsl.log_timestamp).toLocaleString(
-                          "en-US",
-                          {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          }
-                        )}
+                        {latestBsl.log_timestamp
+                          ? new Date(latestBsl.log_timestamp).toLocaleString(
+                              "en-US",
+                              {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              }
+                            )
+                          : " "}
                       </Text>
                     </VStack>
                   </HStack>
@@ -767,6 +772,8 @@ const HomeScreen: React.FC = () => {
                     bslResultsAndAverageData.getTestResultsAndAverageForToday
                       .testResults
                   }
+                  bslMax={Number(userData.getUser.maximum_bsl.toFixed(1))}
+                  bslMin={Number(userData.getUser.minimum_bsl.toFixed(1))}
                 />
               )}
             </VStack>

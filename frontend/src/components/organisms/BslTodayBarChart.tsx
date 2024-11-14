@@ -1,6 +1,11 @@
 import { Center } from "@gluestack-ui/themed";
 import React, { FC } from "react";
-import { VictoryAxis, VictoryBar, VictoryChart } from "victory-native";
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryLine,
+} from "victory-native";
 
 interface BslTodayBarChartProps {
   width: number;
@@ -8,9 +13,16 @@ interface BslTodayBarChartProps {
     bsl: string;
     log_timestamp: Date;
   }[];
+  bslMax: number;
+  bslMin: number;
 }
 
-const BslTodayBarChart: FC<BslTodayBarChartProps> = ({ width, data }) => {
+const BslTodayBarChart: FC<BslTodayBarChartProps> = ({
+  width,
+  data,
+  bslMax,
+  bslMin,
+}) => {
   // tick values for the X-axis
   const ticks = [
     new Date(
@@ -47,7 +59,7 @@ const BslTodayBarChart: FC<BslTodayBarChartProps> = ({ width, data }) => {
 
   const convertedData = data.map((obj) => {
     return {
-      bsl: obj.bsl,
+      bsl: parseFloat(obj.bsl),
       log_timestamp: new Date(obj.log_timestamp),
     };
   });
@@ -56,12 +68,14 @@ const BslTodayBarChart: FC<BslTodayBarChartProps> = ({ width, data }) => {
     <Center>
       <VictoryChart
         width={width * 0.9}
-        padding={{ top: 20, bottom: 40, left: 50, right: 30 }}
+        padding={{ top: 40, bottom: 40, left: 50, right: 30 }}
+        domain={{ x: [ticks[0], ticks[ticks.length - 1]] }}
       >
         {/* X-axis for time */}
         <VictoryAxis
           tickValues={ticks}
-          tickFormat={(t) => {
+          tickFormat={(t, index) => {
+            if (index === 4) return "";
             const tDate = new Date(t);
             return tDate.getHours() === 0
               ? "12am"
@@ -71,10 +85,41 @@ const BslTodayBarChart: FC<BslTodayBarChartProps> = ({ width, data }) => {
                   ? `${tDate.getHours() - 12}pm`
                   : `${tDate.getHours()}am`;
           }}
+          offsetX={10}
+          style={{
+            axis: { stroke: "#ADADAD", strokeWidth: 1 }, // X-axis color
+            ticks: { stroke: "#ADADAD", size: 5 }, // Small vertical tick marks
+            // tickLabels: { fontSize: 12, padding: 5 }, // Label style
+            tickLabels: { fontSize: 14, padding: 5 },
+          }}
         />
 
         {/* Y-axis */}
-        <VictoryAxis dependentAxis />
+        <VictoryAxis
+          dependentAxis
+          domain={[0, bslMax]}
+          tickValues={[bslMin, bslMax]}
+          style={{
+            axis: { stroke: "none" },
+            ticks: { stroke: "none" },
+          }}
+        />
+
+        {/* Horizontal line for bslMax */}
+        <VictoryLine
+          y={() => bslMax}
+          style={{
+            data: { stroke: "#E0E0E0", strokeWidth: 2 },
+          }}
+        />
+
+        {/* Horizontal line for bslMin */}
+        <VictoryLine
+          y={() => bslMin}
+          style={{
+            data: { stroke: "#E0E0E0", strokeWidth: 2 },
+          }}
+        />
 
         {/* Bar chart */}
         <VictoryBar
