@@ -558,6 +558,8 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  const hasData = false;
+
   return (
     <SafeAreaView
       style={{ backgroundColor: "#4800FF" }}
@@ -579,239 +581,248 @@ const HomeScreen: React.FC = () => {
           zIndex={-1}
         ></View>
         {/* Shown when no testResult log in an user */}
-        <VStack p="$4" space="md">
-          <VStack
-            space="xs"
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            bg="$neutralWhite"
-            px="$4"
-            py="$8"
-          >
-            <HStack justifyContent="space-between">
-              <HStack space="xs" alignItems="center">
-                <Text fontSize="$4xl" fontFamily="$bold">
-                  0
-                </Text>
-                <Text>mmol/L</Text>
-              </HStack>
-            </HStack>
-            <Image
-              mx="auto"
-              source={require("../../../assets/allset.png")}
-              alt="icon-face"
-              width={200}
-              height={200}
-              marginBottom={20}
-            />
-            <Text textAlign="center" fontFamily="$bold" fontSize="$2xl">
-              Record your first blood sugar values
-            </Text>
-            <VStack alignItems="center" mt={30}>
-              <NavToBelowCustom color="#FFB5A6" />
-              <NavToBelowCustom color="#FF6B4D" />
-            </VStack>
-          </VStack>
-          <HStack
-            space="sm"
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            bg="$neutralWhite"
-            px="$4"
-            py="$8"
-            alignItems="center"
-          >
-            <Image
-              mx="auto"
-              source={require("../../../assets/insert-strip-home.png")}
-              alt="icon-face"
-              width={53}
-              height={64}
-            />
-            <VStack flex={1}>
-              <Text fontSize="$lg" fontFamily="$bold">
-                Have a glucose device?
-              </Text>
-              <Text fontSize="$sm">
-                Make sure the bluetooth is turned on and the glucometer is
-                nearby.
-              </Text>
-            </VStack>
-          </HStack>
-        </VStack>
-        {/* Shown when testResult log exists */}
-        <VStack p="$4" space="md">
-          {route.params?.badges?.length > 0 && (
-            <Modal isOpen={modalVisible} onClose={() => handleClose()}>
-              <Modal.Content
-                position="absolute"
-                bottom={40}
-                height="86%"
-                borderRadius={20}
-                backgroundColor="white"
-              >
-                <Modal.CloseButton />
-                <View>
-                  <Center>
-                    <Button
-                      onPress={() => handleClose()}
-                      flexGrow={1}
-                      backgroundColor="transparent"
-                    >
-                      <ButtonText position="relative" top={0} left={120}>
-                        ✖️
-                      </ButtonText>
-                    </Button>
-                    <Text textAlign="center">Congratulations!</Text>
-                    <Text
-                      textAlign="center"
-                      fontSize={22}
-                      color="black"
-                      padding={20}
-                    >
-                      You unlocked a new badge
-                    </Text>
-                    <Image
-                      w={120}
-                      h={120}
-                      source={
-                        badgeImages[route.params?.badges[currentModalIndex]?.id]
-                      }
-                      alt={route.params?.badges[currentModalIndex].badge_name}
-                      marginBottom={8}
-                    />
-                    <Text
-                      color="$black"
-                      fontSize={20}
-                      textAlign="center"
-                      marginVertical={10}
-                    >
-                      {route.params?.badges[currentModalIndex].badge_name}
-                    </Text>
-                    <Text textAlign="center" marginBottom={10}>
-                      {route.params?.badges[currentModalIndex].badge_desc}
-                    </Text>
-                    <Button
-                      onPress={() => onShare()}
-                      width={180}
-                      marginBottom={10}
-                    >
-                      <ButtonText>Share</ButtonText>
-                    </Button>
-                    <Button onPress={() => moveToBadges()} width={180}>
-                      <ButtonText>View All Badges</ButtonText>
-                    </Button>
-                  </Center>
-                </View>
-              </Modal.Content>
-            </Modal>
-          )}
-          {/* Overwapping purple bg */}
-
-          {/* Daily data */}
-          <VStack
-            space="sm"
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            p="$4"
-            bg="$neutralWhite"
-          >
-            <HStack alignItems="center" justifyContent="space-between">
-              {bslResultsAndAverageData && (
-                <VStack>
-                  <HStack alignItems="center" space="xs">
-                    <Text fontSize="$4xl" fontFamily="$bold">
-                      {latestBsl.bsl}
-                    </Text>
-                    <Text>mmol/L</Text>
-                  </HStack>
-                  <Text>
-                    {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}
+        {!hasData && (
+          <VStack p="$4" space="md">
+            <VStack
+              space="xs"
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              bg="$neutralWhite"
+              px="$4"
+              py="$8"
+            >
+              <HStack justifyContent="space-between">
+                <HStack space="xs" alignItems="center">
+                  <Text fontSize="$4xl" fontFamily="$bold">
+                    0
                   </Text>
-                </VStack>
-              )}
-              {/* <TotalSteps /> */}
-            </HStack>
-
-            {bslResultsAndAverageData && (
-              // <BslLineChart
-              //   width={width}
-              //   data={
-              //     bslResultsAndAverageData.getTestResultsAndAverageForToday
-              //       .testResults
-              //   }
-              // />
-              <BslTodayBarChart
-                width={width}
-                data={
-                  bslResultsAndAverageData.getTestResultsAndAverageForToday
-                    .testResults
-                }
+                  <Text>mmol/L</Text>
+                </HStack>
+              </HStack>
+              <Image
+                mx="auto"
+                source={require("../../../assets/allset.png")}
+                alt="icon-face"
+                width={200}
+                height={200}
+                marginBottom={20}
               />
-            )}
+              <Text textAlign="center" fontFamily="$bold" fontSize="$2xl">
+                Record your first blood sugar values
+              </Text>
+              <VStack alignItems="center" mt={30}>
+                <NavToBelowCustom color="#FFB5A6" />
+                <NavToBelowCustom color="#FF6B4D" />
+              </VStack>
+            </VStack>
+            <HStack
+              space="sm"
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              bg="$neutralWhite"
+              px="$4"
+              py="$8"
+              alignItems="center"
+            >
+              <Image
+                mx="auto"
+                source={require("../../../assets/insert-strip-home.png")}
+                alt="icon-face"
+                width={53}
+                height={64}
+              />
+              <VStack flex={1}>
+                <Text fontSize="$lg" fontFamily="$bold">
+                  Have a glucose device?
+                </Text>
+                <Text fontSize="$sm">
+                  Make sure the bluetooth is turned on and the glucometer is
+                  nearby.
+                </Text>
+              </VStack>
+            </HStack>
           </VStack>
-          {/* Logs for Today */}
-          <LogsTable
-            title="Logs for today"
-            subTitle={new Date().toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-            onPressTitleRightButton={() =>
-              navigation.navigate("Tabs", { screen: "Logs" })
-            }
-            rowsData={logsForToday}
-          />
-          {/* Weekly SnapShotes */}
-          <VStack
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            px="$4"
-            py="$5"
-            bg="$neutralWhite"
-          >
-            <LogsTableTitle
-              title="Weekly Snapshots"
-              subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+        )}
+        {/* Shown when testResult log exists */}
+        {hasData && (
+          <VStack p="$4" space="md">
+            {route.params?.badges?.length > 0 && (
+              <Modal isOpen={modalVisible} onClose={() => handleClose()}>
+                <Modal.Content
+                  position="absolute"
+                  bottom={40}
+                  height="86%"
+                  borderRadius={20}
+                  backgroundColor="white"
+                >
+                  <Modal.CloseButton />
+                  <View>
+                    <Center>
+                      <Button
+                        onPress={() => handleClose()}
+                        flexGrow={1}
+                        backgroundColor="transparent"
+                      >
+                        <ButtonText position="relative" top={0} left={120}>
+                          ✖️
+                        </ButtonText>
+                      </Button>
+                      <Text textAlign="center">Congratulations!</Text>
+                      <Text
+                        textAlign="center"
+                        fontSize={22}
+                        color="black"
+                        padding={20}
+                      >
+                        You unlocked a new badge
+                      </Text>
+                      <Image
+                        w={120}
+                        h={120}
+                        source={
+                          badgeImages[
+                            route.params?.badges[currentModalIndex]?.id
+                          ]
+                        }
+                        alt={route.params?.badges[currentModalIndex].badge_name}
+                        marginBottom={8}
+                      />
+                      <Text
+                        color="$black"
+                        fontSize={20}
+                        textAlign="center"
+                        marginVertical={10}
+                      >
+                        {route.params?.badges[currentModalIndex].badge_name}
+                      </Text>
+                      <Text textAlign="center" marginBottom={10}>
+                        {route.params?.badges[currentModalIndex].badge_desc}
+                      </Text>
+                      <Button
+                        onPress={() => onShare()}
+                        width={180}
+                        marginBottom={10}
+                      >
+                        <ButtonText>Share</ButtonText>
+                      </Button>
+                      <Button onPress={() => moveToBadges()} width={180}>
+                        <ButtonText>View All Badges</ButtonText>
+                      </Button>
+                    </Center>
+                  </View>
+                </Modal.Content>
+              </Modal>
+            )}
+            {/* Overwapping purple bg */}
+
+            {/* Daily data */}
+            <VStack
+              space="sm"
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              p="$4"
+              bg="$neutralWhite"
+            >
+              <HStack alignItems="center" justifyContent="space-between">
+                {bslResultsAndAverageData && (
+                  <VStack>
+                    <HStack alignItems="center" space="xs">
+                      <Text fontSize="$4xl" fontFamily="$bold">
+                        {latestBsl.bsl}
+                      </Text>
+                      <Text>mmol/L</Text>
+                    </HStack>
+                    <Text>
+                      {new Date(latestBsl.log_timestamp).toLocaleString(
+                        "en-US",
+                        {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        }
+                      )}
+                    </Text>
+                  </VStack>
+                )}
+                {/* <TotalSteps /> */}
+              </HStack>
+
+              {bslResultsAndAverageData && (
+                // <BslLineChart
+                //   width={width}
+                //   data={
+                //     bslResultsAndAverageData.getTestResultsAndAverageForToday
+                //       .testResults
+                //   }
+                // />
+                <BslTodayBarChart
+                  width={width}
+                  data={
+                    bslResultsAndAverageData.getTestResultsAndAverageForToday
+                      .testResults
+                  }
+                />
+              )}
+            </VStack>
+            {/* Logs for Today */}
+            <LogsTable
+              title="Logs for today"
+              subTitle={new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
               onPressTitleRightButton={() =>
                 navigation.navigate("Tabs", { screen: "Logs" })
               }
+              rowsData={logsForToday}
             />
-
-            <HStack
-              alignItems="center"
-              justifyContent="space-between"
-              space="sm"
+            {/* Weekly SnapShotes */}
+            <VStack
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              px="$4"
+              py="$5"
+              bg="$neutralWhite"
             >
-              <Center>
-                <Text size="3xl" fontFamily="$bold">
-                  {weeklyBslData
-                    ? weeklyBslData.getWeeklyBSLData.weeklyAverage
-                    : "N/A"}
-                </Text>
-                <Text>mmol/L</Text>
-                <Text>Average</Text>
-              </Center>
+              <LogsTableTitle
+                title="Weekly Snapshots"
+                subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+                onPressTitleRightButton={() =>
+                  navigation.navigate("Tabs", { screen: "Logs" })
+                }
+              />
 
-              {weeklyBslData && bslForXData && (
-                <BslWeeklyBarChart
-                  width={width}
-                  data={weeklyBslData.getWeeklyBSLData.weeklyData}
-                  bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
-                />
-              )}
-            </HStack>
+              <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                space="sm"
+              >
+                <Center>
+                  <Text size="3xl" fontFamily="$bold">
+                    {weeklyBslData
+                      ? weeklyBslData.getWeeklyBSLData.weeklyAverage
+                      : "N/A"}
+                  </Text>
+                  <Text>mmol/L</Text>
+                  <Text>Average</Text>
+                </Center>
+
+                {weeklyBslData && bslForXData && (
+                  <BslWeeklyBarChart
+                    width={width}
+                    data={weeklyBslData.getWeeklyBSLData.weeklyData}
+                    bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+                  />
+                )}
+              </HStack>
+            </VStack>
           </VStack>
-        </VStack>
+        )}
 
         <View h={100} />
       </ScrollView>
