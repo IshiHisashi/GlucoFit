@@ -558,7 +558,7 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const hasData = false;
+  const hasData = true;
 
   return (
     <SafeAreaView
@@ -594,7 +594,7 @@ const HomeScreen: React.FC = () => {
             >
               <HStack justifyContent="space-between">
                 <HStack space="xs" alignItems="center">
-                  <Text fontSize="$4xl" fontFamily="$bold">
+                  <Text fontSize="$5xl" fontFamily="$bold">
                     0
                   </Text>
                   <Text>mmol/L</Text>
@@ -720,8 +720,6 @@ const HomeScreen: React.FC = () => {
                 </Modal.Content>
               </Modal>
             )}
-            {/* Overwapping purple bg */}
-
             {/* Daily data */}
             <VStack
               space="sm"
@@ -733,24 +731,24 @@ const HomeScreen: React.FC = () => {
             >
               <HStack alignItems="center" justifyContent="space-between">
                 {bslResultsAndAverageData && (
-                  <VStack>
-                    <HStack alignItems="center" space="xs">
-                      <Text fontSize="$4xl" fontFamily="$bold">
-                        {latestBsl.bsl}
-                      </Text>
-                      <Text>mmol/L</Text>
-                    </HStack>
-                    <Text>
-                      {new Date(latestBsl.log_timestamp).toLocaleString(
-                        "en-US",
-                        {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        }
-                      )}
+                  <HStack alignItems="center" space="xs">
+                    <Text fontSize="$5xl" fontFamily="$bold">
+                      {latestBsl.bsl.toFixed(1)}
                     </Text>
-                  </VStack>
+                    <VStack>
+                      <Text>mmol/L</Text>
+                      <Text>
+                        {new Date(latestBsl.log_timestamp).toLocaleString(
+                          "en-US",
+                          {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        )}
+                      </Text>
+                    </VStack>
+                  </HStack>
                 )}
                 {/* <TotalSteps /> */}
               </HStack>
