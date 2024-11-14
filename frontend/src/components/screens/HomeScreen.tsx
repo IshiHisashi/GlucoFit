@@ -826,7 +826,7 @@ const HomeScreen: React.FC = () => {
                   <BslWeeklyBarChart
                     width={width}
                     data={weeklyBslData.getWeeklyBSLData.weeklyData}
-                    bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
+                    weeklyAverage={weeklyBslData.getWeeklyBSLData.weeklyAverage}
                   />
                 )}
               </HStack>

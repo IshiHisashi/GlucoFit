@@ -1,5 +1,10 @@
 import React, { FC } from "react";
-import { VictoryChart, VictoryBar, VictoryAxis } from "victory-native";
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryAxis,
+  VictoryLine,
+} from "victory-native";
 import { View } from "@gluestack-ui/themed";
 
 interface BslWeeklyBarChartProps {
@@ -8,45 +13,25 @@ interface BslWeeklyBarChartProps {
     day: string;
     value: number;
   }[];
-  bslBorder: number;
+  weeklyAverage: number;
 }
 
 const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
   width,
   data,
-  bslBorder,
+  weeklyAverage,
 }) => {
-  const convertedData = data.map((obj) => {
-    if (obj.value === 0) {
-      return {
-        day: obj.day,
-        value: bslBorder,
-      };
-    } else if (obj.value === bslBorder) {
-      return {
-        day: obj.day,
-        value: obj.value + 0.1,
-      };
-    } else {
-      return {
-        day: obj.day,
-        value: obj.value,
-      };
-    }
-  });
-
-  console.log(convertedData);
-
-  // Calculate the max or min value in the data
-  const maxDataValue = Math.max(...convertedData.map((d) => d.value));
-  const minDataValue = Math.min(...convertedData.map((d) => d.value));
-
-  // Set the minimum highest y value (e.g., 20% above bslBorder)
-  const minHighestY = bslBorder * 1;
-
-  // Use the larger or smaller
-  const yAxisMax = Math.max(maxDataValue, minHighestY);
-  const yAxisMin = Math.min(minDataValue, 0);
+  const adjustedData = data
+    .filter((obj) => obj.value !== 0)
+    .map((obj) => ({
+      day: obj.day,
+      value: obj.value,
+      y0: weeklyAverage,
+    }));
+  const maxDataValue = Math.max(
+    ...data.map((d) => Math.abs(d.value - weeklyAverage))
+  );
+  const yAxisMax = weeklyAverage + maxDataValue;
 
   return (
     <View>
@@ -55,23 +40,32 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
         height={100}
         domainPadding={{ x: 15 }}
         padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
-        domain={{ y: [yAxisMin - 2, yAxisMax - 8] }}
+        domain={{ y: [weeklyAverage - maxDataValue * 1.2, yAxisMax] }}
       >
         {/* X-axis for days */}
         <VictoryAxis
           tickValues={data.map((obj) => obj.day)}
           tickFormat={(t) => t[0]}
           style={{
-            axis: { stroke: "#000" },
-            tickLabels: { fill: "#000", fontSize: 16, padding: 10 },
+            axis: { stroke: "none" },
+            tickLabels: { fill: "#5E5E5E", fontSize: 14, padding: 10 },
           }}
         />
 
-        {/* Bar chart */}
+        {/* Horizontal line for weekly average */}
+        <VictoryLine
+          y={() => weeklyAverage}
+          style={{
+            data: { stroke: "#C2C2C2", strokeWidth: 1 },
+          }}
+        />
+
+        {/* Bar chart relative to weekly average */}
         <VictoryBar
-          data={data}
+          data={adjustedData}
           x="day"
           y="value"
+          y0="y0"
           barWidth={10}
           style={{
             data: {

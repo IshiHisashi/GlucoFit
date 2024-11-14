@@ -87,9 +87,8 @@ const BslTodayBarChart: FC<BslTodayBarChartProps> = ({
           }}
           offsetX={10}
           style={{
-            axis: { stroke: "#ADADAD", strokeWidth: 1 }, // X-axis color
-            ticks: { stroke: "#ADADAD", size: 5 }, // Small vertical tick marks
-            // tickLabels: { fontSize: 12, padding: 5 }, // Label style
+            axis: { stroke: "#ADADAD", strokeWidth: 1 },
+            ticks: { stroke: "#ADADAD", size: 5 },
             tickLabels: { fontSize: 14, padding: 5 },
           }}
         />
