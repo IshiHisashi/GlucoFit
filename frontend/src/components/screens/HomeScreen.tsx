@@ -30,7 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { AnalysisCustom, TimesCustom } from "../svgs/svgs";
+import { AnalysisCustom, TimesCustom, NavToBelowCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
@@ -578,6 +578,70 @@ const HomeScreen: React.FC = () => {
           right={0}
           zIndex={-1}
         ></View>
+        {/* Shown when no testResult log in an user */}
+        <VStack p="$4" space="md">
+          <VStack
+            space="xs"
+            borderWidth={1}
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
+            bg="$neutralWhite"
+            px="$4"
+            py="$8"
+          >
+            <HStack justifyContent="space-between">
+              <HStack space="xs" alignItems="center">
+                <Text fontSize="$4xl" fontFamily="$bold">
+                  0
+                </Text>
+                <Text>mmol/L</Text>
+              </HStack>
+            </HStack>
+            <Image
+              mx="auto"
+              source={require("../../../assets/allset.png")}
+              alt="icon-face"
+              width={200}
+              height={200}
+              marginBottom={20}
+            />
+            <Text textAlign="center" fontFamily="$bold" fontSize="$2xl">
+              Record your first blood sugar values
+            </Text>
+            <VStack alignItems="center" mt={30}>
+              <NavToBelowCustom color="#FFB5A6" />
+              <NavToBelowCustom color="#FF6B4D" />
+            </VStack>
+          </VStack>
+          <HStack
+            space="sm"
+            borderWidth={1}
+            borderColor="$primaryIndigo10"
+            borderRadius={10}
+            bg="$neutralWhite"
+            px="$4"
+            py="$8"
+            alignItems="center"
+          >
+            <Image
+              mx="auto"
+              source={require("../../../assets/insert-strip-home.png")}
+              alt="icon-face"
+              width={53}
+              height={64}
+            />
+            <VStack flex={1}>
+              <Text fontSize="$lg" fontFamily="$bold">
+                Have a glucose device?
+              </Text>
+              <Text fontSize="$sm">
+                Make sure the bluetooth is turned on and the glucometer is
+                nearby.
+              </Text>
+            </VStack>
+          </HStack>
+        </VStack>
+        {/* Shown when testResult log exists */}
         <VStack p="$4" space="md">
           {route.params?.badges?.length > 0 && (
             <Modal isOpen={modalVisible} onClose={() => handleClose()}>
