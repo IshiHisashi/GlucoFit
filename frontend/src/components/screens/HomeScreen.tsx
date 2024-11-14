@@ -616,33 +616,38 @@ const HomeScreen: React.FC = () => {
                 <NavToBelowCustom color="#FF6B4D" />
               </VStack>
             </VStack>
-            <HStack
-              space="sm"
-              borderWidth={1}
-              borderColor="$primaryIndigo10"
-              borderRadius={10}
-              bg="$neutralWhite"
-              px="$4"
-              py="$8"
-              alignItems="center"
-            >
-              <Image
-                mx="auto"
-                source={require("../../../assets/insert-strip-home.png")}
-                alt="icon-face"
-                width={53}
-                height={64}
-              />
-              <VStack flex={1}>
-                <Text fontSize="$lg" fontFamily="$bold">
-                  Have a glucose device?
-                </Text>
-                <Text fontSize="$sm">
-                  Make sure the bluetooth is turned on and the glucometer is
-                  nearby.
-                </Text>
-              </VStack>
-            </HStack>
+            <Pressable onPress={() => navigation.navigate("AutoLog")}>
+              <HStack
+                space="sm"
+                borderWidth={1}
+                borderColor="$primaryIndigo10"
+                borderRadius={10}
+                bg="$neutralWhite"
+                px="$4"
+                py="$8"
+                alignItems="center"
+                onPress={() => {
+                  navigation.navigate("AutoLog");
+                }}
+              >
+                <Image
+                  mx="auto"
+                  source={require("../../../assets/insert-strip-home.png")}
+                  alt="icon-face"
+                  width={53}
+                  height={64}
+                />
+                <VStack flex={1}>
+                  <Text fontSize="$lg" fontFamily="$bold">
+                    Have a glucose device?
+                  </Text>
+                  <Text fontSize="$sm">
+                    Make sure the bluetooth is turned on and the glucometer is
+                    nearby.
+                  </Text>
+                </VStack>
+              </HStack>
+            </Pressable>
           </VStack>
         )}
         {/* Shown when testResult log exists */}
