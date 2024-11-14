@@ -228,34 +228,17 @@ const testResultsResolvers = {
           throw new Error("User not found or create_day is missing");
         }
 
-        // Get the user's create day
         const startDayIndex = dayMapping.indexOf(user.create_day);
         if (startDayIndex === -1) {
           throw new Error("Invalid create_day");
         }
-        // =====
-        // // Get current date and calculate the start and end of the week
-        // const currentDate = new Date();
-        // const currentDayIndex = currentDate.getDay();
-        // const dayDifference = (currentDayIndex - startDayIndex + 7) % 7;
 
-        // const startOfWeek = new Date();
-        // startOfWeek.setDate(currentDate.getDate() - dayDifference);
-        // startOfWeek.setHours(0, 0, 0, 0);
-
-        // const endOfWeek = new Date(startOfWeek);
-        // endOfWeek.setDate(startOfWeek.getDate() + 6); // End of the week
-        // endOfWeek.setHours(23, 59, 59, 999);
-        // ====
-
-        // Define the date range for the past 7 days, ending today
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const startDate = new Date();
-        startDate.setDate(endDate.getDate() - 6); // Start 7 days ago
+        startDate.setDate(endDate.getDate() - 6);
         startDate.setHours(0, 0, 0, 0);
 
-        // Fetch BSL test results for this week
         const results = await TestResults.aggregate([
           {
             $match: {
