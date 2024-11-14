@@ -35,7 +35,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
     }
   });
 
-  console.log(data[0]);
+  console.log(convertedData);
 
   // Calculate the max or min value in the data
   const maxDataValue = Math.max(...convertedData.map((d) => d.value));
@@ -55,7 +55,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
         height={100}
         domainPadding={{ x: 15 }}
         padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
-        domain={{ y: [yAxisMin - 2, yAxisMax - 2] }}
+        domain={{ y: [yAxisMin - 2, yAxisMax - 8] }}
       >
         {/* X-axis for days */}
         <VictoryAxis
