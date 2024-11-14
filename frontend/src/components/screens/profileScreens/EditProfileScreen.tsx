@@ -1,14 +1,15 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import { SafeAreaView, ScrollView, View, Text, Button, ButtonText, ChevronRightIcon, HStack } from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
-import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { Pressable } from "@gluestack-ui/themed";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 import DateInput from "../../atoms/DateInput";
+import { Icon } from "@gluestack-ui/themed";
 
 const GET_USER_GENERAL_DATA = gql`
   query GetUser(
@@ -16,6 +17,26 @@ const GET_USER_GENERAL_DATA = gql`
   ) {
     getUser(
       id: $userId
+    ) {
+      name
+      birthday
+      email
+    }
+  }
+`
+
+const UPDATE_USER_GENERAL_DATA = gql`
+  mutation UpdateUser(
+    $userId: ID!, 
+    $name: String, 
+    $birthday: Date, 
+    $email: String
+  ) {
+    updateUser(
+      id: $userId, 
+      name: $name, 
+      birthday: $birthday, 
+      email: $email
     ) {
       name
       birthday
@@ -35,31 +56,67 @@ const EditProfileScreen = () => {
   const { SignOut } = useContext(AuthContext);
   const navigation = useNavigation<EditProfileScreenNavigationProps>();
   const [userName, setUserName] = useState<string>("");
-  const [userBday, setUserBday] = useState<string>("");
+  const [userBday, setUserBday] = useState<Date>(new Date());
   const [userEmail, setUserEmail] = useState<string>("");
-
-  const {data, loading, error} = useQuery(GET_USER_GENERAL_DATA, 
+  const [initialName, setInitialName] = useState<string>("");
+  const [initialBday, setInitialBday] = useState<Date>(new Date());
+  const [initialEmail, setInitialEmail] = useState<string>("");
+  const {data, loading, error, refetch} = useQuery(GET_USER_GENERAL_DATA, 
     {
-      variables: { userId: userId }
+      variables: { userId: userId },
+      fetchPolicy: "cache-and-network",
     }
   )
+  const [updateUserGeneralData] = useMutation(UPDATE_USER_GENERAL_DATA);
 
   useEffect(() => {
-    console.log(data)
-    if (data?.getUser?.name) {
+    if (data?.getUser) {
       setUserName(data.getUser.name);
-    }
-    if (data?.getUser?.birthday) {
-      setUserBday(data.getUser.birthday);
-    }
-    if (data?.getUser?.name) {
+      setUserBday(new Date(data.getUser.birthday));
       setUserEmail(data.getUser.email);
+
+      // Set initial values for comparison
+      setInitialName(data.getUser.name);
+      setInitialBday(new Date(data.getUser.birthday));
+      setInitialEmail(data.getUser.email);
     }
   }, [data])
 
-  useEffect(() => {
-    console.log(userBday);
-  }, [userBday])
+  // Update data on the screen
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  const handleSubmit = async () => {
+    try {
+      const stringDate = userBday.toISOString();
+      const updatedData = await updateUserGeneralData({
+        variables: {
+          userId: userId,
+          name: userName,
+          birthday: stringDate,
+          email: userEmail
+        }
+      })
+      console.log("updated data: ", updatedData);
+
+      setInitialName(userName);
+      setInitialBday(userBday);
+      setInitialEmail(userEmail);
+
+    } catch (e) {
+      console.error("Error updating data:", e);
+    }
+  }
+
+  const isChanged =
+    userName !== initialName || 
+    userBday.getFullYear() !== initialBday.getFullYear() ||
+    userBday.getMonth() !== initialBday.getMonth() ||
+    userBday.getDate() !== initialBday.getDate() ||
+    userEmail !== initialEmail
 
   return (
     <SafeAreaView>
@@ -96,10 +153,7 @@ const EditProfileScreen = () => {
             isInvalid={false}
             placeholder="Preferred Name"
           />
-          <Text>Name: { userName }</Text>
-          <Text>Birthday: { userBday }</Text>
-          <Text>Email: { userEmail }</Text>
-          <Button>
+          <Button marginVertical={20} onPress={handleSubmit} isDisabled={!isChanged}>
             <ButtonText>
               Save
             </ButtonText>
@@ -109,10 +163,14 @@ const EditProfileScreen = () => {
             backgroundColor="white"
             borderRadius={10}
             padding={20}
+            marginBottom={20}
           >
-            <Text>
-              Change password
-            </Text>
+            <HStack justifyContent="space-between" width="100%">
+              <Text>
+                Change password
+              </Text>
+              <Icon as={ChevronRightIcon}/>
+            </HStack>
           </Pressable>
           <Pressable 
             onPress={() => navigation?.navigate("ManageAccount")}
@@ -120,9 +178,12 @@ const EditProfileScreen = () => {
             borderRadius={10}
             padding={20}
           >
-            <Text>
-              Manage account
-            </Text>
+            <HStack justifyContent="space-between" width="100%">
+              <Text>
+                Manage account
+              </Text>
+              <Icon as={ChevronRightIcon}/>              
+            </HStack>
           </Pressable>
         </ScrollView>
       </View>

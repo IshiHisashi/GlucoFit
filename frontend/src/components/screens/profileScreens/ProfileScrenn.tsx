@@ -1,7 +1,7 @@
 import { SafeAreaView, ScrollView, View, Text, Pressable, VStack, HStack, Icon, ChevronRightIcon } from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
-import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
@@ -30,9 +30,10 @@ const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProps>();
   const [userName, setUserName] = useState<string>("");
 
-  const {data, loading, error} = useQuery(GET_USER_NAME, 
+  const {data, loading, error, refetch} = useQuery(GET_USER_NAME, 
     {
-      variables: { userId: userId }
+      variables: { userId: userId },
+      fetchPolicy: "cache-and-network",
     }
   )
 
@@ -41,6 +42,13 @@ const ProfileScreen = () => {
       setUserName(data.getUser.name);
     }
   }, [data])
+
+  // Update data on the screen
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   return (
     <SafeAreaView>
@@ -56,27 +64,33 @@ const ProfileScreen = () => {
             backgroundColor="white"
             borderRadius={10}
             padding={20}
+            marginBottom={20}
           >
-            <Text>Name: { userName !== "" ? userName : "loading" }</Text>        
-            <Text>Edit Profile</Text>    
+            <Text fontSize={20} color="black" >{ userName !== "" ? userName : "loading" }</Text>        
+            <Text fontSize={14}>Edit Profile</Text>    
           </Pressable>
-          <VStack>
-            <Text>Health</Text>
-            <Pressable onPress={() => navigation?.navigate("HealthData")}>
+          <VStack
+              backgroundColor="white"
+              borderRadius={10}
+              paddingHorizontal={20}
+              paddingVertical={10}
+          >
+            <Text paddingVertical={15} fontSize={20} color="black">Health</Text>
+            <Pressable paddingVertical={15} borderBottomColor="$coolGray200" borderBottomWidth={1} onPress={() => navigation?.navigate("HealthData")}>
               <HStack justifyContent="space-between" width="100%">
-                <Text>Health Data</Text>
+                <Text fontSize={18} color="black">Health Data</Text>
                 <Icon as={ChevronRightIcon}/>
               </HStack>
             </Pressable>
-            <Pressable onPress={() => navigation?.navigate("Medications")}>
+            <Pressable paddingVertical={15} borderBottomColor="$coolGray200" borderBottomWidth={1} onPress={() => navigation?.navigate("Medications")}>
               <HStack justifyContent="space-between" width="100%">
-                <Text>Medication</Text>
+                <Text fontSize={18} color="black">Medication</Text>
                 <Icon as={ChevronRightIcon}/>
               </HStack>
             </Pressable>
-            <Pressable onPress={() => navigation?.navigate("DevAndApp")}>
+            <Pressable paddingVertical={15} onPress={() => navigation?.navigate("DevAndApp")}>
               <HStack justifyContent="space-between" width="100%">
-                <Text>Dev and Apps</Text>
+                <Text fontSize={18} color="black">Dev and Apps</Text>
                 <Icon as={ChevronRightIcon}/>
               </HStack>
             </Pressable>
