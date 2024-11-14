@@ -2,6 +2,7 @@ import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
 import { Badges } from "../../model/Badges";
 import { verifyToken } from "../../auth/auth";
+import bcrypt from "bcrypt";
 
 const userResolvers = {
   Query: {
@@ -93,6 +94,27 @@ const userResolvers = {
       } catch (error) {
         throw new Error("Invalid or expired refresh token");
       }
+    },
+    resetPassword: async (
+      _: any,
+      {
+        userId,
+        oldPassword,
+        newPassword,
+      }: { userId: string; oldPassword: string; newPassword: string }
+    ): Promise<boolean> => {
+      const user = await User.findById(userId);
+      if (!user) throw new Error("User not found");
+
+      const validOldPassword = await user.comparePassword(oldPassword);
+      if (!validOldPassword) throw new Error("Old password is incorrect");
+
+      // middelware will hash the password
+      user.password = newPassword;
+
+      await user.save();
+
+      return true;
     },
 
     createUser: async (_: any, args: IUser): Promise<IUser> => {
