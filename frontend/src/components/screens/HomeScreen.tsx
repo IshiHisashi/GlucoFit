@@ -700,8 +700,8 @@ const HomeScreen: React.FC = () => {
                         You unlocked a new badge
                       </Text>
                       <Image
-                        w={120}
-                        h={120}
+                        w={150}
+                        h={150}
                         source={
                           badgeImages[
                             route.params?.badges[currentModalIndex]?.id
