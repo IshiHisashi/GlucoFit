@@ -21,6 +21,7 @@ import ManageAccountScreen from "../screens/profileScreens/ManageAccount";
 import MedicationScreen from "../screens/profileScreens/Medication";
 import HealthDataScreen from "../screens/profileScreens/HealthDataScreen";
 import DevAndAppScreen from "../screens/profileScreens/DevAndAppScreen";
+import AddMedecineScreen from "../screens/profileScreens/AddMedicineScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -110,6 +111,11 @@ const AppStack: React.FC = () => (
     <Stack.Screen
       name="DevAndApp"
       component={DevAndAppScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen 
+      name="AddMedecine"
+      component={AddMedecineScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

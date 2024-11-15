@@ -1,7 +1,7 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText, FlatList } from "@gluestack-ui/themed";
+import { SafeAreaView, ScrollView, View, Text, Button, ButtonText, FlatList, Center } from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
-import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
@@ -35,18 +35,25 @@ const MedicationScreen = () => {
   const navigation = useNavigation<MedicationsScreenNavigationProps>();
   const [medsData, setMedsData] = useState<any[]>([]);
 
-  const {data, loading, error} = useQuery(GET_USERS_MEDICATION, 
+  const {data, loading, error, refetch} = useQuery(GET_USERS_MEDICATION, 
     {
-      variables: { userId: userId }
+      variables: { userId: userId },
+      fetchPolicy: "cache-and-network",   
     }
   )
 
   useEffect(() => {
     if (data?.getUserMedicineList) {
       setMedsData(data.getUserMedicineList);
-      console.log(data.getUserMedicineList);
     }
   }, [data])
+
+  // Update data on the screen
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   return (
     <SafeAreaView>
@@ -56,32 +63,35 @@ const MedicationScreen = () => {
           text="Medications"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
-          {
-            medsData.length > 0 && 
-            <FlatList
-              data={medsData}
-              renderItem={({ item }) => {
-                console.log(item);
-                return (
-                  <View id="item.id" padding={20} backgroundColor="white" borderRadius={10} marginBottom={10}>
-                    <Text>Name: { item.medicine_name }</Text>
-                    <Text>Dosage: { item.dosage } {item.unit}</Text>
-                    <Text>Medication id: { item.id }</Text>
-                  </View>
-                )
-              }}
-            />            
-          }
-          <Pressable 
-            onPress={() => navigation?.navigate("EditProfile")}
-            backgroundColor="white"
-            borderRadius={10}
+        {
+          medsData.length > 0
+        ? 
+          <FlatList
             padding={20}
-          >    
-            <Text>Add Medication</Text>    
-          </Pressable>
-        </ScrollView>
+            data={medsData}
+            renderItem={({ item }) => {
+              console.log(item);
+              return (
+                <View id="item.id" padding={20} backgroundColor="white" borderRadius={10} marginBottom={10}>
+                  <Text fontSize={18} fontFamily="$bold" color="black">{ item.medicine_name }</Text>
+                  <Text fontSize={14}>Dosage: { item.dosage } {item.unit}</Text>
+                </View>
+              )
+            }}
+          />
+        :   
+          <Center>
+            <Text>No medicine found</Text>
+          </Center>
+        }
+        <Button
+          onPress={() => navigation?.navigate("AddMedecine")}
+          bgColor="$blue600"
+          borderRadius={30}
+          margin={20}
+        >    
+          <ButtonText color="white">Add Medicine</ButtonText>    
+        </Button>
       </View>
     </SafeAreaView>
   )

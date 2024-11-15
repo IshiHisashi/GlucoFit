@@ -44,7 +44,7 @@ const ManageAccountScreen = () => {
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
-          text="Edit Profile"
+          text="Manage Account"
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>

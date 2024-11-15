@@ -29,7 +29,8 @@ export type AppStackParamList = {
   ManageAccount: undefined;
   Medications: undefined;
   HealthData: undefined;
-  DevAndApp: undefined
+  DevAndApp: undefined;
+  AddMedecine: undefined;
 };
 
 export type LoginSignupStackParamList = {
