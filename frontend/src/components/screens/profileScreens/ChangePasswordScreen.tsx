@@ -6,24 +6,24 @@ import { AuthContext } from "../../../context/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { Pressable } from "@gluestack-ui/themed";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 
 // 🚨 ADD PROPER MUTATION LATER HERE 🚨
 
-// const GET_USER_GENERAL_DATA = gql`
-//   query GetUser(
-//     $userId: ID!
-//   ) {
-//     getUser(
-//       id: $userId
-//     ) {
-//       name
-//       birthday
-//       email
-//     }
-//   }
-// `
+const RESET_PASSWORD = gql`
+  mutation ResetPassword(
+    $userId: ID!, 
+    $oldPassword: String!, 
+    $newPassword: String!
+  ) {
+    resetPassword(
+      userId: $userId, 
+      oldPassword: $oldPassword, 
+      newPassword: $newPassword
+    )
+  }
+`
 
 type ChangePasswordScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -37,13 +37,34 @@ const ChangePasswordScreen = () => {
   const navigation = useNavigation<ChangePasswordScreenNavigationProps>();
   const [oldPassword, setoldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
-  const [confirtmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [resetPassword] = useMutation(RESET_PASSWORD);
 
-  // const {data, loading, error} = useQuery(GET_USER_GENERAL_DATA, 
-  //   {
-  //     variables: { userId: userId }
-  //   }
-  // )
+  const handleSubmit = async () => {
+    try {
+      if (newPassword !== confirmPassword) {
+        console.log("Password not confirmed properly")
+        return
+      }
+      const result =  await resetPassword({
+        variables: {
+          userId: userId,
+          oldPassword: oldPassword,
+          newPassword: newPassword
+        }
+      })
+      console.log("Password properly reseted: ", result)
+
+    } catch (e) {
+      console.error("Error reseting password:", e)
+    }
+  }
+
+  const readyToReset =
+    oldPassword !== "" &&
+    newPassword !== "" &&
+    confirmPassword !== "" &&
+    newPassword === confirmPassword
 
   return (
     <SafeAreaView>
@@ -79,7 +100,7 @@ const ChangePasswordScreen = () => {
           <View marginBottom={20}>
             <InputFieldGeneral
               label="Confirm New Password"
-              value={confirtmPassword}
+              value={confirmPassword}
               onChangeText={setConfirmPassword}
               isRequired={true}
               isDisabled={false}
@@ -87,7 +108,7 @@ const ChangePasswordScreen = () => {
               placeholder="Enter the new password to confirm"
             />            
           </View>
-          <Button>
+          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={!readyToReset && "$coolGray400"} borderRadius={30}>
             <ButtonText>
               Save
             </ButtonText>
