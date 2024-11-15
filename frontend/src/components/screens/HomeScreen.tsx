@@ -143,6 +143,12 @@ const GET_USER = gql`
   }
 `;
 
+const HAS_TEST_RESULTS = gql`
+  query HasTestResults($user_id: ID!) {
+    hasTestResults(user_id: $user_id)
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 type RouteParams = {
@@ -199,11 +205,11 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_BSL_RESULTS_AND_AVERAGE_FOR_TODAY, {
     variables: { userId: userId },
   });
-  bslResultsAndAverageData &&
-    console.log(
-      "bsl:",
-      bslResultsAndAverageData.getTestResultsAndAverageForToday
-    );
+  // bslResultsAndAverageData &&
+  //   console.log(
+  //     "bsl:",
+  //     bslResultsAndAverageData.getTestResultsAndAverageForToday
+  //   );
 
   let latestBsl;
   if (bslResultsAndAverageData) {
@@ -252,7 +258,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_WEEKLY_BSL_DATA, {
     variables: { userId: userId },
   });
-  weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
+  // weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
 
   const {
     data: bslForXData,
@@ -263,6 +269,13 @@ const HomeScreen: React.FC = () => {
     variables: { userId: userId },
   });
   bslForXData && console.log("X:", bslForXData);
+
+  const { data: hasData, refetch: refetchHasData } = useQuery(
+    HAS_TEST_RESULTS,
+    {
+      variables: { user_id: userId },
+    }
+  );
 
   const openArticle = (url: string, title: string) => {
     navigation.navigate("Article", {
@@ -356,6 +369,7 @@ const HomeScreen: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
+      refetchHasData();
       if (route.params?.mutatedLog === "bsl") {
         bslResultsAndAverageRefetch();
         weeklyBslRefetch();
@@ -381,6 +395,7 @@ const HomeScreen: React.FC = () => {
       medicinesRefetch,
       carbsRefetch,
       weeklyBslRefetch,
+      refetchHasData,
     ])
   );
 
@@ -561,8 +576,6 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const hasData = true;
-
   return (
     <SafeAreaView
       style={{ backgroundColor: "#4800FF" }}
@@ -584,7 +597,7 @@ const HomeScreen: React.FC = () => {
           zIndex={-1}
         ></View>
         {/* Shown when no testResult log in an user */}
-        {!hasData && (
+        {!hasData?.hasTestResults && (
           <VStack p="$4" space="md">
             <VStack
               space="xs"
@@ -654,7 +667,7 @@ const HomeScreen: React.FC = () => {
           </VStack>
         )}
         {/* Shown when testResult log exists */}
-        {hasData && (
+        {hasData?.hasTestResults && (
           <VStack p="$4" space="md">
             {route.params?.badges?.length > 0 && (
               <Modal isOpen={modalVisible} onClose={() => handleClose()}>
@@ -759,13 +772,6 @@ const HomeScreen: React.FC = () => {
               </HStack>
 
               {bslResultsAndAverageData && (
-                // <BslLineChart
-                //   width={width}
-                //   data={
-                //     bslResultsAndAverageData.getTestResultsAndAverageForToday
-                //       .testResults
-                //   }
-                // />
                 <BslTodayBarChart
                   width={width}
                   data={
