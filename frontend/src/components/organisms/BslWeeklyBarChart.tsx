@@ -33,14 +33,19 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
   );
   const yAxisMax = weeklyAverage + maxDataValue;
 
+  const hasLogs = data.some((obj) => obj.value !== 0);
+  const domain = hasLogs
+    ? { y: [weeklyAverage - maxDataValue * 1.2, yAxisMax] }
+    : { y: [0, 1] };
+
   return (
     <View>
       <VictoryChart
         width={width * 0.6}
         height={100}
         domainPadding={{ x: 15 }}
-        padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
-        domain={{ y: [weeklyAverage - maxDataValue * 1.2, yAxisMax] }}
+        padding={{ top: 20, bottom: 30, left: 10, right: 10 }}
+        domain={domain}
       >
         {/* X-axis for days */}
         <VictoryAxis

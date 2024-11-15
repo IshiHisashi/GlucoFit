@@ -759,13 +759,6 @@ const HomeScreen: React.FC = () => {
               </HStack>
 
               {bslResultsAndAverageData && (
-                // <BslLineChart
-                //   width={width}
-                //   data={
-                //     bslResultsAndAverageData.getTestResultsAndAverageForToday
-                //       .testResults
-                //   }
-                // />
                 <BslTodayBarChart
                   width={width}
                   data={
