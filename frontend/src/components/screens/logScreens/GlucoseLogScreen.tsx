@@ -7,7 +7,6 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import GlucoFitFaceSample from "../../../../assets/glucoFaces/glucoSmile.png";
 import { AppStackParamList } from "../../../types/navigation";
 import ButtonFixedBottom from "../../molcules/ButtonFixedBottom";
 import Sheet from "../../organisms/Sheet";
@@ -118,8 +117,8 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   const [glucoseLevel, setGlucoseLevel] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const [timePeriod, setTimePeriod] = useState("");
-  const timePeriods = ["After breakfast", "After lunch", "After dinner"];
+  const [timePeriod, setTimePeriod] = useState("Before breakfast");
+  const timePeriods = ["Before breakfast", "After breakfast", "Before lunch", "After lunch", "Before dinner", "After dinner"];
   const [note, setNote] = useState<{ title: string; content: string }>({
     title: "",
     content: "",
@@ -128,6 +127,9 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const scale = useRef(new Animated.Value(1)).current;
+  const [bslHigh, setBslHigh] = useState<boolean>(false);
+  const [bslMid, setBslMid] = useState<boolean>(false);
+  const [bslGood, setBslGood] = useState<boolean>(false);
 
   useEffect(() => {
     if (fromAuto) {
@@ -135,6 +137,32 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
     }
     
   }, [])
+
+  useEffect(() => {
+    const numGlucoseLevel = Number(glucoseLevel)
+    let thresholds;
+    if (timePeriod === "Before breakfast") {
+      thresholds = { good: 5.5, mid: 6.9 };
+    } else if (timePeriod === "Before lunch" || timePeriod === "Before dinner") {
+      thresholds = { good: 6.1, mid: 7.0 };
+    } else {
+      thresholds = { good: 7.8, mid: 11.0 };
+    }
+  
+    if (numGlucoseLevel <= thresholds.good) {
+      setBslGood(true);
+      setBslMid(false);
+      setBslHigh(false);
+    } else if (numGlucoseLevel <= thresholds.mid) {
+      setBslGood(false);
+      setBslMid(true);
+      setBslHigh(false);
+    } else {
+      setBslGood(false);
+      setBslMid(false);
+      setBslHigh(true);
+    }
+  }, [timePeriod, glucoseLevel])
 
   // GMT
   console.log(date);
@@ -333,11 +361,20 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
                 style={[
                   styles.pulseCircle,
                   { transform: [{ scale }] },
+                  bslGood ? 
+                    { backgroundColor: '#FAF8FF' } :
+                    bslMid ? 
+                      { backgroundColor: '#FFFAEA' } :
+                      { backgroundColor: '#FFEDE9' }
                 ]}
               />
               <Image 
-                source={GlucoFitFaceSample} 
-                alt="GlucoFit face" 
+                source={bslGood ? 
+                  require("../../../../assets/glucoFaces/glucoSmile.png") : 
+                  bslMid ? 
+                    require("../../../../assets/glucoFaces/glucoNeutral.png") :
+                    require("../../../../assets/glucoFaces/glucoFrowned.png")} 
+                alt="Glucofit smily face" 
                 style={styles.image}
               />
             </View>
@@ -422,13 +459,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 220,
     height: 220,
+    marginBottom: 20
   },
   pulseCircle: {
     position: 'absolute',
     width: 210,
     height: 210,
-    borderRadius: 105,
-    backgroundColor: '#FAF8FF', 
+    borderRadius: 105, 
   },
   image: {
     width: 185,

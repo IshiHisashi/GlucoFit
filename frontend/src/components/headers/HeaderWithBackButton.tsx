@@ -39,6 +39,7 @@ export const HeaderWithBackButton: FC<HeaderWithBackButtonProps> = (props) => {
         textAlign="center"
         fontFamily="$bold"
         color="$neutralDark90"
+        fontSize={20}
       >
         {text}
       </Text>

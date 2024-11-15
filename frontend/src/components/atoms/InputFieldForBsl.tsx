@@ -47,6 +47,7 @@ const InputFieldForBsl: FC<InputFieldForBslProps> = (props) => {
           $disabled-color="$neutralDark15"
           onPressIn={() => setIsPressed(true)}
           onPressOut={() => setIsPressed(false)}
+          placeholder="--"
         />
         <InputSlot>
           <Text
