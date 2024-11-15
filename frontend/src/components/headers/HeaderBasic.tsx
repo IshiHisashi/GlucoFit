@@ -76,7 +76,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
           </VStack>
 
           <HStack alignItems="center" space="md">
-            <Pressable onPress={SignOut}>
+            <Pressable onPress={() => navigation?.navigate("Profile")}>
               <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
             </Pressable>
             <Pressable onPress={() => navigation?.navigate("Temp")}>

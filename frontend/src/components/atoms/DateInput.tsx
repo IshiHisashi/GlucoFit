@@ -1,4 +1,4 @@
-import React, { FC, useState, type PropsWithChildren } from "react";
+import React, { FC, useState, type PropsWithChildren, useEffect } from "react";
 import {
   View,
   Text,
@@ -31,6 +31,13 @@ const DateInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
     const year = date.getFullYear();
     return `${month} / ${day} / ${year}`;
   };
+
+  useEffect(() => {
+    if (value) {
+      const dateValue = typeof value === "string" ? new Date(value) : value;
+      setFormattedDate(formatDateForUI(dateValue));
+    }
+  }, [value]);
 
   const handleDateConfirm = (date: Date) => {
     setFormattedDate(formatDateForUI(date));
