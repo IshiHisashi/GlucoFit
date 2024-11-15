@@ -55,6 +55,8 @@ const ChangePasswordScreen = () => {
       })
       console.log("Password properly reseted: ", result)
 
+      navigation.navigate("EditProfile");
+
     } catch (e) {
       console.error("Error reseting password:", e)
     }
@@ -108,7 +110,7 @@ const ChangePasswordScreen = () => {
               placeholder="Enter the new password to confirm"
             />            
           </View>
-          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={!readyToReset && "$coolGray400"} borderRadius={30}>
+          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"} borderRadius={30}>
             <ButtonText>
               Save
             </ButtonText>
