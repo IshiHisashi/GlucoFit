@@ -143,6 +143,12 @@ const GET_USER = gql`
   }
 `;
 
+const HAS_TEST_RESULTS = gql`
+  query HasTestResults($user_id: ID!) {
+    hasTestResults(user_id: $user_id)
+  }
+`;
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList>;
 
 type RouteParams = {
@@ -263,6 +269,11 @@ const HomeScreen: React.FC = () => {
     variables: { userId: userId },
   });
   bslForXData && console.log("X:", bslForXData);
+
+  const { data: hasData } = useQuery(HAS_TEST_RESULTS, {
+    variables: { user_id: userId },
+  });
+  console.log("HAS DATA?: ", hasData);
 
   const openArticle = (url: string, title: string) => {
     navigation.navigate("Article", {
@@ -561,8 +572,6 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const hasData = true;
-
   return (
     <SafeAreaView
       style={{ backgroundColor: "#4800FF" }}
@@ -584,7 +593,7 @@ const HomeScreen: React.FC = () => {
           zIndex={-1}
         ></View>
         {/* Shown when no testResult log in an user */}
-        {!hasData && (
+        {!hasData.hasTestResults && (
           <VStack p="$4" space="md">
             <VStack
               space="xs"
@@ -654,7 +663,7 @@ const HomeScreen: React.FC = () => {
           </VStack>
         )}
         {/* Shown when testResult log exists */}
-        {hasData && (
+        {hasData.hasTestResults && (
           <VStack p="$4" space="md">
             {route.params?.badges?.length > 0 && (
               <Modal isOpen={modalVisible} onClose={() => handleClose()}>
