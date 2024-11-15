@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../../types/navigation";
 import { Pressable } from "@gluestack-ui/themed";
 import { gql, useQuery } from "@apollo/client";
+import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 
 // 🚨 ADD PROPER MUTATION LATER HERE 🚨
 
@@ -53,7 +54,39 @@ const ChangePasswordScreen = () => {
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>
-          <Text>Change password here</Text>
+          <View marginBottom={20}>
+            <InputFieldGeneral
+              label="Current Password"
+              value={oldPassword}
+              onChangeText={setoldPassword}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              placeholder="Enter your current password"
+            />            
+          </View>
+          <View marginBottom={20}>
+            <InputFieldGeneral
+              label="New Password"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              placeholder="Enter a new password"
+            />            
+          </View>
+          <View marginBottom={20}>
+            <InputFieldGeneral
+              label="Confirm New Password"
+              value={confirtmPassword}
+              onChangeText={setConfirmPassword}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              placeholder="Enter the new password to confirm"
+            />            
+          </View>
           <Button>
             <ButtonText>
               Save

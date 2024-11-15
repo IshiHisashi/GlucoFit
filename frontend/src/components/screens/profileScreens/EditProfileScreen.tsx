@@ -127,33 +127,39 @@ const EditProfileScreen = () => {
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>
-          <InputFieldGeneral
-            label="Name"
-            value={userName}
-            onChangeText={setUserName}
-            isRequired={true}
-            isDisabled={false}
-            isInvalid={false}
-            placeholder="Preferred Name"
-          />
-          {/* 🚨 Fix this date input field later 🚨 */}
-          <DateInput 
-            value={userBday}
-            isDisabled={false}
-            labelText="Birthday"
-            onChange={setUserBday}
-            placeHolder="DD/MM/YYYY"
-          />
-          <InputFieldGeneral
-            label="Email"
-            value={userEmail}
-            onChangeText={setUserEmail}
-            isRequired={false}
-            isDisabled={false}
-            isInvalid={false}
-            placeholder="Preferred Name"
-          />
-          <Button marginVertical={20} onPress={handleSubmit} isDisabled={!isChanged}>
+          <View marginBottom={20}>
+            <InputFieldGeneral
+              label="Name"
+              value={userName}
+              onChangeText={setUserName}
+              isRequired={true}
+              isDisabled={false}
+              isInvalid={false}
+              placeholder="Preferred Name"
+            />
+          </View>
+          <View marginBottom={20}>
+            {/* 🚨 Fix this date input field later 🚨 */}
+            <DateInput 
+              value={userBday}
+              isDisabled={false}
+              labelText="Birthday"
+              onChange={setUserBday}
+              placeHolder="DD/MM/YYYY"
+            />            
+          </View>
+          <View marginBottom={20}>
+            <InputFieldGeneral
+              label="Email"
+              value={userEmail}
+              onChangeText={setUserEmail}
+              isRequired={false}
+              isDisabled={false}
+              isInvalid={false}
+              placeholder="Preferred Name"
+            />          
+          </View>
+          <Button marginBottom={20} onPress={handleSubmit} isDisabled={!isChanged}>
             <ButtonText>
               Save
             </ButtonText>
