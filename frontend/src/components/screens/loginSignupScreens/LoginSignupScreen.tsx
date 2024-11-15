@@ -1,15 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, Text, Image, HStack } from "@gluestack-ui/themed";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { LoginSignupStackParamList } from "../../../types/navigation";
-import { AuthContext } from "../../../context/AuthContext";
 import GlucoButton from "../../atoms/GlucoButton";
 
 type Props = NativeStackScreenProps<LoginSignupStackParamList>;
 
 const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
-  const { SignOut } = useContext(AuthContext);
-
   return (
     <View
       flexDirection="column"
@@ -17,6 +14,7 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
       gap={50}
       p={16}
       height="100%"
+      backgroundColor="#4800FF"
     >
       <View marginTop={200} flexDirection="column" gap={10}>
         <Image
@@ -26,7 +24,7 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
           alt="Character is winking during the onboarding process"
         />
         <Image
-          source={require("../../../../assets/logo_onbording.png")}
+          source={require("../../../../assets/app-name-white.png")}
           resizeMode="contain"
           w={238}
           mx="auto"
@@ -36,30 +34,19 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
       {/* btn section */}
       <View marginBottom={48} flexDirection="column" gap={16}>
         <GlucoButton
-          buttonType="primary"
-          text="Sign up"
-          isFocused={false}
-          isDisabled={false}
-          onPress={() => navigation.navigate("Signup")}
-        />
-        <GlucoButton
           buttonType="secondary"
-          text="Have an account? Sign in."
+          text="Sign in"
           isFocused={false}
           isDisabled={false}
           onPress={() => navigation.navigate("Login")}
         />
-        {/* <HStack gap={16} justifyContent="center">
-          <Text
-            color="#888"
-            onPress={() => navigation.navigate("OnboardingStack")}
-          >
-            Onboarding
-          </Text>
-          <Text color="#888" onPress={SignOut}>
-            Sign Out
-          </Text>
-        </HStack> */}
+        <GlucoButton
+          buttonType="secondary"
+          text="Create an account"
+          isFocused={false}
+          isDisabled={false}
+          onPress={() => navigation.navigate("Signup")}
+        />
       </View>
     </View>
   );
