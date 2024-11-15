@@ -417,6 +417,18 @@ const testResultsResolvers = {
         throw new Error("Failed to fetch test results for the last 7 days");
       }
     },
+    hasTestResults: async (
+      _: any,
+      { user_id }: { user_id: string }
+    ): Promise<boolean> => {
+      try {
+        const testResultExists = await TestResults.exists({ user_id });
+        return Boolean(testResultExists);
+      } catch (error) {
+        console.error("Error checking for test results:", error);
+        throw new Error("Failed to check if user has test results");
+      }
+    },
   },
   Mutation: {
     createTestResult: async (
