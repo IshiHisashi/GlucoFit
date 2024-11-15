@@ -24,6 +24,8 @@ export const badgesTypeDefs = gql`
     badge_image_address: String!
     criteria: BadgeCriteria!
     last_updated: Date
+    locked: String
+    unlocked: String
   }
 
   extend type Query {
@@ -37,6 +39,8 @@ export const badgesTypeDefs = gql`
       badge_desc: String!
       badge_image_address: String!
       criteria: BadgeCriteriaInput!
+      locked: String
+      unlocked: String
     ): Badges!
 
     updateBadge(
@@ -45,6 +49,8 @@ export const badgesTypeDefs = gql`
       badge_desc: String
       badge_image_address: String
       criteria: BadgeCriteriaInput # last_updated is not necessary for now
+      locked: String
+      unlocked: String
     ): Badges!
 
     deleteBadge(id: ID!): String!
