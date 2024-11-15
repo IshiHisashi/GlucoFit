@@ -13,6 +13,8 @@ export interface IBadges extends Document {
   badge_image_address: string;
   criteria: BadgeCriteria;
   last_updated: Date;
+  locked: string;
+  unlocked: string;
 }
 
 const badgesSchema = new Schema<IBadges>({
@@ -21,6 +23,8 @@ const badgesSchema = new Schema<IBadges>({
   badge_image_address: { type: String, required: true },
   criteria: { type: Object },
   last_updated: { type: Date },
+  locked: { type: String},
+  unlocked: { type: String},
 });
 
 export const Badges = model<IBadges>("Badges", badgesSchema);
