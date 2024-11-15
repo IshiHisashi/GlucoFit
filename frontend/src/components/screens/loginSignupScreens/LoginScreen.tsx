@@ -14,7 +14,6 @@ import { validateEmail } from "../../../utils/utilEmailValidatoin";
 
 type Props = NativeStackScreenProps<TabParamList>;
 
-// GraphQL Mutation for Login
 const LOGIN_MUTATION = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
