@@ -79,6 +79,11 @@ export const userTypeDefs = gql`
     signUp(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
     refreshToken(token: String!): TokenResponse!
+    resetPassword(
+      userId: ID!
+      oldPassword: String!
+      newPassword: String!
+    ): Boolean!
 
     createUser(
       name: String!
