@@ -15,6 +15,8 @@ import {
 } from "@gluestack-ui/themed";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 import { PlusCustom, TimesCustom } from "../svgs/svgs";
+import { BlurView } from "@react-native-community/blur";
+import LinearGradient from "react-native-linear-gradient";
 
 interface SubMenuItemProps {
   onPress: () => void;
@@ -27,13 +29,14 @@ const SubMenuItem: FC<SubMenuItemProps> = (props) => {
   return (
     <Pressable
       onPress={onPress}
-      p="$4"
+      p="$2"
       w="$full"
       $active-color="$primaryIndigo60"
       $_active={{ color: "#4800FF" }}
     >
       <Text
         textAlign="center"
+        fontWeight="$medium"
         $active-color="$primaryIndigo60"
         $_active={{ color: "#4800FF" }}
       >
@@ -143,11 +146,18 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
           bottom={0}
           zIndex={100}
         >
-          <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
-            <Animated.View style={{ transform: [{ rotate: spin }] }}>
-              <PlusCustom color="#ffffff" size={32} />
-            </Animated.View>
-          </TouchableOpacity>
+          <LinearGradient
+            colors={["#9266FF", "#4800FF"]}
+            style={styles.fabButtonGradient}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+          >
+            <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
+              <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                <PlusCustom color="#ffffff" size={32} />
+              </Animated.View>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </View>
 
@@ -157,16 +167,29 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
         onClose={toggleSubMenu}
         justifyContent="flex-end"
       >
-        <ModalBackdrop bg="$neutralWhite" />
+        {/* <BlurViews */}
+
+        <ModalBackdrop bg="#474747" opacity="$20" />
+        <BlurView
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+          blurType="dark"
+          blurAmount={8}
+        />
         <ModalContent w="$full">
-          <ModalBody pb={90}>
+          <ModalBody pt={38} pb={100}>
             <SubMenuItem
               onPress={() => {
                 // setIsSubMenuOpen(false);
                 toggleSubMenu();
                 navigation.navigate("CarbsLog");
               }}
-              text="Food/Carbs"
+              text="Food"
             />
             <SubMenuItem
               onPress={() => {
@@ -205,9 +228,19 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props) => {
             />
           </ModalBody>
           <View style={styles.fabContainer}>
-            <TouchableOpacity onPress={toggleSubMenu} style={styles.fabButton}>
-              <TimesCustom color="#ffffff" size={32} />
-            </TouchableOpacity>
+            <LinearGradient
+              colors={["#9266FF", "#4800FF"]}
+              style={styles.fabButtonGradient}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+            >
+              <TouchableOpacity
+                onPress={toggleSubMenu}
+                style={styles.fabButton}
+              >
+                <TimesCustom color="#ffffff" size={32} />
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </ModalContent>
       </Modal>
@@ -242,11 +275,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  fabButton: {
+  fabButtonGradient: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#4800FF",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
@@ -256,6 +288,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  fabButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

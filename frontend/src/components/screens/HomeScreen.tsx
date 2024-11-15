@@ -30,7 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { AnalysisCustom, TimesCustom } from "../svgs/svgs";
+import { AnalysisCustom, TimesCustom, NavToBelowCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
@@ -137,6 +137,8 @@ const GET_USER = gql`
   query GetUser($getUserId: ID!) {
     getUser(id: $getUserId) {
       name
+      maximum_bsl
+      minimum_bsl
     }
   }
 `;
@@ -187,6 +189,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_USER, {
     variables: { getUserId: userId },
   });
+  // console.log("USER :", userData);
 
   const {
     data: bslResultsAndAverageData,
@@ -219,7 +222,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_ACTIVITIES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
+  // activitiesData && console.log("act:", activitiesData.getTodayActivityLogs);
 
   const {
     data: medicinesData,
@@ -229,7 +232,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_MEDICINES_FOR_TODAY, {
     variables: { userId: userId },
   });
-  medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
+  // medicinesData && console.log("med:", medicinesData.getTodayMedicineLogs);
 
   const {
     data: carbsData,
@@ -239,7 +242,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_CARBS_FOR_TODAY, {
     variables: { userId: userId },
   });
-  carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
+  // carbsData && console.log("carbs:", carbsData.getTodayDietLogs);
 
   const {
     data: weeklyBslData,
@@ -558,6 +561,8 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  const hasData = true;
+
   return (
     <SafeAreaView
       style={{ backgroundColor: "#4800FF" }}
@@ -569,172 +574,265 @@ const HomeScreen: React.FC = () => {
         navigation={navigation}
       />
       <ScrollView bg="$neutralDark5" h="106%">
-        <VStack p="$4" space="md">
-          {route.params?.badges?.length > 0 && (
-            <Modal isOpen={modalVisible} onClose={() => handleClose()}>
-              <Modal.Content
-                position="absolute"
-                bottom={40}
-                height="86%"
-                borderRadius={20}
-                backgroundColor="white"
+        <View
+          h={100}
+          bg="#4800FF"
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          zIndex={-1}
+        ></View>
+        {/* Shown when no testResult log in an user */}
+        {!hasData && (
+          <VStack p="$4" space="md">
+            <VStack
+              space="xs"
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              bg="$neutralWhite"
+              px="$4"
+              py="$8"
+            >
+              <HStack justifyContent="space-between">
+                <HStack space="xs" alignItems="center">
+                  <Text fontSize="$5xl" fontFamily="$bold">
+                    0
+                  </Text>
+                  <Text>mmol/L</Text>
+                </HStack>
+              </HStack>
+              <Image
+                mx="auto"
+                source={require("../../../assets/allset.png")}
+                alt="icon-face"
+                width={200}
+                height={200}
+                marginBottom={20}
+              />
+              <Text textAlign="center" fontFamily="$bold" fontSize="$2xl">
+                Record your first blood sugar values
+              </Text>
+              <VStack alignItems="center" mt={30}>
+                <NavToBelowCustom color="#FFB5A6" />
+                <NavToBelowCustom color="#FF6B4D" />
+              </VStack>
+            </VStack>
+            <Pressable onPress={() => navigation.navigate("AutoLog")}>
+              <HStack
+                space="sm"
+                borderWidth={1}
+                borderColor="$primaryIndigo10"
+                borderRadius={10}
+                bg="$neutralWhite"
+                px="$4"
+                py="$8"
+                alignItems="center"
+                onPress={() => {
+                  navigation.navigate("AutoLog");
+                }}
               >
-                <Modal.CloseButton />
-                <View>
-                  <Center>
-                    <Button
-                      onPress={() => handleClose()}
-                      flexGrow={1}
-                      backgroundColor="transparent"
-                    >
-                      <ButtonText position="relative" top={0} left={120}>
-                        ✖️
-                      </ButtonText>
-                    </Button>
-                    <Text textAlign="center">Congratulations!</Text>
-                    <Text
-                      textAlign="center"
-                      fontSize={22}
-                      color="black"
-                      padding={20}
-                    >
-                      You unlocked a new badge
-                    </Text>
-                    <Image
-                      w={120}
-                      h={120}
-                      source={
-                        badgeImages[route.params?.badges[currentModalIndex]?.id]
-                      }
-                      alt={route.params?.badges[currentModalIndex].badge_name}
-                      marginBottom={8}
-                    />
-                    <Text
-                      color="$black"
-                      fontSize={20}
-                      textAlign="center"
-                      marginVertical={10}
-                    >
-                      {route.params?.badges[currentModalIndex].badge_name}
-                    </Text>
-                    <Text textAlign="center" marginBottom={10}>
-                      {route.params?.badges[currentModalIndex].badge_desc}
-                    </Text>
-                    <Button
-                      onPress={() => onShare()}
-                      width={180}
-                      marginBottom={10}
-                    >
-                      <ButtonText>Share</ButtonText>
-                    </Button>
-                    <Button onPress={() => moveToBadges()} width={180}>
-                      <ButtonText>View All Badges</ButtonText>
-                    </Button>
-                  </Center>
-                </View>
-              </Modal.Content>
-            </Modal>
-          )}
-          <VStack
-            space="sm"
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            p="$4"
-            bg="$neutralWhite"
-          >
-            <HStack alignItems="center" justifyContent="space-between">
-              {bslResultsAndAverageData && (
-                <VStack>
-                  <HStack alignItems="center" space="xs">
-                    <Text fontSize="$4xl" fontFamily="$bold">
-                      {latestBsl.bsl}
-                    </Text>
-                    <Text>mmol/L</Text>
-                  </HStack>
-                  <Text>
-                    {new Date(latestBsl.log_timestamp).toLocaleString("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true,
-                    })}
+                <Image
+                  mx="auto"
+                  source={require("../../../assets/insert-strip-home.png")}
+                  alt="icon-face"
+                  width={53}
+                  height={64}
+                />
+                <VStack flex={1}>
+                  <Text fontSize="$lg" fontFamily="$bold">
+                    Have a glucose device?
+                  </Text>
+                  <Text fontSize="$sm">
+                    Make sure the bluetooth is turned on and the glucometer is
+                    nearby.
                   </Text>
                 </VStack>
-              )}
-              {/* <TotalSteps /> */}
-            </HStack>
-
-            {bslResultsAndAverageData && (
-              // <BslLineChart
-              //   width={width}
-              //   data={
-              //     bslResultsAndAverageData.getTestResultsAndAverageForToday
-              //       .testResults
-              //   }
-              // />
-              <BslTodayBarChart
-                width={width}
-                data={
-                  bslResultsAndAverageData.getTestResultsAndAverageForToday
-                    .testResults
-                }
-              />
-            )}
+              </HStack>
+            </Pressable>
           </VStack>
+        )}
+        {/* Shown when testResult log exists */}
+        {hasData && (
+          <VStack p="$4" space="md">
+            {route.params?.badges?.length > 0 && (
+              <Modal isOpen={modalVisible} onClose={() => handleClose()}>
+                <Modal.Content
+                  position="absolute"
+                  bottom={40}
+                  height="86%"
+                  borderRadius={20}
+                  backgroundColor="white"
+                >
+                  <Modal.CloseButton />
+                  <View>
+                    <Center>
+                      <Button
+                        onPress={() => handleClose()}
+                        flexGrow={1}
+                        backgroundColor="transparent"
+                      >
+                        <ButtonText position="relative" top={0} left={120}>
+                          ✖️
+                        </ButtonText>
+                      </Button>
+                      <Text textAlign="center">Congratulations!</Text>
+                      <Text
+                        textAlign="center"
+                        fontSize={22}
+                        color="black"
+                        padding={20}
+                      >
+                        You unlocked a new badge
+                      </Text>
+                      <Image
+                        w={120}
+                        h={120}
+                        source={
+                          badgeImages[
+                            route.params?.badges[currentModalIndex]?.id
+                          ]
+                        }
+                        alt={route.params?.badges[currentModalIndex].badge_name}
+                        marginBottom={8}
+                      />
+                      <Text
+                        color="$black"
+                        fontSize={20}
+                        textAlign="center"
+                        marginVertical={10}
+                      >
+                        {route.params?.badges[currentModalIndex].badge_name}
+                      </Text>
+                      <Text textAlign="center" marginBottom={10}>
+                        {route.params?.badges[currentModalIndex].badge_desc}
+                      </Text>
+                      <Button
+                        onPress={() => onShare()}
+                        width={180}
+                        marginBottom={10}
+                      >
+                        <ButtonText>Share</ButtonText>
+                      </Button>
+                      <Button onPress={() => moveToBadges()} width={180}>
+                        <ButtonText>View All Badges</ButtonText>
+                      </Button>
+                    </Center>
+                  </View>
+                </Modal.Content>
+              </Modal>
+            )}
+            {/* Daily data */}
+            <VStack
+              space="sm"
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              p="$4"
+              bg="$neutralWhite"
+            >
+              <HStack alignItems="center" justifyContent="space-between">
+                {bslResultsAndAverageData && (
+                  <HStack alignItems="center" space="xs">
+                    <Text fontSize="$5xl" fontFamily="$bold">
+                      {latestBsl.bsl ? latestBsl.bsl?.toFixed(1) : "-"}
+                    </Text>
+                    <VStack>
+                      <Text>mmol/L</Text>
+                      <Text>
+                        {latestBsl.log_timestamp
+                          ? new Date(latestBsl.log_timestamp).toLocaleString(
+                              "en-US",
+                              {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              }
+                            )
+                          : " "}
+                      </Text>
+                    </VStack>
+                  </HStack>
+                )}
+                {/* <TotalSteps /> */}
+              </HStack>
 
-          <LogsTable
-            title="Logs for today"
-            subTitle={new Date().toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-            onPressTitleRightButton={() =>
-              navigation.navigate("Tabs", { screen: "Logs" })
-            }
-            rowsData={logsForToday}
-          />
-
-          <VStack
-            borderWidth={1}
-            borderColor="$primaryIndigo10"
-            borderRadius={10}
-            p="$4"
-            bg="$neutralWhite"
-          >
-            <LogsTableTitle
-              title="Weekly Snapshots"
-              subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+              {bslResultsAndAverageData && (
+                // <BslLineChart
+                //   width={width}
+                //   data={
+                //     bslResultsAndAverageData.getTestResultsAndAverageForToday
+                //       .testResults
+                //   }
+                // />
+                <BslTodayBarChart
+                  width={width}
+                  data={
+                    bslResultsAndAverageData.getTestResultsAndAverageForToday
+                      .testResults
+                  }
+                  bslMax={Number(userData.getUser.maximum_bsl.toFixed(1))}
+                  bslMin={Number(userData.getUser.minimum_bsl.toFixed(1))}
+                />
+              )}
+            </VStack>
+            {/* Logs for Today */}
+            <LogsTable
+              title="Logs for today"
+              subTitle={new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
               onPressTitleRightButton={() =>
                 navigation.navigate("Tabs", { screen: "Logs" })
               }
+              rowsData={logsForToday}
             />
-
-            <HStack
-              alignItems="center"
-              justifyContent="space-between"
-              space="sm"
+            {/* Weekly SnapShotes */}
+            <VStack
+              borderWidth={1}
+              borderColor="$primaryIndigo10"
+              borderRadius={10}
+              px="$4"
+              py="$5"
+              bg="$neutralWhite"
             >
-              <Center>
-                <Text size="3xl" fontFamily="$bold">
-                  {weeklyBslData
-                    ? weeklyBslData.getWeeklyBSLData.weeklyAverage
-                    : "N/A"}
-                </Text>
-                <Text>mmol/L</Text>
-                <Text>Average</Text>
-              </Center>
+              <LogsTableTitle
+                title="Weekly Snapshots"
+                subTitle={weeklyBslData?.getWeeklyBSLData.dateRange}
+                onPressTitleRightButton={() =>
+                  navigation.navigate("Tabs", { screen: "Logs" })
+                }
+              />
 
-              {weeklyBslData && bslForXData && (
-                <BslWeeklyBarChart
-                  width={width}
-                  data={weeklyBslData.getWeeklyBSLData.weeklyData}
-                  bslBorder={bslForXData.getAverageBslXAxisValue || 5.6}
-                />
-              )}
-            </HStack>
+              <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                space="sm"
+              >
+                <Center>
+                  <Text size="3xl" fontFamily="$bold">
+                    {weeklyBslData
+                      ? weeklyBslData.getWeeklyBSLData.weeklyAverage
+                      : "N/A"}
+                  </Text>
+                  <Text>mmol/L</Text>
+                  <Text>Average</Text>
+                </Center>
+
+                {weeklyBslData && bslForXData && (
+                  <BslWeeklyBarChart
+                    width={width}
+                    data={weeklyBslData.getWeeklyBSLData.weeklyData}
+                    weeklyAverage={weeklyBslData.getWeeklyBSLData.weeklyAverage}
+                  />
+                )}
+              </HStack>
+            </VStack>
           </VStack>
-        </VStack>
+        )}
 
         <View h={100} />
       </ScrollView>

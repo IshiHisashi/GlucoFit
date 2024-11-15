@@ -1,19 +1,11 @@
 import React, { FC } from "react";
-import { VictoryChart, VictoryBar, VictoryAxis } from "victory-native";
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryAxis,
+  VictoryLine,
+} from "victory-native";
 import { View } from "@gluestack-ui/themed";
-
-// dummy data
-const data = [
-  { day: "Wed", value: 180 },
-  { day: "Thu", value: 140 },
-  { day: "Fri", value: 100 },
-  { day: "Sat", value: 120 },
-  { day: "Sun", value: 160 },
-  { day: "Mon", value: 150 },
-  { day: "Tue", value: 130 },
-];
-
-const bslBorder = 140;
 
 interface BslWeeklyBarChartProps {
   width: number;
@@ -21,93 +13,66 @@ interface BslWeeklyBarChartProps {
     day: string;
     value: number;
   }[];
-  bslBorder: number;
+  weeklyAverage: number;
 }
 
 const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
   width,
   data,
-  bslBorder,
+  weeklyAverage,
 }) => {
-  const convertedData = data.map((obj) => {
-    if (obj.value === 0) {
-      return {
-        day: obj.day,
-        value: bslBorder,
-      };
-    } else if (obj.value === bslBorder) {
-      return {
-        day: obj.day,
-        value: obj.value + 0.1,
-      };
-    } else {
-      return {
-        day: obj.day,
-        value: obj.value,
-      };
-    }
-  });
-
-  // Calculate the max or min value in the data
-  const maxDataValue = Math.max(...convertedData.map((d) => d.value));
-  const minDataValue = Math.min(...convertedData.map((d) => d.value));
-
-  // Set the minimum highest y value (e.g., 20% above bslBorder)
-  const minHighestY = bslBorder * 1;
-
-  // Use the larger or smaller
-  const yAxisMax = Math.max(maxDataValue, minHighestY);
-  const yAxisMin = Math.min(minDataValue, 0);
-  console.log(yAxisMax, yAxisMin);
+  const adjustedData = data
+    .filter((obj) => obj.value !== 0)
+    .map((obj) => ({
+      day: obj.day,
+      value: obj.value,
+      y0: weeklyAverage,
+    }));
+  const maxDataValue = Math.max(
+    ...data.map((d) => Math.abs(d.value - weeklyAverage))
+  );
+  const yAxisMax = weeklyAverage + maxDataValue;
 
   return (
     <View>
-      {/*  style={{ borderColor: "#000000", borderWidth: 1 }} */}
       <VictoryChart
-        width={width * 0.7}
-        // height={200}
-        domainPadding={20}
+        width={width * 0.6}
+        height={100}
+        domainPadding={{ x: 15 }}
         padding={{ top: 20, bottom: 20, left: 10, right: 10 }}
-        domain={{ y: [yAxisMin - 2, yAxisMax - 2] }}
+        domain={{ y: [weeklyAverage - maxDataValue * 1.2, yAxisMax] }}
       >
         {/* X-axis for days */}
         <VictoryAxis
-          // tickValues={["Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue"]}
           tickValues={data.map((obj) => obj.day)}
-          tickFormat={(t) => t.charAt(0)}
+          tickFormat={(t) => t[0]}
           style={{
-            axis: { stroke: "#000" },
-            tickLabels: { fill: "#000", fontSize: 16, padding: 70 },
+            axis: { stroke: "none" },
+            tickLabels: { fill: "#5E5E5E", fontSize: 14, padding: 10 },
           }}
         />
-        {/* {console.log(data.map((obj) => obj.day))} */}
 
-        {/* Y-axis for values, will be deleted */}
-        {/* <VictoryAxis
-          dependentAxis
-          tickFormat={(t) => t + bslBorder}
-          offsetX={50}
+        {/* Horizontal line for weekly average */}
+        <VictoryLine
+          y={() => weeklyAverage}
           style={{
-            axis: { stroke: "#000" },
-            grid: { stroke: "#e5e5e5" },
+            data: { stroke: "#C2C2C2", strokeWidth: 1 },
           }}
-        /> */}
+        />
 
-        {/* Bar chart */}
+        {/* Bar chart relative to weekly average */}
         <VictoryBar
-          data={convertedData}
+          data={adjustedData}
           x="day"
-          y={(d) => d.value - bslBorder}
-          barWidth={20}
-          barRatio={0.1}
+          y="value"
+          y0="y0"
+          barWidth={10}
           style={{
             data: {
-              fill: ({ datum }) =>
-                datum.value < bslBorder ? "#FF5733" : "#888",
-              opacity: 0.5,
+              fill: "#8A5CFF",
             },
           }}
-          cornerRadius={10}
+          cornerRadius={2}
         />
       </VictoryChart>
     </View>

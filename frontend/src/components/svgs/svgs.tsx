@@ -1043,3 +1043,24 @@ export const PlusCircleCustom: FC = ({
     />
   </Svg>
 );
+
+export const NavToBelowCustom = ({
+  color = colorDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={37}
+    height={24}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M36.292 11.604V.168L18.5 12.875.708.167v11.438L18.5 24.313l17.792-12.708Z"
+    />
+  </Svg>
+);
+export default NavToBelowCustom;
