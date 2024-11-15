@@ -138,8 +138,33 @@ const articlesResolvers = {
         },
       };
     },    
+    getArticlesBySearch: async (
+      _: any,
+      { searchWord }: { searchWord: string }
+    ): Promise<Partial<IArticles>[]> => {
+      if (!searchWord || searchWord.trim() === "") {
+        throw new Error("Search word cannot be empty");
+      }
     
+      const articles = await Articles.find({
+        $or: [
+          { article_name: { $regex: searchWord, $options: "i" } },
+          { article_desc: { $regex: searchWord, $options: "i" } },
+        ],
+      }).exec();
     
+      // Map _id to id and cast to Partial<IArticles>[]
+      return articles.map(article => ({
+        id: article._id.toString(),
+        article_name: article.article_name,
+        article_thumbnail_address: article.article_thumbnail_address,
+        article_desc: article.article_desc,
+        article_url: article.article_url,
+        article_genre: article.article_genre,
+        diabetes_type: article.diabetes_type,
+      })) as Partial<IArticles>[];
+    },
+   
   },
   Mutation: {
     createArticle: async (

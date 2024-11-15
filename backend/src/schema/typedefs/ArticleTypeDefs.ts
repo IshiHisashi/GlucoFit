@@ -52,6 +52,7 @@ export const articlesTypeDefs = gql`
       limit: Int
       classification: String
     ): ArticlesConnection
+    getArticlesBySearch(searchWord: String!): [Articles!]!
   }
 
   extend type Mutation {

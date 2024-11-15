@@ -19,4 +19,6 @@ const articlesSchema = new Schema<IArticles>({
   diabetes_type: { type: String, required: true },
 });
 
+articlesSchema.index({ article_name: "text", article_desc: "text" });
+
 export const Articles = model<IArticles>("Articles", articlesSchema);
