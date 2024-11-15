@@ -75,15 +75,9 @@ const DateInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
           <InputField
             value={formattedDate}
             fontSize={15}
-            // fontFamily="$bold"
             color="$neutralDark60"
-            $focus-color="$primaryIndigo80"
-            $disabled-color="$neutralDark15"
             pl={4}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            onPressIn={() => setIsPressed(true)}
-            onPressOut={() => setIsPressed(false)}
+            editable={false}
             onPress={() => setIsDatePickerOpen(true)}
             placeholder={"MM / DD / YYYY"}
             placeholderTextColor="$neutralDark60"
