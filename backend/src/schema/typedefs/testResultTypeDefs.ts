@@ -53,6 +53,7 @@ export const testResultsTypeDefs = gql`
       month: Int!
     ): [String!]!
     getTestResultsLast7Days(user_id: ID!): [String!]!
+    hasTestResults(user_id: ID!): Boolean!
   }
 
   extend type Mutation {
