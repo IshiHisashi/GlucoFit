@@ -29,12 +29,12 @@ const AuthStack = () => {
       <Stack.Screen
         name="Signup"
         component={SignupScreen}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="OnboardingStack"
