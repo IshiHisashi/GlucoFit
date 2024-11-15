@@ -28,7 +28,7 @@ const BslRangeScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="What is your blood sugar range?"
+        comment="What is your blood sugar range (mmol/L)?"
         progressValue={75}
         onPress={handleNext}
         disabled={false}

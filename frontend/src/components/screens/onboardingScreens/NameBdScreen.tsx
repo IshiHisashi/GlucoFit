@@ -26,7 +26,7 @@ const NameBdScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View>
       <OnbordingLayout
-        comment="let’s start with your personal details for smarter insights"
+        comment="Let’s start with your personal details for smarter insights"
         supplimentalComment="Your personal information will help us tailor insights to better support your health journey."
         progressValue={12.5}
         onPress={handleNext}

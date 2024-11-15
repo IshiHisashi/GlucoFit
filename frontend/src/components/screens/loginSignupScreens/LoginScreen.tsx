@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { View, Image, Text, HStack } from "@gluestack-ui/themed";
 import { gql, useMutation } from "@apollo/client";
-import Input from "../../atoms/onboarding/input";
 import { saveToken } from "../../../utils/utilAuth";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -14,7 +13,6 @@ import { validateEmail } from "../../../utils/utilEmailValidatoin";
 
 type Props = NativeStackScreenProps<TabParamList>;
 
-// GraphQL Mutation for Login
 const LOGIN_MUTATION = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -100,9 +98,11 @@ const LoginScreen: React.FC<Props> = () => {
               onChangeText={handleEmailChange}
               isRequired={true}
               isDisabled={false}
-              isInvalid={isEmailInvalid}
+              isInvalid={email && isEmailInvalid}
               errorMessage={
-                isEmailInvalid ? "Please provide a valid email address" : ""
+                email && isEmailInvalid
+                  ? "Please provide a valid email address"
+                  : ""
               }
             />
           </HStack>
@@ -113,10 +113,10 @@ const LoginScreen: React.FC<Props> = () => {
               onChangeText={setPassword}
               isRequired={true}
               isDisabled={false}
-              isInvalid={isPasswordInvalid}
+              isInvalid={password && isPasswordInvalid}
               type="password"
               errorMessage={
-                isPasswordInvalid
+                password && isPasswordInvalid
                   ? "Password must be at least 6 characters long"
                   : ""
               }

@@ -57,7 +57,6 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
       await saveToken("refreshToken", refreshToken);
       setUserId(userID);
       console.log("sign up : ", userID);
-      alert(`Signup successful! Token saved.`);
       navigation.navigate("OnboardingStack");
     } catch (err: any) {
       console.error("Signup error", error);
@@ -106,9 +105,11 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
               onChangeText={handleEmailChange}
               isRequired={true}
               isDisabled={false}
-              isInvalid={isEmailInvalid}
+              isInvalid={email && isEmailInvalid}
               errorMessage={
-                isEmailInvalid ? "Please provide a valid email address" : ""
+                isEmailInvalid && email
+                  ? "Please provide a valid email address"
+                  : ""
               }
             />
           </HStack>
@@ -119,10 +120,10 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
               onChangeText={setPassword}
               isRequired={true}
               isDisabled={false}
-              isInvalid={isPasswordInvalid}
+              isInvalid={password && isPasswordInvalid}
               type="password"
               errorMessage={
-                isPasswordInvalid
+                isPasswordInvalid && password
                   ? "Password must be at least 6 characters long"
                   : ""
               }

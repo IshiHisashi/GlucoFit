@@ -27,7 +27,6 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
   const {
     comment,
     supplimentalComment,
-    btnText = "Continue",
     addLater = false,
     progressValue,
     onPress,
@@ -68,13 +67,6 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
                   rounded={10}
                   width={280}
                   height={80}
-                  // style={{
-                  //   shadowColor: "#000",
-                  //   shadowOffset: { width: 0, height: 1 },
-                  //   shadowOpacity: 0.25,
-                  //   shadowRadius: 3.84,
-                  //   elevation: 5,
-                  // }}
                   zIndex={0}
                 >
                   <Text
@@ -101,14 +93,13 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
               <Image
                 source={require("../../../assets/OnbordingChar.png")}
                 resizeMode="contain"
-                // mx="auto"
                 alt="Character is winking during the onboarding process"
                 bottom={30}
                 left={250}
               />
             </View>
           )}
-          <View paddingLeft={28}>
+          <View paddingLeft={28} marginBottom={40}>
             <GlucoButton
               buttonType="primary"
               text="Continue"

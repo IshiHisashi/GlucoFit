@@ -37,7 +37,7 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
         comment={`Nice to meet you, ${onboardingData.name}! We would like to know more about you.`}
         progressValue={25}
         onPress={handleNext}
-        disabled={false}
+        disabled={height && weight ? false : true}
       >
         <View flexDirection="column" gap={12}>
           <HStack>
@@ -45,7 +45,8 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
               label="Height"
               value={height}
               onChangeText={handleHeightChange}
-              isRequired={false}
+              keyboardType="numeric"
+              isRequired={true}
               isDisabled={false}
               isInvalid={false}
               unit="cm."
@@ -56,7 +57,8 @@ const HightWeightScreen: React.FC<Props> = ({ navigation }) => {
               label="Weight"
               value={weight}
               onChangeText={handleWeightChange}
-              isRequired={false}
+              keyboardType="numeric"
+              isRequired={true}
               isDisabled={false}
               isInvalid={false}
               unit="kls."
