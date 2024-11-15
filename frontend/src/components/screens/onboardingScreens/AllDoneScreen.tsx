@@ -63,7 +63,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View>
-      <Center p={16} flexDirection="column" gap={16} height="100%">
+      <Center p={16} pb={200} flexDirection="column" gap={16} height="100%">
         <Image
           source={require("../../../../assets/allset.png")}
           resizeMode="contain"
@@ -80,7 +80,7 @@ const AllDoneScreen: React.FC<Props> = ({ navigation }) => {
           GlucoFit.
         </Text>
       </Center>
-      <View position="absolute" bottom={30} width="100%" paddingHorizontal={28}>
+      <View position="absolute" bottom={70} width="100%" paddingHorizontal={28}>
         <GlucoButton
           buttonType="primary"
           text="Continue"

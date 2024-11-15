@@ -27,7 +27,6 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
   const {
     comment,
     supplimentalComment,
-    btnText = "Continue",
     addLater = false,
     progressValue,
     onPress,
