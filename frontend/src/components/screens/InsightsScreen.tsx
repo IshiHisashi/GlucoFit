@@ -5,6 +5,7 @@ import {
   RefreshControl,
   View,
   Box,
+  Center,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,7 +14,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { Dimensions } from "react-native";
+import { Dimensions, ActivityIndicator } from "react-native";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -517,15 +518,6 @@ const InsightsScreen: React.FC = () => {
     }
   }, [currentFilter, loadMoreArticles, loadMoreFavouriteArticles]);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim() === "") {
-      setSearchResults([]);
-    } else {
-      searchArticles({ variables: { searchWord: query } });
-    }
-  };
-
   const openArticle = (url: string, title: string) => {
     navigation.navigate("Article", {
       url,
@@ -540,9 +532,9 @@ const InsightsScreen: React.FC = () => {
           <HeaderBasic
             routeName={route.name as "Insights"}
             searchValue={searchQuery}
-            onChangeSearchValue={setSearchQuery}
-            onSearchExecute={(query) => {
-              if (query) {
+            onChangeSearchValue={(query) => {
+              setSearchQuery(query);
+              if (query.trim() !== "") {
                 searchArticles({ variables: { searchWord: query } });
               } else {
                 setSearchResults([]);
@@ -603,60 +595,79 @@ const InsightsScreen: React.FC = () => {
           </ScrollView>
         </View>
 
-        {searchQuery && searchResults.length > 0 ? (
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            bg="$neutralDark5"
-            minHeight="100%"
-          >
-            <View p="$4">
-              <Box flexDirection="row" flexWrap="wrap" gap="$4">
-                {searchResults.map((obj: any) => (
-                  <InsightCard
-                    key={obj.id}
-                    title={obj.article_name}
-                    category={obj.article_genre}
-                    image={obj.article_thumbnail_address}
-                    width={itemWidth}
-                    height={120}
-                    onPressBookmark={() =>
-                      toggleFavouriteArticle({
-                        variables: { userId, articleId: obj.id },
-                        refetchQueries: [
-                          {
-                            query: GET_USER_ARTICLES,
-                            variables: {
-                              userId: userId,
-                              limit: 5,
-                              cursor: "",
-                              classification: "recent",
-                            },
-                            fetchPolicy: "network-only",
-                          },
-                          {
-                            query: GET_ALL_ARTICLES,
-                            variables: {
-                              userId: userId,
-                              limit: articles.length,
-                              cursor: "",
-                            },
-                            fetchPolicy: "network-only",
-                          },
-                        ],
-                        awaitRefetchQueries: true,
-                      })
-                    }
-                    onPressCard={() =>
-                      openArticle(obj.article_url, obj.article_name)
-                    }
-                    isFavourite={obj.isFavorite}
-                  />
-                ))}
-              </Box>
+        {searchQuery ? (
+          searchLoading ? (
+            <View
+              alignItems="center"
+              justifyContent="center"
+              flex={1}
+              bg="$neutralDark5"
+            >
+              <View mt={50}>
+                <ActivityIndicator size="large" color="#3100AD" />
+              </View>
             </View>
-          </ScrollView>
+          ) : searchResults.length > 0 ? (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              bg="$neutralDark5"
+              minHeight="100%"
+            >
+              <View p="$4">
+                <Box flexDirection="row" flexWrap="wrap" gap="$4">
+                  {searchResults.map((obj: any) => (
+                    <InsightCard
+                      key={obj.id}
+                      title={obj.article_name}
+                      category={obj.article_genre}
+                      image={obj.article_thumbnail_address}
+                      width={itemWidth}
+                      height={120}
+                      onPressBookmark={() =>
+                        toggleFavouriteArticle({
+                          variables: { userId, articleId: obj.id },
+                          refetchQueries: [
+                            {
+                              query: GET_USER_ARTICLES,
+                              variables: {
+                                userId: userId,
+                                limit: 5,
+                                cursor: "",
+                                classification: "recent",
+                              },
+                              fetchPolicy: "network-only",
+                            },
+                            {
+                              query: GET_ALL_ARTICLES,
+                              variables: {
+                                userId: userId,
+                                limit: articles.length,
+                                cursor: "",
+                              },
+                              fetchPolicy: "network-only",
+                            },
+                          ],
+                          awaitRefetchQueries: true,
+                        })
+                      }
+                      onPressCard={() =>
+                        openArticle(obj.article_url, obj.article_name)
+                      }
+                      isFavourite={obj.isFavorite}
+                    />
+                  ))}
+                </Box>
+              </View>
+            </ScrollView>
+          ) : (
+            <View bg="$neutralDark5" minHeight="100%">
+              <Text textAlign="center" pt={100} fontFamily="$bold">
+                Oops...No results found
+              </Text>
+            </View>
+          )
         ) : (
           currentFilter !== "Favorite" && (
             <ScrollView
