@@ -1,17 +1,10 @@
 import {
-  Center,
   HStack,
   ScrollView,
   Text,
   RefreshControl,
-  Heading,
   View,
   Box,
-  Image,
-  VStack,
-  Pressable,
-  set,
-  FlatList,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -109,6 +102,19 @@ const TOGGLE_FAVOURITE = gql`
   }
 `;
 
+const SEARCH_ARTICLES = gql`
+  query SearchArticles($searchWord: String!) {
+    getArticlesBySearch(searchWord: $searchWord) {
+      id
+      article_name
+      article_thumbnail_address
+      article_url
+      article_genre
+      # isFavorite
+    }
+  }
+`;
+
 type InsightsScreenNavigationProps =
   NativeStackNavigationProp<AppStackParamList>;
 
@@ -125,14 +131,14 @@ const InsightsScreen: React.FC = () => {
   const [articlesToShow, setArticlesToShow] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-
   const [favouriteArticles, setFavouriteArticles] = useState<any[]>([]);
   const [hasMoreFavourite, setHasMoreFavourite] = useState(true);
   const [endCursorFavourite, setEndCursorFavourite] = useState<string | null>(
     null
   );
-
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const screenWidth = Dimensions.get("window").width;
   const itemWidth = (screenWidth - 48) / 2;
@@ -151,8 +157,8 @@ const InsightsScreen: React.FC = () => {
     },
     fetchPolicy: "network-only",
   });
-  recentArticlesData &&
-    console.log("recent:", recentArticlesData.getUserArticlesPagination);
+  // recentArticlesData &&
+  //   console.log("recent:", recentArticlesData.getUserArticlesPagination);
 
   const [
     getFavouriteArticles,
@@ -178,7 +184,7 @@ const InsightsScreen: React.FC = () => {
       setEndCursorFavourite(data.getUserArticlesPagination.pageInfo.endCursor);
     },
   });
-  console.log("favourite:", favouriteArticlesData?.getUserArticlesPagination);
+  // console.log("favourite:", favouriteArticlesData?.getUserArticlesPagination);
 
   const {
     data: articlesData,
@@ -206,11 +212,21 @@ const InsightsScreen: React.FC = () => {
       }
     },
   });
-  articlesData &&
-    console.log(
-      "END CURSOR:",
-      articlesData.getAllArticlesPagination.pageInfo.endCursor
-    );
+  // articlesData &&
+  //   console.log(
+  //     "END CURSOR:",
+  //     articlesData.getAllArticlesPagination.pageInfo.endCursor
+  //   );
+
+  const [searchArticles, { data: searchData, loading: searchLoading }] =
+    useLazyQuery(SEARCH_ARTICLES, {
+      onCompleted: (data) => {
+        setSearchResults(data.getArticlesBySearch);
+      },
+      onError: (error) => {
+        console.error("Error searching articles:", error.message);
+      },
+    });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -501,6 +517,15 @@ const InsightsScreen: React.FC = () => {
     }
   }, [currentFilter, loadMoreArticles, loadMoreFavouriteArticles]);
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setSearchResults([]);
+    } else {
+      searchArticles({ variables: { searchWord: query } });
+    }
+  };
+
   const openArticle = (url: string, title: string) => {
     navigation.navigate("Article", {
       url,
@@ -514,8 +539,15 @@ const InsightsScreen: React.FC = () => {
         <View>
           <HeaderBasic
             routeName={route.name as "Insights"}
-            searchValue={""}
-            onChangeSearchValue={() => {}}
+            searchValue={searchQuery}
+            onChangeSearchValue={setSearchQuery}
+            onSearchExecute={(query) => {
+              if (query) {
+                searchArticles({ variables: { searchWord: query } });
+              } else {
+                setSearchResults([]);
+              }
+            }}
           />
           <ScrollView
             horizontal
@@ -571,117 +603,227 @@ const InsightsScreen: React.FC = () => {
           </ScrollView>
         </View>
 
-        {currentFilter !== "Favorite" && (
+        {searchQuery && searchResults.length > 0 ? (
           <ScrollView
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-            onScroll={({ nativeEvent }) => {
-              const { layoutMeasurement, contentOffset, contentSize } =
-                nativeEvent;
-              const paddingToBottom = 20;
-              if (
-                layoutMeasurement.height + contentOffset.y >=
-                contentSize.height - paddingToBottom
-              ) {
-                handleEndReached();
-              }
-            }}
-            scrollEventThrottle={400}
             bg="$neutralDark5"
             minHeight="100%"
           >
-            {/* contents for "All" tab */}
-            {currentFilter === "All" && (
-              <>
-                <View>
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p="$4"
-                  >
+            <View p="$4">
+              <Box flexDirection="row" flexWrap="wrap" gap="$4">
+                {searchResults.map((obj: any) => (
+                  <InsightCard
+                    key={obj.id}
+                    title={obj.article_name}
+                    category={obj.article_genre}
+                    image={obj.article_thumbnail_address}
+                    width={itemWidth}
+                    height={120}
+                    onPressBookmark={() =>
+                      toggleFavouriteArticle({
+                        variables: { userId, articleId: obj.id },
+                        refetchQueries: [
+                          {
+                            query: GET_USER_ARTICLES,
+                            variables: {
+                              userId: userId,
+                              limit: 5,
+                              cursor: "",
+                              classification: "recent",
+                            },
+                            fetchPolicy: "network-only",
+                          },
+                          {
+                            query: GET_ALL_ARTICLES,
+                            variables: {
+                              userId: userId,
+                              limit: articles.length,
+                              cursor: "",
+                            },
+                            fetchPolicy: "network-only",
+                          },
+                        ],
+                        awaitRefetchQueries: true,
+                      })
+                    }
+                    onPressCard={() =>
+                      openArticle(obj.article_url, obj.article_name)
+                    }
+                    isFavourite={obj.isFavorite}
+                  />
+                ))}
+              </Box>
+            </View>
+          </ScrollView>
+        ) : (
+          currentFilter !== "Favorite" && (
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              onScroll={({ nativeEvent }) => {
+                const { layoutMeasurement, contentOffset, contentSize } =
+                  nativeEvent;
+                const paddingToBottom = 20;
+                if (
+                  layoutMeasurement.height + contentOffset.y >=
+                  contentSize.height - paddingToBottom
+                ) {
+                  handleEndReached();
+                }
+              }}
+              scrollEventThrottle={400}
+              bg="$neutralDark5"
+              minHeight="100%"
+            >
+              {/* contents for "All" tab */}
+              {currentFilter === "All" && (
+                <>
+                  <View>
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      p="$4"
+                    >
+                      <Text
+                        fontSize={17}
+                        fontFamily="$bold"
+                        color="$neutralDark90"
+                      >
+                        Recent Insights
+                      </Text>
+                      <GlucoButtonNoOutline
+                        text="Show more"
+                        isFocused={false}
+                        isDisabled={false}
+                        onPress={() => navigation.navigate("RecentInsights")}
+                        iconRight={AngleRightCustom}
+                        styleForHstack={{ gap: 1 }}
+                        styleForText={{ fontFamily: "$regular", fontSize: 12 }}
+                      />
+                    </HStack>
+
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      p="$4"
+                      pt={0}
+                    >
+                      <HStack space="md">
+                        {recentArticlesData &&
+                          recentArticlesData.getUserArticlesPagination.edges.map(
+                            (obj: any) => (
+                              <InsightCard
+                                key={obj.id}
+                                title={obj.article_name}
+                                category={obj.article_genre}
+                                image={obj.article_thumbnail_address}
+                                width={250}
+                                height={150}
+                                onPressBookmark={() =>
+                                  toggleFavouriteArticle({
+                                    variables: { userId, articleId: obj.id },
+                                    refetchQueries: [
+                                      {
+                                        query: GET_USER_ARTICLES,
+                                        variables: {
+                                          userId: userId,
+                                          limit: 5,
+                                          cursor: "",
+                                          classification: "recent",
+                                        },
+                                        fetchPolicy: "network-only",
+                                      },
+                                      {
+                                        query: GET_ALL_ARTICLES,
+                                        variables: {
+                                          userId: userId,
+                                          limit: articles.length,
+                                          cursor: "",
+                                        },
+                                        fetchPolicy: "network-only",
+                                      },
+                                    ],
+                                    awaitRefetchQueries: true,
+                                  })
+                                }
+                                onPressCard={() =>
+                                  openArticle(obj.article_url, obj.article_name)
+                                }
+                                isFavourite={obj.isFavorite}
+                              />
+                            )
+                          )}
+                        <View w={20} />
+                      </HStack>
+                    </ScrollView>
+                  </View>
+                  {/* Explore with two-col insight cards*/}
+                  <View p="$4">
                     <Text
                       fontSize={17}
                       fontFamily="$bold"
                       color="$neutralDark90"
                     >
-                      Recent Insights
+                      Explore
                     </Text>
-                    <GlucoButtonNoOutline
-                      text="Show more"
-                      isFocused={false}
-                      isDisabled={false}
-                      onPress={() => navigation.navigate("RecentInsights")}
-                      iconRight={AngleRightCustom}
-                      styleForHstack={{ gap: 1 }}
-                      styleForText={{ fontFamily: "$regular", fontSize: 12 }}
-                    />
-                  </HStack>
 
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    p="$4"
-                    pt={0}
-                  >
-                    <HStack space="md">
-                      {recentArticlesData &&
-                        recentArticlesData.getUserArticlesPagination.edges.map(
-                          (obj: any) => (
-                            <InsightCard
-                              key={obj.id}
-                              title={obj.article_name}
-                              category={obj.article_genre}
-                              image={obj.article_thumbnail_address}
-                              width={250}
-                              height={150}
-                              onPressBookmark={() =>
-                                toggleFavouriteArticle({
-                                  variables: { userId, articleId: obj.id },
-                                  refetchQueries: [
-                                    {
-                                      query: GET_USER_ARTICLES,
-                                      variables: {
-                                        userId: userId,
-                                        limit: 5,
-                                        cursor: "",
-                                        classification: "recent",
-                                      },
-                                      fetchPolicy: "network-only",
+                    <Box flexDirection="row" flexWrap="wrap" gap="$4" mt="$4">
+                      {articles.length > 0 &&
+                        articles.map((obj: any) => (
+                          <InsightCard
+                            key={obj.id}
+                            title={obj.article_name}
+                            category={obj.article_genre}
+                            image={obj.article_thumbnail_address}
+                            width={itemWidth}
+                            height={120}
+                            onPressBookmark={() =>
+                              toggleFavouriteArticle({
+                                variables: { userId, articleId: obj.id },
+                                refetchQueries: [
+                                  {
+                                    query: GET_USER_ARTICLES,
+                                    variables: {
+                                      userId: userId,
+                                      limit: 5,
+                                      cursor: "",
+                                      classification: "recent",
                                     },
-                                    {
-                                      query: GET_ALL_ARTICLES,
-                                      variables: {
-                                        userId: userId,
-                                        limit: articles.length,
-                                        cursor: "",
-                                      },
-                                      fetchPolicy: "network-only",
+                                    fetchPolicy: "network-only",
+                                  },
+                                  {
+                                    query: GET_ALL_ARTICLES,
+                                    variables: {
+                                      userId: userId,
+                                      limit: articles.length,
+                                      cursor: "",
                                     },
-                                  ],
-                                  awaitRefetchQueries: true,
-                                })
-                              }
-                              onPressCard={() =>
-                                openArticle(obj.article_url, obj.article_name)
-                              }
-                              isFavourite={obj.isFavorite}
-                            />
-                          )
-                        )}
-                      <View w={20} />
-                    </HStack>
-                  </ScrollView>
-                </View>
+                                    fetchPolicy: "network-only",
+                                  },
+                                ],
+                                awaitRefetchQueries: true,
+                              })
+                            }
+                            onPressCard={() =>
+                              openArticle(obj.article_url, obj.article_name)
+                            }
+                            isFavourite={obj.isFavorite}
+                          />
+                        ))}
+                    </Box>
+                  </View>
+                </>
+              )}
 
+              {/* contents for other tabs */}
+              {currentFilter !== "All" && (
                 <View p="$4">
-                  <Text fontSize={17} fontFamily="$bold" color="$neutralDark90">
-                    Explore
-                  </Text>
-
-                  <Box flexDirection="row" flexWrap="wrap" gap="$4" mt="$4">
-                    {articles.length > 0 &&
-                      articles.map((obj: any) => (
+                  <Box flexDirection="row" flexWrap="wrap" gap="$4">
+                    {articlesToShow.length > 0 &&
+                      articlesToShow.map((obj: any) => (
                         <InsightCard
                           key={obj.id}
                           title={obj.article_name}
@@ -724,60 +866,10 @@ const InsightsScreen: React.FC = () => {
                       ))}
                   </Box>
                 </View>
-              </>
-            )}
-
-            {/* contents for other tabs */}
-            {currentFilter !== "All" && (
-              <View p="$4">
-                <Box flexDirection="row" flexWrap="wrap" gap="$4">
-                  {articlesToShow.length > 0 &&
-                    articlesToShow.map((obj: any) => (
-                      <InsightCard
-                        key={obj.id}
-                        title={obj.article_name}
-                        category={obj.article_genre}
-                        image={obj.article_thumbnail_address}
-                        width={itemWidth}
-                        height={120}
-                        onPressBookmark={() =>
-                          toggleFavouriteArticle({
-                            variables: { userId, articleId: obj.id },
-                            refetchQueries: [
-                              {
-                                query: GET_USER_ARTICLES,
-                                variables: {
-                                  userId: userId,
-                                  limit: 5,
-                                  cursor: "",
-                                  classification: "recent",
-                                },
-                                fetchPolicy: "network-only",
-                              },
-                              {
-                                query: GET_ALL_ARTICLES,
-                                variables: {
-                                  userId: userId,
-                                  limit: articles.length,
-                                  cursor: "",
-                                },
-                                fetchPolicy: "network-only",
-                              },
-                            ],
-                            awaitRefetchQueries: true,
-                          })
-                        }
-                        onPressCard={() =>
-                          openArticle(obj.article_url, obj.article_name)
-                        }
-                        isFavourite={obj.isFavorite}
-                      />
-                    ))}
-                </Box>
-              </View>
-            )}
-            <View h={250} />
-          </ScrollView>
+              )}
+              <View h={250} />
+            </ScrollView>
+          )
         )}
 
         {currentFilter === "Favorite" && (
