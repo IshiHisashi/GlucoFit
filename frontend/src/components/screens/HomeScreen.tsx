@@ -588,10 +588,10 @@ const HomeScreen: React.FC = () => {
       />
       <ScrollView bg="$neutralDark5" h="106%">
         <View
-          h={100}
+          h={550}
           bg="#4800FF"
           position="absolute"
-          top={0}
+          top={-450}
           left={0}
           right={0}
           zIndex={-1}
