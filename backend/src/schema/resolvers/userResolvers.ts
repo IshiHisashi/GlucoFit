@@ -27,7 +27,7 @@ const userResolvers = {
       return await User.findById(id).populate({
         path: "badges.badgeId",
         model: Badges,
-        select: "_id badge_name badge_desc badge_image_address criteria",
+        select: "_id badge_name badge_desc badge_image_address criteria locked unlocked",
       });
     },
     getUserOnProgressBadge: async (
@@ -38,7 +38,7 @@ const userResolvers = {
         .populate({
           path: "badges.badgeId",
           model: Badges,
-          select: "_id badge_name badge_desc badge_image_address criteria",
+          select: "_id badge_name badge_desc badge_image_address criteria locked unlocked",
           match: {},
         })
         .then((user) => {
