@@ -1,12 +1,24 @@
-import React, { FC } from "react";
+import React from "react";
 import { View, Text, Pressable } from "@gluestack-ui/themed";
 
-type NotificationCardProps = {};
+type NotificationCardProps = {
+  title?: string;
+  description?: string;
+  type?: string;
+  read?: boolean;
+  createdAt?: string;
+};
 
 const NotificationCard = (props: NotificationCardProps) => {
-  console.log("NotificationCard rendered");
+  const { title, description, type, read, createdAt } = props;
 
-  const {} = props;
+  const formattedDate = createdAt
+    ? new Date(parseInt(createdAt)).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : "No date available";
+
   return (
     <Pressable>
       <View
@@ -21,12 +33,12 @@ const NotificationCard = (props: NotificationCardProps) => {
         <View flexDirection="row" gap={10}>
           <Text>Icon</Text>
           <View flexDirection="column">
-            <Text fontSize={12}>DAILY LOG REMINDER</Text>
-            <Text fontSize={18} fontFamily="$bold">
-              Don't forget to log today
+            <Text fontSize={13}>{title}</Text>
+            <Text fontSize={17} fontFamily="$bold">
+              {description}
             </Text>
             <Text fontSize={12} color="#ADADAD">
-              Oct 20
+              {formattedDate}
             </Text>
           </View>
         </View>

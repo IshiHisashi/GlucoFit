@@ -1,11 +1,5 @@
-import React, { FC } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  FlatList,
-} from "@gluestack-ui/themed";
+import React from "react";
+import { SafeAreaView, View, FlatList } from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
@@ -13,27 +7,34 @@ import { AuthContext } from "../../context/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AppStackParamList } from "../../types/navigation";
 import NotificationCard from "../molcules/NotificationCard";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_USER_NOTIFICATIONS } from "../../utils/query/notificationQuery";
 
 type DevAndAppScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
   "DevAndApp"
 >;
 
-const notifications = [
-  { id: "1", title: "Welcome!", message: "Thank you for joining us." },
-  { id: "2", title: "New Feature", message: "Check out our new feature now!" },
-  {
-    id: "3",
-    title: "Reminder",
-    message: "Don’t forget to complete your profile.",
-  },
-  // Add more notifications as needed
-];
+type Notification = {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+};
 
 const NotificationScreen: React.FC = () => {
   const { userId } = useContext(AuthContext);
   const navigation = useNavigation<DevAndAppScreenNavigationProps>();
+
+  const { loading, error, data } = useQuery(GET_USER_NOTIFICATIONS, {
+    variables: { user_id: userId },
+  });
+
+  const notifications = data?.getUserNotifications || [];
+
+  console.log(notifications);
 
   return (
     <SafeAreaView bg="white">
@@ -42,8 +43,19 @@ const NotificationScreen: React.FC = () => {
         <FlatList
           paddingTop={30}
           data={notifications}
-          keyExtractor={(item: any) => item.id}
-          renderItem={({ item }) => <NotificationCard />}
+          keyExtractor={(item) => (item as Notification).id}
+          renderItem={({ item }) => {
+            const notification = item as Notification;
+            return (
+              <NotificationCard
+                title={notification.title}
+                description={notification.description}
+                type={notification.type}
+                read={notification.read}
+                createdAt={notification.createdAt}
+              />
+            );
+          }}
           borderWidth={0.5}
           borderTopColor="#ccc"
         />
