@@ -27,6 +27,10 @@ interface ProgressBudgeSectionProps {
   goToBadges: () => void;
 }
 
+interface ProgressBudgeProps {
+  goToBadges: () => void;
+}
+
 const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
   goToBadges,
 }) => {
@@ -148,7 +152,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
         <Text fontSize={20} fontWeight="$semibold">
           Progress
         </Text>
-        <Pressable>
+        <Pressable onPress={goToBadges}>
           <HStack alignItems="center" space="xs">
             <Text>See more</Text>
             <Icon as={ChevronRightIcon} size="sm" mr="$2" />
@@ -193,8 +197,8 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
   );
 };
 
-const ProgressBudge: React.FC = () => {
-  return <ProgressBudgeSection />;
+const ProgressBudge: React.FC<ProgressBudgeProps> = ({ goToBadges }) => {
+  return <ProgressBudgeSection goToBadges={goToBadges}/>;
 };
 
 export default ProgressBudge;

@@ -10,9 +10,6 @@ interface StreakScreenProps {
 }
 
 const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
-  const goToBadges = () => {
-    changeScreen();
-  };
 
   return (
     <View flexDirection="column" gap={20}>
@@ -37,7 +34,7 @@ const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
       >
         <WeeklyStreak />
         <CalenderStreak />
-        <ProgressBudge goToBadges={goToBadges} />
+        <ProgressBudge goToBadges={changeScreen} />
       </View>
     </View>
   );
