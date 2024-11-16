@@ -36,7 +36,7 @@ const AutoLogScreen: React.FC = () => {
   // const startMeasuringFunc = Reflect.get(deviceAPIs.getDeviceAPI().apis, 'startMeasure', scanDevices[0].mac);
 
   // Authenticate with the iHealth SDK
-  iHealthAPI.sdkAuthWithLicense('com_glucofit_glucofit_ios.pem');
+  iHealthAPI.sdkAuthWithLicense('com_jupiter_glucofit_ios.pem');
 
   // Parse response from device
   useEffect(() => {

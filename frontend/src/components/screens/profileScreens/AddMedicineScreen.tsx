@@ -178,7 +178,7 @@ const AddMedecineScreen = () => {
           <View marginTop={20}>
             <LogsTable pickerData={pickerData} tableType="pickers" />
           </View>
-          <Button onPress={handleSubmit} isDisabled={!isReady} marginTop={20}r >
+          <Button onPress={handleSubmit} isDisabled={!isReady} marginTop={20}>
             <ButtonText>
               Save
             </ButtonText>

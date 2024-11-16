@@ -44,19 +44,19 @@ const NoteScreen: FC = () => {
 
   return (
     <SafeAreaView>
-      <View h="$full">
+      <View h="$full" backgroundColor="white">
         <HeaderWithBackButton
           navigation={navigation}
           text="Add Notes"
           rightIconOnPress={handleSave}
           disabled={!(title && content)}
         />
-        <ScrollView h="$full">
-          <VStack h="$full" style={{ height: 600 }}>
+        <ScrollView h="$full" borderTopColor="#ECE5FF" borderTopWidth={2}>
+          <VStack h="$full" style={{ height: 600 }} paddingTop={20}>
             <Input size="md" w="$full" borderWidth={0}>
               <InputField
                 placeholder="Title"
-                fontSize="$lg"
+                fontSize={22}
                 fontWeight="$bold"
                 value={title}
                 onChangeText={setTitle}
