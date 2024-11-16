@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Input, InputField, ScrollView } from "@gluestack-ui/themed";
+import {
+  View,
+  Text,
+  Input,
+  InputField,
+  ScrollView,
+} from "@gluestack-ui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 
@@ -17,18 +23,23 @@ const BadgeScreen: React.FC = () => {
 
   const screenToBadge = () => {
     setSelectScreen("badges");
-  }
-  
+  };
+
   const handleSelectedScreen = (screen: string) => {
     setSelectScreen(screen);
-  }
+  };
 
   return (
     <SafeAreaView>
-      <View flexDirection="column" gap={16} backgroundColor="white" marginBottom={130}>
+      <View
+        flexDirection="column"
+        gap={16}
+        backgroundColor="white"
+        marginBottom={130}
+      >
         {/* Header */}
         {/* Toggle */}
-        <View flexDirection="row" flexWrap="nowrap" gap={16} margin={20} >
+        <View flexDirection="row" flexWrap="nowrap" gap={16} margin={20}>
           <Tab
             text="Streaks"
             isFocused={selectScreen === "streaks"}
@@ -37,7 +48,7 @@ const BadgeScreen: React.FC = () => {
             iconLeft={FireCustom}
             fontSize={14}
             flex={1}
-            style={{flexGrow: 1, flexBasis: 40}}
+            style={{ flexGrow: 1, flexBasis: 40 }}
           />
           <Tab
             text="Badges"
@@ -47,12 +58,14 @@ const BadgeScreen: React.FC = () => {
             iconLeft={MedalCustom}
             fontSize={14}
             flex={1}
-            style={{flexGrow: 1, flexBasis: 40}}
+            style={{ flexGrow: 1, flexBasis: 40 }}
           />
         </View>
         {/* I HAVE TO MODIFY THIS HEIGHT ISSUE HERE!!! JUST TEMPORARY MEASURE DONE */}
         <ScrollView showsVerticalScrollIndicator={false}>
-          {selectScreen === "streaks" && <StreakScreen changeScreen={screenToBadge}/>}
+          {selectScreen === "streaks" && (
+            <StreakScreen changeScreen={screenToBadge} />
+          )}
           {selectScreen === "badges" && <BadgesScreen />}
         </ScrollView>
       </View>

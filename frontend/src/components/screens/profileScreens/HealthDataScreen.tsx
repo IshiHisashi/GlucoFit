@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
@@ -12,12 +19,8 @@ import { Dimensions } from "react-native";
 import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 
 const GET_USER_HEALTH_DATA = gql`
-  query GetUser(
-    $userId: ID!
-  ) {
-    getUser(
-      id: $userId
-    ) {
+  query GetUser($userId: ID!) {
+    getUser(id: $userId) {
       weight
       maximum_bsl
       minimum_bsl
@@ -25,23 +28,23 @@ const GET_USER_HEALTH_DATA = gql`
       diabates_type
     }
   }
-`
+`;
 
 const UPDATE_USER_HEALTH_DATA = gql`
   mutation UpdateUser(
-    $userId: ID!, 
-    $diabatesType: Int, 
-    $maximumBsl: Float, 
-    $minimumBsl: Float, 
-    $height: Float, 
+    $userId: ID!
+    $diabatesType: Int
+    $maximumBsl: Float
+    $minimumBsl: Float
+    $height: Float
     $weight: Float
   ) {
     updateUser(
-      id: $userId, 
-      diabates_type: $diabatesType, 
-      maximum_bsl: $maximumBsl, 
-      minimum_bsl: $minimumBsl, 
-      height: $height, 
+      id: $userId
+      diabates_type: $diabatesType
+      maximum_bsl: $maximumBsl
+      minimum_bsl: $minimumBsl
+      height: $height
       weight: $weight
     ) {
       diabates_type
@@ -51,7 +54,7 @@ const UPDATE_USER_HEALTH_DATA = gql`
       maximum_bsl
     }
   }
-`
+`;
 
 type HealthDataScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -59,7 +62,6 @@ type HealthDataScreenNavigationProps = NativeStackNavigationProp<
 >;
 
 const HealthDataScreen = () => {
-
   const { userId } = useContext(AuthContext);
   const navigation = useNavigation<HealthDataScreenNavigationProps>();
   const [maxBsl, setMaxBsl] = useState<number>(0);
@@ -73,11 +75,9 @@ const HealthDataScreen = () => {
   const [initialWeight, setInitialWeight] = useState<string>("");
   const [initialHeight, setInitialHeight] = useState<string>("");
 
-  const {data, loading, error} = useQuery(GET_USER_HEALTH_DATA, 
-    {
-      variables: { userId: userId }
-    }
-  )
+  const { data, loading, error } = useQuery(GET_USER_HEALTH_DATA, {
+    variables: { userId: userId },
+  });
   const [updateUserHealthData] = useMutation(UPDATE_USER_HEALTH_DATA);
 
   useEffect(() => {
@@ -94,11 +94,11 @@ const HealthDataScreen = () => {
       setInitialHeight(String(data.getUser.height));
       setInitialDiabetesType(String(data.getUser.diabates_type));
     }
-  }, [data])
+  }, [data]);
 
   const handleDiabetesOption = (type: string) => {
     setDiabetesType(type);
-  }
+  };
 
   const handleSliderChange = (values: number[]) => {
     const [newMinBsl, newMaxBsl] = values;
@@ -114,14 +114,14 @@ const HealthDataScreen = () => {
 
       const updatedData = await updateUserHealthData({
         variables: {
-          userId: userId, 
-          diabatesType: intDiabetesType, 
-          maximumBsl: maxBsl, 
-          minimumBsl: minBsl, 
-          height: floadHeight, 
-          weight: floatWeight
-        }
-      })
+          userId: userId,
+          diabatesType: intDiabetesType,
+          maximumBsl: maxBsl,
+          minimumBsl: minBsl,
+          height: floadHeight,
+          weight: floatWeight,
+        },
+      });
       console.log("Updated health data: ", updatedData);
 
       setInitialDiabetesType(diabetesType);
@@ -129,18 +129,17 @@ const HealthDataScreen = () => {
       setInitialMaxBsl(maxBsl);
       setInitialHeight(height);
       setInitialWeight(weight);
-
     } catch (e) {
       console.error("Error updating health data:", e);
     }
-  }
+  };
 
   const isChanged =
     diabetesType !== initialDiabetesType ||
     minBsl !== initialMinBsl ||
     maxBsl !== initialMaxBsl ||
     height !== initialHeight ||
-    weight !== initialWeight
+    weight !== initialWeight;
 
   return (
     <SafeAreaView>
@@ -151,7 +150,14 @@ const HealthDataScreen = () => {
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>
-          <Text fontSize={14} color="black" fontFamily="$bold" marginBottom={10}>Diabetes Type</Text>
+          <Text
+            fontSize={14}
+            color="black"
+            fontFamily="$bold"
+            marginBottom={10}
+          >
+            Diabetes Type
+          </Text>
           <View flexDirection="row" flexWrap="nowrap" gap={16}>
             <View flexBasis={40} flexGrow={1}>
               <PressableOption
@@ -167,11 +173,15 @@ const HealthDataScreen = () => {
                 onSelect={handleDiabetesOption}
                 value="1"
                 label="Type 2"
-              />              
+              />
             </View>
           </View>
-          <Text fontSize={14} color="black" fontFamily="$bold" marginTop={20}>Blood Glucose Goal</Text>
-          <Text fontSize={12} marginBottom={10}>Set your taget blood glucose range in mmol/L</Text>
+          <Text fontSize={14} color="black" fontFamily="$bold" marginTop={20}>
+            Blood Glucose Goal
+          </Text>
+          <Text fontSize={12} marginBottom={10}>
+            Set your taget blood glucose range in mmol/L
+          </Text>
           <View mx="auto" p={20} mt={30}>
             <MultiSlider
               values={[minBsl, maxBsl]}
@@ -203,7 +213,7 @@ const HealthDataScreen = () => {
               customMarkerRight={(e) => {
                 return <CustomMarker currentValue={e.currentValue} />;
               }}
-            />            
+            />
           </View>
           <View marginBottom={20}>
             <InputFieldGeneral
@@ -225,18 +235,16 @@ const HealthDataScreen = () => {
               isDisabled={false}
               isInvalid={false}
               unit="kg"
-            />            
+            />
           </View>
           <Button onPress={handleSubmit} isDisabled={!isChanged}>
-            <ButtonText>
-              Save
-            </ButtonText>
+            <ButtonText>Save</ButtonText>
           </Button>
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const CustomMarker = ({ currentValue }: { currentValue: number }) => {
   return (

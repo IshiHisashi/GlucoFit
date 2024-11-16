@@ -11,24 +11,35 @@ interface StreakScreenProps {
 
 const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
   const goToBadges = () => {
-    changeScreen()
-  }
+    changeScreen();
+  };
 
   return (
     <View flexDirection="column" gap={20}>
       <Center paddingBottom={40} padding={16}>
-        <Image source={require("../../../../assets/allset.png")} alt="icon-face" width={200} height={200} marginBottom={20} />
-        <Text fontSize={28} color="black">Sugar Baby</Text>
+        <Image
+          source={require("../../../../assets/allset.png")}
+          alt="icon-face"
+          width={200}
+          height={200}
+          marginBottom={20}
+        />
+        <Text fontSize={28} color="black">
+          Sugar Baby
+        </Text>
       </Center>
 
-      <View flexDirection="column" gap={20} padding={16} backgroundColor="#FAF6FF">
+      <View
+        flexDirection="column"
+        gap={20}
+        padding={16}
+        backgroundColor="#FAF6FF"
+      >
         <WeeklyStreak />
         <CalenderStreak />
-        <ProgressBudge goToBadges={goToBadges}/>        
+        <ProgressBudge goToBadges={goToBadges} />
       </View>
-
-    </View>    
-
+    </View>
   );
 };
 

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
-import { iHealthDeviceManagerModule } from '@ihealth/ihealthlibrary-react-native';
+import { useState, useEffect } from "react";
+import { DeviceEventEmitter, EmitterSubscription } from "react-native";
+import { iHealthDeviceManagerModule } from "@ihealth/ihealthlibrary-react-native";
 interface EventData {
   [key: string]: any; // Adjust the type based on the specific event structure if known
 }
@@ -13,27 +13,36 @@ const useConnectAPI = () => {
     iHealthDeviceManagerModule.connectDevice(mac, type);
   };
   useEffect(() => {
-    const connectedListener: EmitterSubscription = DeviceEventEmitter.addListener(
-      iHealthDeviceManagerModule.Event_Device_Connected,
-      (event: EventData) => {
-        console.log(iHealthDeviceManagerModule.Event_Device_Connected, event);
-        setConnectedState(event);
-      }
-    );
-    const connectFailListener: EmitterSubscription = DeviceEventEmitter.addListener(
-      iHealthDeviceManagerModule.Event_Device_Connect_Failed,
-      (event: EventData) => {
-        console.log(iHealthDeviceManagerModule.Event_Device_Connect_Failed, event);
-        setConnectFailState(event);
-      }
-    );
-    const disconnectListener: EmitterSubscription = DeviceEventEmitter.addListener(
-      iHealthDeviceManagerModule.Event_Device_Disconnect,
-      (event: EventData) => {
-        console.log(iHealthDeviceManagerModule.Event_Device_Disconnect, event);
-        setDisConnectState(event);
-      }
-    );
+    const connectedListener: EmitterSubscription =
+      DeviceEventEmitter.addListener(
+        iHealthDeviceManagerModule.Event_Device_Connected,
+        (event: EventData) => {
+          console.log(iHealthDeviceManagerModule.Event_Device_Connected, event);
+          setConnectedState(event);
+        }
+      );
+    const connectFailListener: EmitterSubscription =
+      DeviceEventEmitter.addListener(
+        iHealthDeviceManagerModule.Event_Device_Connect_Failed,
+        (event: EventData) => {
+          console.log(
+            iHealthDeviceManagerModule.Event_Device_Connect_Failed,
+            event
+          );
+          setConnectFailState(event);
+        }
+      );
+    const disconnectListener: EmitterSubscription =
+      DeviceEventEmitter.addListener(
+        iHealthDeviceManagerModule.Event_Device_Disconnect,
+        (event: EventData) => {
+          console.log(
+            iHealthDeviceManagerModule.Event_Device_Disconnect,
+            event
+          );
+          setDisConnectState(event);
+        }
+      );
     return () => {
       connectedListener.remove();
       connectFailListener.remove();

@@ -11,7 +11,7 @@ import NoteScreen from "../screens/logScreens/NoteScreen";
 import { AppStackParamList } from "../../types/navigation";
 import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsScreen";
-import AutoLogScreen from "../screens/logScreens/AutoLogScreen"
+import AutoLogScreen from "../screens/logScreens/AutoLogScreen";
 import OfflineLogsScreen from "../screens/logScreens/OfflineLogsScreen";
 import Temp from "../screens/Temp";
 import ProfileScreen from "../screens/profileScreens/ProfileScrenn";
@@ -78,32 +78,32 @@ const AppStack: React.FC = () => (
       component={RecentInsightsScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="Profile"
       component={ProfileScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="EditProfile"
       component={EditProfileScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="ChangePassword"
       component={ChangePasswordScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="ManageAccount"
       component={ManageAccountScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="Medications"
       component={MedicationScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="HealthData"
       component={HealthDataScreen}
       options={{ headerShown: false }}
@@ -113,7 +113,7 @@ const AppStack: React.FC = () => (
       component={DevAndAppScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="AddMedecine"
       component={AddMedecineScreen}
       options={{ headerShown: false }}

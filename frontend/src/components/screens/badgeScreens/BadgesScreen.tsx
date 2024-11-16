@@ -41,7 +41,7 @@ interface BadgeImages {
 const BadgesScreen: React.FC = ({ navigation }) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [selectedBadge, setSelectedBadge] = useState<String>();
+  const [selectedBadge, setSelectedBadge] = useState<string>();
   const { userId } = useContext(AuthContext);
 
   const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
@@ -123,7 +123,7 @@ const BadgesScreen: React.FC = ({ navigation }) => {
     setModalVisible(!modalVisible);
   };
 
-  const handleClickBadge = (id: String) => {
+  const handleClickBadge = (id: string) => {
     setSelectedBadge(id);
     setModalVisible(true);
   };

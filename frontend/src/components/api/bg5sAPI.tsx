@@ -11,8 +11,8 @@ interface BG5SAPI {
     getOfflineData: (mac: MACAddress) => Promise<any>;
     startMeasure: (mac: MACAddress) => Promise<void>;
     setOfflineModel: (mac: MACAddress) => Promise<void>;
-    disConnect: (mac: MACAddress) => Promise<void>;    
-  }
+    disConnect: (mac: MACAddress) => Promise<void>;
+  };
 }
 const BG5SAPI: BG5SAPI = {
   apis: {
@@ -25,7 +25,7 @@ const BG5SAPI: BG5SAPI = {
     getOfflineData: (mac: MACAddress) => BG5SModule.getOfflineData(mac),
     startMeasure: (mac: MACAddress) => BG5SModule.startMeasure(mac, 1),
     setOfflineModel: (mac: MACAddress) => BG5SModule.setOfflineModel(mac, 1),
-    disConnect: (mac: MACAddress) => BG5SModule.disConnect(mac),    
-  }
+    disConnect: (mac: MACAddress) => BG5SModule.disConnect(mac),
+  },
 };
 export default BG5SAPI;

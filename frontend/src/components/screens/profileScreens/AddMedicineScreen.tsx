@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
@@ -15,17 +22,17 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const CREATE_NEW_MEDICINE = gql`
   mutation AddMedicineToList(
-    $userId: ID!, 
-    $medicineName: String!, 
-    $dosage: String, 
-    $unit: String, 
+    $userId: ID!
+    $medicineName: String!
+    $dosage: String
+    $unit: String
     $logTimestamp: Date
   ) {
     addMedicineToList(
-      user_id: $userId, 
-      medicine_name: $medicineName, 
-      dosage: $dosage, 
-      unit: $unit, 
+      user_id: $userId
+      medicine_name: $medicineName
+      dosage: $dosage
+      unit: $unit
       log_timestamp: $logTimestamp
     ) {
       id
@@ -35,7 +42,7 @@ const CREATE_NEW_MEDICINE = gql`
       unit
     }
   }
-`
+`;
 
 type AddMedecineScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -43,7 +50,6 @@ type AddMedecineScreenNavigationProps = NativeStackNavigationProp<
 >;
 
 const AddMedecineScreen = () => {
-
   const { userId } = useContext(AuthContext);
   const navigation = useNavigation<AddMedecineScreenNavigationProps>();
   const [medName, setMedName] = useState<string>("");
@@ -57,28 +63,26 @@ const AddMedecineScreen = () => {
 
   const handleSubmit = async () => {
     try {
-
       const newMed = await createNewMedicine({
         variables: {
-          userId: userId, 
+          userId: userId,
           medicineName: medName,
           dosage: dosage,
           unit: unit,
           logTimestamp: time.toISOString,
-        }
-      })
+        },
+      });
       console.log("Created a new medicine data: ", newMed);
 
-      navigation?.navigate("Medications")
-
+      navigation?.navigate("Medications");
     } catch (e) {
       console.error("Error updating health data:", e);
     }
-  }
+  };
 
   const handleUnitChange = (type: string) => {
     setUnit(type);
-  }
+  };
 
   const handleTimeConfirm = (time: Date) => {
     setTime(time);
@@ -101,11 +105,11 @@ const AddMedecineScreen = () => {
     medName !== "initialDiabetesType" &&
     dosage !== "" &&
     unit !== "" &&
-    time !== initialTime
+    time !== initialTime;
 
   useEffect(() => {
     console.log(time);
-  }, [time])
+  }, [time]);
   return (
     <SafeAreaView>
       <View height="$full">
@@ -136,7 +140,14 @@ const AddMedecineScreen = () => {
               keyboardType="numeric"
             />
           </View>
-          <Text fontSize={14} color="black" fontFamily="$bold" marginBottom={10}>Dosage Unit</Text>
+          <Text
+            fontSize={14}
+            color="black"
+            fontFamily="$bold"
+            marginBottom={10}
+          >
+            Dosage Unit
+          </Text>
           <View flexDirection="row" flexWrap="nowrap" gap={10}>
             <View flexBasis={22} flexGrow={1}>
               <PressableOption
@@ -154,7 +165,7 @@ const AddMedecineScreen = () => {
                 value="mg"
                 label="mg"
                 withoutCheck={true}
-              />              
+              />
             </View>
             <View flexBasis={22} flexGrow={1}>
               <PressableOption
@@ -163,7 +174,7 @@ const AddMedecineScreen = () => {
                 value="mL"
                 label="mL"
                 withoutCheck={true}
-              />              
+              />
             </View>
             <View flexBasis={22} flexGrow={1}>
               <PressableOption
@@ -172,16 +183,14 @@ const AddMedecineScreen = () => {
                 value="pill"
                 label="pill"
                 withoutCheck={true}
-              />              
+              />
             </View>
           </View>
           <View marginTop={20}>
             <LogsTable pickerData={pickerData} tableType="pickers" />
           </View>
           <Button onPress={handleSubmit} isDisabled={!isReady} marginTop={20}>
-            <ButtonText>
-              Save
-            </ButtonText>
+            <ButtonText>Save</ButtonText>
           </Button>
         </ScrollView>
 
@@ -199,7 +208,7 @@ const AddMedecineScreen = () => {
         />
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default AddMedecineScreen;

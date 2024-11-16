@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
@@ -28,12 +35,11 @@ type ManageAccountScreenNavigationProps = NativeStackNavigationProp<
 >;
 
 const ManageAccountScreen = () => {
-
   const { userId } = useContext(AuthContext);
   const { SignOut } = useContext(AuthContext);
   const navigation = useNavigation<ManageAccountScreenNavigationProps>();
 
-  // const {data, loading, error} = useQuery(GET_USER_GENERAL_DATA, 
+  // const {data, loading, error} = useQuery(GET_USER_GENERAL_DATA,
   //   {
   //     variables: { userId: userId }
   //   }
@@ -49,14 +55,12 @@ const ManageAccountScreen = () => {
         />
         <ScrollView padding={20}>
           <Button onPress={SignOut}>
-            <ButtonText>
-              Sign out
-            </ButtonText>
+            <ButtonText>Sign out</ButtonText>
           </Button>
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default ManageAccountScreen;
