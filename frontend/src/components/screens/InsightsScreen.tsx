@@ -525,6 +525,20 @@ const InsightsScreen: React.FC = () => {
     });
   };
 
+  // Filtering over search result
+  const filterResultsByCategory = (results: any[]) => {
+    switch (currentFilter) {
+      case "Food":
+        return results.filter((obj) => obj.article_genre === "Food");
+      case "Medication":
+        return results.filter((obj) => obj.article_genre === "Medication");
+      case "Wellness":
+        return results.filter((obj) => obj.article_genre === "Wellness");
+      default:
+        return results;
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
       <View>
@@ -617,7 +631,7 @@ const InsightsScreen: React.FC = () => {
             >
               <View p="$4">
                 <Box flexDirection="row" flexWrap="wrap" gap="$4">
-                  {searchResults.map((obj: any) => (
+                  {filterResultsByCategory(searchResults).map((obj: any) => (
                     <InsightCard
                       key={obj.id}
                       title={obj.article_name}
