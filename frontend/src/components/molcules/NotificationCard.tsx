@@ -1,7 +1,10 @@
-import React from "react";
-import { View, Text, Pressable } from "@gluestack-ui/themed";
+import React, { useState } from "react";
+import { View, Text, Pressable, Image } from "@gluestack-ui/themed";
+import { useMutation } from "@apollo/client";
+import { MARK_NOTIFICATION_AS_READ } from "../../utils/query/notificationQuery";
 
 type NotificationCardProps = {
+  id?: string;
   title?: string;
   description?: string;
   type?: string;
@@ -10,7 +13,18 @@ type NotificationCardProps = {
 };
 
 const NotificationCard = (props: NotificationCardProps) => {
-  const { title, description, type, read, createdAt } = props;
+  const { id, title, description, type, read, createdAt } = props;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [markAsRead] = useMutation(MARK_NOTIFICATION_AS_READ, {
+    variables: { id },
+    onCompleted: (data) => {
+      console.log("Notification marked as read:", data);
+    },
+    onError: (error) => {
+      console.error("Error marking notification as read:", error);
+    },
+  });
 
   const formattedDate = createdAt
     ? new Date(parseInt(createdAt)).toLocaleDateString("en-US", {
@@ -20,7 +34,25 @@ const NotificationCard = (props: NotificationCardProps) => {
     : "No date available";
 
   return (
-    <Pressable>
+    <Pressable
+      onPress={() => {
+        if (id && !read) {
+          console.log(id);
+          markAsRead()
+            .then((response) => {
+              console.log("Mutation successful:", response.data);
+            })
+            .catch((error) => {
+              console.error("Mutation failed:", error.message);
+            });
+        }
+      }}
+      onPressIn={() => setIsHovered(true)}
+      onPressOut={() => setIsHovered(false)}
+      style={{
+        backgroundColor: isHovered ? "#f0f0f0" : "transparent",
+      }}
+    >
       <View
         flexDirection="row"
         justifyContent="space-between"
@@ -31,9 +63,19 @@ const NotificationCard = (props: NotificationCardProps) => {
         borderBottomColor="#ccc"
       >
         <View flexDirection="row" gap={10}>
-          <Text>Icon</Text>
-          <View flexDirection="column">
-            <Text fontSize={13}>{title}</Text>
+          <Image
+            source={
+              type === "Reminder"
+                ? require("../../../assets/notifications/logNotification.png")
+                : require("../../../assets/notifications/insightNotification.png")
+            }
+            resizeMode="contain"
+            mx="auto"
+            w={40}
+            alt="Character is reminding taking log"
+          />
+          <View flexDirection="column" alignSelf="center">
+            <Text fontSize={13}>{title?.toUpperCase()}</Text>
             <Text fontSize={17} fontFamily="$bold">
               {description}
             </Text>
@@ -42,7 +84,15 @@ const NotificationCard = (props: NotificationCardProps) => {
             </Text>
           </View>
         </View>
-        <Text alignSelf="center">o</Text>
+        {!read && (
+          <View
+            alignSelf="center"
+            w={13}
+            h={13}
+            bg="black"
+            rounded={100}
+          ></View>
+        )}
       </View>
     </Pressable>
   );

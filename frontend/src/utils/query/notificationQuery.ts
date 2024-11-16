@@ -12,3 +12,12 @@ export const GET_USER_NOTIFICATIONS = gql`
     }
   }
 `;
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+  mutation MarkNotificationAsRead($id: ID!) {
+    markNotificationAsRead(id: $id) {
+      id
+      read
+    }
+  }
+`;

@@ -34,8 +34,6 @@ const NotificationScreen: React.FC = () => {
 
   const notifications = data?.getUserNotifications || [];
 
-  console.log(notifications);
-
   return (
     <SafeAreaView bg="white">
       <View height="$full">
@@ -48,6 +46,7 @@ const NotificationScreen: React.FC = () => {
             const notification = item as Notification;
             return (
               <NotificationCard
+                id={notification.id}
                 title={notification.title}
                 description={notification.description}
                 type={notification.type}
@@ -55,6 +54,10 @@ const NotificationScreen: React.FC = () => {
                 createdAt={notification.createdAt}
               />
             );
+          }}
+          contentContainerStyle={{
+            // paddingTop: 30,
+            paddingBottom: 50, // Add padding at the bottom
           }}
           borderWidth={0.5}
           borderTopColor="#ccc"
