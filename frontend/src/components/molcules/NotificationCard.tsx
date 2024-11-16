@@ -37,7 +37,6 @@ const NotificationCard = (props: NotificationCardProps) => {
     <Pressable
       onPress={() => {
         if (id && !read) {
-          console.log(id);
           markAsRead()
             .then((response) => {
               console.log("Mutation successful:", response.data);

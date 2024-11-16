@@ -56,8 +56,7 @@ const NotificationScreen: React.FC = () => {
             );
           }}
           contentContainerStyle={{
-            // paddingTop: 30,
-            paddingBottom: 50, // Add padding at the bottom
+            paddingBottom: 50,
           }}
           borderWidth={0.5}
           borderTopColor="#ccc"
