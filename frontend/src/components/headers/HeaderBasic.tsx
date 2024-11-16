@@ -1,16 +1,6 @@
-import {
-  Pressable,
-  Text,
-  View,
-  HStack,
-  VStack,
-  Input,
-  InputField,
-  InputSlot,
-} from "@gluestack-ui/themed";
-import React, { FC, useContext } from "react";
+import { Pressable, Text, View, HStack, VStack } from "@gluestack-ui/themed";
+import React, { FC } from "react";
 import { NavigationProp } from "@react-navigation/native";
-import { AuthContext } from "../../context/AuthContext";
 
 import { BellCustom, SearchCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
@@ -26,7 +16,6 @@ interface HeaderBasicProps {
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
   const { routeName, userName, searchValue, onChangeSearchValue, navigation } =
     props;
-  const { SignOut } = useContext(AuthContext);
 
   const headerStyles = {
     Home: {
@@ -79,7 +68,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
             <Pressable onPress={() => navigation?.navigate("Profile")}>
               <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
             </Pressable>
-            <Pressable onPress={() => navigation?.navigate("Temp")}>
+            <Pressable onPress={() => navigation?.navigate("Notifications")}>
               <BellCustom color={currentStyle.notificationColor} size={27} />
             </Pressable>
           </HStack>

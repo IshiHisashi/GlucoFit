@@ -1,6 +1,6 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { AppStackParamList } from "../../types/navigation";
 
 import TabNavigator from "./TabNavigator";
 import CarbsLogScreen from "../screens/logScreens/CarbsLogScreen";
@@ -8,10 +8,9 @@ import ActivityLogScreen from "../screens/logScreens/ActivityLogScreen";
 import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
 import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
 import NoteScreen from "../screens/logScreens/NoteScreen";
-import { AppStackParamList } from "../../types/navigation";
 import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsScreen";
-import AutoLogScreen from "../screens/logScreens/AutoLogScreen"
+import AutoLogScreen from "../screens/logScreens/AutoLogScreen";
 import OfflineLogsScreen from "../screens/logScreens/OfflineLogsScreen";
 import Temp from "../screens/Temp";
 import ProfileScreen from "../screens/profileScreens/ProfileScrenn";
@@ -22,6 +21,7 @@ import MedicationScreen from "../screens/profileScreens/Medication";
 import HealthDataScreen from "../screens/profileScreens/HealthDataScreen";
 import DevAndAppScreen from "../screens/profileScreens/DevAndAppScreen";
 import AddMedecineScreen from "../screens/profileScreens/AddMedicineScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -78,32 +78,32 @@ const AppStack: React.FC = () => (
       component={RecentInsightsScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="Profile"
       component={ProfileScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="EditProfile"
       component={EditProfileScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="ChangePassword"
       component={ChangePasswordScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="ManageAccount"
       component={ManageAccountScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="Medications"
       component={MedicationScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="HealthData"
       component={HealthDataScreen}
       options={{ headerShown: false }}
@@ -113,9 +113,14 @@ const AppStack: React.FC = () => (
       component={DevAndAppScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
+    <Stack.Screen
       name="AddMedecine"
       component={AddMedecineScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Notifications"
+      component={NotificationScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
