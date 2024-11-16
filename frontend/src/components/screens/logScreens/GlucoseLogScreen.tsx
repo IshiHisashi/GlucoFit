@@ -333,7 +333,7 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(scale, {
-          toValue: 1.1, // Scale up
+          toValue: 1.2, // Scale up
           duration: 1500,
           useNativeDriver: true,
         }),

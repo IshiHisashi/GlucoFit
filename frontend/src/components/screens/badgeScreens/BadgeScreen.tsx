@@ -39,7 +39,7 @@ const BadgeScreen: React.FC = () => {
       >
         {/* Header */}
         {/* Toggle */}
-        <View flexDirection="row" flexWrap="nowrap" gap={16} margin={20}>
+        <View flexDirection="row" flexWrap="nowrap" gap={16} marginHorizontal={20} marginTop={20}>
           <Tab
             text="Streaks"
             isFocused={selectScreen === "streaks"}
