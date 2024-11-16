@@ -45,6 +45,7 @@ import {
 } from "../svgs/svgsForLogsTableIcons";
 import LogsTableTitle from "../molcules/LogsTableTitle";
 import { AuthContext } from "../../context/AuthContext";
+import GlucoButton from "../atoms/GlucoButton";
 
 // const TotalSteps = () => {
 //   const GET_TOTAL_STEPS_FOR_TODAY = gql`
@@ -675,7 +676,7 @@ const HomeScreen: React.FC = () => {
                   position="absolute"
                   bottom={40}
                   height="86%"
-                  borderRadius={20}
+                  borderRadius={10}
                   backgroundColor="white"
                 >
                   <Modal.CloseButton />
@@ -685,8 +686,10 @@ const HomeScreen: React.FC = () => {
                         onPress={() => handleClose()}
                         flexGrow={1}
                         backgroundColor="transparent"
+                        padding={10}
+                        marginTop={-30}
                       >
-                        <ButtonText position="relative" top={0} left={120}>
+                        <ButtonText position="relative" top={20} left={120}>
                           ✖️
                         </ButtonText>
                       </Button>
@@ -695,9 +698,20 @@ const HomeScreen: React.FC = () => {
                         textAlign="center"
                         fontSize={22}
                         color="black"
-                        padding={20}
+                        fontFamily="$bold"
+                        marginHorizontal={20}
                       >
-                        You unlocked a new badge
+                        You've unlocked
+                      </Text>
+                      <Text
+                        textAlign="center"
+                        fontSize={22}
+                        color="black"
+                        fontFamily="$bold"
+                        marginHorizontal={20}
+                        marginBottom={20}
+                      >
+                        a new badge
                       </Text>
                       <Image
                         w={150}
@@ -715,22 +729,29 @@ const HomeScreen: React.FC = () => {
                         fontSize={20}
                         textAlign="center"
                         marginVertical={10}
+                        fontFamily="$bold"
                       >
                         {route.params?.badges[currentModalIndex].badge_name}
                       </Text>
-                      <Text textAlign="center" marginBottom={10}>
-                        {route.params?.badges[currentModalIndex].badge_desc}
+                      <Text textAlign="center" marginBottom={25}>
+                        {route.params?.badges[currentModalIndex].unlocked}
                       </Text>
-                      <Button
+                      <GlucoButton 
+                        buttonType="primary"
+                        text="Share"
+                        isFocused={false}
+                        isDisabled={false}
                         onPress={() => onShare()}
-                        width={180}
-                        marginBottom={10}
-                      >
-                        <ButtonText>Share</ButtonText>
-                      </Button>
-                      <Button onPress={() => moveToBadges()} width={180}>
-                        <ButtonText>View All Badges</ButtonText>
-                      </Button>
+                        style={{ width: 214, height: 48, marginBottom: 12 }}
+                      />
+                      <GlucoButton 
+                        buttonType="secondary"
+                        text="View All Badges"
+                        isFocused={false}
+                        isDisabled={false}
+                        onPress={() => moveToBadges()}
+                        style={{ width: 214, height: 48 }}
+                      />
                     </Center>
                   </View>
                 </Modal.Content>

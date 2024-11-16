@@ -197,12 +197,14 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     }
   };
 
+  // This is data for Home screen modal test purpose . Please don't delete this.
   const fakeData = [
     {
       id: "670b2125cb185c3905515da2",
       badge_name: "fake badge",
       badge_desc:
         "fake description here. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda, minus eaque vero quisquam tenetur aut.",
+      unlocked: "unlock message here!" 
     },
   ];
 
@@ -215,6 +217,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     );
     disconnectFunc(mac);
     // This has to be replaced with the latest version of home thingy
+
     navigation.navigate("Tabs", {
       screen: "Home",
       params: {

@@ -10,13 +10,11 @@ export const GET_ALL_BADGES_INFO_BY_USER = gql`
           badge_name
           badge_desc
           badge_image_address
+          locked
+          unlocked
           criteria {
             value
-            comparison
-            kind
-            note
           }
-          last_updated
         }
         achieved
       }

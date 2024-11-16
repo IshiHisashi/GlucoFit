@@ -30,7 +30,8 @@ interface Badge {
     badge_name: string;
     criteria: object[];
     id: string;
-    last_updated: string | null;
+    unlocked: string;
+    locked: string;
   };
 }
 
@@ -38,7 +39,7 @@ interface BadgeImages {
   [key: string]: any;
 }
 
-const BadgesScreen: React.FC = ({ navigation }) => {
+const BadgesScreen: React.FC = () => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<string>();
@@ -90,7 +91,7 @@ const BadgesScreen: React.FC = ({ navigation }) => {
         if (loadBadgeData) loadBadgeData();
       });
     }
-  }, [data, navigation]);
+  }, [data]);
 
   const getBadgeProgress = (badgeName: string) => {
     switch (badgeName) {
@@ -288,7 +289,7 @@ const BadgesScreen: React.FC = ({ navigation }) => {
           {badgeData.map((b) => {
             if (b.badgeId.id === selectedBadge) {
               return (
-                <Center>
+                <Center id={b.badgeId.id}>
                   {b.achieved === true ? (
                     <Image
                       w={120}
@@ -329,7 +330,7 @@ const BadgesScreen: React.FC = ({ navigation }) => {
                     {b.badgeId.badge_name}
                   </Text>
                   <Text textAlign="center" marginTop={10} marginBottom={30}>
-                    {b.badgeId.badge_desc}
+                    {b.achieved === true ? b.badgeId.unlocked : b.badgeId.locked}
                   </Text>
                   {b.achieved ? (
                     <View>
