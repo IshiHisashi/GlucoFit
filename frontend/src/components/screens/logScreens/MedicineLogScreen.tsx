@@ -95,14 +95,6 @@ const MedicineLogScreen: React.FC = () => {
   };
 
   const handleSave = async () => {
-    console.log(selectedMeds);
-    // const combinedDateTime = new Date(date);
-    // combinedDateTime.setHours(
-    //   time.getHours(),
-    //   time.getMinutes(),
-    //   time.getSeconds()
-    // );
-
     for (const med of selectedMeds) {
       try {
         const log = await createMedicineLog({

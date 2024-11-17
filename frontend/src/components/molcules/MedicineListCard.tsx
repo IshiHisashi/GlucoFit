@@ -15,17 +15,19 @@ interface MmedicineData {
 
 interface MedicineListCardProps {
   obj: MmedicineData;
+  listLength: number;
+  index: number;
 }
 
 const MedicineListCard: FC<MedicineListCardProps> = (props) => {
-  const { obj } = props;
+  const { obj, listLength, index } = props;
 
   return (
     <Pressable
       onPress={obj.onPressMedicine}
       key={obj.id}
       py="$3"
-      borderBottomWidth={1}
+      borderBottomWidth={index === listLength - 1 ? 0 : 1}
       borderBottomColor="#EEEEEE"
     >
       <HStack alignItems="center" justifyContent="space-between">
