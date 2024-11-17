@@ -1,8 +1,7 @@
 import { Pressable, Text, View, HStack, VStack } from "@gluestack-ui/themed";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
-
-import { BellCustom, SearchCustom } from "../svgs/svgs";
+import { BellCustom, SearchCustom, TimesCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
 
 interface HeaderBasicProps {
@@ -10,12 +9,23 @@ interface HeaderBasicProps {
   userName?: string;
   searchValue?: string;
   onChangeSearchValue?: (value: string) => void;
+  onSearchExecute?: (value: string) => void;
   navigation?: NavigationProp<any>;
 }
 
 const HeaderBasic: FC<HeaderBasicProps> = (props) => {
-  const { routeName, userName, searchValue, onChangeSearchValue, navigation } =
-    props;
+  const {
+    routeName,
+    userName,
+    searchValue = "",
+    onSearchExecute,
+    onChangeSearchValue,
+    navigation,
+  } = props;
+
+  const [localSearchValue, setLocalSearchValue] = useState<string | undefined>(
+    searchValue
+  );
 
   const headerStyles = {
     Home: {
@@ -44,6 +54,19 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
     day: "numeric",
     year: "numeric",
   });
+
+  const handleSearch = () => {
+    if (onSearchExecute) {
+      onSearchExecute(localSearchValue.trim());
+    }
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearchValue("");
+    if (onChangeSearchValue) {
+      onChangeSearchValue("");
+    }
+  };
 
   return (
     <HStack
@@ -90,17 +113,23 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
         </>
       )}
 
-      {(routeName === "Insights" ||
-        // routeName === "Logs" ||
-        routeName === "BadgeScreen") && (
+      {(routeName === "Insights" || routeName === "BadgeScreen") && (
         <InputFieldGeneral
           value={searchValue}
-          onChangeText={onChangeSearchValue}
+          onChangeText={(text) => {
+            setLocalSearchValue(text);
+            if (onChangeSearchValue) {
+              onChangeSearchValue(text);
+            }
+          }}
+          onSubmitEditing={handleSearch}
           isRequired={true}
           isDisabled={false}
           isInvalid={false}
           placeholder="Search"
           iconLeft={SearchCustom}
+          iconRight={TimesCustom}
+          onIconRightPress={handleClearSearch}
         />
       )}
     </HStack>
