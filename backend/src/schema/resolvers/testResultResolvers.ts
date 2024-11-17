@@ -269,8 +269,6 @@ const testResultsResolvers = {
           },
         ]);
 
-        // console.log(results);
-
         const resultMap = new Map<number, number>();
         results.forEach((dayData) => {
           let dayIndex = dayData._id % 7;
@@ -283,8 +281,6 @@ const testResultsResolvers = {
 
           resultMap.set(dayIndex, parseFloat(dayData.averageBsl.toFixed(1)));
         });
-
-        console.log(resultMap);
 
         const formattedData = [];
         for (let i = 0; i < 7; i++) {
@@ -309,9 +305,6 @@ const testResultsResolvers = {
         const formattedStartDate = format(startDate, "MMM dd");
         const formattedEndDate = format(endDate, "MMM dd, yyyy");
         const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
-
-        console.log(formattedData);
-        console.log(dateRange);
 
         return {
           weeklyData: formattedData,
