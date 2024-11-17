@@ -59,6 +59,7 @@ interface ActivityLogs extends BaseLog {
 
 interface DietLog extends BaseLog {
   __typename: "DietLog";
+  time_period: string;
   carbs: number;
 }
 
@@ -122,6 +123,7 @@ const GET_COMBINED_LOGS = gql`
         ... on DietLog {
           carbs
           id
+          time_period
           log_timestamp
         }
         ... on MedicineLog {
@@ -157,18 +159,6 @@ const LogsScreen: React.FC = () => {
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const offsetAnim = useRef(new Animated.Value(0)).current;
-  const clampedScroll = Animated.diffClamp(
-    Animated.add(
-      scrollY.interpolate({
-        inputRange: [0, HEADER_HIGHT],
-        outputRange: [0, HEADER_HIGHT],
-        extrapolateLeft: "clamp",
-      }),
-      offsetAnim
-    ),
-    0,
-    HEADER_HIGHT
-  );
   let clampedScrollValue = 0;
   let offsetValue = 0;
   let scrollValue = 0;
@@ -185,11 +175,6 @@ const LogsScreen: React.FC = () => {
       offsetValue = value;
     });
   }, []);
-  const headerTranslate = clampedScroll.interpolate({
-    inputRange: [0, HEADER_HIGHT],
-    outputRange: [0, -HEADER_HIGHT],
-    extrapolate: "clamp",
-  });
   // animation for header end ////////////////////////////////
 
   const [refreshing, setRefreshing] = useState(false);
@@ -198,27 +183,24 @@ const LogsScreen: React.FC = () => {
   const [latestDate, setLatestDate] = useState<Date>(() => new Date());
   const [hasMore, setHasMore] = useState(true);
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
-  const { data, loading, error, refetch, fetchMore } = useQuery(
-    GET_COMBINED_LOGS,
-    {
-      variables: {
-        userId: userId,
-        goBackTillThisDate: new Date(
-          latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        latestDate: latestDate.toISOString(),
-      },
-      onCompleted: (data) => {
-        if (!hasMore) return;
-        setLogs((prevLogs) => [
-          ...prevLogs,
-          ...data.getCombinedLogsByDateRange.logs,
-        ]);
-        setHasMore(data.getCombinedLogsByDateRange.hasMoreData);
-        setLatestDate(new Date(data.getCombinedLogsByDateRange.nextLatestDate));
-      },
-    }
-  );
+  const { data, loading, refetch, fetchMore } = useQuery(GET_COMBINED_LOGS, {
+    variables: {
+      userId: userId,
+      goBackTillThisDate: new Date(
+        latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
+      ).toISOString(),
+      latestDate: latestDate.toISOString(),
+    },
+    onCompleted: (data) => {
+      if (!hasMore) return;
+      setLogs((prevLogs) => [
+        ...prevLogs,
+        ...data.getCombinedLogsByDateRange.logs,
+      ]);
+      setHasMore(data.getCombinedLogsByDateRange.hasMoreData);
+      setLatestDate(new Date(data.getCombinedLogsByDateRange.nextLatestDate));
+    },
+  });
   data && console.log("LOGS:", data.getCombinedLogsByDateRange);
 
   const { data: bslForXData } = useQuery(GET_AVERAGE_BSL_FOR_X, {
@@ -301,7 +283,7 @@ const LogsScreen: React.FC = () => {
               __typename: obj.__typename,
               id: obj.id,
               icon: <IconForFoodLog />,
-              text: "Food Intake",
+              text: obj.time_period,
               subText: new Date(obj.log_timestamp).toLocaleString("en-US", {
                 hour: "numeric",
                 minute: "numeric",

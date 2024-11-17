@@ -65,6 +65,7 @@ const logsForHistoryScreenResolvers = {
         ...dietLogs.map((log: any) => ({
           ...log,
           id: log._id.toString(),
+          time_period: log.time_period,
           carbs: log.carbs,
           log_timestamp: log.log_timestamp,
           __typename: "DietLog",
