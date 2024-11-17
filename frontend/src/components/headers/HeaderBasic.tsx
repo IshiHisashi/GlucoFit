@@ -91,7 +91,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
             <Pressable onPress={() => navigation?.navigate("Profile")}>
               <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
             </Pressable>
-            <Pressable onPress={() => navigation?.navigate("Temp")}>
+            <Pressable onPress={() => navigation?.navigate("Notifications")}>
               <BellCustom color={currentStyle.notificationColor} size={27} />
             </Pressable>
           </HStack>
