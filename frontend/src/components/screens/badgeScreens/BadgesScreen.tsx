@@ -283,7 +283,6 @@ const BadgesScreen: React.FC = () => {
             flexDirection: "row",
             justifyContent: "center",
             flexWrap: "wrap",
-            flexGrow: 1,
           }}
         >
           {badgeData.map((b) => {

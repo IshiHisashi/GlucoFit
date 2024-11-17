@@ -643,9 +643,9 @@ const HomeScreen: React.FC = () => {
                 px="$4"
                 py="$8"
                 alignItems="center"
-                onPress={() => {
-                  navigation.navigate("AutoLog");
-                }}
+                // onPress={() => {
+                //   navigation.navigate("AutoLog");
+                // }}
               >
                 <Image
                   mx="auto"
@@ -673,9 +673,8 @@ const HomeScreen: React.FC = () => {
             {route.params?.badges?.length > 0 && (
               <Modal isOpen={modalVisible} onClose={() => handleClose()}>
                 <Modal.Content
-                  position="absolute"
-                  bottom={40}
-                  height="86%"
+                  alignSelf="center"
+                  justifyContent="center"
                   borderRadius={10}
                   backgroundColor="white"
                 >
@@ -750,7 +749,7 @@ const HomeScreen: React.FC = () => {
                         isFocused={false}
                         isDisabled={false}
                         onPress={() => moveToBadges()}
-                        style={{ width: 214, height: 48 }}
+                        style={{ width: 214, height: 48, marginBottom: 20  }}
                       />
                     </Center>
                   </View>
@@ -859,6 +858,19 @@ const HomeScreen: React.FC = () => {
               </HStack>
             </VStack>
           </VStack>
+        )}
+
+        {/* Background dark overlay when modal is open */}
+        {modalVisible && (
+          <View
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            backgroundColor="rgba(0, 0, 0, 0.5)" // Adjust the opacity for tint
+            zIndex={1} // Ensure it appears above background content
+          />
         )}
 
         <View h={100} />
