@@ -58,6 +58,7 @@ const logsForHistoryScreenResolvers = {
           ...log,
           id: log._id.toString(),
           duration: log.duration,
+          activityType: log.activityType,
           log_timestamp: log.log_timestamp,
           __typename: "ActivityLogs",
         })),
