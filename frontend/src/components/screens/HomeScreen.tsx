@@ -258,7 +258,7 @@ const HomeScreen: React.FC = () => {
   } = useQuery(GET_WEEKLY_BSL_DATA, {
     variables: { userId: userId },
   });
-  // weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
+  weeklyBslData && console.log("weekly:", weeklyBslData.getWeeklyBSLData);
 
   const {
     data: bslForXData,

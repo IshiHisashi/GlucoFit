@@ -239,6 +239,9 @@ const testResultsResolvers = {
         startDate.setDate(endDate.getDate() - 6);
         startDate.setHours(0, 0, 0, 0);
 
+        console.log(endDate);
+        console.log(startDate);
+
         const results = await TestResults.aggregate([
           {
             $match: {
@@ -266,14 +269,22 @@ const testResultsResolvers = {
           },
         ]);
 
+        // console.log(results);
+
         const resultMap = new Map<number, number>();
         results.forEach((dayData) => {
-          const dayIndex = dayData._id % 7;
-          resultMap.set(
-            dayIndex - 1,
-            parseFloat(dayData.averageBsl.toFixed(1))
-          );
+          let dayIndex = dayData._id % 7;
+
+          if (dayIndex === 0) {
+            dayIndex = 6;
+          } else {
+            dayIndex -= 1;
+          }
+
+          resultMap.set(dayIndex, parseFloat(dayData.averageBsl.toFixed(1)));
         });
+
+        console.log(resultMap);
 
         const formattedData = [];
         for (let i = 0; i < 7; i++) {
@@ -298,6 +309,9 @@ const testResultsResolvers = {
         const formattedStartDate = format(startDate, "MMM dd");
         const formattedEndDate = format(endDate, "MMM dd, yyyy");
         const dateRange = `${formattedStartDate} - ${formattedEndDate}`;
+
+        console.log(formattedData);
+        console.log(dateRange);
 
         return {
           weeklyData: formattedData,
