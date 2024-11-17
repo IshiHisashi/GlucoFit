@@ -19,6 +19,8 @@ import {
   QUERY_FOR_STREAK_STARTER,
 } from "../../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../../context/AuthContext";
+import { BlurView } from "@react-native-community/blur";
+import { StyleSheet } from "react-native";
 
 interface Badge {
   __typename: string;
@@ -39,7 +41,11 @@ interface BadgeImages {
   [key: string]: any;
 }
 
-const BadgesScreen: React.FC = () => {
+interface badgeScreenTypes {
+  setBackGroundTinted: any
+}
+
+const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<string>();
@@ -120,13 +126,15 @@ const BadgesScreen: React.FC = () => {
   // if (loading) return <Text>Loading...</Text>;
   // if (error) return <Text>Error: {error.message}</Text>;
 
-  const switchModal = () => {
-    setModalVisible(!modalVisible);
+  const closeModal = () => {
+    setModalVisible(false);
+    setBackGroundTinted(false);
   };
 
   const handleClickBadge = (id: string) => {
     setSelectedBadge(id);
     setModalVisible(true);
+    setBackGroundTinted(true);
   };
 
   // This will go away once we put the data online
@@ -271,6 +279,12 @@ const BadgesScreen: React.FC = () => {
         })}
       </View>
       <Modal isOpen={modalVisible}>
+        <BlurView
+          style={StyleSheet.absoluteFill}
+          blurType="light"
+          blurAmount={3} 
+          reducedTransparencyFallbackColor="gray"
+        />
         <View
           position="absolute"
           bottom={0}
@@ -348,7 +362,7 @@ const BadgesScreen: React.FC = () => {
                       </Text>
                     </View>
                   )}
-                  <Button onPress={switchModal} marginTop={30}>
+                  <Button onPress={closeModal} marginTop={30}>
                     <Text>Close</Text>
                   </Button>
                 </Center>

@@ -17,7 +17,7 @@ import {
   Image,
 } from "@gluestack-ui/themed";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useWindowDimensions, Share, Alert } from "react-native";
+import { useWindowDimensions, Share, Alert, StyleSheet } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import {
   useFocusEffect,
@@ -46,6 +46,7 @@ import {
 import LogsTableTitle from "../molcules/LogsTableTitle";
 import { AuthContext } from "../../context/AuthContext";
 import GlucoButton from "../atoms/GlucoButton";
+import { BlurView } from "@react-native-community/blur";
 
 // const TotalSteps = () => {
 //   const GET_TOTAL_STEPS_FOR_TODAY = gql`
@@ -672,6 +673,12 @@ const HomeScreen: React.FC = () => {
           <VStack p="$4" space="md">
             {route.params?.badges?.length > 0 && (
               <Modal isOpen={modalVisible} onClose={() => handleClose()}>
+                <BlurView
+                  style={StyleSheet.absoluteFill}
+                  blurType="dark"
+                  blurAmount={2} 
+                  reducedTransparencyFallbackColor="gray"
+                />
                 <Modal.Content
                   alignSelf="center"
                   justifyContent="center"
@@ -861,18 +868,6 @@ const HomeScreen: React.FC = () => {
         )}
         <View h={100} />
       </ScrollView>
-      {/* Background dark overlay when modal is open */}
-      {modalVisible && (
-        <View
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          backgroundColor="rgba(0, 0, 0, 0.5)" // Adjust the opacity for tint
-          zIndex={5} // Ensure it appears above background content
-        />
-      )}
     </SafeAreaView>
   );
 };

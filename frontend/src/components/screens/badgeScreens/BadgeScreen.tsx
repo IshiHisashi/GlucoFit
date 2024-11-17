@@ -20,6 +20,7 @@ import { FireCustom, MedalCustom } from "../../svgs/svgs";
 const BadgeScreen: React.FC = () => {
   const route = useRoute<{ key: string; name: string }>();
   const [selectScreen, setSelectScreen] = useState<string>("streaks");
+  const [backGroundTinted, setBackGroundTinted] = useState<boolean>(false);
 
   const screenToBadge = () => {
     setSelectScreen("badges");
@@ -66,7 +67,7 @@ const BadgeScreen: React.FC = () => {
           {selectScreen === "streaks" && (
             <StreakScreen changeScreen={screenToBadge} />
           )}
-          {selectScreen === "badges" && <BadgesScreen />}
+          {selectScreen === "badges" && <BadgesScreen setBackGroundTinted={setBackGroundTinted} />}
         </ScrollView>
       </View>
     </SafeAreaView>
