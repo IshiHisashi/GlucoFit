@@ -223,8 +223,8 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
       params: {
         mutatedLog: "bsl",
         insight: null,
-        // badges: badgeInfo.length > 0 ? badgeInfo : fakeData,
-        badges: badgeInfo,
+        badges: badgeInfo.length > 0 ? badgeInfo : fakeData,
+        // badges: badgeInfo,
       },
     });
   };

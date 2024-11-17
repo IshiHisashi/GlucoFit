@@ -859,22 +859,20 @@ const HomeScreen: React.FC = () => {
             </VStack>
           </VStack>
         )}
-
-        {/* Background dark overlay when modal is open */}
-        {modalVisible && (
-          <View
-            position="absolute"
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            backgroundColor="rgba(0, 0, 0, 0.5)" // Adjust the opacity for tint
-            zIndex={1} // Ensure it appears above background content
-          />
-        )}
-
         <View h={100} />
       </ScrollView>
+      {/* Background dark overlay when modal is open */}
+      {modalVisible && (
+        <View
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          backgroundColor="rgba(0, 0, 0, 0.5)" // Adjust the opacity for tint
+          zIndex={5} // Ensure it appears above background content
+        />
+      )}
     </SafeAreaView>
   );
 };
