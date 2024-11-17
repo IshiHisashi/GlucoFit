@@ -12,7 +12,13 @@ import {
   FlatList,
   Icon,
 } from "@gluestack-ui/themed";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { gql, useQuery } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -512,7 +518,7 @@ const LogsScreen: React.FC = () => {
             zIndex: 1000,
             elevation: 1000,
             backgroundColor: "$neutralWhite",
-            transform: [{ translateY: headerTranslate }],
+            // transform: [{ translateY: headerTranslate }],
             // paddingTop: insets.top,
           }}
         >
