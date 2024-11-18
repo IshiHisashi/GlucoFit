@@ -9,6 +9,7 @@ import {
   HStack,
   ScrollView,
   Center,
+  ButtonText,
 } from "@gluestack-ui/themed";
 import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
@@ -20,7 +21,9 @@ import {
 } from "../../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../../context/AuthContext";
 import { BlurView } from "@react-native-community/blur";
-import { StyleSheet } from "react-native";
+import { Alert, Share, StyleSheet } from "react-native";
+import GlucoButton from "../../atoms/GlucoButton";
+import { AngleRightCustom, ShareCustom } from "../../svgs/svgs";
 
 interface Badge {
   __typename: string;
@@ -168,6 +171,25 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
     }
   }, [data]);
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: "You will be able to share things from hereeee!",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   return (
     <View padding={16}>
       <Text fontSize={22} color="black" fontWeight={"$bold"} marginBottom={20}>
@@ -278,10 +300,10 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           }
         })}
       </View>
-      <Modal isOpen={modalVisible}>
+      <Modal isOpen={modalVisible}  onClose={() => setModalVisible(false)}>
         <BlurView
           style={StyleSheet.absoluteFill}
-          blurType="light"
+          blurType="dark"
           blurAmount={3} 
           reducedTransparencyFallbackColor="gray"
         />
@@ -289,7 +311,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           position="absolute"
           bottom={0}
           width="100%"
-          height="40%"
+          height={350}
           borderTopRightRadius={20}
           borderTopLeftRadius={20}
           backgroundColor="white"
@@ -302,34 +324,44 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           {badgeData.map((b) => {
             if (b.badgeId.id === selectedBadge) {
               return (
-                <Center id={b.badgeId.id}>
+                <Center id={b.badgeId.id} width={"$full"}>
+                  <Button
+                    onPress={() => setModalVisible(false)}
+                    backgroundColor="transparent"
+                    padding={10}
+                    marginTop={-70}
+                  >
+                    <ButtonText position="relative" top={0} left={150}>
+                      ✖️
+                    </ButtonText>
+                  </Button>
                   {b.achieved === true ? (
                     <Image
-                      w={120}
-                      h={120}
+                      w={144}
+                      h={144}
                       source={badgeImages[b.badgeId.id]}
                       alt={b.badgeId.badge_name}
                       marginBottom={8}
                       position="absolute"
-                      top={-60}
+                      top={-72}
                       left="50%"
-                      transform={[{ translateX: -60 }]}
-                      borderRadius={60}
+                      transform={[{ translateX: -72 }]}
+                      borderRadius={80}
                       borderWidth={4}
                       borderColor="white"
                     />
                   ) : (
                     <Image
-                      w={120}
-                      h={120}
+                      w={144}
+                      h={144}
                       source={notAchieveBadgeImages[b.badgeId.id]}
                       alt={b.badgeId.badge_name}
                       marginBottom={8}
                       position="absolute"
-                      top={-60}
+                      top={-72}
                       left="50%"
-                      transform={[{ translateX: -60 }]}
-                      borderRadius={60}
+                      transform={[{ translateX: -72 }]}
+                      borderRadius={80}
                       borderWidth={4}
                       borderColor="white"
                     />
@@ -362,9 +394,15 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                       </Text>
                     </View>
                   )}
-                  <Button onPress={closeModal} marginTop={30}>
-                    <Text>Close</Text>
-                  </Button>
+                  <GlucoButton 
+                    buttonType="primary"
+                    text="Share"
+                    isFocused={false}
+                    isDisabled={false}
+                    onPress={() => onShare()}
+                    iconLeft={ShareCustom}
+                    style={{ width: 347, height: 52, marginBottom: 12, marginTop: 12 }}
+                  />
                 </Center>
               );
             }

@@ -1064,3 +1064,25 @@ export const NavToBelowCustom = ({
   </Svg>
 );
 export default NavToBelowCustom;
+
+export const ShareCustom: FC = ({
+  color = colorDefault,
+  size = sizeDefault,
+  ...props
+}: IconProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill={color}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      d="M18 16.08a2.5 2.5 0 0 0-1.63.63L8.91 12.7a2.5 2.5 0 0 0 0-1.4l7.41-4.23a2.5 2.5 0 1 0-.57-1.11L8.34 10.2a2.5 2.5 0 1 0 0 3.59l7.45 4.25a2.5 2.5 0 1 0 2.21-2.01Z"
+    />
+  </Svg>
+);
