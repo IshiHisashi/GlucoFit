@@ -32,7 +32,11 @@ const getDayOfWeek = (dateString: string): string => {
   return daysOfWeek[dayIndex];
 };
 
-const WeeklyStreak: React.FC = () => {
+interface WeeklyStreakProps {
+  setStreakNum: (arg0: number) => void;
+}
+
+const WeeklyStreak: React.FC<WeeklyStreakProps> = ({ setStreakNum }) => {
   const [daysHasLog, setDaysHasLog] = useState<string[]>(["1", "2"]);
   const { userId } = useContext(AuthContext);
 
@@ -67,6 +71,7 @@ const WeeklyStreak: React.FC = () => {
 
   useEffect(() => {
     setDaysHasLog(data?.getTestResultsLast7Days);
+    setStreakNum(data?.getTestResultsLast7Days.length)
   }, [data]);
 
   const last7Days = getLast7Days();
@@ -80,7 +85,7 @@ const WeeklyStreak: React.FC = () => {
       backgroundColor="white"
       marginTop={16}
     >
-      <Text fontSize={20} fontWeight="$semibold" color="black">
+      <Text fontSize={20} fontFamily="$bold" color="black">
         Weekly Streak
       </Text>
       <Text marginBottom={20}>
