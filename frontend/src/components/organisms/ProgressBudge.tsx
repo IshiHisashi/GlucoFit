@@ -137,7 +137,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
     <View
       flexDirection="column"
       gap={20}
-      borderColor="#ccc"
+      borderColor="#ECE5FF"
       borderWidth={1}
       rounded={10}
       padding={20}
@@ -161,7 +161,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
       </View>
 
       {/* Render Badge Cards */}
-      <ScrollView height={250}>
+      <ScrollView height={220}>
         {data?.getUserOnProgressBadge?.badges.map((badge: any) => (
           <View
             key={badge.badgeId.id}

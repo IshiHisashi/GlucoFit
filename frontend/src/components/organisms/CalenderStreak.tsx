@@ -59,7 +59,7 @@ const CalenderStreak: React.FC = () => {
     <View
       flexDirection="column"
       gap={20}
-      borderColor="#ccc"
+      borderColor="#ECE5FF"
       borderWidth={1}
       rounded={10}
       padding={10}

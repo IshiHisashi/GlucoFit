@@ -72,7 +72,7 @@ const WeeklyStreak: React.FC = () => {
   const last7Days = getLast7Days();
   return (
     <View
-      borderColor="#ccc"
+      borderColor="#ECE5FF"
       borderWidth={1}
       rounded={10}
       padding={20}
