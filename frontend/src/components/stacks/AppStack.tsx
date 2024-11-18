@@ -1,6 +1,6 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { AppStackParamList } from "../../types/navigation";
 
 import TabNavigator from "./TabNavigator";
 import CarbsLogScreen from "../screens/logScreens/CarbsLogScreen";
@@ -8,7 +8,6 @@ import ActivityLogScreen from "../screens/logScreens/ActivityLogScreen";
 import MedicineLogScreen from "../screens/logScreens/MedicineLogScreen";
 import GlucoseLogScreen from "../screens/logScreens/GlucoseLogScreen";
 import NoteScreen from "../screens/logScreens/NoteScreen";
-import { AppStackParamList } from "../../types/navigation";
 import ArticleWebViewScreen from "../screens/insightsSubScreens/ArticleWebViewScreen";
 import RecentInsightsScreen from "../screens/insightsSubScreens/RecentInsightsScreen";
 import AutoLogScreen from "../screens/logScreens/AutoLogScreen";
@@ -22,6 +21,7 @@ import MedicationScreen from "../screens/profileScreens/Medication";
 import HealthDataScreen from "../screens/profileScreens/HealthDataScreen";
 import DevAndAppScreen from "../screens/profileScreens/DevAndAppScreen";
 import AddMedecineScreen from "../screens/profileScreens/AddMedicineScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -116,6 +116,11 @@ const AppStack: React.FC = () => (
     <Stack.Screen
       name="AddMedecine"
       component={AddMedecineScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Notifications"
+      component={NotificationScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

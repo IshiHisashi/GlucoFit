@@ -8,6 +8,7 @@ const notificationResolvers = {
       _: any,
       { user_id, unreadOnly }: { user_id: string; unreadOnly?: boolean }
     ): Promise<INotification[]> => {
+      console.log("exe");
       const filter: any = { user_id };
       if (unreadOnly) filter.read = false;
 
@@ -50,7 +51,9 @@ const notificationResolvers = {
       { user_id }: { user_id: string }
     ): Promise<INotification[]> => {
       await Notification.updateMany({ user_id, read: false }, { read: true });
-      return await Notification.find({ user_id }).sort({ createdAt: -1 }).exec();
+      return await Notification.find({ user_id })
+        .sort({ createdAt: -1 })
+        .exec();
     },
   },
 };
