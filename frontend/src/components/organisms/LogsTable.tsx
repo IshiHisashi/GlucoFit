@@ -3,7 +3,6 @@ import {
   Text,
   VStack,
   Pressable,
-  Box,
   Input,
   InputField,
   InputSlot,
@@ -127,11 +126,13 @@ const LogsTable: FC<LogsTableProps> = (props) => {
       )}
 
       {tableType === "logs" &&
-        rowsData?.length > 0 &&
+        rowsData &&
+        rowsData.length > 0 &&
         rowsData.map((obj) => <LogsTableRow obj={obj} />)}
 
       {tableType === "pickers" &&
-        pickerData?.length > 0 &&
+        pickerData &&
+        pickerData.length > 0 &&
         pickerData.map((obj) => {
           if (obj.setShowPicker) return <PickerOpenerRow obj={obj} />;
           if (obj.onChangeText) return <LogsTableRowDirectInput obj={obj} />;
@@ -153,8 +154,15 @@ const LogsTable: FC<LogsTableProps> = (props) => {
       )}
 
       {tableType === "medicines" &&
-        medicinesData?.length > 0 &&
-        medicinesData.map((obj) => <MedicineListCard obj={obj} />)}
+        medicinesData &&
+        medicinesData.length > 0 &&
+        medicinesData.map((obj, index) => (
+          <MedicineListCard
+            index={index}
+            obj={obj}
+            listLength={medicinesData ? medicinesData?.length : 0}
+          />
+        ))}
     </VStack>
   );
 };

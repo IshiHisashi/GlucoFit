@@ -21,6 +21,7 @@ const BslWeeklyBarChart: FC<BslWeeklyBarChartProps> = ({
   data,
   weeklyAverage,
 }) => {
+  // console.log(data);
   const adjustedData = data
     .filter((obj) => obj.value !== 0)
     .map((obj) => ({
