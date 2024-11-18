@@ -212,10 +212,10 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
               >
                 <Center
                   borderRadius={10}
-                  paddingVertical={10}
+                  paddingVertical={14}
                   paddingHorizontal={20}
                   backgroundColor="white"
-                  width={140}
+                  width={145}
                   marginRight={16}
                   style={{
                     shadowColor: "black",
@@ -231,9 +231,11 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                     alt={b.badgeId.badge_name}
                     marginBottom={14}
                   />
-                  <Text color="black" fontSize={14}>
-                    {b.badgeId.badge_name}
-                  </Text>
+                  <Center height={40}>
+                    <Text color="black" fontSize={14} textAlign="center" fontFamily="$bold" >
+                      {b.badgeId.badge_name}
+                    </Text>
+                  </Center>
                 </Center>
               </Pressable>
             );
