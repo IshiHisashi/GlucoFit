@@ -311,7 +311,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           position="absolute"
           bottom={0}
           width="100%"
-          height={350}
+          height={380}
           borderTopRightRadius={20}
           borderTopLeftRadius={20}
           backgroundColor="white"
@@ -324,12 +324,14 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           {badgeData.map((b) => {
             if (b.badgeId.id === selectedBadge) {
               return (
-                <Center id={b.badgeId.id} width={"$full"}>
+                <Center id={b.badgeId.id} width={"$full"} height={"$full"}>
                   <Button
                     onPress={() => setModalVisible(false)}
                     backgroundColor="transparent"
                     padding={10}
                     marginTop={-70}
+                    position="absolute"
+                    bottom={330}
                   >
                     <ButtonText position="relative" top={0} left={150}>
                       ✖️
@@ -374,7 +376,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                   >
                     {b.badgeId.badge_name}
                   </Text>
-                  <Text textAlign="center" marginTop={10} marginBottom={30}>
+                  <Text textAlign="center" marginTop={10} marginBottom={30} paddingHorizontal={10}>
                     {b.achieved === true ? b.badgeId.unlocked : b.badgeId.locked}
                   </Text>
                   {b.achieved ? (
@@ -401,7 +403,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                     isDisabled={false}
                     onPress={() => onShare()}
                     iconLeft={ShareCustom}
-                    style={{ width: 347, height: 52, marginBottom: 12, marginTop: 12 }}
+                    style={{ width: 347, height: 52, marginTop: 12 }}
                   />
                 </Center>
               );
