@@ -32,6 +32,8 @@ export type AppStackParamList = {
   DevAndApp: undefined;
   AddMedecine: undefined;
   Notifications: undefined;
+  NotifSettings: undefined;
+  Security: undefined;
 };
 
 export type LoginSignupStackParamList = {

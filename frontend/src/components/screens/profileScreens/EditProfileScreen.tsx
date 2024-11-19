@@ -157,34 +157,14 @@ const EditProfileScreen = () => {
           </View>
           <Button
             marginBottom={20}
+            height={52}
+            borderRadius={26}
             onPress={handleSubmit}
             isDisabled={!isChanged}
+            backgroundColor="#4800FF"
           >
-            <ButtonText>Save</ButtonText>
+            <ButtonText fontSize={17} fontFamily="$bold">Save</ButtonText>
           </Button>
-          <Pressable
-            onPress={() => navigation?.navigate("ChangePassword")}
-            backgroundColor="white"
-            borderRadius={10}
-            padding={20}
-            marginBottom={20}
-          >
-            <HStack justifyContent="space-between" width="100%">
-              <Text>Change password</Text>
-              <Icon as={ChevronRightIcon} />
-            </HStack>
-          </Pressable>
-          <Pressable
-            onPress={() => navigation?.navigate("ManageAccount")}
-            backgroundColor="white"
-            borderRadius={10}
-            padding={20}
-          >
-            <HStack justifyContent="space-between" width="100%">
-              <Text>Manage account</Text>
-              <Icon as={ChevronRightIcon} />
-            </HStack>
-          </Pressable>
         </ScrollView>
       </View>
     </SafeAreaView>

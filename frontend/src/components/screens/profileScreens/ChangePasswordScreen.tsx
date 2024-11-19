@@ -115,8 +115,8 @@ const ChangePasswordScreen = () => {
               placeholder="Enter the new password to confirm"
             />
           </View>
-          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"} borderRadius={30}>
-            <ButtonText>
+          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"} borderRadius={30} height={52} marginTop={20}>
+            <ButtonText fontSize={17} fontFamily="$bold">
               Save
             </ButtonText>
           </Button>
