@@ -18,7 +18,8 @@ const resolvers = {
     ...badgesResolvers.Query,
     ...articlesResolvers.Query,
     ...dietLogsResolvers.Query,
-    ...logsForHistoryScreenResolvers.Query
+    ...logsForHistoryScreenResolvers.Query,
+    ...notificationResolvers.Query
   },
   Mutation: {
     ...userResolvers.Mutation,
