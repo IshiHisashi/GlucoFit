@@ -14,6 +14,7 @@ export const notificationTypeDefs = gql`
 
   extend type Query {
     getUserNotifications(user_id: ID!, unreadOnly: Boolean): [Notification]
+    hasUnreadNotification(user_id: ID!): Boolean
   }
 
   extend type Mutation {
@@ -27,5 +28,8 @@ export const notificationTypeDefs = gql`
     markNotificationAsRead(id: ID!): Notification
 
     markAllNotificationsAsRead(user_id: ID!): [Notification]
+
+    deleteNotification(id: ID!): String
+
   }
 `;

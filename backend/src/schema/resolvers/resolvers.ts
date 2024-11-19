@@ -19,7 +19,8 @@ const resolvers = {
     ...articlesResolvers.Query,
     ...dietLogsResolvers.Query,
     ...logsForHistoryScreenResolvers.Query,
-    ...notificationResolvers.Query,
+    ...notificationResolvers.Query
+
   },
   Mutation: {
     ...userResolvers.Mutation,
