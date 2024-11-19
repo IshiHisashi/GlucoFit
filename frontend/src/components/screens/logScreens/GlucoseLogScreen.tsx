@@ -118,7 +118,14 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [timePeriod, setTimePeriod] = useState("Before breakfast");
-  const timePeriods = ["Before breakfast", "After breakfast", "Before lunch", "After lunch", "Before dinner", "After dinner"];
+  const timePeriods = [
+    "Before breakfast",
+    "After breakfast",
+    "Before lunch",
+    "After lunch",
+    "Before dinner",
+    "After dinner",
+  ];
   const [note, setNote] = useState<{ title: string; content: string }>({
     title: "",
     content: "",
@@ -135,20 +142,22 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
     if (fromAuto) {
       setGlucoseLevel(BGL.toString());
     }
-    
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const numGlucoseLevel = Number(glucoseLevel)
+    const numGlucoseLevel = Number(glucoseLevel);
     let thresholds;
     if (timePeriod === "Before breakfast") {
       thresholds = { good: 5.5, mid: 6.9 };
-    } else if (timePeriod === "Before lunch" || timePeriod === "Before dinner") {
+    } else if (
+      timePeriod === "Before lunch" ||
+      timePeriod === "Before dinner"
+    ) {
       thresholds = { good: 6.1, mid: 7.0 };
     } else {
       thresholds = { good: 7.8, mid: 11.0 };
     }
-  
+
     if (numGlucoseLevel <= thresholds.good) {
       setBslGood(true);
       setBslMid(false);
@@ -162,7 +171,7 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
       setBslMid(false);
       setBslHigh(true);
     }
-  }, [timePeriod, glucoseLevel])
+  }, [timePeriod, glucoseLevel]);
 
   // GMT
   console.log(date);
@@ -324,7 +333,7 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(scale, {
-          toValue: 1.1, // Scale up
+          toValue: 1.2, // Scale up
           duration: 1500,
           useNativeDriver: true,
         }),
@@ -357,24 +366,26 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
             bg="$neutralWhite"
           >
             <View style={styles.container}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.pulseCircle,
                   { transform: [{ scale }] },
-                  bslGood ? 
-                    { backgroundColor: '#FAF8FF' } :
-                    bslMid ? 
-                      { backgroundColor: '#FFFAEA' } :
-                      { backgroundColor: '#FFEDE9' }
+                  bslGood
+                    ? { backgroundColor: "#FAF8FF" }
+                    : bslMid
+                      ? { backgroundColor: "#FFFAEA" }
+                      : { backgroundColor: "#FFEDE9" },
                 ]}
               />
-              <Image 
-                source={bslGood ? 
-                  require("../../../../assets/glucoFaces/glucoSmile.png") : 
-                  bslMid ? 
-                    require("../../../../assets/glucoFaces/glucoNeutral.png") :
-                    require("../../../../assets/glucoFaces/glucoFrowned.png")} 
-                alt="Glucofit smily face" 
+              <Image
+                source={
+                  bslGood
+                    ? require("../../../../assets/glucoFaces/glucoSmile.png")
+                    : bslMid
+                      ? require("../../../../assets/glucoFaces/glucoNeutral.png")
+                      : require("../../../../assets/glucoFaces/glucoFrowned.png")
+                }
+                alt="Glucofit smily face"
                 style={styles.image}
               />
             </View>
@@ -455,17 +466,17 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     width: 220,
     height: 220,
-    marginBottom: 20
+    marginBottom: 20,
   },
   pulseCircle: {
-    position: 'absolute',
+    position: "absolute",
     width: 210,
     height: 210,
-    borderRadius: 105, 
+    borderRadius: 105,
   },
   image: {
     width: 185,

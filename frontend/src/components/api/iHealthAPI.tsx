@@ -1,6 +1,6 @@
-import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
-import { iHealthDeviceManagerModule } from '@ihealth/ihealthlibrary-react-native';
-const TAG = 'iHealthAPI';
+import { DeviceEventEmitter, EmitterSubscription } from "react-native";
+import { iHealthDeviceManagerModule } from "@ihealth/ihealthlibrary-react-native";
+const TAG = "iHealthAPI";
 interface AuthenticateEvent {
   [key: string]: any;
 }

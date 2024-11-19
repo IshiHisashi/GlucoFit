@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
@@ -13,7 +20,6 @@ type DevAndAppScreenNavigationProps = NativeStackNavigationProp<
 >;
 
 const DevAndAppScreen = () => {
-
   const { userId } = useContext(AuthContext);
   const navigation = useNavigation<DevAndAppScreenNavigationProps>();
 
@@ -31,7 +37,7 @@ const DevAndAppScreen = () => {
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default DevAndAppScreen;
