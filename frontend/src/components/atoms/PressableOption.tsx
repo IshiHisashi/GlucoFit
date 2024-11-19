@@ -6,11 +6,18 @@ type InputProps = {
   value: string;
   selectedOption: string | number | boolean | undefined;
   onSelect: (value: string) => void;
-  withoutCheck: boolean
+  withoutCheck?: boolean;
 };
 
 const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {
-  const { children, selectedOption, onSelect, value, label, withoutCheck = false } = props;
+  const {
+    children,
+    selectedOption,
+    onSelect,
+    value,
+    label,
+    withoutCheck = false,
+  } = props;
   const isSelected = selectedOption === value;
 
   return (
@@ -26,10 +33,10 @@ const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {
       <View
         flexDirection="row"
         alignItems="center"
-        justifyContent={ withoutCheck ? "center" : "space-between" }
+        justifyContent={withoutCheck ? "center" : "space-between"}
       >
         <Text color={isSelected ? "#3100AD" : "black"}>{label}</Text>
-        {( isSelected && !withoutCheck ) && (
+        {isSelected && !withoutCheck && (
           <Image
             source={require("../../../assets/checkmark.png")}
             resizeMode="contain"

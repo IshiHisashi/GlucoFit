@@ -36,7 +36,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
         progressValue={62.5}
         onPress={handleNext}
         character
-        disabled={false}
+        disabled={medicineName && medicineTime ? false : true}
       >
         <View width="100%" flexDirection="column" gap={16}>
           <HStack>
@@ -44,7 +44,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
               label="Medicine Name"
               value={medicineName}
               onChangeText={setMedicineName}
-              placeHolder="Metformin"
+              placeholder="Metformin"
               isRequired={true}
               isDisabled={false}
               isInvalid={false}
@@ -55,6 +55,7 @@ const MedicineListScreen: React.FC<Props> = ({ navigation }) => {
             onChange={setMedicineTime}
             value={medicineTime}
             placeHolder="Add time"
+            isRequired={true}
           />
         </View>
       </OnbordingLayout>

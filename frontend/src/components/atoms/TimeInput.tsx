@@ -1,6 +1,5 @@
-import React, { FC, useState, type PropsWithChildren } from "react";
+import React, { useState, type PropsWithChildren } from "react";
 import {
-  HStack,
   VStack,
   View,
   Text,
@@ -9,11 +8,12 @@ import {
   FormControl,
 } from "@gluestack-ui/themed";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { PlusCustom, PlusCircleCustom } from "../svgs/svgs";
+import { PlusCircleCustom } from "../svgs/svgs";
 
 type TimeInputProps = {
   value?: string | Date;
   isDisabled?: boolean;
+  isRequired?: boolean;
   labelText?: string;
   bottomText?: string;
   onChange: React.Dispatch<React.SetStateAction<string | Date>>;
@@ -22,8 +22,15 @@ type TimeInputProps = {
 };
 
 const TimeInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
-  const { value, isDisabled, labelText, onChange, onPress, placeHolder } =
-    props;
+  const {
+    value,
+    isDisabled,
+    isRequired,
+    labelText,
+    onChange,
+    onPress,
+    placeHolder,
+  } = props;
 
   const [isPressed, setIsPressed] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -53,10 +60,17 @@ const TimeInput: React.FC<PropsWithChildren<TimeInputProps>> = (props) => {
 
   return (
     <View flexDirection="column" gap={8}>
-      <Text color="black" fontSize={14} fontFamily="$bold">
-        {labelText}
-      </Text>
-      <FormControl isDisabled={isDisabled} flex={1}>
+      <View flexDirection="row" gap={4}>
+        <Text color="black" fontSize={14} fontFamily="$bold">
+          {labelText}
+        </Text>
+        {isRequired && (
+          <Text color="$error50" fontSize={14} fontFamily="$bold">
+            *
+          </Text>
+        )}
+      </View>
+      <FormControl isDisabled={isDisabled} isRequired={isRequired} flex={1}>
         <Input
           variant="outline"
           size="md"
