@@ -20,6 +20,7 @@ import { InfoCustom } from "../svgs/svgs";
 interface InputFieldGeneralProps {
   value: string;
   onChangeText: (text: string) => void;
+  onSubmitEditing?: () => void;
   isRequired: boolean;
   isDisabled: boolean;
   isInvalid: boolean;
@@ -29,6 +30,8 @@ interface InputFieldGeneralProps {
   placeholder?: string;
   iconLeft?: FC<SvgProps>;
   iconRight?: FC<SvgProps>;
+  onIconLeftPress?: () => void;
+  onIconRightPress?: () => void;
   unit?: string;
   errorMessage?: string;
 }
@@ -37,6 +40,7 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
   const {
     value,
     onChangeText,
+    onSubmitEditing,
     isRequired,
     isDisabled,
     isInvalid,
@@ -46,6 +50,8 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
     placeholder,
     iconLeft: IconComponentLeft,
     iconRight: IconComponentRight,
+    onIconLeftPress,
+    onIconRightPress,
     unit,
     errorMessage,
   } = props;
@@ -104,12 +110,18 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
           >
             {IconComponentLeft && (
               <InputSlot>
-                <IconComponentLeft color={getIconColor()} />
+                <Pressable
+                  onPress={onIconLeftPress}
+                  // disabled={!onIconRightPress}
+                >
+                  <IconComponentLeft color={getIconColor()} />
+                </Pressable>
               </InputSlot>
             )}
             <InputField
               value={value}
               onChangeText={onChangeText}
+              onSubmitEditing={onSubmitEditing}
               autoCapitalize="none"
               type={type || "text"}
               keyboardType={keyboardType}
@@ -129,7 +141,12 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
             {(IconComponentRight || unit) && (
               <InputSlot>
                 {IconComponentRight && (
-                  <IconComponentRight color={getIconColor()} />
+                  <Pressable
+                    onPress={onIconRightPress}
+                    // disabled={!onIconRightPress}
+                  >
+                    <IconComponentRight color={getIconColor()} />
+                  </Pressable>
                 )}
                 {unit && (
                   <Text

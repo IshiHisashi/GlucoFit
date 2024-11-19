@@ -3,6 +3,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 
 export const client = new ApolloClient({
-  uri: "http://10.128.232.178:3000/graphql",
+  uri: "http://192.168.1.64:3000/graphql",
   cache: new InMemoryCache(),
 });

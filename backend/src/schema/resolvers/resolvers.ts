@@ -6,7 +6,7 @@ import medicineLogResolvers from "./MedicineLogResolvers";
 import badgesResolvers from "./BadgesResolvers";
 import articlesResolvers from "./ArticlesResolvers";
 import dietLogsResolvers from "./DietLogsResolvers";
-import logsForHistoryScreenResolvers from "./logsForHistoryScreenResolvers"
+import logsForHistoryScreenResolvers from "./logsForHistoryScreenResolvers";
 import notificationResolvers from "./NotificationResolvers";
 
 const resolvers = {
@@ -20,6 +20,7 @@ const resolvers = {
     ...dietLogsResolvers.Query,
     ...logsForHistoryScreenResolvers.Query,
     ...notificationResolvers.Query
+
   },
   Mutation: {
     ...userResolvers.Mutation,
@@ -29,7 +30,7 @@ const resolvers = {
     ...badgesResolvers.Mutation,
     ...articlesResolvers.Mutation,
     ...dietLogsResolvers.Mutation,
-    ...notificationResolvers.Mutation
+    ...notificationResolvers.Mutation,
   },
 };
 
