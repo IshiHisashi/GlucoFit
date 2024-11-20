@@ -96,9 +96,10 @@ const MedicationScreen = () => {
         )}
         <Button
           onPress={() => navigation?.navigate("AddMedecine")}
-          bgColor="$blue600"
+          bgColor="#4800FF"
           borderRadius={30}
           margin={20}
+          height={52}
         >
           <ButtonText color="white">Add Medicine</ButtonText>
         </Button>

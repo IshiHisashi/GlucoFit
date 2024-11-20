@@ -22,6 +22,8 @@ import HealthDataScreen from "../screens/profileScreens/HealthDataScreen";
 import DevAndAppScreen from "../screens/profileScreens/DevAndAppScreen";
 import AddMedecineScreen from "../screens/profileScreens/AddMedicineScreen";
 import NotificationScreen from "../screens/NotificationScreen";
+import NotificationSettingsScreen from "../screens/profileScreens/NotificationSettings";
+import SecurityScreen from "../screens/profileScreens/Security";
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -121,6 +123,16 @@ const AppStack: React.FC = () => (
     <Stack.Screen
       name="Notifications"
       component={NotificationScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="NotifSettings"
+      component={NotificationSettingsScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Security"
+      component={SecurityScreen}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

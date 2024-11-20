@@ -54,8 +54,8 @@ const ManageAccountScreen = () => {
           // rightIconOnPress={() => {}}
         />
         <ScrollView padding={20}>
-          <Button onPress={SignOut}>
-            <ButtonText>Sign out</ButtonText>
+          <Button onPress={SignOut} height={52} borderRadius={30}>
+            <ButtonText fontSize={17} fontFamily="$bold">Sign out</ButtonText>
           </Button>
         </ScrollView>
       </View>

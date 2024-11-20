@@ -237,7 +237,7 @@ const HealthDataScreen = () => {
               unit="kg"
             />
           </View>
-          <Button onPress={handleSubmit} isDisabled={!isChanged}>
+          <Button onPress={handleSubmit} isDisabled={!isChanged} borderRadius={52} height={52} backgroundColor="#4800FF">
             <ButtonText>Save</ButtonText>
           </Button>
         </ScrollView>
