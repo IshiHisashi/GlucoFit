@@ -30,7 +30,7 @@ const App: React.FC = () => {
     const prepareApp = async () => {
       if (!fontsLoaded) return;
 
-      await new Promise((resolve) => setTimeout(resolve, 3500));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setSplashVisible(false);
       SplashScreen.hideAsync();
     };
@@ -44,6 +44,7 @@ const App: React.FC = () => {
         <LottieView
           source={require("./src/components/animations/logo-animation.json")}
           autoPlay
+          speed={1.2}
           loop={false}
           style={{ flex: 1, backgroundColor: "#4800FF" }}
         />
