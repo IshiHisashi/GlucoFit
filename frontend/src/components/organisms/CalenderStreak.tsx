@@ -1,9 +1,10 @@
 import { useQuery } from "@apollo/client";
 import { View, Text } from "@gluestack-ui/themed";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { GET_ALL_DATES_WITH_LOG_IN_A_MONTH } from "../../utils/query/badgesScreenQueries";
 import { AuthContext } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface LogDates {
   getTestResultsDatesByMonth: string[];
@@ -32,10 +33,17 @@ const CalenderStreak: React.FC = () => {
     console.log(`Current Month: ${currentMonth}, Year: ${currentYear}`);
   };
 
-  const { loading, error, data } = useQuery(GET_ALL_DATES_WITH_LOG_IN_A_MONTH, {
+  const { loading, error, data, refetch } = useQuery(GET_ALL_DATES_WITH_LOG_IN_A_MONTH, {
     variables: { userId: userId, year: currentYear, month: currentMonth },
+    fetchPolicy: "cache-and-network",
   });
   console.log(data);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   useEffect(() => {
     if (data?.getTestResultsDatesByMonth) {

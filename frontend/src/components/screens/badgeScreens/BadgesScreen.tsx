@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  Modal,
   Button,
   Pressable,
   HStack,
@@ -11,7 +10,7 @@ import {
   Center,
   ButtonText,
 } from "@gluestack-ui/themed";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
 import {
   GET_NUM_FAVORITE_ARTICLE,
@@ -21,9 +20,10 @@ import {
 } from "../../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../../context/AuthContext";
 import { BlurView } from "@react-native-community/blur";
-import { Alert, Share, StyleSheet } from "react-native";
+import { Alert, Share, StyleSheet, Modal } from "react-native";
 import GlucoButton from "../../atoms/GlucoButton";
 import { AngleRightCustom, ShareCustom } from "../../svgs/svgs";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Badge {
   __typename: string;
@@ -45,18 +45,25 @@ interface BadgeImages {
 }
 
 interface badgeScreenTypes {
-  setBackGroundTinted: any
+  setBackGroundTinted: any;
 }
 
-const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
+const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<string>();
   const { userId } = useContext(AuthContext);
 
-  const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
+  const { loading, error, data, refetch } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
     variables: { getUserBadgeId: userId },
+    fetchPolicy: "cache-and-network",
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const [loadStreakData, { data: streakData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
@@ -232,7 +239,12 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                     marginBottom={14}
                   />
                   <Center height={40}>
-                    <Text color="black" fontSize={14} textAlign="center" fontFamily="$bold" >
+                    <Text
+                      color="black"
+                      fontSize={14}
+                      textAlign="center"
+                      fontFamily="$bold"
+                    >
                       {b.badgeId.badge_name}
                     </Text>
                   </Center>
@@ -302,11 +314,16 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           }
         })}
       </View>
-      <Modal isOpen={modalVisible}  onClose={() => setModalVisible(false)}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
         <BlurView
           style={StyleSheet.absoluteFill}
           blurType="dark"
-          blurAmount={3} 
+          blurAmount={3}
           reducedTransparencyFallbackColor="gray"
         />
         <View
@@ -330,12 +347,16 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                   <Button
                     onPress={() => setModalVisible(false)}
                     backgroundColor="transparent"
-                    padding={10}
                     marginTop={-70}
                     position="absolute"
                     bottom={330}
                   >
-                    <ButtonText position="relative" top={0} left={150}>
+                    <ButtonText
+                      position="relative"
+                      padding={20}
+                      top={-10}
+                      left={150}
+                    >
                       ✖️
                     </ButtonText>
                   </Button>
@@ -378,8 +399,15 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                   >
                     {b.badgeId.badge_name}
                   </Text>
-                  <Text textAlign="center" marginTop={10} marginBottom={30} paddingHorizontal={10}>
-                    {b.achieved === true ? b.badgeId.unlocked : b.badgeId.locked}
+                  <Text
+                    textAlign="center"
+                    marginTop={10}
+                    marginBottom={30}
+                    paddingHorizontal={10}
+                  >
+                    {b.achieved === true
+                      ? b.badgeId.unlocked
+                      : b.badgeId.locked}
                   </Text>
                   {b.achieved ? (
                     <View>
@@ -398,7 +426,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                       </Text>
                     </View>
                   )}
-                  <GlucoButton 
+                  <GlucoButton
                     buttonType="primary"
                     text="Share"
                     isFocused={false}

@@ -3,6 +3,7 @@ import {
   Button,
   ButtonIcon,
   ButtonText,
+  Center,
   CheckIcon,
   Checkbox,
   CheckboxGroup,
@@ -29,6 +30,9 @@ import deviceAPIs from "../../api/getAPIs";
 import { gql, useMutation } from "@apollo/client";
 import { Modal, StyleSheet } from "react-native";
 import { AuthContext } from "../../../context/AuthContext";
+import GlucoButton from "../../atoms/GlucoButton";
+import { CloudCustom } from "../../svgs/svgs";
+import { BlurView } from "@react-native-community/blur";
 
 type OfflineLogsScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -197,14 +201,14 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
     }
   };
 
-  // This is data for Home screen modal test purpose . Please don't delete this.
+  // This is fake data for Home screen modal test purpose. Please don't delete this.
   const fakeData = [
     {
       id: "670b2125cb185c3905515da2",
       badge_name: "fake badge",
       badge_desc:
         "fake description here. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda, minus eaque vero quisquam tenetur aut.",
-      unlocked: "unlock message here!" 
+      unlocked: "unlock message here!",
     },
   ];
 
@@ -230,49 +234,89 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: "white" }}>
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
-          text="Offline logging"
-          rightIconOnPress={() => {}}
+          text="Upload"
+          // rightIconOnPress={() => {}}
         />
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={styles.viewStyle}>
+          <View height={"$full"} flex={1} justifyContent="center">
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="dark"
+              blurAmount={2}
+              reducedTransparencyFallbackColor="gray"
+            />
+            <View
+              backgroundColor="white"
+              marginHorizontal={40}
+              borderRadius={12}
+              padding={24}
+              paddingTop={0}
+            >
+              <Center>
+                <Button
+                  onPress={() => setModalVisible(false)}
+                  backgroundColor="transparent"
+                >
+                  <ButtonText
+                    position="relative"
+                    top={0}
+                    left={110}
+                    padding={20}
+                  >
+                    ✖️
+                  </ButtonText>
+                </Button>
                 <Image
                   source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
-                  style={{ width: 30, height: 30 }}
-                  alt="loading"
+                  width={70}
+                  height={70}
+                  marginBottom={20}
+                  alt="Success mark"
                 />
-                <Text>Yout readings were successfully uploaded!</Text>
-              </View>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => backToHome()}
-              >
-                <Text style={styles.textStyle}>Back to Home</Text>
-              </Pressable>
+                <Text fontSize={17} fontFamily="$bold" textAlign="center">
+                  Your readings were successfully uploaded!
+                </Text>
+                <GlucoButton
+                  buttonType="primary"
+                  text="Back to Home"
+                  isFocused={false}
+                  isDisabled={false}
+                  onPress={() => backToHome()}
+                  style={{
+                    width: 214,
+                    height: 48,
+                    marginBottom: 12,
+                    marginTop: 20,
+                  }}
+                />
+              </Center>
             </View>
           </View>
         </Modal>
 
-        <ScrollView scrollIndicatorInsets={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          borderTopColor="#ECE5FF"
+          borderTopWidth={1}
+        >
           <CheckboxGroup
             value={values}
             onChange={(keys) => {
               handleChange(keys);
             }}
           >
-            <View flexDirection="column" gap={20} padding={20}>
+            <View flexDirection="column" gap={30} padding={20}>
               {offLineData.length > 0 ? (
                 offLineData.map((data) => {
                   // If the dates array doens't contain anything (which means that this data is the first data) or data's date is different from the first date of the array, add the date to the dates array and return a date label and data.
@@ -287,7 +331,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
                     return (
                       <View
                         key={data.dataID}
-                        borderColor="#ccc"
+                        borderColor="#ECE5FF"
                         borderWidth={1}
                         rounded={10}
                         paddingTop={20}
@@ -303,7 +347,11 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
                           String(today.getFullYear()) ===
                             data.data_measure_time.slice(0, 4) ? (
                             <View marginBottom={20}>
-                              <Text fontSize={20} color="black">
+                              <Text
+                                fontSize={20}
+                                fontFamily="$bold"
+                                color="black"
+                              >
                                 Today
                               </Text>
                               <Text fontSize={12}>{datesArray[0]}</Text>
@@ -318,14 +366,23 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
                             String(yesterday.getFullYear()) ===
                               data.data_measure_time.slice(0, 4) ? (
                             <View marginBottom={20}>
-                              <Text fontSize={20} color="black">
+                              <Text
+                                fontSize={20}
+                                fontFamily="$bold"
+                                color="black"
+                              >
                                 Yesterday
                               </Text>
                               <Text fontSize={12}>{datesArray[0]}</Text>
                             </View>
                           ) : (
                             // The other dates
-                            <Text fontSize={20} color="black" marginBottom={20}>
+                            <Text
+                              fontSize={20}
+                              fontFamily="$bold"
+                              color="black"
+                              marginBottom={20}
+                            >
                               {datesArray[0]}
                             </Text>
                           )
@@ -341,19 +398,42 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
                               return (
                                 <View
                                   key={dataInside.dataID}
-                                  paddingHorizontal={10}
+                                  paddingLeft={10}
                                   paddingVertical={20}
                                   paddingTop={15}
                                   borderTopWidth={1}
-                                  borderTopColor="lightgrey"
+                                  borderTopColor="#EEEEEE"
+                                  width={"$full"}
                                 >
-                                  <Checkbox value={dataInside.dataID}>
-                                    <CheckboxIndicator mr="$2" bgColor="white">
-                                      <CheckboxIcon as={CheckIcon} />
+                                  <Checkbox value={dataInside.dataID} size="lg">
+                                    <CheckboxIndicator
+                                      marginRight={16}
+                                      bgColor="white"
+                                      borderColor={
+                                        values.includes(dataInside.dataID)
+                                          ? "#3100AD"
+                                          : "#999999"
+                                      }
+                                    >
+                                      <CheckboxIcon
+                                        as={CheckIcon}
+                                        color="#3100AD"
+                                      />
                                     </CheckboxIndicator>
-                                    <CheckboxLabel marginTop={5}>
-                                      <HStack alignItems="center" gap={10}>
-                                        <Text fontSize={14} color="black">
+                                    <CheckboxLabel marginTop={5} flex={1}>
+                                      <HStack
+                                        flex={1}
+                                        flexWrap="nowrap"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        width={"$full"}
+                                      >
+                                        <Text
+                                          fontSize={14}
+                                          color="black"
+                                          fontFamily="$bold"
+                                          flexGrow={1}
+                                        >
                                           {formatDate(
                                             dataInside.data_measure_time
                                           )}
@@ -363,12 +443,20 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
                                             fontSize={22}
                                             color="black"
                                             textAlign="right"
+                                            fontFamily="$bold"
+                                            marginBottom={-6}
                                           >
                                             {Math.round(
                                               dataInside.data_value * 0.555
                                             ) / 10}
                                           </Text>
-                                          <Text fontSize={12}>mmol/L</Text>
+                                          <Text
+                                            fontSize={12}
+                                            textAlign="right"
+                                            color="#5E5E5E"
+                                          >
+                                            mmol/L
+                                          </Text>
                                         </VStack>
                                       </HStack>
                                     </CheckboxLabel>
@@ -392,16 +480,17 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
             </View>
           </CheckboxGroup>
         </ScrollView>
-        <Button
-          borderRadius={20}
-          margin={20}
-          isDisabled={values.length === 0}
-          backgroundColor={values.length === 0 ? "$coolGray400" : "$blue600"}
-          onPress={() => handleSubmit()}
-        >
-          <ButtonIcon as={AddIcon} />
-          <ButtonText>Upload selected readings</ButtonText>
-        </Button>
+        <Center paddingVertical={14}>
+          <GlucoButton
+            buttonType="primary"
+            text="Upload offline readings"
+            isFocused={false}
+            isDisabled={values.length === 0}
+            onPress={() => handleSubmit()}
+            iconLeft={CloudCustom}
+            style={{ width: 347, height: 52, marginBottom: 12 }}
+          />
+        </Center>
       </View>
     </SafeAreaView>
   );

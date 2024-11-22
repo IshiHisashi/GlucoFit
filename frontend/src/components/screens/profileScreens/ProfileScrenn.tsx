@@ -81,7 +81,12 @@ const ProfileScreen = () => {
             paddingVertical={10}
             marginBottom={20}
           >
-            <Text paddingVertical={15} fontSize={20} fontFamily="$bold" color="black">
+            <Text
+              paddingVertical={15}
+              fontSize={20}
+              fontFamily="$bold"
+              color="black"
+            >
               Health
             </Text>
             <Pressable
@@ -94,7 +99,7 @@ const ProfileScreen = () => {
                 <Text fontSize={17} fontFamily="$semibold" color="black">
                   Health Data
                 </Text>
-                <Icon as={ChevronRightIcon} size="xl"/>
+                <Icon as={ChevronRightIcon} size="xl" />
               </HStack>
             </Pressable>
             <Pressable
@@ -129,7 +134,12 @@ const ProfileScreen = () => {
             paddingVertical={10}
             marginBottom={40}
           >
-            <Text paddingVertical={15} fontSize={20} fontFamily="$bold" color="black">
+            <Text
+              paddingVertical={15}
+              fontSize={20}
+              fontFamily="$bold"
+              color="black"
+            >
               General
             </Text>
             <Pressable
@@ -142,7 +152,7 @@ const ProfileScreen = () => {
                 <Text fontSize={17} fontFamily="$semibold" color="black">
                   Notification
                 </Text>
-                <Icon as={ChevronRightIcon} size="xl"/>
+                <Icon as={ChevronRightIcon} size="xl" />
               </HStack>
             </Pressable>
             <Pressable

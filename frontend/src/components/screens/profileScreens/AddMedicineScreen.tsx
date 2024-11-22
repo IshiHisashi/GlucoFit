@@ -189,7 +189,14 @@ const AddMedecineScreen = () => {
           <View marginTop={20}>
             <LogsTable pickerData={pickerData} tableType="pickers" />
           </View>
-          <Button onPress={handleSubmit} isDisabled={!isReady} marginTop={20} borderRadius={30} height={52} backgroundColor="#4800FF">
+          <Button
+            onPress={handleSubmit}
+            isDisabled={!isReady}
+            marginTop={20}
+            borderRadius={30}
+            height={52}
+            backgroundColor="#4800FF"
+          >
             <ButtonText>Save</ButtonText>
           </Button>
         </ScrollView>

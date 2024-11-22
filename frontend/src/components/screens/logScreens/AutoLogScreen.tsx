@@ -1,10 +1,10 @@
 import {
-  AddIcon,
   Button,
-  ButtonIcon,
   ButtonText,
-  EditIcon,
+  Center,
+  HStack,
   Text,
+  VStack,
   View,
 } from "@gluestack-ui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -22,6 +22,10 @@ import deviceAPIs from "../../api/getAPIs";
 import { Modal, StyleSheet } from "react-native";
 import { Image } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
+import GlucoButton from "../../atoms/GlucoButton";
+import { CloudCustom, EditCustom } from "../../svgs/svgs";
+import { BlurView } from "@react-native-community/blur";
+import LottieView from "lottie-react-native";
 
 type AutoLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -172,175 +176,259 @@ const AutoLogScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      <View height="$full">
+    <SafeAreaView style={{ backgroundColor: "white" }}>
+      <View height="$full" backgroundColor="white">
         <HeaderWithBackButton
           navigation={navigation}
-          text="Log automatically"
-          rightIconOnPress={() => {}}
+          text="Measure"
+          // rightIconOnPress={() => {}}
         />
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+          <View height={"$full"} flex={1} justifyContent="center">
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="dark"
+              blurAmount={2}
+              reducedTransparencyFallbackColor="gray"
+            />
+            <View
+              backgroundColor="white"
+              marginHorizontal={40}
+              borderRadius={12}
+              padding={24}
+              paddingTop={0}
+            >
               {parsedRes?.action === "ACTION_GET_BLOOD" ? (
                 // Calculating modal
-                <View style={styles.viewStyle}>
-                  <Image
-                    source={require("../../../../assets/autoLogImgs/loading.png")}
-                    style={{ marginBottom: 20, width: 30, height: 30 }}
-                    alt="loading"
-                  />
-                  <Text>Calculating your blood glucose level...</Text>
-                </View>
+                <Center paddingTop={24}>
+                  <Center
+                    width={74}
+                    height={74}
+                    borderRadius={40}
+                    backgroundColor="#FAF8FF"
+                    marginBottom={16}
+                    borderWidth={10}
+                    borderColor="#ECE5FF"
+                  >
+                    <LottieView
+                      source={require("../../animations/loadingLottie.json")}
+                      autoPlay
+                      loop
+                      style={{ width: 70, height: 70 }}
+                    />
+                  </Center>
+                  <Text fontSize={13} textAlign="center">
+                    Calculating your blood glucose level...
+                  </Text>
+                </Center>
               ) : parsedRes?.action === "ACTION_RESULT" ? (
                 // Result modal
-                <View style={styles.viewStyle}>
+                <Center paddingTop={24}>
                   <Image
-                    source={require("../../../../assets/autoLogImgs/gluco-chan.png")}
-                    style={{ marginBottom: 20, width: 44, height: 40 }}
+                    source={require("../../../../assets/glucoFaces/glucoSmile.png")}
+                    width={100}
+                    height={100}
+                    marginBottom={20}
                     alt="smily face"
                   />
-                  <Text>{BGL} mmol/L</Text>
-                  <Text style={styles.modalText}>Updating your reading...</Text>
-                </View>
+                  <HStack>
+                    <Text fontSize={22} fontFamily="$bold">
+                      {BGL}
+                    </Text>
+                    <Text fontSize={13} marginTop={9} marginLeft={4}>
+                      mmol/L
+                    </Text>
+                  </HStack>
+                  <Text fontSize={13}>Your blood glucose level updated.</Text>
+                  <GlucoButton
+                    buttonType="primary"
+                    text="Next"
+                    isFocused={false}
+                    isDisabled={false}
+                    onPress={() => moveToResult()}
+                    style={{
+                      width: 214,
+                      height: 48,
+                      marginBottom: 12,
+                      marginTop: 20,
+                    }}
+                  />
+                </Center>
               ) : (
                 // Error modal for measurement
-                <View style={styles.viewStyle}>
+                <Center marginTop={-10}>
+                  <Button
+                    onPress={() => setModalVisible(false)}
+                    backgroundColor="transparent"
+                  >
+                    <ButtonText
+                      position="relative"
+                      top={10}
+                      left={110}
+                      padding={20}
+                    >
+                      ✖️
+                    </ButtonText>
+                  </Button>
                   <Image
-                    source={require("../../../../assets/autoLogImgs/error-measure.png")}
-                    style={{ marginBottom: 20, width: 30, height: 30 }}
-                    alt="error icon"
+                    source={require("../../../../assets/glucoFaces/glucoFrowned.png")}
+                    marginBottom={20}
+                    width={100}
+                    height={100}
+                    alt="Gluco frowned face"
                   />
-                  <Text>
-                    Oops! We couldn't process your reading.The test strip may be
-                    contaminated or not have enough blood sample. Please try
-                    again.
+                  <Text
+                    fontSize={17}
+                    fontFamily="$bold"
+                    textAlign="center"
+                    marginHorizontal={24}
+                    marginBottom={12}
+                  >
+                    Oops! We couldn't process your reading.
                   </Text>
-                </View>
+                  <Text fontSize={13} textAlign="center">
+                    The test strip may be contaminated or not have enough blood
+                    sample. Please insert a new strip and try again.
+                  </Text>
+                  <GlucoButton
+                    buttonType="primary"
+                    text="Retry"
+                    isFocused={false}
+                    isDisabled={false}
+                    onPress={() => setModalVisible(false)}
+                    style={{
+                      width: 214,
+                      height: 48,
+                      marginBottom: 12,
+                      marginTop: 20,
+                    }}
+                  />
+                </Center>
               )}
-
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => moveToResult()}
-              >
-                <Text style={styles.textStyle}>Next</Text>
-              </Pressable>
             </View>
           </View>
         </Modal>
-        {parsedRes?.action === "ACTION_STRIP_IN" ||
-        parsedRes?.action === "ACTION_GET_BLOOD" ||
-        parsedRes?.action === "ACTION_RESULT" ? (
-          // Third Screen
-          <View style={styles.viewStyle}>
-            <Image
-              source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
-              style={{ marginBottom: 20, width: 200, height: 200 }}
-              alt="check mark ready to measure"
-            />
-            <Text>Strip is in place. Waiting for your blood sample.</Text>
-          </View>
-        ) : bluetoothState === "PoweredOn" &&
-          scanDevices[0]?.mac &&
-          onConnectedState.mac ? (
-          parsedRes?.action === "ACTION_STRIP_OUT" ? (
-            // Strip Out Screen
+        <View
+          borderTopWidth={1}
+          borderTopColor="#ECE5FF"
+          flex={1}
+          flexDirection="column"
+          justifyContent="space-between"
+        >
+          {parsedRes?.action === "ACTION_STRIP_IN" ||
+          parsedRes?.action === "ACTION_GET_BLOOD" ||
+          parsedRes?.action === "ACTION_RESULT" ? (
+            // Third Screen
             <View style={styles.viewStyle}>
               <Image
-                source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
                 style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="error icon"
+                alt="check mark ready to measure"
               />
-              <Text>Strip is not inserted properly.</Text>
-              <Text>Please insert it again.</Text>
-            </View>
-          ) : parsedRes?.action === "ACTION_ERROR_BG" &&
-            parsedRes.ERROR_NUM_BG === 3 ? (
-            // Strip already used Screen
-            <View style={styles.viewStyle}>
-              <Image
-                source={require("../../../../assets/autoLogImgs/strip-error.png")}
-                style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="error icon"
-              />
-              <Text>
-                Strip is already used or unknown moisture detected, discard the
-                test strip and repeat the test with a new strip.
+              <Text style={styles.regularText}>Strip is in place. </Text>
+              <Text style={styles.regularText}>
+                Waiting for your blood sample.
               </Text>
             </View>
+          ) : bluetoothState === "PoweredOn" &&
+            scanDevices[0]?.mac &&
+            onConnectedState.mac ? (
+            parsedRes?.action === "ACTION_STRIP_OUT" ? (
+              // Strip Out Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="error icon"
+                />
+                <Text style={styles.regularText}>
+                  Strip is not inserted properly.
+                </Text>
+                <Text style={styles.regularText}>Please insert it again.</Text>
+              </View>
+            ) : parsedRes?.action === "ACTION_ERROR_BG" &&
+              parsedRes.ERROR_NUM_BG === 3 ? (
+              // Strip already used Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="error icon"
+                />
+                <Text style={styles.regularText}>
+                  Strip is already used or unknown moisture detected.
+                </Text>
+                <Text style={styles.regularText}>
+                  Discard the current test strip and restart the test with a new
+                  strip.
+                </Text>
+              </View>
+            ) : (
+              // Second Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/insert-strip.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="device with strip in"
+                />
+                <Text style={styles.regularText}>
+                  Insert test strip in the glucometer and prepare your blood
+                  sample.
+                </Text>
+              </View>
+            )
           ) : (
-            // Second Screen
+            // First Screen
             <View style={styles.viewStyle}>
               <Image
-                source={require("../../../../assets/autoLogImgs/insert-strip.png")}
+                source={require("../../../../assets/autoLogImgs/connect-device.png")}
                 style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="device with strip in"
+                alt="device illustration"
               />
-              <Text>
-                Insert test strip in the glucometer and prepare your blood
-                sample.
+              <Text style={styles.regularText}>
+                Make sure the bluetooth is turned on and the glucometer is
+                nearby.
               </Text>
             </View>
-          )
-        ) : (
-          // First Screen
-          <View style={styles.viewStyle}>
-            <Image
-              source={require("../../../../assets/autoLogImgs/connect-device.png")}
-              style={{ marginBottom: 20, width: 200, height: 200 }}
-              alt="device illustration"
+          )}
+          <VStack marginBottom={48} alignItems="center">
+            <GlucoButton
+              buttonType="primary"
+              text="Upload offline readings"
+              isFocused={false}
+              isDisabled={!parsedRes?.action}
+              onPress={() => moveToOfflineLogs()}
+              iconLeft={CloudCustom}
+              style={{ width: 347, height: 48, marginBottom: 12 }}
             />
-            <Text>
-              Make sure the bluetooth is turned on and the glucometer is nearby.
-            </Text>
-          </View>
-        )}
-        <Button
-          size="md"
-          variant="solid"
-          marginHorizontal={20}
-          marginTop={20}
-          marginBottom={10}
-          borderRadius={20}
-          disabled={!parsedRes?.action}
-          onPress={() => moveToOfflineLogs()}
-          backgroundColor={!parsedRes?.action ? "$coolGray400" : "$blue600"}
-        >
-          <ButtonIcon as={AddIcon} />
-          <ButtonText>Upload offline readings</ButtonText>
-        </Button>
-        <Button
-          size="md"
-          variant="outline"
-          marginHorizontal={20}
-          borderRadius={20}
-          onPress={() => moveToManualEntry()}
-        >
-          <ButtonText>Manually log your readings</ButtonText>
-          <ButtonIcon as={EditIcon} />
-        </Button>
+            <GlucoButton
+              buttonType="secondary"
+              text="Manually log your readings"
+              isFocused={false}
+              isDisabled={false}
+              onPress={() => moveToManualEntry()}
+              iconLeft={EditCustom}
+              style={{ width: 347, height: 48, marginBottom: 12 }}
+            />
+          </VStack>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  containerStyle: {
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
   viewStyle: {
     alignItems: "center",
-    paddingTop: 40,
+    flex: 1,
+    justifyContent: "center",
   },
   buttonStyle: {
     backgroundColor: "#2089dc",
@@ -349,25 +437,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   centeredView: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   modalView: {
-    margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 12,
     padding: 20,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+  },
+  modalViewStyle: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
   },
   button: {
     borderRadius: 20,
@@ -387,6 +469,14 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    marginHorizontal: 24,
+    textAlign: "center",
+    fontSize: 13,
+  },
+  regularText: {
+    fontSize: 16,
+    color: "#313131",
+    marginHorizontal: 40,
     textAlign: "center",
   },
 });

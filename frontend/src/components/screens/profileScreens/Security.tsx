@@ -47,8 +47,10 @@ const SecurityScreen = () => {
             marginBottom={20}
           >
             <HStack justifyContent="space-between" width="100%">
-              <Text fontSize={17} fontFamily="$semibold">Change password</Text>
-              <Icon as={ChevronRightIcon} size="xl"/>
+              <Text fontSize={17} fontFamily="$semibold">
+                Change password
+              </Text>
+              <Icon as={ChevronRightIcon} size="xl" />
             </HStack>
           </Pressable>
           <Pressable
@@ -58,8 +60,10 @@ const SecurityScreen = () => {
             padding={20}
           >
             <HStack justifyContent="space-between" width="100%">
-              <Text fontSize={17} fontFamily="$semibold">Manage account</Text>
-              <Icon as={ChevronRightIcon} size="xl"/>
+              <Text fontSize={17} fontFamily="$semibold">
+                Manage account
+              </Text>
+              <Icon as={ChevronRightIcon} size="xl" />
             </HStack>
           </Pressable>
         </ScrollView>

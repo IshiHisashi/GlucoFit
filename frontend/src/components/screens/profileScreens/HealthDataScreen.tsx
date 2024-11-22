@@ -165,6 +165,7 @@ const HealthDataScreen = () => {
                 onSelect={handleDiabetesOption}
                 value="2"
                 label="Pre-diabetic"
+                withoutCheck={true}
               />
             </View>
             <View flexBasis={40} flexGrow={1}>
@@ -173,6 +174,7 @@ const HealthDataScreen = () => {
                 onSelect={handleDiabetesOption}
                 value="1"
                 label="Type 2"
+                withoutCheck={true}
               />
             </View>
           </View>
@@ -237,7 +239,13 @@ const HealthDataScreen = () => {
               unit="kg"
             />
           </View>
-          <Button onPress={handleSubmit} isDisabled={!isChanged} borderRadius={52} height={52} backgroundColor="#4800FF">
+          <Button
+            onPress={handleSubmit}
+            isDisabled={!isChanged}
+            borderRadius={52}
+            height={52}
+            backgroundColor="#4800FF"
+          >
             <ButtonText>Save</ButtonText>
           </Button>
         </ScrollView>

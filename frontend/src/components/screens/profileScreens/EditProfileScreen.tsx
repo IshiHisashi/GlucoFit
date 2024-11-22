@@ -163,7 +163,9 @@ const EditProfileScreen = () => {
             isDisabled={!isChanged}
             backgroundColor="#4800FF"
           >
-            <ButtonText fontSize={17} fontFamily="$bold">Save</ButtonText>
+            <ButtonText fontSize={17} fontFamily="$bold">
+              Save
+            </ButtonText>
           </Button>
         </ScrollView>
       </View>

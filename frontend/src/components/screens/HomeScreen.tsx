@@ -30,7 +30,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { AnalysisCustom, TimesCustom, NavToBelowCustom, MedalCustom } from "../svgs/svgs";
+import {
+  AnalysisCustom,
+  TimesCustom,
+  NavToBelowCustom,
+  MedalCustom,
+  ShareCustom,
+} from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
@@ -579,16 +585,17 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{ backgroundColor: "#4800FF" }}
-      showsVerticalScrollIndicator={false}
-    >
+    <SafeAreaView style={{ backgroundColor: "#4800FF" }}>
       <HeaderBasic
         routeName={route.name as "Home"}
         userName={userData?.getUser.name}
         navigation={navigation}
       />
-      <ScrollView bg="$neutralDark5" h="106%">
+      <ScrollView
+        bg="$neutralDark5"
+        h="106%"
+        showsVerticalScrollIndicator={false}
+      >
         <View
           h={550}
           bg="#4800FF"
@@ -676,7 +683,7 @@ const HomeScreen: React.FC = () => {
                 <BlurView
                   style={StyleSheet.absoluteFill}
                   blurType="dark"
-                  blurAmount={2} 
+                  blurAmount={2}
                   reducedTransparencyFallbackColor="gray"
                 />
                 <Modal.Content
@@ -742,7 +749,7 @@ const HomeScreen: React.FC = () => {
                       <Text textAlign="center" marginBottom={25}>
                         {route.params?.badges[currentModalIndex].unlocked}
                       </Text>
-                      <GlucoButton 
+                      <GlucoButton
                         buttonType="primary"
                         text="Share"
                         isFocused={false}
@@ -751,14 +758,14 @@ const HomeScreen: React.FC = () => {
                         iconLeft={ShareCustom}
                         style={{ width: 214, height: 48, marginBottom: 12 }}
                       />
-                      <GlucoButton 
+                      <GlucoButton
                         buttonType="secondary"
                         text="View All Badges"
                         isFocused={false}
                         isDisabled={false}
                         onPress={() => moveToBadges()}
                         iconLeft={MedalCustom}
-                        style={{ width: 214, height: 48, marginBottom: 20  }}
+                        style={{ width: 214, height: 48, marginBottom: 20 }}
                       />
                     </Center>
                   </View>

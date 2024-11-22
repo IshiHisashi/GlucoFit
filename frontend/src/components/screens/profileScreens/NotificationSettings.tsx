@@ -34,10 +34,7 @@ const GET_USER_NOTIF_DATA = gql`
 `;
 
 const UPDATE_USER_NOTIF_DATA = gql`
-  mutation UpdateUser(
-    $userId: ID!
-    $notification: Boolean
-  ) {
+  mutation UpdateUser($userId: ID!, $notification: Boolean) {
     updateUser(id: $userId, notification: $notification) {
       notification
     }
@@ -54,7 +51,7 @@ const NotificationSettingsScreen = () => {
   const navigation = useNavigation<NotificationSettingsScreenNavigationProps>();
   const [notif, setNotif] = useState<boolean>();
   const [initialNotif, setInitialNotif] = useState<boolean>();
-  const [modalVisible,  setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { data, loading, error, refetch } = useQuery(GET_USER_NOTIF_DATA, {
     variables: { userId: userId },
     fetchPolicy: "cache-and-network",
@@ -74,7 +71,7 @@ const NotificationSettingsScreen = () => {
     if (notif !== null && notif !== undefined) {
       setModalVisible(!notif);
     }
-  }, [notif])
+  }, [notif]);
 
   // Update data on the screen
   useFocusEffect(
@@ -88,7 +85,7 @@ const NotificationSettingsScreen = () => {
       const updatedData = await updateUserNotifData({
         variables: {
           userId: userId,
-          notification: notif
+          notification: notif,
         },
       });
       console.log("updated data: ", updatedData);
@@ -99,8 +96,7 @@ const NotificationSettingsScreen = () => {
     }
   };
 
-  const isChanged =
-    notif !== initialNotif
+  const isChanged = notif !== initialNotif;
 
   return (
     <SafeAreaView>
@@ -122,7 +118,7 @@ const NotificationSettingsScreen = () => {
             <BlurView
               style={StyleSheet.absoluteFill}
               blurType="dark"
-              blurAmount={2} 
+              blurAmount={2}
               reducedTransparencyFallbackColor="gray"
             />
             <View style={styles.centeredView}>
@@ -134,10 +130,12 @@ const NotificationSettingsScreen = () => {
                     alt="frowned face"
                   />
                   <Text style={styles.modalText}>
-                    If you turn off the notification, You won't be able to recieve daily glucose log reminders anymore.
+                    If you turn off the notification, You won't be able to
+                    recieve daily glucose log reminders anymore.
                   </Text>
                   <Text style={styles.modalText}>
-                    We recommend that you keep it on so that we can help you maintain your health habit.
+                    We recommend that you keep it on so that we can help you
+                    maintain your health habit.
                   </Text>
                 </View>
 
@@ -150,22 +148,36 @@ const NotificationSettingsScreen = () => {
               </View>
             </View>
           </Modal>
-          <View flex={1} flexWrap="nowrap" flexDirection="row" justifyContent="space-between" alignItems="center" padding={20} borderRadius={10} borderWidth={1} borderColor="#ECE5FF" marginBottom={20}>
-            <Text fontSize={16} fontFamily="$semibold">Notifications</Text>
-            {
-            (notif !== null && notif !== undefined) &&
-            <Toggle 
-              isEnabled={notif}
-              onToggle={setNotif}
-            />
-            }
+          <View
+            flex={1}
+            flexWrap="nowrap"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            padding={20}
+            borderRadius={10}
+            borderWidth={1}
+            borderColor="#ECE5FF"
+            marginBottom={20}
+          >
+            <Text fontSize={16} fontFamily="$semibold">
+              Notifications
+            </Text>
+            {notif !== null && notif !== undefined && (
+              <Toggle isEnabled={notif} onToggle={setNotif} />
+            )}
           </View>
-          { notif 
-          ? 
-            <Text marginHorizontal={10} marginBottom={20}>You can turn off all the notifications from this app by toggling it off.</Text>
-          :
-            <Text marginHorizontal={10} marginBottom={20}>You can turn on all the notifications from this app by toggling it on.</Text>
-          }
+          {notif ? (
+            <Text marginHorizontal={10} marginBottom={20}>
+              You can turn off all the notifications from this app by toggling
+              it off.
+            </Text>
+          ) : (
+            <Text marginHorizontal={10} marginBottom={20}>
+              You can turn on all the notifications from this app by toggling it
+              on.
+            </Text>
+          )}
           <Button
             marginBottom={20}
             height={52}
@@ -173,7 +185,13 @@ const NotificationSettingsScreen = () => {
             onPress={handleSubmit}
             isDisabled={!isChanged}
           >
-            <ButtonText fontSize={17} fontFamily="$bold" backgroundColor="4800FF">Save</ButtonText>
+            <ButtonText
+              fontSize={17}
+              fontFamily="$bold"
+              backgroundColor="4800FF"
+            >
+              Save
+            </ButtonText>
           </Button>
         </ScrollView>
       </View>
@@ -225,7 +243,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     width: 214,
     height: 47,
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
