@@ -26,7 +26,7 @@ const MedicationScreen: React.FC<Props> = ({ navigation }) => {
         comment="Are you taking any medication to manage your condition?"
         progressValue={50}
         onPress={handleNext}
-        disabled={false}
+        disabled={selectedOption ? false : true}
       >
         <View flexDirection="column" gap={16}>
           <PressableOption

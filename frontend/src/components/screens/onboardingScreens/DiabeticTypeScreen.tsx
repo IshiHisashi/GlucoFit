@@ -32,7 +32,7 @@ const DiabeticTypeScreen: React.FC<Props> = ({ navigation }) => {
         progressValue={37.5}
         onPress={handleNext}
         character
-        disabled={false}
+        disabled={selectedOption ? false : true}
       >
         <View flexDirection="column" gap={16}>
           <PressableOption

@@ -18,7 +18,7 @@ import { SvgProps } from "react-native-svg";
 import { InfoCustom } from "../svgs/svgs";
 
 interface InputFieldGeneralProps {
-  value: string;
+  value: any;
   onChangeText: (text: string) => void;
   onSubmitEditing?: () => void;
   isRequired: boolean;
