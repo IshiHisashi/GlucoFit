@@ -410,11 +410,6 @@ const AutoLogScreen: React.FC = () => {
               iconLeft={EditCustom}
               style={{ width: 347, height: 48, marginBottom: 12 }}
             />
-            <Button onPress={() => setModalVisible(true)}>
-              <ButtonText>
-                Open modal
-              </ButtonText>
-            </Button>
           </VStack>
         </View>
 
