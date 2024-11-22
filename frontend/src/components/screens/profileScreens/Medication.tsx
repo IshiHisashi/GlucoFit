@@ -58,7 +58,7 @@ const MedicationScreen = () => {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
@@ -67,6 +67,8 @@ const MedicationScreen = () => {
         />
         {medsData.length > 0 ? (
           <FlatList
+            borderTopColor="#ECE5FF" 
+            borderTopWidth={1}
             padding={20}
             data={medsData}
             renderItem={({ item }) => {
@@ -78,6 +80,8 @@ const MedicationScreen = () => {
                   backgroundColor="white"
                   borderRadius={10}
                   marginBottom={10}
+                  borderWidth={1}
+                  borderColor="#ECE5FF"
                 >
                   <Text fontSize={18} fontFamily="$bold" color="black">
                     {item.medicine_name}
@@ -90,7 +94,7 @@ const MedicationScreen = () => {
             }}
           />
         ) : (
-          <Center>
+          <Center borderTopColor="#ECE5FF" borderTopWidth={1}>
             <Text>No medicine found</Text>
           </Center>
         )}
@@ -101,7 +105,7 @@ const MedicationScreen = () => {
           margin={20}
           height={52}
         >
-          <ButtonText color="white">Add Medicine</ButtonText>
+          <ButtonText fontSize={17} fontFamily="$bold" color="white">Add Medicine</ButtonText>
         </Button>
       </View>
     </SafeAreaView>

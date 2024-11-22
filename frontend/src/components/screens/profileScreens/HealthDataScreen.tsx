@@ -142,14 +142,18 @@ const HealthDataScreen = () => {
     weight !== initialWeight;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Health Data"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
+        <ScrollView 
+          padding={20}
+          borderTopColor="#ECE5FF" 
+          borderTopWidth={1}
+        >
           <Text
             fontSize={14}
             color="black"
@@ -165,7 +169,8 @@ const HealthDataScreen = () => {
                 onSelect={handleDiabetesOption}
                 value="2"
                 label="Pre-diabetic"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
             <View flexBasis={40} flexGrow={1}>
@@ -174,7 +179,8 @@ const HealthDataScreen = () => {
                 onSelect={handleDiabetesOption}
                 value="1"
                 label="Type 2"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
           </View>
@@ -184,7 +190,7 @@ const HealthDataScreen = () => {
           <Text fontSize={12} marginBottom={10}>
             Set your taget blood glucose range in mmol/L
           </Text>
-          <View mx="auto" p={20} mt={30}>
+          <View mx="auto" paddingVertical={20} mt={30}>
             <MultiSlider
               values={[minBsl, maxBsl]}
               sliderLength={Dimensions.get("window").width * 0.75}
@@ -244,9 +250,9 @@ const HealthDataScreen = () => {
             isDisabled={!isChanged}
             borderRadius={52}
             height={52}
-            backgroundColor="#4800FF"
+            backgroundColor={isChanged ? "#4800FF" : "#F2F1F5"}
           >
-            <ButtonText>Save</ButtonText>
+            <ButtonText fontSize={17} fontFamily="$bold" color={isChanged ? "white" : "#C2C2C2"}>Save</ButtonText>
           </Button>
         </ScrollView>
       </View>

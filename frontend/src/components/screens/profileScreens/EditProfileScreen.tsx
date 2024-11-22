@@ -115,14 +115,14 @@ const EditProfileScreen = () => {
     userEmail !== initialEmail;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Edit Profile"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
+        <ScrollView padding={20} borderTopColor="#ECE5FF" borderTopWidth={1}>
           <View marginBottom={20}>
             <InputFieldGeneral
               label="Name"
@@ -152,7 +152,7 @@ const EditProfileScreen = () => {
               isRequired={false}
               isDisabled={false}
               isInvalid={false}
-              placeholder="Preferred Name"
+              placeholder="Email address"
             />
           </View>
           <Button
@@ -161,9 +161,9 @@ const EditProfileScreen = () => {
             borderRadius={26}
             onPress={handleSubmit}
             isDisabled={!isChanged}
-            backgroundColor="#4800FF"
+            backgroundColor={isChanged ? "#4800FF" : "#F2F1F5"}
           >
-            <ButtonText fontSize={17} fontFamily="$bold">
+            <ButtonText fontSize={17} fontFamily="$bold" color={isChanged ? "white" : "#C2C2C2"}>
               Save
             </ButtonText>
           </Button>

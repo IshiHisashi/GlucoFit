@@ -126,7 +126,7 @@ const InputFieldGeneral: FC<InputFieldGeneralProps> = (props) => {
               type={type || "text"}
               keyboardType={keyboardType}
               placeholder={placeholder}
-              placeholderTextColor="$neutralDark60"
+              placeholderTextColor="$neutralDark30"
               fontSize={15}
               // fontFamily="$bold"
               color="$neutralDark60"
