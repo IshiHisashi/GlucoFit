@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { View, Text, Image } from "@gluestack-ui/themed";
 import { useQuery } from "@apollo/client";
 import { GET_STREAK_LAST_7_DAYS } from "../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const getLast7Days = (): string[] => {
   const days = [];
@@ -64,8 +65,9 @@ const WeeklyStreak: React.FC<WeeklyStreakProps> = ({ setStreakNum }) => {
   }
 
   // fetch graphQL
-  const { loading, error, data } = useQuery(GET_STREAK_LAST_7_DAYS, {
+  const { loading, error, data, refetch } = useQuery(GET_STREAK_LAST_7_DAYS, {
     variables: { userId: userId },
+    fetchPolicy: "cache-and-network",
   });
   console.log(data);
 
@@ -73,6 +75,12 @@ const WeeklyStreak: React.FC<WeeklyStreakProps> = ({ setStreakNum }) => {
     setDaysHasLog(data?.getTestResultsLast7Days);
     setStreakNum(data?.getTestResultsLast7Days.length);
   }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const last7Days = getLast7Days();
   return (

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import {
   GET_NUM_FAVORITE_ARTICLE,
 } from "../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface BadgeImages {
   [key: string]: any;
@@ -37,9 +38,16 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
   const { userId } = useContext(AuthContext);
 
   // 1).Fetch user badges using useQuery
-  const { loading, error, data } = useQuery(GET_USER_ON_PROGRESS_BADGES, {
+  const { loading, error, data, refetch } = useQuery(GET_USER_ON_PROGRESS_BADGES, {
     variables: { id: userId },
+    fetchPolicy: "cache-and-network",
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   // 2). 3). Lazy Queries for each badge progress
   const [loadStreakData, { data: streakData }] = useLazyQuery(

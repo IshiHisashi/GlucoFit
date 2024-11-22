@@ -10,7 +10,7 @@ import {
   Center,
   ButtonText,
 } from "@gluestack-ui/themed";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
 import {
   GET_NUM_FAVORITE_ARTICLE,
@@ -23,6 +23,7 @@ import { BlurView } from "@react-native-community/blur";
 import { Alert, Share, StyleSheet, Modal } from "react-native";
 import GlucoButton from "../../atoms/GlucoButton";
 import { AngleRightCustom, ShareCustom } from "../../svgs/svgs";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Badge {
   __typename: string;
@@ -53,9 +54,16 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
   const [selectedBadge, setSelectedBadge] = useState<string>();
   const { userId } = useContext(AuthContext);
 
-  const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
+  const { loading, error, data, refetch } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
     variables: { getUserBadgeId: userId },
+    fetchPolicy: "cache-and-network",
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const [loadStreakData, { data: streakData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
