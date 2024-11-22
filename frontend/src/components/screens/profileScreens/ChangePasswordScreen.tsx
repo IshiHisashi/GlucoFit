@@ -1,4 +1,11 @@
-import { SafeAreaView, ScrollView, View, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
@@ -13,17 +20,17 @@ import InputFieldGeneral from "../../atoms/InputFieldGeneral";
 
 const RESET_PASSWORD = gql`
   mutation ResetPassword(
-    $userId: ID!, 
-    $oldPassword: String!, 
+    $userId: ID!
+    $oldPassword: String!
     $newPassword: String!
   ) {
     resetPassword(
-      userId: $userId, 
-      oldPassword: $oldPassword, 
+      userId: $userId
+      oldPassword: $oldPassword
       newPassword: $newPassword
     )
   }
-`
+`;
 
 type ChangePasswordScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -31,7 +38,6 @@ type ChangePasswordScreenNavigationProps = NativeStackNavigationProp<
 >;
 
 const ChangePasswordScreen = () => {
-
   const { userId } = useContext(AuthContext);
   const { SignOut } = useContext(AuthContext);
   const navigation = useNavigation<ChangePasswordScreenNavigationProps>();
@@ -43,10 +49,10 @@ const ChangePasswordScreen = () => {
   const handleSubmit = async () => {
     try {
       if (newPassword !== confirmPassword) {
-        console.log("Password not confirmed properly")
-        return
+        console.log("Password not confirmed properly");
+        return;
       }
-      const result =  await resetPassword({
+      const result = await resetPassword({
         variables: {
           userId: userId,
           oldPassword: oldPassword,
@@ -56,17 +62,16 @@ const ChangePasswordScreen = () => {
       console.log("Password properly reseted: ", result)
 
       navigation.navigate("EditProfile");
-
     } catch (e) {
-      console.error("Error reseting password:", e)
+      console.error("Error reseting password:", e);
     }
-  }
+  };
 
   const readyToReset =
     oldPassword !== "" &&
     newPassword !== "" &&
     confirmPassword !== "" &&
-    newPassword === confirmPassword
+    newPassword === confirmPassword;
 
   return (
     <SafeAreaView>
@@ -86,7 +91,7 @@ const ChangePasswordScreen = () => {
               isDisabled={false}
               isInvalid={false}
               placeholder="Enter your current password"
-            />            
+            />
           </View>
           <View marginBottom={20}>
             <InputFieldGeneral
@@ -97,7 +102,7 @@ const ChangePasswordScreen = () => {
               isDisabled={false}
               isInvalid={false}
               placeholder="Enter a new password"
-            />            
+            />
           </View>
           <View marginBottom={20}>
             <InputFieldGeneral
@@ -108,17 +113,17 @@ const ChangePasswordScreen = () => {
               isDisabled={false}
               isInvalid={false}
               placeholder="Enter the new password to confirm"
-            />            
+            />
           </View>
-          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"} borderRadius={30}>
-            <ButtonText>
+          <Button onPress={handleSubmit} disabled={!readyToReset} backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"} borderRadius={30} height={52} marginTop={20}>
+            <ButtonText fontSize={17} fontFamily="$bold">
               Save
             </ButtonText>
           </Button>
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default ChangePasswordScreen;

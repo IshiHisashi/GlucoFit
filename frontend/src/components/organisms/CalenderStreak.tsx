@@ -6,16 +6,16 @@ import { GET_ALL_DATES_WITH_LOG_IN_A_MONTH } from "../../utils/query/badgesScree
 import { AuthContext } from "../../context/AuthContext";
 
 interface LogDates {
-  getTestResultsDatesByMonth: String[];
+  getTestResultsDatesByMonth: string[];
 }
 
 const CalenderStreak: React.FC = () => {
   const [logDates, setLogDates] = useState<LogDates[]>([]);
   const [markedDates, setMarkedDates] = useState<any[]>([]);
-  const [currentMonth, setCurrentMonth] = useState<Number>(
+  const [currentMonth, setCurrentMonth] = useState<number>(
     new Date().getMonth() + 1
   );
-  const [currentYear, setCurrentYear] = useState<Number>(
+  const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   );
   const { userId } = useContext(AuthContext);
@@ -59,7 +59,7 @@ const CalenderStreak: React.FC = () => {
     <View
       flexDirection="column"
       gap={20}
-      borderColor="#ccc"
+      borderColor="#ECE5FF"
       borderWidth={1}
       rounded={10}
       padding={10}

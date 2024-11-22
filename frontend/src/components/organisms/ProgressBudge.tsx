@@ -27,6 +27,10 @@ interface ProgressBudgeSectionProps {
   goToBadges: () => void;
 }
 
+interface ProgressBudgeProps {
+  goToBadges: () => void;
+}
+
 const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
   goToBadges,
 }) => {
@@ -133,7 +137,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
     <View
       flexDirection="column"
       gap={20}
-      borderColor="#ccc"
+      borderColor="#ECE5FF"
       borderWidth={1}
       rounded={10}
       padding={20}
@@ -145,19 +149,19 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
         justifyContent="space-between"
         alignItems="center"
       >
-        <Text fontSize={20} fontWeight="$semibold">
+        <Text fontSize={20} fontFamily="$bold">
           Progress
         </Text>
-        <Pressable>
+        <Pressable onPress={goToBadges}>
           <HStack alignItems="center" space="xs">
-            <Text>See more</Text>
-            <Icon as={ChevronRightIcon} size="sm" mr="$2" />
+            <Text fontSize={12} fontFamily="$sem">See more</Text>
+            <Icon as={ChevronRightIcon} size="xl" mr="$2" color="#4800FF" />
           </HStack>
         </Pressable>
       </View>
 
       {/* Render Badge Cards */}
-      <ScrollView height={250}>
+      <ScrollView height={220}>
         {data?.getUserOnProgressBadge?.badges.map((badge: any) => (
           <View
             key={badge.badgeId.id}
@@ -169,7 +173,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
             p={12}
             flexWrap="nowrap"
           >
-            <View flexDirection="row" gap={8} alignItems="center">
+            <View flexDirection="row" gap={8} alignItems="center" flexGrow={1}>
               {/* NEED TO BE REPLACED CONDITIONALLY */}
               <Image
                 source={badgeImages[badge.badgeId.id]}
@@ -178,12 +182,12 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
                 h={40}
               />
               <View flexShrink={1} flexBasis={"$3/5"}>
-                <Text>{badge.badgeId.badge_name}</Text>
-                <Text fontSize={10}>{badge.badgeId.badge_desc}</Text>
+                <Text fontSize={14} fontFamily="$bold">{badge.badgeId.badge_name}</Text>
+                <Text fontSize={12} color="#999999">{badge.badgeId.badge_desc}</Text>
               </View>
             </View>
-            <Text flexGrow={1} marginLeft={10}>
-              {getBadgeProgress(badge.badgeId.badge_name)} /{" "}
+            <Text marginLeft={10} textAlign="right" fontSize={22} fontFamily="$bold">
+              {getBadgeProgress(badge.badgeId.badge_name)}/
               {badge.badgeId.criteria.value}
             </Text>
           </View>
@@ -193,8 +197,8 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
   );
 };
 
-const ProgressBudge: React.FC = () => {
-  return <ProgressBudgeSection />;
+const ProgressBudge: React.FC<ProgressBudgeProps> = ({ goToBadges }) => {
+  return <ProgressBudgeSection goToBadges={goToBadges}/>;
 };
 
 export default ProgressBudge;

@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text, Image, HStack } from "@gluestack-ui/themed";
+import { View, Image } from "@gluestack-ui/themed";
+import Lottie from "lottie-react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { LoginSignupStackParamList } from "../../../types/navigation";
 import GlucoButton from "../../atoms/GlucoButton";
+import LogoAnimation from "../../animations/logo-animation.json";
 
 type Props = NativeStackScreenProps<LoginSignupStackParamList>;
 
@@ -17,18 +19,11 @@ const LoginSignupScreen: React.FC<Props> = ({ navigation }) => {
       backgroundColor="#4800FF"
     >
       <View marginTop={200} flexDirection="column" gap={10}>
-        <Image
-          source={require("../../../../assets/OnbordingChar.png")}
-          resizeMode="contain"
-          mx="auto"
-          alt="Character is winking during the onboarding process"
-        />
-        <Image
-          source={require("../../../../assets/app-name-white.png")}
-          resizeMode="contain"
-          w={238}
-          mx="auto"
-          alt="Character is winking during the onboarding process"
+        <Lottie
+          source={LogoAnimation}
+          autoPlay
+          loop
+          style={{ width: 300, height: 300, margin: "auto" }}
         />
       </View>
       {/* btn section */}

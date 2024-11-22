@@ -55,4 +55,4 @@ export const GET_STREAK_LAST_7_DAYS = gql`
   query GetStreakLast7Days($userId: ID!) {
     getTestResultsLast7Days(user_id: $userId)
   }
-`
+`;

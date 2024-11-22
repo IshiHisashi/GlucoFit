@@ -1,6 +1,7 @@
 // resolvers/notificationResolvers.ts
 import { Notification, INotification } from "../../model/Notification";
 import { User } from "../../model/User";
+import mongoose from "mongoose";
 
 const notificationResolvers = {
   Query: {
@@ -13,6 +14,17 @@ const notificationResolvers = {
       if (unreadOnly) filter.read = false;
 
       return await Notification.find(filter).sort({ createdAt: -1 }).exec();
+    },
+    hasUnreadNotification: async (
+      _: any,
+      { user_id }: { user_id: string }
+    ): Promise<boolean> => {
+      const userObjectId = new mongoose.Types.ObjectId(user_id);
+      const count = await Notification.countDocuments({
+        user_id: userObjectId,
+        read: false,
+      });
+      return count > 0; // Return true if there are any unread notifications
     },
   },
 
@@ -54,6 +66,15 @@ const notificationResolvers = {
       return await Notification.find({ user_id })
         .sort({ createdAt: -1 })
         .exec();
+    },
+
+    deleteNotification: async (
+      _: any,
+      { id }: { id: string }
+    ): Promise<boolean> => {
+      const notificationId = new mongoose.Types.ObjectId(id);
+      const result = await Notification.findByIdAndDelete(notificationId);
+      return !!result; // Return true if deletion was successful, false otherwise
     },
   },
 };

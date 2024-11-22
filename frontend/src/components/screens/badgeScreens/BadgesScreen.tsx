@@ -9,6 +9,7 @@ import {
   HStack,
   ScrollView,
   Center,
+  ButtonText,
 } from "@gluestack-ui/themed";
 import React, { useContext, useEffect, useState } from "react";
 import { GET_ALL_BADGES_INFO_BY_USER } from "../../../utils/query/badgesScreenQueries";
@@ -19,6 +20,10 @@ import {
   QUERY_FOR_STREAK_STARTER,
 } from "../../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../../context/AuthContext";
+import { BlurView } from "@react-native-community/blur";
+import { Alert, Share, StyleSheet } from "react-native";
+import GlucoButton from "../../atoms/GlucoButton";
+import { AngleRightCustom, ShareCustom } from "../../svgs/svgs";
 
 interface Badge {
   __typename: string;
@@ -30,7 +35,8 @@ interface Badge {
     badge_name: string;
     criteria: object[];
     id: string;
-    last_updated: string | null;
+    unlocked: string;
+    locked: string;
   };
 }
 
@@ -38,10 +44,14 @@ interface BadgeImages {
   [key: string]: any;
 }
 
-const BadgesScreen: React.FC = ({ navigation }) => {
+interface badgeScreenTypes {
+  setBackGroundTinted: any
+}
+
+const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [selectedBadge, setSelectedBadge] = useState<String>();
+  const [selectedBadge, setSelectedBadge] = useState<string>();
   const { userId } = useContext(AuthContext);
 
   const { loading, error, data } = useQuery(GET_ALL_BADGES_INFO_BY_USER, {
@@ -90,7 +100,7 @@ const BadgesScreen: React.FC = ({ navigation }) => {
         if (loadBadgeData) loadBadgeData();
       });
     }
-  }, [data, navigation]);
+  }, [data]);
 
   const getBadgeProgress = (badgeName: string) => {
     switch (badgeName) {
@@ -119,13 +129,15 @@ const BadgesScreen: React.FC = ({ navigation }) => {
   // if (loading) return <Text>Loading...</Text>;
   // if (error) return <Text>Error: {error.message}</Text>;
 
-  const switchModal = () => {
-    setModalVisible(!modalVisible);
+  const closeModal = () => {
+    setModalVisible(false);
+    setBackGroundTinted(false);
   };
 
-  const handleClickBadge = (id: String) => {
+  const handleClickBadge = (id: string) => {
     setSelectedBadge(id);
     setModalVisible(true);
+    setBackGroundTinted(true);
   };
 
   // This will go away once we put the data online
@@ -159,6 +171,25 @@ const BadgesScreen: React.FC = ({ navigation }) => {
     }
   }, [data]);
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: "You will be able to share things from hereeee!",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   return (
     <View padding={16}>
       <Text fontSize={22} color="black" fontWeight={"$bold"} marginBottom={20}>
@@ -181,10 +212,10 @@ const BadgesScreen: React.FC = ({ navigation }) => {
               >
                 <Center
                   borderRadius={10}
-                  paddingVertical={10}
+                  paddingVertical={14}
                   paddingHorizontal={20}
                   backgroundColor="white"
-                  width={140}
+                  width={145}
                   marginRight={16}
                   style={{
                     shadowColor: "black",
@@ -200,9 +231,11 @@ const BadgesScreen: React.FC = ({ navigation }) => {
                     alt={b.badgeId.badge_name}
                     marginBottom={14}
                   />
-                  <Text color="black" fontSize={14}>
-                    {b.badgeId.badge_name}
-                  </Text>
+                  <Center height={40}>
+                    <Text color="black" fontSize={14} textAlign="center" fontFamily="$bold" >
+                      {b.badgeId.badge_name}
+                    </Text>
+                  </Center>
                 </Center>
               </Pressable>
             );
@@ -269,12 +302,18 @@ const BadgesScreen: React.FC = ({ navigation }) => {
           }
         })}
       </View>
-      <Modal isOpen={modalVisible}>
+      <Modal isOpen={modalVisible}  onClose={() => setModalVisible(false)}>
+        <BlurView
+          style={StyleSheet.absoluteFill}
+          blurType="dark"
+          blurAmount={3} 
+          reducedTransparencyFallbackColor="gray"
+        />
         <View
           position="absolute"
           bottom={0}
           width="100%"
-          height="40%"
+          height={380}
           borderTopRightRadius={20}
           borderTopLeftRadius={20}
           backgroundColor="white"
@@ -282,40 +321,51 @@ const BadgesScreen: React.FC = ({ navigation }) => {
             flexDirection: "row",
             justifyContent: "center",
             flexWrap: "wrap",
-            flexGrow: 1,
           }}
         >
           {badgeData.map((b) => {
             if (b.badgeId.id === selectedBadge) {
               return (
-                <Center>
+                <Center id={b.badgeId.id} width={"$full"} height={"$full"}>
+                  <Button
+                    onPress={() => setModalVisible(false)}
+                    backgroundColor="transparent"
+                    padding={10}
+                    marginTop={-70}
+                    position="absolute"
+                    bottom={330}
+                  >
+                    <ButtonText position="relative" top={0} left={150}>
+                      ✖️
+                    </ButtonText>
+                  </Button>
                   {b.achieved === true ? (
                     <Image
-                      w={120}
-                      h={120}
+                      w={144}
+                      h={144}
                       source={badgeImages[b.badgeId.id]}
                       alt={b.badgeId.badge_name}
                       marginBottom={8}
                       position="absolute"
-                      top={-60}
+                      top={-72}
                       left="50%"
-                      transform={[{ translateX: -60 }]}
-                      borderRadius={60}
+                      transform={[{ translateX: -72 }]}
+                      borderRadius={80}
                       borderWidth={4}
                       borderColor="white"
                     />
                   ) : (
                     <Image
-                      w={120}
-                      h={120}
+                      w={144}
+                      h={144}
                       source={notAchieveBadgeImages[b.badgeId.id]}
                       alt={b.badgeId.badge_name}
                       marginBottom={8}
                       position="absolute"
-                      top={-60}
+                      top={-72}
                       left="50%"
-                      transform={[{ translateX: -60 }]}
-                      borderRadius={60}
+                      transform={[{ translateX: -72 }]}
+                      borderRadius={80}
                       borderWidth={4}
                       borderColor="white"
                     />
@@ -328,8 +378,8 @@ const BadgesScreen: React.FC = ({ navigation }) => {
                   >
                     {b.badgeId.badge_name}
                   </Text>
-                  <Text textAlign="center" marginTop={10} marginBottom={30}>
-                    {b.badgeId.badge_desc}
+                  <Text textAlign="center" marginTop={10} marginBottom={30} paddingHorizontal={10}>
+                    {b.achieved === true ? b.badgeId.unlocked : b.badgeId.locked}
                   </Text>
                   {b.achieved ? (
                     <View>
@@ -348,9 +398,15 @@ const BadgesScreen: React.FC = ({ navigation }) => {
                       </Text>
                     </View>
                   )}
-                  <Button onPress={switchModal} marginTop={30}>
-                    <Text>Close</Text>
-                  </Button>
+                  <GlucoButton 
+                    buttonType="primary"
+                    text="Share"
+                    isFocused={false}
+                    isDisabled={false}
+                    onPress={() => onShare()}
+                    iconLeft={ShareCustom}
+                    style={{ width: 347, height: 52, marginTop: 12 }}
+                  />
                 </Center>
               );
             }
