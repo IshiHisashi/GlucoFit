@@ -104,24 +104,11 @@ const ProfileScreen = () => {
             </Pressable>
             <Pressable
               paddingVertical={15}
-              borderBottomColor="$coolGray200"
-              borderBottomWidth={1}
               onPress={() => navigation?.navigate("Medications")}
             >
               <HStack justifyContent="space-between" width="100%">
                 <Text fontSize={17} fontFamily="$semibold" color="black">
                   Medication
-                </Text>
-                <Icon as={ChevronRightIcon} size="xl" />
-              </HStack>
-            </Pressable>
-            <Pressable
-              paddingVertical={15}
-              onPress={() => navigation?.navigate("DevAndApp")}
-            >
-              <HStack justifyContent="space-between" width="100%">
-                <Text fontSize={17} fontFamily="$semibold" color="black">
-                  Dev and Apps
                 </Text>
                 <Icon as={ChevronRightIcon} size="xl" />
               </HStack>
@@ -157,8 +144,6 @@ const ProfileScreen = () => {
             </Pressable>
             <Pressable
               paddingVertical={15}
-              borderBottomColor="$coolGray200"
-              borderBottomWidth={1}
               onPress={() => navigation?.navigate("Security")}
             >
               <HStack justifyContent="space-between" width="100%">

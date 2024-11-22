@@ -46,15 +46,19 @@ const ManageAccountScreen = () => {
   // )
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Manage Account"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
-          <Button onPress={SignOut} height={52} borderRadius={30}>
+        <ScrollView 
+          padding={20}
+          borderTopColor="#ECE5FF" 
+          borderTopWidth={1}
+        >
+          <Button onPress={SignOut} height={52} borderRadius={30} backgroundColor="#4800FF">
             <ButtonText fontSize={17} fontFamily="$bold">
               Sign out
             </ButtonText>

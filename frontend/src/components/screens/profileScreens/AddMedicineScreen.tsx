@@ -111,14 +111,18 @@ const AddMedecineScreen = () => {
     console.log(time);
   }, [time]);
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Health Data"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
+        <ScrollView 
+          padding={20} 
+          borderTopColor="#ECE5FF" 
+          borderTopWidth={1}
+        >
           <View marginBottom={20}>
             <InputFieldGeneral
               label="Medicine Name"
@@ -127,6 +131,7 @@ const AddMedecineScreen = () => {
               isRequired={false}
               isDisabled={false}
               isInvalid={false}
+              placeholder="ex) Insuline"
             />
           </View>
           <View marginBottom={20}>
@@ -138,6 +143,7 @@ const AddMedecineScreen = () => {
               isDisabled={false}
               isInvalid={false}
               keyboardType="numeric"
+              placeholder="ex) 10"
             />
           </View>
           <Text
@@ -155,7 +161,8 @@ const AddMedecineScreen = () => {
                 onSelect={handleUnitChange}
                 value="mcg"
                 label="mcg"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
             <View flexBasis={22} flexGrow={1}>
@@ -164,7 +171,8 @@ const AddMedecineScreen = () => {
                 onSelect={handleUnitChange}
                 value="mg"
                 label="mg"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
             <View flexBasis={22} flexGrow={1}>
@@ -173,7 +181,8 @@ const AddMedecineScreen = () => {
                 onSelect={handleUnitChange}
                 value="mL"
                 label="mL"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
             <View flexBasis={22} flexGrow={1}>
@@ -182,7 +191,8 @@ const AddMedecineScreen = () => {
                 onSelect={handleUnitChange}
                 value="pill"
                 label="pill"
-                withoutCheck={true}
+                withoutCheck
+                needOutLine
               />
             </View>
           </View>
@@ -195,9 +205,9 @@ const AddMedecineScreen = () => {
             marginTop={20}
             borderRadius={30}
             height={52}
-            backgroundColor="#4800FF"
+            backgroundColor={isReady ? "#4800FF" : "#F2F1F5"}
           >
-            <ButtonText>Save</ButtonText>
+            <ButtonText fontSize={17} fontFamily="$bold" color={isReady ? "white" : "#C2C2C2"}>Save</ButtonText>
           </Button>
         </ScrollView>
 

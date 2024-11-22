@@ -99,14 +99,18 @@ const NotificationSettingsScreen = () => {
   const isChanged = notif !== initialNotif;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Edit Profile"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
+        <ScrollView 
+          padding={20}
+          borderTopColor="#ECE5FF" 
+          borderTopWidth={1}
+        >
           <Modal
             animationType="fade"
             transparent={true}
@@ -135,7 +139,7 @@ const NotificationSettingsScreen = () => {
                   </Text>
                   <Text style={styles.modalText}>
                     We recommend that you keep it on so that we can help you
-                    maintain your health habit.
+                    maintain your healthy habit.
                   </Text>
                 </View>
 
@@ -184,11 +188,12 @@ const NotificationSettingsScreen = () => {
             borderRadius={26}
             onPress={handleSubmit}
             isDisabled={!isChanged}
+            backgroundColor={isChanged ? "#4800FF" : "#F2F1F5"}
           >
             <ButtonText
               fontSize={17}
               fontFamily="$bold"
-              backgroundColor="4800FF"
+              color={isChanged ? "white" : "#C2C2C2"}
             >
               Save
             </ButtonText>

@@ -7,6 +7,7 @@ type InputProps = {
   selectedOption: string | number | boolean | undefined;
   onSelect: (value: string) => void;
   withoutCheck: boolean;
+  needOutLine: boolean;
 };
 
 const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {
@@ -17,13 +18,14 @@ const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {
     value,
     label,
     withoutCheck = false,
+    needOutLine = false,
   } = props;
   const isSelected = selectedOption === value;
 
   return (
     <Pressable
       borderWidth={1}
-      borderColor={isSelected ? "#8A5CFF" : "white"}
+      borderColor={isSelected ? "#8A5CFF" : needOutLine ? "#ECE5FF" :"white"}
       backgroundColor={isSelected ? "#FAF8FF" : "white"}
       px={16}
       py={14}

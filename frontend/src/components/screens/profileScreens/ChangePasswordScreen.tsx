@@ -74,14 +74,18 @@ const ChangePasswordScreen = () => {
     newPassword === confirmPassword;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView backgroundColor="white">
       <View height="$full">
         <HeaderWithBackButton
           navigation={navigation}
           text="Change Password"
           // rightIconOnPress={() => {}}
         />
-        <ScrollView padding={20}>
+        <ScrollView 
+          padding={20}
+          borderTopColor="#ECE5FF" 
+          borderTopWidth={1}
+        >
           <View marginBottom={20}>
             <InputFieldGeneral
               label="Current Password"
@@ -118,12 +122,16 @@ const ChangePasswordScreen = () => {
           <Button
             onPress={handleSubmit}
             disabled={!readyToReset}
-            backgroundColor={readyToReset ? "$darkBlue500" : "$coolGray400"}
+            backgroundColor={readyToReset ? "#4800FF" : "#F2F1F5"}
             borderRadius={30}
             height={52}
             marginTop={20}
           >
-            <ButtonText fontSize={17} fontFamily="$bold">
+            <ButtonText 
+              fontSize={17} 
+              fontFamily="$bold" 
+              color={readyToReset ? "white" : "#C2C2C2"}
+            >
               Save
             </ButtonText>
           </Button>
