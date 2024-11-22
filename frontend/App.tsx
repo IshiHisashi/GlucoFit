@@ -1,22 +1,16 @@
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
-// import { config } from "@gluestack-ui/config";
 import { ApolloProvider } from "@apollo/client";
 import { useFonts } from "expo-font";
 
 import { client } from "./apollo";
-import Test from "./src/components/testPages/Test";
-import AppStack from "./src/components/stacks/AppStack";
 import extendedConfig from "./theme.config";
 import { AuthProvider } from "./src/context/AuthContext";
 import RootStack from "./src/components/stacks/RootStack";
 
 import LottieView from "lottie-react-native";
 import * as SplashScreen from "expo-splash-screen";
-
-SplashScreen.preventAutoHideAsync();
 
 const App: React.FC = () => {
   const [isSplashVisible, setSplashVisible] = useState<boolean>(true);
@@ -36,7 +30,7 @@ const App: React.FC = () => {
     };
 
     prepareApp();
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isSplashVisible]);
 
   if (!fontsLoaded || isSplashVisible) {
     return (
@@ -45,7 +39,7 @@ const App: React.FC = () => {
           source={require("./src/components/animations/logo-animation.json")}
           autoPlay
           speed={1.2}
-          loop={false}
+          loop={true}
           style={{ flex: 1, backgroundColor: "#4800FF" }}
         />
       </SafeAreaProvider>
