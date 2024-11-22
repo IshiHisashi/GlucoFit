@@ -42,6 +42,28 @@ PODS:
     - Yoga
   - ExpoSecureStore (13.0.2):
     - ExpoModulesCore
+  - EXSplashScreen (0.27.7):
+    - DoubleConversion
+    - ExpoModulesCore
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - FBLazyVector (0.75.4)
   - fmt (9.1.0)
   - glog (0.3.5)
@@ -1653,6 +1675,7 @@ DEPENDENCIES:
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
+  - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -1756,6 +1779,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoSecureStore:
     :path: "../node_modules/expo-secure-store/ios"
+  EXSplashScreen:
+    :path: "../node_modules/expo-splash-screen/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
@@ -1911,6 +1936,7 @@ SPEC CHECKSUMS:
   ExpoLinearGradient: 8cec4a09426d8934c433e83cb36262d72c667fce
   ExpoModulesCore: b966af7729fc28ee8d5995e7bb1ec60d56d3ec52
   ExpoSecureStore: 060cebcb956b80ddae09821610ac1aa9e1ac74cd
+  EXSplashScreen: 61cb393c55f1e72295e0bd819ff10ee72de4eb2f
   FBLazyVector: 430e10366de01d1e3d57374500b1b150fe482e6d
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: 69ef571f3de08433d766d614c73a9838a06bf7eb
