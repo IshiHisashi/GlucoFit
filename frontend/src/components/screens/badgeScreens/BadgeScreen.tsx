@@ -31,7 +31,7 @@ const BadgeScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: "white" }}>
       <View
         flexDirection="column"
         gap={16}

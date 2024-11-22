@@ -28,6 +28,8 @@ import Svg, { Path, SvgProps } from "react-native-svg";
 // - Search (custom)
 // - Times (custom)
 // - Tear (custom)
+// - Share (custom)
+// - 
 
 interface IconProps extends SvgProps {
   color?: string;

@@ -5,6 +5,7 @@ import {
   ButtonText,
   EditIcon,
   Text,
+  VStack,
   View,
 } from "@gluestack-ui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -22,6 +23,8 @@ import deviceAPIs from "../../api/getAPIs";
 import { Modal, StyleSheet } from "react-native";
 import { Image } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
+import GlucoButton from "../../atoms/GlucoButton";
+import { AnalysisCustom, EditCustom, FileCustom } from "../../svgs/svgs";
 
 type AutoLogScreenNavigationProps = NativeStackNavigationProp<
   AppStackParamList,
@@ -172,12 +175,12 @@ const AutoLogScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      <View height="$full">
+    <SafeAreaView style={{ backgroundColor: "white" }}>
+      <View height="$full" backgroundColor="white">
         <HeaderWithBackButton
           navigation={navigation}
-          text="Log automatically"
-          rightIconOnPress={() => {}}
+          text="Measure"
+          // rightIconOnPress={() => {}}
         />
         <Modal
           animationType="slide"
@@ -235,97 +238,96 @@ const AutoLogScreen: React.FC = () => {
             </View>
           </View>
         </Modal>
-        {parsedRes?.action === "ACTION_STRIP_IN" ||
-        parsedRes?.action === "ACTION_GET_BLOOD" ||
-        parsedRes?.action === "ACTION_RESULT" ? (
-          // Third Screen
-          <View style={styles.viewStyle}>
-            <Image
-              source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
-              style={{ marginBottom: 20, width: 200, height: 200 }}
-              alt="check mark ready to measure"
+        <View borderTopWidth={1} borderTopColor="#ECE5FF" flex={1} flexDirection="column" justifyContent="space-between">
+          {parsedRes?.action === "ACTION_STRIP_IN" ||
+            parsedRes?.action === "ACTION_GET_BLOOD" ||
+            parsedRes?.action === "ACTION_RESULT" ? (
+              // Third Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="check mark ready to measure"
+                />
+                <Text style={styles.regularText}>Strip is in place. </Text>
+                <Text style={styles.regularText}>Waiting for your blood sample.</Text>
+              </View>
+            ) : bluetoothState === "PoweredOn" &&
+              scanDevices[0]?.mac &&
+              onConnectedState.mac ? (
+              parsedRes?.action === "ACTION_STRIP_OUT" ? (
+                // Strip Out Screen
+                <View style={styles.viewStyle}>
+                  <Image
+                    source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                    style={{ marginBottom: 20, width: 200, height: 200 }}
+                    alt="error icon"
+                  />
+                  <Text style={styles.regularText}>Strip is not inserted properly.</Text>
+                  <Text style={styles.regularText}>Please insert it again.</Text>
+                </View>
+              ) : parsedRes?.action === "ACTION_ERROR_BG" &&
+                parsedRes.ERROR_NUM_BG === 3 ? (
+                // Strip already used Screen
+                <View style={styles.viewStyle}>
+                  <Image
+                    source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                    style={{ marginBottom: 20, width: 200, height: 200 }}
+                    alt="error icon"
+                  />
+                  <Text style={styles.regularText}>Strip is already used or unknown moisture detected.</Text>
+                  <Text style={styles.regularText}>Discard the current test strip and restart the test with a new strip.</Text>
+                </View>
+              ) : (
+                // Second Screen
+                <View style={styles.viewStyle}>
+                  <Image
+                    source={require("../../../../assets/autoLogImgs/insert-strip.png")}
+                    style={{ marginBottom: 20, width: 200, height: 200 }}
+                    alt="device with strip in"
+                  />
+                  <Text style={styles.regularText}>
+                    Insert test strip in the glucometer and prepare your blood
+                    sample.
+                  </Text>
+                </View>
+              )
+            ) : (
+              // First Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/connect-device.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="device illustration"
+                />
+                <Text style={styles.regularText}>
+                  Make sure the bluetooth is turned on and the glucometer is nearby.
+                </Text>
+              </View>
+          )}
+          <VStack marginBottom={48} alignItems="center">
+            <GlucoButton 
+              buttonType="primary"
+              text="Upload offline readings"
+              isFocused={false}
+              isDisabled={!parsedRes?.action}
+              onPress={() => moveToOfflineLogs()}
+              iconLeft={FileCustom}
+              style={{ width: 347, height: 48, marginBottom: 12 }}
             />
-            <Text>Strip is in place. Waiting for your blood sample.</Text>
-          </View>
-        ) : bluetoothState === "PoweredOn" &&
-          scanDevices[0]?.mac &&
-          onConnectedState.mac ? (
-          parsedRes?.action === "ACTION_STRIP_OUT" ? (
-            // Strip Out Screen
-            <View style={styles.viewStyle}>
-              <Image
-                source={require("../../../../assets/autoLogImgs/strip-error.png")}
-                style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="error icon"
-              />
-              <Text>Strip is not inserted properly.</Text>
-              <Text>Please insert it again.</Text>
-            </View>
-          ) : parsedRes?.action === "ACTION_ERROR_BG" &&
-            parsedRes.ERROR_NUM_BG === 3 ? (
-            // Strip already used Screen
-            <View style={styles.viewStyle}>
-              <Image
-                source={require("../../../../assets/autoLogImgs/strip-error.png")}
-                style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="error icon"
-              />
-              <Text>
-                Strip is already used or unknown moisture detected, discard the
-                test strip and repeat the test with a new strip.
-              </Text>
-            </View>
-          ) : (
-            // Second Screen
-            <View style={styles.viewStyle}>
-              <Image
-                source={require("../../../../assets/autoLogImgs/insert-strip.png")}
-                style={{ marginBottom: 20, width: 200, height: 200 }}
-                alt="device with strip in"
-              />
-              <Text>
-                Insert test strip in the glucometer and prepare your blood
-                sample.
-              </Text>
-            </View>
-          )
-        ) : (
-          // First Screen
-          <View style={styles.viewStyle}>
-            <Image
-              source={require("../../../../assets/autoLogImgs/connect-device.png")}
-              style={{ marginBottom: 20, width: 200, height: 200 }}
-              alt="device illustration"
+            <GlucoButton 
+              buttonType="secondary"
+              text="Manually log your readings"
+              isFocused={false}
+              isDisabled={false}
+              onPress={() => moveToManualEntry()}
+              iconLeft={EditCustom}
+              style={{ width: 347, height: 48, marginBottom: 12 }}
             />
-            <Text>
-              Make sure the bluetooth is turned on and the glucometer is nearby.
-            </Text>
-          </View>
-        )}
-        <Button
-          size="md"
-          variant="solid"
-          marginHorizontal={20}
-          marginTop={20}
-          marginBottom={10}
-          borderRadius={20}
-          disabled={!parsedRes?.action}
-          onPress={() => moveToOfflineLogs()}
-          backgroundColor={!parsedRes?.action ? "$coolGray400" : "$blue600"}
-        >
-          <ButtonIcon as={AddIcon} />
-          <ButtonText>Upload offline readings</ButtonText>
-        </Button>
-        <Button
-          size="md"
-          variant="outline"
-          marginHorizontal={20}
-          borderRadius={20}
-          onPress={() => moveToManualEntry()}
-        >
-          <ButtonText>Manually log your readings</ButtonText>
-          <ButtonIcon as={EditIcon} />
-        </Button>
+          </VStack>
+        </View>
+
+
       </View>
     </SafeAreaView>
   );
@@ -340,7 +342,8 @@ const styles = StyleSheet.create({
   },
   viewStyle: {
     alignItems: "center",
-    paddingTop: 40,
+    flex: 1,
+    justifyContent: 'center'
   },
   buttonStyle: {
     backgroundColor: "#2089dc",
@@ -389,6 +392,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  regularText: {
+    fontSize: 16,
+    color: "#313131",
+    marginHorizontal: 40,
+    textAlign: "center"
+  }
 });
 
 export default AutoLogScreen;

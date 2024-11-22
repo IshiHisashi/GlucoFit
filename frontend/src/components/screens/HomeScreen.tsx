@@ -30,7 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BslLineChart from "../organisms/BslLineChart";
 import BslWeeklyBarChart from "../organisms/BslWeeklyBarChart";
 import { AppStackParamList } from "../../types/navigation";
-import { AnalysisCustom, TimesCustom, NavToBelowCustom, MedalCustom } from "../svgs/svgs";
+import { AnalysisCustom, TimesCustom, NavToBelowCustom, MedalCustom, ShareCustom } from "../svgs/svgs";
 import HeaderBasic from "../headers/HeaderBasic";
 import BslTodayBarChart from "../organisms/BslTodayBarChart";
 import GlucoButtonNoOutline from "../atoms/GlucoButtonNoOutline";
