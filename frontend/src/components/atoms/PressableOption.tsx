@@ -6,7 +6,7 @@ type InputProps = {
   value: string;
   selectedOption: string | number | boolean | undefined;
   onSelect: (value: string) => void;
-  withoutCheck: boolean;
+  withoutCheck?: boolean;
 };
 
 const PressableOption: React.FC<PropsWithChildren<InputProps>> = (props) => {

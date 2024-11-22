@@ -62,12 +62,18 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
             <View>
               <VStack space="sm" alignItems="center" bottom={40}>
                 <Box
-                  bg="#FAF8FF"
+                  bg="$primaryIndigo5"
+                  borderWidth={1}
+                  borderColor="$primaryIndigo30"
                   p={10}
                   rounded={10}
                   width={280}
                   height={80}
                   zIndex={0}
+                  shadowColor="#220476"
+                  shadowOffset={{ width: 0, height: 3 }}
+                  shadowOpacity={0.1}
+                  shadowRadius={4.2}
                 >
                   <Text
                     color="$neutralDark80"
@@ -79,12 +85,16 @@ const OnbordingLayout: React.FC<PropsWithChildren<OnboardingLayoutProps>> = (
                   </Text>
                 </Box>
                 <Box
-                  bg="#FAF8FF"
+                  bg="$primaryIndigo5"
+                  borderRightColor="$primaryIndigo30"
+                  borderRightWidth={1}
+                  borderBottomColor="$primaryIndigo30"
+                  borderBottomWidth={1}
                   h={23}
                   w={23}
                   position="absolute"
-                  top={70}
-                  right={120}
+                  top={68}
+                  right={118.8}
                   transform="rotate(45deg)"
                   zIndex={10}
                 />
