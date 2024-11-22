@@ -71,7 +71,7 @@ const WeeklyStreak: React.FC<WeeklyStreakProps> = ({ setStreakNum }) => {
 
   useEffect(() => {
     setDaysHasLog(data?.getTestResultsLast7Days);
-    setStreakNum(data?.getTestResultsLast7Days.length)
+    setStreakNum(data?.getTestResultsLast7Days.length);
   }, [data]);
 
   const last7Days = getLast7Days();

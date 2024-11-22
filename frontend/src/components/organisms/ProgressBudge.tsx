@@ -154,7 +154,9 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
         </Text>
         <Pressable onPress={goToBadges}>
           <HStack alignItems="center" space="xs">
-            <Text fontSize={12} fontFamily="$sem">See more</Text>
+            <Text fontSize={12} fontFamily="$sem">
+              See more
+            </Text>
             <Icon as={ChevronRightIcon} size="xl" mr="$2" color="#4800FF" />
           </HStack>
         </Pressable>
@@ -182,11 +184,20 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
                 h={40}
               />
               <View flexShrink={1} flexBasis={"$3/5"}>
-                <Text fontSize={14} fontFamily="$bold">{badge.badgeId.badge_name}</Text>
-                <Text fontSize={12} color="#999999">{badge.badgeId.badge_desc}</Text>
+                <Text fontSize={14} fontFamily="$bold">
+                  {badge.badgeId.badge_name}
+                </Text>
+                <Text fontSize={12} color="#999999">
+                  {badge.badgeId.badge_desc}
+                </Text>
               </View>
             </View>
-            <Text marginLeft={10} textAlign="right" fontSize={22} fontFamily="$bold">
+            <Text
+              marginLeft={10}
+              textAlign="right"
+              fontSize={22}
+              fontFamily="$bold"
+            >
               {getBadgeProgress(badge.badgeId.badge_name)}/
               {badge.badgeId.criteria.value}
             </Text>
@@ -198,7 +209,7 @@ const ProgressBudgeSection: React.FC<ProgressBudgeSectionProps> = ({
 };
 
 const ProgressBudge: React.FC<ProgressBudgeProps> = ({ goToBadges }) => {
-  return <ProgressBudgeSection goToBadges={goToBadges}/>;
+  return <ProgressBudgeSection goToBadges={goToBadges} />;
 };
 
 export default ProgressBudge;

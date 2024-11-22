@@ -11,7 +11,6 @@ interface StreakScreenProps {
 }
 
 const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
-
   const [streakNum, setStreakNum] = useState<number>(7);
   const [streakBad, setstreakBad] = useState<boolean>(false);
   const [streakMid, setStreakMid] = useState<boolean>(false);

@@ -1,10 +1,7 @@
 import {
-  AddIcon,
   Button,
-  ButtonIcon,
   ButtonText,
   Center,
-  EditIcon,
   HStack,
   Text,
   VStack,
@@ -26,7 +23,7 @@ import { Modal, StyleSheet } from "react-native";
 import { Image } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
 import GlucoButton from "../../atoms/GlucoButton";
-import { AnalysisCustom, EditCustom, FileCustom } from "../../svgs/svgs";
+import { CloudCustom, EditCustom } from "../../svgs/svgs";
 import { BlurView } from "@react-native-community/blur";
 import LottieView from "lottie-react-native";
 
@@ -194,15 +191,11 @@ const AutoLogScreen: React.FC = () => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View 
-            height={"$full"}
-            flex={1}
-            justifyContent="center"
-          >
+          <View height={"$full"} flex={1} justifyContent="center">
             <BlurView
               style={StyleSheet.absoluteFill}
               blurType="dark"
-              blurAmount={2} 
+              blurAmount={2}
               reducedTransparencyFallbackColor="gray"
             />
             <View
@@ -224,17 +217,14 @@ const AutoLogScreen: React.FC = () => {
                     borderWidth={10}
                     borderColor="#ECE5FF"
                   >
-                    <LottieView 
+                    <LottieView
                       source={require("../../animations/loadingLottie.json")}
                       autoPlay
                       loop
-                      style={{width: 70, height: 70}}
+                      style={{ width: 70, height: 70 }}
                     />
                   </Center>
-                  <Text
-                    fontSize={13} 
-                    textAlign="center" 
-                  >
+                  <Text fontSize={13} textAlign="center">
                     Calculating your blood glucose level...
                   </Text>
                 </Center>
@@ -249,28 +239,26 @@ const AutoLogScreen: React.FC = () => {
                     alt="smily face"
                   />
                   <HStack>
-                    <Text
-                      fontSize={22} 
-                      fontFamily="$bold"
-                    >
+                    <Text fontSize={22} fontFamily="$bold">
                       {BGL}
                     </Text>
-                    <Text 
-                      fontSize={13}
-                      marginTop={9}
-                      marginLeft={4}
-                    >
+                    <Text fontSize={13} marginTop={9} marginLeft={4}>
                       mmol/L
                     </Text>
                   </HStack>
                   <Text fontSize={13}>Your blood glucose level updated.</Text>
-                  <GlucoButton 
+                  <GlucoButton
                     buttonType="primary"
                     text="Next"
                     isFocused={false}
                     isDisabled={false}
                     onPress={() => moveToResult()}
-                    style={{ width: 214, height: 48, marginBottom: 12, marginTop: 20 }}
+                    style={{
+                      width: 214,
+                      height: 48,
+                      marginBottom: 12,
+                      marginTop: 20,
+                    }}
                   />
                 </Center>
               ) : (
@@ -281,8 +269,8 @@ const AutoLogScreen: React.FC = () => {
                     backgroundColor="transparent"
                   >
                     <ButtonText
-                      position="relative" 
-                      top={10} 
+                      position="relative"
+                      top={10}
                       left={110}
                       padding={20}
                     >
@@ -296,112 +284,131 @@ const AutoLogScreen: React.FC = () => {
                     height={100}
                     alt="Gluco frowned face"
                   />
-                  <Text 
+                  <Text
                     fontSize={17}
                     fontFamily="$bold"
-                    textAlign="center" 
-                    marginHorizontal={24} 
+                    textAlign="center"
+                    marginHorizontal={24}
                     marginBottom={12}
                   >
                     Oops! We couldn't process your reading.
                   </Text>
-                  <Text
-                    fontSize={13} 
-                    textAlign="center" 
-                  >
-                    The test strip may be contaminated or not have enough blood sample. Please insert a new strip and try again.
+                  <Text fontSize={13} textAlign="center">
+                    The test strip may be contaminated or not have enough blood
+                    sample. Please insert a new strip and try again.
                   </Text>
-                  <GlucoButton 
+                  <GlucoButton
                     buttonType="primary"
                     text="Retry"
                     isFocused={false}
                     isDisabled={false}
                     onPress={() => setModalVisible(false)}
-                    style={{ width: 214, height: 48, marginBottom: 12, marginTop: 20 }}
+                    style={{
+                      width: 214,
+                      height: 48,
+                      marginBottom: 12,
+                      marginTop: 20,
+                    }}
                   />
                 </Center>
               )}
             </View>
           </View>
         </Modal>
-        <View borderTopWidth={1} borderTopColor="#ECE5FF" flex={1} flexDirection="column" justifyContent="space-between">
+        <View
+          borderTopWidth={1}
+          borderTopColor="#ECE5FF"
+          flex={1}
+          flexDirection="column"
+          justifyContent="space-between"
+        >
           {parsedRes?.action === "ACTION_STRIP_IN" ||
-            parsedRes?.action === "ACTION_GET_BLOOD" ||
-            parsedRes?.action === "ACTION_RESULT" ? (
-              // Third Screen
+          parsedRes?.action === "ACTION_GET_BLOOD" ||
+          parsedRes?.action === "ACTION_RESULT" ? (
+            // Third Screen
+            <View style={styles.viewStyle}>
+              <Image
+                source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
+                style={{ marginBottom: 20, width: 200, height: 200 }}
+                alt="check mark ready to measure"
+              />
+              <Text style={styles.regularText}>Strip is in place. </Text>
+              <Text style={styles.regularText}>
+                Waiting for your blood sample.
+              </Text>
+            </View>
+          ) : bluetoothState === "PoweredOn" &&
+            scanDevices[0]?.mac &&
+            onConnectedState.mac ? (
+            parsedRes?.action === "ACTION_STRIP_OUT" ? (
+              // Strip Out Screen
               <View style={styles.viewStyle}>
                 <Image
-                  source={require("../../../../assets/autoLogImgs/ready-to-measure.png")}
+                  source={require("../../../../assets/autoLogImgs/strip-error.png")}
                   style={{ marginBottom: 20, width: 200, height: 200 }}
-                  alt="check mark ready to measure"
-                />
-                <Text style={styles.regularText}>Strip is in place. </Text>
-                <Text style={styles.regularText}>Waiting for your blood sample.</Text>
-              </View>
-            ) : bluetoothState === "PoweredOn" &&
-              scanDevices[0]?.mac &&
-              onConnectedState.mac ? (
-              parsedRes?.action === "ACTION_STRIP_OUT" ? (
-                // Strip Out Screen
-                <View style={styles.viewStyle}>
-                  <Image
-                    source={require("../../../../assets/autoLogImgs/strip-error.png")}
-                    style={{ marginBottom: 20, width: 200, height: 200 }}
-                    alt="error icon"
-                  />
-                  <Text style={styles.regularText}>Strip is not inserted properly.</Text>
-                  <Text style={styles.regularText}>Please insert it again.</Text>
-                </View>
-              ) : parsedRes?.action === "ACTION_ERROR_BG" &&
-                parsedRes.ERROR_NUM_BG === 3 ? (
-                // Strip already used Screen
-                <View style={styles.viewStyle}>
-                  <Image
-                    source={require("../../../../assets/autoLogImgs/strip-error.png")}
-                    style={{ marginBottom: 20, width: 200, height: 200 }}
-                    alt="error icon"
-                  />
-                  <Text style={styles.regularText}>Strip is already used or unknown moisture detected.</Text>
-                  <Text style={styles.regularText}>Discard the current test strip and restart the test with a new strip.</Text>
-                </View>
-              ) : (
-                // Second Screen
-                <View style={styles.viewStyle}>
-                  <Image
-                    source={require("../../../../assets/autoLogImgs/insert-strip.png")}
-                    style={{ marginBottom: 20, width: 200, height: 200 }}
-                    alt="device with strip in"
-                  />
-                  <Text style={styles.regularText}>
-                    Insert test strip in the glucometer and prepare your blood
-                    sample.
-                  </Text>
-                </View>
-              )
-            ) : (
-              // First Screen
-              <View style={styles.viewStyle}>
-                <Image
-                  source={require("../../../../assets/autoLogImgs/connect-device.png")}
-                  style={{ marginBottom: 20, width: 200, height: 200 }}
-                  alt="device illustration"
+                  alt="error icon"
                 />
                 <Text style={styles.regularText}>
-                  Make sure the bluetooth is turned on and the glucometer is nearby.
+                  Strip is not inserted properly.
+                </Text>
+                <Text style={styles.regularText}>Please insert it again.</Text>
+              </View>
+            ) : parsedRes?.action === "ACTION_ERROR_BG" &&
+              parsedRes.ERROR_NUM_BG === 3 ? (
+              // Strip already used Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/strip-error.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="error icon"
+                />
+                <Text style={styles.regularText}>
+                  Strip is already used or unknown moisture detected.
+                </Text>
+                <Text style={styles.regularText}>
+                  Discard the current test strip and restart the test with a new
+                  strip.
                 </Text>
               </View>
+            ) : (
+              // Second Screen
+              <View style={styles.viewStyle}>
+                <Image
+                  source={require("../../../../assets/autoLogImgs/insert-strip.png")}
+                  style={{ marginBottom: 20, width: 200, height: 200 }}
+                  alt="device with strip in"
+                />
+                <Text style={styles.regularText}>
+                  Insert test strip in the glucometer and prepare your blood
+                  sample.
+                </Text>
+              </View>
+            )
+          ) : (
+            // First Screen
+            <View style={styles.viewStyle}>
+              <Image
+                source={require("../../../../assets/autoLogImgs/connect-device.png")}
+                style={{ marginBottom: 20, width: 200, height: 200 }}
+                alt="device illustration"
+              />
+              <Text style={styles.regularText}>
+                Make sure the bluetooth is turned on and the glucometer is
+                nearby.
+              </Text>
+            </View>
           )}
           <VStack marginBottom={48} alignItems="center">
-            <GlucoButton 
+            <GlucoButton
               buttonType="primary"
               text="Upload offline readings"
               isFocused={false}
               isDisabled={!parsedRes?.action}
               onPress={() => moveToOfflineLogs()}
-              iconLeft={FileCustom}
+              iconLeft={CloudCustom}
               style={{ width: 347, height: 48, marginBottom: 12 }}
             />
-            <GlucoButton 
+            <GlucoButton
               buttonType="secondary"
               text="Manually log your readings"
               isFocused={false}
@@ -412,8 +419,6 @@ const AutoLogScreen: React.FC = () => {
             />
           </VStack>
         </View>
-
-
       </View>
     </SafeAreaView>
   );
@@ -423,7 +428,7 @@ const styles = StyleSheet.create({
   viewStyle: {
     alignItems: "center",
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   buttonStyle: {
     backgroundColor: "#2089dc",
@@ -444,7 +449,7 @@ const styles = StyleSheet.create({
   modalViewStyle: {
     alignItems: "center",
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   button: {
     borderRadius: 20,
@@ -472,8 +477,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#313131",
     marginHorizontal: 40,
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 });
 
 export default AutoLogScreen;

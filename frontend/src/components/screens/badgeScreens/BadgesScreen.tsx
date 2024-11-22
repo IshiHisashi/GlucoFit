@@ -44,10 +44,10 @@ interface BadgeImages {
 }
 
 interface badgeScreenTypes {
-  setBackGroundTinted: any
+  setBackGroundTinted: any;
 }
 
-const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
+const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
   const [badgeData, setBadgeData] = useState<Badge[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedBadge, setSelectedBadge] = useState<string>();
@@ -231,7 +231,12 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                     marginBottom={14}
                   />
                   <Center height={40}>
-                    <Text color="black" fontSize={14} textAlign="center" fontFamily="$bold" >
+                    <Text
+                      color="black"
+                      fontSize={14}
+                      textAlign="center"
+                      fontFamily="$bold"
+                    >
                       {b.badgeId.badge_name}
                     </Text>
                   </Center>
@@ -301,7 +306,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           }
         })}
       </View>
-      <Modal 
+      <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -310,7 +315,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
         <BlurView
           style={StyleSheet.absoluteFill}
           blurType="dark"
-          blurAmount={3} 
+          blurAmount={3}
           reducedTransparencyFallbackColor="gray"
         />
         <View
@@ -338,7 +343,12 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                     position="absolute"
                     bottom={330}
                   >
-                    <ButtonText position="relative" padding={20} top={-10} left={150}>
+                    <ButtonText
+                      position="relative"
+                      padding={20}
+                      top={-10}
+                      left={150}
+                    >
                       ✖️
                     </ButtonText>
                   </Button>
@@ -381,8 +391,15 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                   >
                     {b.badgeId.badge_name}
                   </Text>
-                  <Text textAlign="center" marginTop={10} marginBottom={30} paddingHorizontal={10}>
-                    {b.achieved === true ? b.badgeId.unlocked : b.badgeId.locked}
+                  <Text
+                    textAlign="center"
+                    marginTop={10}
+                    marginBottom={30}
+                    paddingHorizontal={10}
+                  >
+                    {b.achieved === true
+                      ? b.badgeId.unlocked
+                      : b.badgeId.locked}
                   </Text>
                   {b.achieved ? (
                     <View>
@@ -401,7 +418,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                       </Text>
                     </View>
                   )}
-                  <GlucoButton 
+                  <GlucoButton
                     buttonType="primary"
                     text="Share"
                     isFocused={false}

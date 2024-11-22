@@ -40,7 +40,13 @@ const BadgeScreen: React.FC = () => {
       >
         {/* Header */}
         {/* Toggle */}
-        <View flexDirection="row" flexWrap="nowrap" gap={16} marginHorizontal={20} marginTop={20}>
+        <View
+          flexDirection="row"
+          flexWrap="nowrap"
+          gap={16}
+          marginHorizontal={20}
+          marginTop={20}
+        >
           <Tab
             text="Streaks"
             isFocused={selectScreen === "streaks"}
@@ -67,7 +73,9 @@ const BadgeScreen: React.FC = () => {
           {selectScreen === "streaks" && (
             <StreakScreen changeScreen={screenToBadge} />
           )}
-          {selectScreen === "badges" && <BadgesScreen setBackGroundTinted={setBackGroundTinted} />}
+          {selectScreen === "badges" && (
+            <BadgesScreen setBackGroundTinted={setBackGroundTinted} />
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>
