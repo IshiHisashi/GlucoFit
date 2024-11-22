@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  Modal,
   Button,
   Pressable,
   HStack,
@@ -21,7 +20,7 @@ import {
 } from "../../../utils/query/badgeProgressQuery";
 import { AuthContext } from "../../../context/AuthContext";
 import { BlurView } from "@react-native-community/blur";
-import { Alert, Share, StyleSheet } from "react-native";
+import { Alert, Share, StyleSheet, Modal } from "react-native";
 import GlucoButton from "../../atoms/GlucoButton";
 import { AngleRightCustom, ShareCustom } from "../../svgs/svgs";
 
@@ -302,7 +301,12 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
           }
         })}
       </View>
-      <Modal isOpen={modalVisible}  onClose={() => setModalVisible(false)}>
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
         <BlurView
           style={StyleSheet.absoluteFill}
           blurType="dark"
@@ -330,12 +334,11 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({setBackGroundTinted}) => {
                   <Button
                     onPress={() => setModalVisible(false)}
                     backgroundColor="transparent"
-                    padding={10}
                     marginTop={-70}
                     position="absolute"
                     bottom={330}
                   >
-                    <ButtonText position="relative" top={0} left={150}>
+                    <ButtonText position="relative" padding={20} top={-10} left={150}>
                       ✖️
                     </ButtonText>
                   </Button>
