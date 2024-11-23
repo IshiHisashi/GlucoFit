@@ -80,26 +80,20 @@ const ActivityLogScreen: React.FC = () => {
 
   const [activity, setActivity] = useState("");
   const [duration, setDuration] = useState({ hours: 0, minutes: 0 });
-  const [timePeriod, setTimePeriod] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const activities = ["Walking", "Running", "Cycling", "Others"];
-  const timePeriods = ["After breakfast", "After lunch", "After dinner"];
   const [isActivityPickerOpen, setIsActivityPickerOpen] = useState(false);
   const [isDurationPickerOpen, setIsDurationPickerOpen] = useState(false);
-  const [isTimePeriodPickerOpen, setIsTimePeriodPickerOpen] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
 
   const navigation = useNavigation<ActivityLogScreenProps>();
 
-  const { data: existingLogData, loading: queryLoading } = useQuery(
-    GET_ACTIVITY_LOG,
-    {
-      variables: { getActivityLogId: logId },
-      skip: !logId, // Skip the query if no logId is provided
-    }
-  );
+  const { data: existingLogData } = useQuery(GET_ACTIVITY_LOG, {
+    variables: { getActivityLogId: logId },
+    skip: !logId,
+  });
 
   const [createActivityLog] = useMutation(CREATE_ACTIVITY_LOG);
   const [updateActivityLog] = useMutation(UPDATE_ACTIVITY_LOG);
@@ -111,7 +105,6 @@ const ActivityLogScreen: React.FC = () => {
 
       setActivity(log.activityType);
 
-      // Convert duration (minutes) back to hours and minutes
       const hours = Math.floor(log.duration / 60);
       const minutes = log.duration % 60;
       setDuration({ hours, minutes });
@@ -162,21 +155,12 @@ const ActivityLogScreen: React.FC = () => {
         console.log("Create result:", log);
       }
 
-      const fakeData = [
-        {
-          badge_desc: "This is fake data",
-          badge_name: "Fake badge here!",
-          id: "670b2125cb185c3905515da2",
-        },
-      ];
-
       navigation.navigate("Tabs", {
         screen: "Home",
         params: {
           mutatedLog: "activity",
           insight: "",
-          // badges: log.data.createActivityLog,
-          badges: fakeData,
+          badges: "",
         },
       });
     } catch (error) {
@@ -218,11 +202,7 @@ const ActivityLogScreen: React.FC = () => {
   return (
     <SafeAreaView>
       <View height="$full">
-        <HeaderWithBackButton
-          navigation={navigation}
-          text="Activity"
-          // rightIconOnPress={() => {}}
-        />
+        <HeaderWithBackButton navigation={navigation} text="Activity" />
 
         <View p="$4" pt="$8">
           <LogsTable pickerData={pickerData} tableType="pickers" />
@@ -265,11 +245,6 @@ const ActivityLogScreen: React.FC = () => {
           mode="date"
           onConfirm={handleDateConfirm}
           onCancel={() => setIsDatePickerOpen(false)}
-          // testID="dateTimePicker"
-          // date={date}
-          // is24Hour={true}
-          // display="default"
-          // onChange={onChangeDate}
         />
 
         <DateTimePickerModal
@@ -277,11 +252,7 @@ const ActivityLogScreen: React.FC = () => {
           mode="time"
           onConfirm={handleTimeConfirm}
           onCancel={() => setIsTimePickerOpen(false)}
-          // testID="dateTimePicker"
-          // time={time}
           is24Hour={true}
-          // display="default"
-          // onChange={onChangeTime}
         />
       </View>
     </SafeAreaView>
