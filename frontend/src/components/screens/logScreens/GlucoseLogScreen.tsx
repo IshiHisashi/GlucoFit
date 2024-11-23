@@ -46,6 +46,8 @@ const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
         badge_name
         badge_image_address
         id
+        locked
+        unlocked
       }
     }
   }
