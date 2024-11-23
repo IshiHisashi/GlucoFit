@@ -98,7 +98,7 @@ const OfflineLogsScreen: React.FC<Props> = ({ route }) => {
 
   const type = "BG5S";
 
-  iHealthAPI.sdkAuthWithLicense("com_jupiter_glucofit_ios.pem");
+  iHealthAPI.sdkAuthWithLicense("com_jupiter_glucofit2_ios.pem");
 
   const getOffLineData = Reflect.get(
     deviceAPIs.getDeviceAPI().apis,
