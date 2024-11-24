@@ -98,7 +98,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
         </>
       )}
 
-      {routeName === "Logs" && (
+      {/* {routeName === "Logs" && (
         <>
           <View />
           <Text
@@ -111,7 +111,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
           </Text>
           <View />
         </>
-      )}
+      )} */}
 
       {(routeName === "Insights" || routeName === "BadgeScreen") && (
         <InputFieldGeneral

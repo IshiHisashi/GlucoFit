@@ -586,16 +586,16 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: "#4800FF" }}>
-      <HeaderBasic
-        routeName={route.name as "Home"}
-        userName={userData?.getUser.name}
-        navigation={navigation}
-      />
       <ScrollView
         bg="$neutralDark5"
         h="106%"
         showsVerticalScrollIndicator={false}
       >
+        <HeaderBasic
+          routeName={route.name as "Home"}
+          userName={userData?.getUser.name}
+          navigation={navigation}
+        />
         <View
           h={550}
           bg="#4800FF"
