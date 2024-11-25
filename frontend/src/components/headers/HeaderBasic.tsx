@@ -1,6 +1,6 @@
 import { Pressable, Text, View, HStack, VStack } from "@gluestack-ui/themed";
-import React, { FC, useState, useEffect, useContext } from "react";
-import { NavigationProp } from "@react-navigation/native";
+import React, { FC, useState, useContext, useCallback } from "react";
+import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { BellCustom, SearchCustom, TimesCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
 import { AuthContext } from "../../context/AuthContext";
@@ -34,6 +34,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
   const [hasUnread, setHasUnread] = useState<boolean>(false);
 
   const [fetchHasUnreadNotification] = useLazyQuery(HAS_UNREAD_NOTIFICATION, {
+    fetchPolicy: "network-only",
     onCompleted: (data) => {
       setHasUnread(data?.hasUnreadNotification || false);
     },
@@ -42,11 +43,13 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-    if (routeName === "Home") {
-      fetchHasUnreadNotification({ variables: { user_id: userId } });
-    }
-  }, [routeName, fetchHasUnreadNotification]);
+  useFocusEffect(
+    useCallback(() => {
+      if (routeName === "Home" && userId) {
+        fetchHasUnreadNotification({ variables: { user_id: userId } });
+      }
+    }, [routeName, fetchHasUnreadNotification, navigation, hasUnread])
+  );
 
   const headerStyles = {
     Home: {
