@@ -97,8 +97,8 @@ const WeeklyStreak: React.FC<WeeklyStreakProps> = ({ setStreakNum }) => {
         Weekly Streak
       </Text>
       <Text marginBottom={20}>
-        {getMonthName(sixDaysAgo.getMonth())} {sixDaysAgo.getDate()} -{" "}
-        {getMonthName(today.getMonth())} {today.getDate()}.{" "}
+        {getMonthName(sixDaysAgo.getMonth() + 1)} {sixDaysAgo.getDate()} -{" "}
+        {getMonthName(today.getMonth() + 1)} {today.getDate()}.{" "}
         {today.getFullYear()}
       </Text>
       <View flexDirection="row" gap={10} justifyContent="space-between">
