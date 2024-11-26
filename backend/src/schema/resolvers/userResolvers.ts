@@ -2,7 +2,6 @@ import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
 import { Badges } from "../../model/Badges";
 import { verifyToken } from "../../auth/auth";
-import bcrypt from "bcrypt";
 
 const userResolvers = {
   Query: {
@@ -17,12 +16,10 @@ const userResolvers = {
       if (!user) {
         throw new Error("Not authenticated");
       }
-
       const userRecord = await User.findById(user.userId);
       if (!userRecord) {
         throw new Error("User not found");
       }
-
       return {
         id: userRecord._id,
       };
