@@ -21,3 +21,9 @@ export const MARK_NOTIFICATION_AS_READ = gql`
     }
   }
 `;
+
+export const HAS_UNREAD_NOTIFICATION = gql`
+  query HasUnreadNotification($user_id: ID!) {
+    hasUnreadNotification(user_id: $user_id)
+  }
+`;

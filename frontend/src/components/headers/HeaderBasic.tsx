@@ -1,8 +1,11 @@
 import { Pressable, Text, View, HStack, VStack } from "@gluestack-ui/themed";
-import React, { FC, useState } from "react";
-import { NavigationProp } from "@react-navigation/native";
+import React, { FC, useState, useContext, useCallback } from "react";
+import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { BellCustom, SearchCustom, TimesCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
+import { AuthContext } from "../../context/AuthContext";
+import { HAS_UNREAD_NOTIFICATION } from "../../utils/query/notificationQuery";
+import { useLazyQuery } from "@apollo/client";
 
 interface HeaderBasicProps {
   routeName: "Home" | "Insights" | "Logs" | "BadgeScreen";
@@ -23,8 +26,29 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
     navigation,
   } = props;
 
+  const { userId } = useContext(AuthContext);
+
   const [localSearchValue, setLocalSearchValue] = useState<string | undefined>(
     searchValue
+  );
+  const [hasUnread, setHasUnread] = useState<boolean>(false);
+
+  const [fetchHasUnreadNotification] = useLazyQuery(HAS_UNREAD_NOTIFICATION, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      setHasUnread(data?.hasUnreadNotification || false);
+    },
+    onError: (error) => {
+      console.error("Error fetching unread notifications:", error);
+    },
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (routeName === "Home" && userId) {
+        fetchHasUnreadNotification({ variables: { user_id: userId } });
+      }
+    }, [routeName, fetchHasUnreadNotification, navigation, hasUnread])
   );
 
   const headerStyles = {
@@ -57,7 +81,9 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
 
   const handleSearch = () => {
     if (onSearchExecute) {
-      onSearchExecute(localSearchValue.trim());
+      if (localSearchValue) {
+        onSearchExecute(localSearchValue.trim());
+      }
     }
   };
 
@@ -91,8 +117,24 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
             <Pressable onPress={() => navigation?.navigate("Profile")}>
               <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
             </Pressable>
-            <Pressable onPress={() => navigation?.navigate("Notifications")}>
+            <Pressable
+              onPress={() => navigation?.navigate("Notifications")}
+              position="relative"
+            >
               <BellCustom color={currentStyle.notificationColor} size={27} />
+              {hasUnread ? (
+                <View
+                  bg="red"
+                  w={16}
+                  h={16}
+                  rounded={100}
+                  position="absolute"
+                  right={0}
+                  top={0}
+                ></View>
+              ) : (
+                ""
+              )}
             </Pressable>
           </HStack>
         </>

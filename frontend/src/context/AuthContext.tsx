@@ -21,7 +21,7 @@ type AuthProviderProps = {
 };
 
 const client = new ApolloClient({
-  uri: "http://10.128.204.183:3000/graphql",
+  uri: "http://172.20.10.4:3000/graphql",
   cache: new InMemoryCache(),
 });
 
