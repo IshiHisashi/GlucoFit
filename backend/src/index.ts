@@ -7,6 +7,8 @@ import { typeDefs } from "./schema/typedefs/typeDefs";
 import resolvers from "./schema/resolvers/resolvers";
 import { verifyToken } from "./auth/auth";
 import { setupIHealthRoutes } from "./ihealth/ihealth";
+import fs from "fs";
+import https from "https";
 import "./scheduler";
 
 dotenv.config();
@@ -19,6 +21,7 @@ const startServer = async () => {
   app.use(
     cors({
       origin: "*",
+      // credentials: true,
     })
   );
   app.use(express.json());
@@ -67,6 +70,17 @@ const startServer = async () => {
   app.get("/", (req: Request, res: Response) => {
     res.send("Express + TypeScript + MongoDB Server");
   });
+
+  // const httpsOptions = {
+  //   key: fs.readFileSync("server.key"), // Path to your SSL private key
+  //   cert: fs.readFileSync("server.cert"), // Path to your SSL certificate
+  // };
+
+  // https.createServer(httpsOptions, app).listen(port, () => {
+  //   console.log(
+  //     `[server]: Server is running at http://localhost:${port}${server.graphqlPath}`
+  //   );
+  // });
 
   app.listen(port, () => {
     console.log(

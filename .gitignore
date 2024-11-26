@@ -131,3 +131,6 @@ dist
 
 
 *.pem
+
+server.key
+server.cert
