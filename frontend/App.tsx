@@ -11,6 +11,11 @@ import RootStack from "./src/components/stacks/RootStack";
 
 import LottieView from "lottie-react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { LogBox } from "react-native";
+// import ErrorUtils from 'ErrorUtils';
+
+LogBox.ignoreAllLogs(true);
+// ErrorUtils.setGlobalHandler(() => {});
 
 const App: React.FC = () => {
   const [isSplashVisible, setSplashVisible] = useState<boolean>(true);
