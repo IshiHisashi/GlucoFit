@@ -155,7 +155,7 @@ const LogsScreen: React.FC = () => {
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
   // animation for header //////////////////////////
-  const HEADER_HIGHT = 120;
+  const HEADER_HIGHT = 70;
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const offsetAnim = useRef(new Animated.Value(0)).current;
@@ -457,7 +457,7 @@ const LogsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
-      <View h="106%" bg="$neutralDark5">
+      <View h="100%" bg="$neutralDark5">
         <Animated.View
           style={{
             position: "absolute",
@@ -470,14 +470,12 @@ const LogsScreen: React.FC = () => {
             backgroundColor: "$neutralWhite",
           }}
         >
-          <HeaderBasic routeName={route.name as "Logs"} />
-
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             bg="$neutralWhite"
           >
-            <HStack space="sm" p="$4" pt="$2">
+            <HStack space="sm" paddingHorizontal={20} paddingVertical={15} >
               <Tab
                 text="All"
                 isFocused={currentFilter === "All"}
