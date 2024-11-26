@@ -1,5 +1,5 @@
 import { Pressable, Text, View, HStack, VStack } from "@gluestack-ui/themed";
-import React, { FC, useState, useContext, useCallback } from "react";
+import React, { FC, useState, useContext, useCallback, useEffect } from "react";
 import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { BellCustom, SearchCustom, TimesCustom } from "../svgs/svgs";
 import InputFieldGeneral from "../atoms/InputFieldGeneral";
@@ -32,6 +32,7 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
     searchValue
   );
   const [hasUnread, setHasUnread] = useState<boolean>(false);
+  const [initialLetter, setInitialLetter] = useState<string>("");
 
   const [fetchHasUnreadNotification] = useLazyQuery(HAS_UNREAD_NOTIFICATION, {
     fetchPolicy: "network-only",
@@ -50,6 +51,13 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
       }
     }, [routeName, fetchHasUnreadNotification, navigation, hasUnread])
   );
+
+  useEffect(() => {
+    if (userName !== "" && userName !== undefined) {
+      const initial = userName.slice(0, 1).toUpperCase();
+      setInitialLetter(initial)
+    }
+  }, [userName])
 
   const headerStyles = {
     Home: {
@@ -115,7 +123,9 @@ const HeaderBasic: FC<HeaderBasicProps> = (props) => {
 
           <HStack alignItems="center" space="md">
             <Pressable onPress={() => navigation?.navigate("Profile")}>
-              <View h="$8" w="$8" bg="#808080" borderRadius="$full" />
+              <View h={32} w={32} bg="white" borderRadius={20}>
+                <Text textAlign="center" fontSize={22} fontFamily="$bold" lineHeight={32}>{ initialLetter }</Text>
+              </View>
             </Pressable>
             <Pressable
               onPress={() => navigation?.navigate("Notifications")}
