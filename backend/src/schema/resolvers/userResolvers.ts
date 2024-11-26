@@ -22,6 +22,7 @@ const userResolvers = {
       }
       return {
         id: userRecord._id,
+        has_onboarded: userRecord.has_onboarded,
       };
     },
     getUserBadge: async (
