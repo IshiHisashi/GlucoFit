@@ -2,8 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken, saveToken, deleteToken } from "../utils/utilAuth";
 import { jwtDecode } from "jwt-decode";
-import { useQuery } from "@apollo/client";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { GET_USER_HAS_ONBOARDED } from "../utils/query/onboardingQuery";
 
 type AuthContextProps = {
@@ -21,7 +20,8 @@ type AuthProviderProps = {
 };
 
 const client = new ApolloClient({
-  uri: "https://backend.glucofit.ca/graphql",
+  // uri: "https://backend.glucofit.ca/graphql",
+  uri: "http://10.128.204.183:3000/graphql",
   cache: new InMemoryCache(),
 });
 

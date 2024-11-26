@@ -69,6 +69,7 @@ export const userTypeDefs = gql`
   # Queries
   type Query {
     getUser(id: ID!): User
+    currentUser: User
     getUsers: [User!]!
     getUserBadge(id: ID!): User
     getUserOnProgressBadge(id: ID!): User
