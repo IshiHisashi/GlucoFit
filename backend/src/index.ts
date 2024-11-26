@@ -21,7 +21,7 @@ const startServer = async () => {
   app.use(
     cors({
       origin: "*",
-      // credentials: true,
+      credentials: true,
     })
   );
   app.use(express.json());
@@ -71,22 +71,22 @@ const startServer = async () => {
     res.send("Express + TypeScript + MongoDB Server");
   });
 
-  // const httpsOptions = {
-  //   key: fs.readFileSync("server.key"), // Path to your SSL private key
-  //   cert: fs.readFileSync("server.cert"), // Path to your SSL certificate
-  // };
+  const httpsOptions = {
+    key: fs.readFileSync("server.key"),
+    cert: fs.readFileSync("server.cert"),
+  };
 
-  // https.createServer(httpsOptions, app).listen(port, () => {
-  //   console.log(
-  //     `[server]: Server is running at http://localhost:${port}${server.graphqlPath}`
-  //   );
-  // });
-
-  app.listen(port, () => {
+  https.createServer(httpsOptions, app).listen(port, () => {
     console.log(
       `[server]: Server is running at http://localhost:${port}${server.graphqlPath}`
     );
   });
+
+  // app.listen(port, () => {
+  //   console.log(
+  //     `[server]: Server is running at http://localhost:${port}${server.graphqlPath}`
+  //   );
+  // });
 };
 
 startServer().catch((error) => {
