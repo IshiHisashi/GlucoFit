@@ -14,7 +14,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useLazyQuery } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { Animated } from "react-native";
@@ -189,41 +189,101 @@ const LogsScreen: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
   // -------------------
 
-  const { data, loading, refetch, fetchMore } = useQuery(GET_COMBINED_LOGS, {
-    variables: {
-      userId,
-      goBackTillThisDate: new Date(
-        new Date().getTime() - 30 * 24 * 60 * 60 * 1000
-      ).toISOString(),
-      latestDate: new Date().toISOString(),
-      cursor: null,
-      limit: 7,
-    },
-    onCompleted: (data) => {
-      console.log(data.getCombinedLogsByDateRanger.logs);
-      if (!data?.getCombinedLogsByDateRange) return;
-      const {
-        logs: fetchedLogs,
-        hasMoreData,
-        nextCursor,
-      } = data.getCombinedLogsByDateRange;
+  // const { data, loading, refetch, fetchMore } = useQuery(GET_COMBINED_LOGS, {
+  //   variables: {
+  //     userId,
+  //     goBackTillThisDate: new Date(
+  //       new Date().getTime() - 30 * 24 * 60 * 60 * 1000
+  //     ).toISOString(),
+  //     latestDate: new Date().toISOString(),
+  //     cursor: null,
+  //     limit: 7,
+  //   },
+  //   onCompleted: (data) => {
+  //     console.log(data);
+  //     if (!data?.getCombinedLogsByDateRange) return;
+  //     const {
+  //       logs: fetchedLogs,
+  //       hasMoreData,
+  //       nextCursor,
+  //     } = data.getCombinedLogsByDateRange;
 
-      console.log(logs);
+  //     if (nextCursor) {
+  //       setLogs((prevLogs) => {
+  //         const newLogs = fetchedLogs.filter(
+  //           (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+  //         );
+  //         if (newLogs.length === 0) return prevLogs;
+  //         return [...prevLogs, ...newLogs];
+  //       });
 
-      if (nextCursor) {
-        setLogs((prevLogs) => {
-          const newLogs = fetchedLogs.filter(
+  //       setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
+  //       setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
+  //     }
+  //   },
+  // });
+
+  const [fetchLogs, { data, loading, error, fetchMore }] =
+    useLazyQuery(GET_COMBINED_LOGS);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    fetchLogs({
+      variables: {
+        userId,
+        goBackTillThisDate: new Date(
+          new Date().getTime() - 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        latestDate: new Date().toISOString(),
+        cursor: null,
+        limit: 4,
+      },
+    })
+      .then((response) => {
+        const {
+          logs: fetchedLogs,
+          hasMoreData,
+          nextCursor,
+        } = response.data.getCombinedLogsByDateRange;
+
+        setLogs(fetchedLogs);
+        setHasMore(hasMoreData);
+        setCursor(nextCursor);
+      })
+      .catch((err) => console.error("Error fetching logs:", err));
+  }, [userId]);
+
+  const fetchMoreLogs = () => {
+    fetchLogs({
+      variables: {
+        userId,
+        goBackTillThisDate: new Date(
+          new Date().getTime() - 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        latestDate: new Date().toISOString(),
+        cursor,
+        limit: 5,
+      },
+    })
+      .then((response) => {
+        const {
+          logs: fetchedLogs,
+          hasMoreData,
+          nextCursor,
+        } = response.data.getCombinedLogsByDateRange;
+
+        setLogs((prevLogs) => [
+          ...prevLogs,
+          ...fetchedLogs.filter(
             (log: any) => !prevLogs.some((prev) => prev.id === log.id)
-          );
-          if (newLogs.length === 0) return prevLogs;
-          return [...prevLogs, ...newLogs];
-        });
-
-        setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
-        setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
-      }
-    },
-  });
+          ),
+        ]);
+        setHasMore(hasMoreData);
+        setCursor(nextCursor);
+      })
+      .catch((err) => console.error("Error fetching more logs:", err));
+  };
 
   const { data: bslForXData } = useQuery(GET_AVERAGE_BSL_FOR_X, {
     variables: { userId: userId },
@@ -380,59 +440,59 @@ const LogsScreen: React.FC = () => {
     }
   }, [logs, bslForXData?.getAverageBslXAxisValue, navigation, currentFilter]);
 
-  const loadMoreLogs = useCallback(async () => {
-    if (!hasMore || loading) return;
+  // const loadMoreLogs = useCallback(async () => {
+  //   if (!hasMore || loading) return;
 
-    try {
-      const res = await fetchMore({
-        variables: {
-          cursor,
-          limit: 10,
-        },
-      });
+  //   try {
+  //     const res = await fetchMore({
+  //       variables: {
+  //         cursor,
+  //         limit: 10,
+  //       },
+  //     });
 
-      const {
-        logs: newLogs,
-        hasMoreData,
-        nextCursor,
-      } = res.data.getCombinedLogsByDateRange;
+  //     const {
+  //       logs: newLogs,
+  //       hasMoreData,
+  //       nextCursor,
+  //     } = res.data.getCombinedLogsByDateRange;
 
-      setLogs((prevLogs) => [
-        ...prevLogs,
-        ...newLogs.filter(
-          (log: any) => !prevLogs.some((prev) => prev.id === log.id)
-        ),
-      ]);
-      setHasMore(hasMoreData);
-      setCursor(nextCursor);
-    } catch (error) {
-      console.error("Error loading more logs:", error);
-    }
-  }, [fetchMore, cursor]);
+  //     setLogs((prevLogs) => [
+  //       ...prevLogs,
+  //       ...newLogs.filter(
+  //         (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+  //       ),
+  //     ]);
+  //     setHasMore(hasMoreData);
+  //     setCursor(nextCursor);
+  //   } catch (error) {
+  //     console.error("Error loading more logs:", error);
+  //   }
+  // }, [fetchMore, cursor]);
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const res = await refetch({
-        cursor: null,
-        limit: 7,
-      });
+  // const onRefresh = useCallback(async () => {
+  //   setRefreshing(true);
+  //   try {
+  //     const res = await refetch({
+  //       cursor: null,
+  //       limit: 7,
+  //     });
 
-      const {
-        logs: refreshedLogs,
-        hasMoreData,
-        nextCursor,
-      } = res.data.getCombinedLogsByDateRange;
+  //     const {
+  //       logs: refreshedLogs,
+  //       hasMoreData,
+  //       nextCursor,
+  //     } = res.data.getCombinedLogsByDateRange;
 
-      setLogs(refreshedLogs);
-      setHasMore(hasMoreData);
-      setCursor(nextCursor);
-    } catch (error) {
-      console.error("Error refreshing logs:", error);
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refetch]);
+  //     setLogs(refreshedLogs);
+  //     setHasMore(hasMoreData);
+  //     setCursor(nextCursor);
+  //   } catch (error) {
+  //     console.error("Error refreshing logs:", error);
+  //   } finally {
+  //     setRefreshing(false);
+  //   }
+  // }, [refetch]);
 
   const renderLogItem = ({ item }: { item: Section }) => {
     // console.log("item:", item);
