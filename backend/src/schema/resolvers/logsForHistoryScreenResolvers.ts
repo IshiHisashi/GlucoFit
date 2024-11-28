@@ -96,7 +96,7 @@ const logsForHistoryScreenResolvers = {
 
       const paginatedLogs = allLogs.slice(0, limit);
       const nextCursor =
-        paginatedLogs.length > 7
+        allLogs.length > limit
           ? paginatedLogs[paginatedLogs.length - 1].log_timestamp
           : null;
 

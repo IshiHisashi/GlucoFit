@@ -196,11 +196,11 @@ const LogsScreen: React.FC = () => {
         new Date().getTime() - 30 * 24 * 60 * 60 * 1000
       ).toISOString(),
       latestDate: new Date().toISOString(),
-      // cursor: null,
+      cursor: null,
       limit: 7,
     },
-    fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
+      console.log(data.getCombinedLogsByDateRanger.logs);
       if (!data?.getCombinedLogsByDateRange) return;
       const {
         logs: fetchedLogs,
@@ -208,16 +208,20 @@ const LogsScreen: React.FC = () => {
         nextCursor,
       } = data.getCombinedLogsByDateRange;
 
-      setLogs((prevLogs) => {
-        const newLogs = fetchedLogs.filter(
-          (log: any) => !prevLogs.some((prev) => prev.id === log.id)
-        );
-        if (newLogs.length === 0) return prevLogs;
-        return [...prevLogs, ...newLogs];
-      });
+      console.log(logs);
 
-      setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
-      setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
+      if (nextCursor) {
+        setLogs((prevLogs) => {
+          const newLogs = fetchedLogs.filter(
+            (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+          );
+          if (newLogs.length === 0) return prevLogs;
+          return [...prevLogs, ...newLogs];
+        });
+
+        setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
+        setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
+      }
     },
   });
 
