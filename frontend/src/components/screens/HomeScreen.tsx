@@ -597,10 +597,10 @@ const HomeScreen: React.FC = () => {
           navigation={navigation}
         />
         <View
-          h={550}
+          h={800}
           bg="#4800FF"
           position="absolute"
-          top={-450}
+          top={-550}
           left={0}
           right={0}
           zIndex={-1}
