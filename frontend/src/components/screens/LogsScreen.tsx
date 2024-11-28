@@ -153,6 +153,7 @@ const GET_AVERAGE_BSL_FOR_X = gql`
 const LogsScreen: React.FC = () => {
   const navigation = useNavigation<LogsScreenNavigationProp>();
   const { userId } = useContext(AuthContext);
+  const numPagenation = 7;
 
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -237,7 +238,7 @@ const LogsScreen: React.FC = () => {
         ).toISOString(),
         latestDate: new Date().toISOString(),
         cursor: null,
-        limit: 4,
+        limit: numPagenation,
       },
     })
       .then((response) => {
@@ -255,34 +256,37 @@ const LogsScreen: React.FC = () => {
   }, [userId]);
 
   const fetchMoreLogs = () => {
-    fetchLogs({
+    if (!hasMore || loading) return;
+
+    fetchMore({
       variables: {
         userId,
         goBackTillThisDate: new Date(
-          new Date().getTime() - 30 * 24 * 60 * 60 * 1000
+          Date.now() - 30 * 24 * 60 * 60 * 1000
         ).toISOString(),
         latestDate: new Date().toISOString(),
         cursor,
         limit: 5,
       },
-    })
-      .then((response) => {
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+
         const {
-          logs: fetchedLogs,
+          logs: newLogs,
           hasMoreData,
           nextCursor,
-        } = response.data.getCombinedLogsByDateRange;
+        } = fetchMoreResult.getCombinedLogsByDateRange;
 
         setLogs((prevLogs) => [
           ...prevLogs,
-          ...fetchedLogs.filter(
-            (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+          ...newLogs.filter(
+            (log: any) => !prevLogs.some((prevLog) => prevLog.id === log.id)
           ),
         ]);
         setHasMore(hasMoreData);
         setCursor(nextCursor);
-      })
-      .catch((err) => console.error("Error fetching more logs:", err));
+      },
+    });
   };
 
   const { data: bslForXData } = useQuery(GET_AVERAGE_BSL_FOR_X, {
@@ -588,7 +592,7 @@ const LogsScreen: React.FC = () => {
             data={sectionedLogs}
             keyExtractor={(item, index) => item.log_timestamp + index}
             renderItem={renderLogItem}
-            // onEndReached={loadMoreLogs}
+            onEndReached={fetchMoreLogs}
             onEndReachedThreshold={0.1}
             // refreshControl={
             //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
