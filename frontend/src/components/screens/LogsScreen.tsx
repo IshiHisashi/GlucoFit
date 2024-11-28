@@ -16,11 +16,10 @@ import React, {
 } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Animated } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import HeaderBasic from "../headers/HeaderBasic";
 import Tab from "../atoms/Tab";
 import {
   CapsuleCustom,
@@ -100,13 +99,16 @@ const GET_COMBINED_LOGS = gql`
     $userId: ID!
     $goBackTillThisDate: Date!
     $latestDate: Date!
+    $cursor: Date
+    $limit: Int
   ) {
     getCombinedLogsByDateRange(
       user_id: $userId
       goBackTillThisDate: $goBackTillThisDate
       latestDate: $latestDate
+      cursor: $cursor
+      limit: $limit
     ) {
-      hasMoreData
       logs {
         ... on TestResults {
           bsl
@@ -136,7 +138,8 @@ const GET_COMBINED_LOGS = gql`
           }
         }
       }
-      nextLatestDate
+      hasMoreData
+      nextCursor
     }
   }
 `;
@@ -149,7 +152,6 @@ const GET_AVERAGE_BSL_FOR_X = gql`
 
 const LogsScreen: React.FC = () => {
   const navigation = useNavigation<LogsScreenNavigationProp>();
-  const route = useRoute<{ key: string; name: string }>();
   const { userId } = useContext(AuthContext);
 
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -180,28 +182,44 @@ const LogsScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [logs, setLogs] = useState<Log[]>([]);
   const [sectionedLogs, setSectionedLogs] = useState<Section[]>([]);
-  const [latestDate, setLatestDate] = useState<Date>(() => new Date());
+  const [cursor, setCursor] = useState<string | null>(null);
+
+  // MAY NOT NEED-------
   const [hasMore, setHasMore] = useState(true);
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
+  // -------------------
+
   const { data, loading, refetch, fetchMore } = useQuery(GET_COMBINED_LOGS, {
     variables: {
-      userId: userId,
+      userId,
       goBackTillThisDate: new Date(
-        latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
+        new Date().getTime() - 30 * 24 * 60 * 60 * 1000
       ).toISOString(),
-      latestDate: latestDate.toISOString(),
+      latestDate: new Date().toISOString(),
+      // cursor: null,
+      limit: 7,
     },
+    fetchPolicy: "cache-and-network",
     onCompleted: (data) => {
-      if (!hasMore) return;
-      setLogs((prevLogs) => [
-        ...prevLogs,
-        ...data.getCombinedLogsByDateRange.logs,
-      ]);
-      setHasMore(data.getCombinedLogsByDateRange.hasMoreData);
-      setLatestDate(new Date(data.getCombinedLogsByDateRange.nextLatestDate));
+      if (!data?.getCombinedLogsByDateRange) return;
+      const {
+        logs: fetchedLogs,
+        hasMoreData,
+        nextCursor,
+      } = data.getCombinedLogsByDateRange;
+
+      setLogs((prevLogs) => {
+        const newLogs = fetchedLogs.filter(
+          (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+        );
+        if (newLogs.length === 0) return prevLogs;
+        return [...prevLogs, ...newLogs];
+      });
+
+      setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
+      setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
     },
   });
-  data && console.log("LOGS:", data.getCombinedLogsByDateRange);
 
   const { data: bslForXData } = useQuery(GET_AVERAGE_BSL_FOR_X, {
     variables: { userId: userId },
@@ -364,69 +382,56 @@ const LogsScreen: React.FC = () => {
     try {
       const res = await fetchMore({
         variables: {
-          userId: userId,
-          goBackTillThisDate: new Date(
-            latestDate.getTime() - 30 * 24 * 60 * 60 * 1000
-          ).toISOString(),
-          latestDate: latestDate.toISOString(),
+          cursor,
+          limit: 10,
         },
       });
 
-      if (res.data.getCombinedLogsByDateRange.logs.length === 0) {
-        setHasMore(false);
-        return;
-      }
+      const {
+        logs: newLogs,
+        hasMoreData,
+        nextCursor,
+      } = res.data.getCombinedLogsByDateRange;
 
-      setLogs((prev) => [...prev, ...res.data.getCombinedLogsByDateRange.logs]);
-      setHasMore(res.data.getCombinedLogsByDateRange.hasMoreData);
-      if (res.data.getCombinedLogsByDateRange.nextLatestDate) {
-        setLatestDate(
-          new Date(res.data.getCombinedLogsByDateRange.nextLatestDate)
-        );
-      } else {
-        setHasMore(false);
-      }
+      setLogs((prevLogs) => [
+        ...prevLogs,
+        ...newLogs.filter(
+          (log: any) => !prevLogs.some((prev) => prev.id === log.id)
+        ),
+      ]);
+      setHasMore(hasMoreData);
+      setCursor(nextCursor);
     } catch (error) {
-      console.log("Error loading more logs:", error);
-      setHasMore(false);
+      console.error("Error loading more logs:", error);
     }
-  }, [hasMore, loading, fetchMore, latestDate]);
+  }, [fetchMore, cursor]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-
     try {
-      const now = new Date();
-      setLatestDate(now);
-      setLogs([]);
-
-      const result = await refetch({
-        userId: userId,
-        goBackTillThisDate: new Date(
-          now.getTime() - 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        latestDate: now.toISOString(),
+      const res = await refetch({
+        cursor: null,
+        limit: 7,
       });
 
-      setLogs(result.data.getCombinedLogsByDateRange.logs);
-      setHasMore(result.data.getCombinedLogsByDateRange.hasMoreData);
-      if (result.data.getCombinedLogsByDateRange.nextLatestDate) {
-        setLatestDate(
-          new Date(result.data.getCombinedLogsByDateRange.nextLatestDate)
-        );
-      } else {
-        setHasMore(false);
-      }
+      const {
+        logs: refreshedLogs,
+        hasMoreData,
+        nextCursor,
+      } = res.data.getCombinedLogsByDateRange;
+
+      setLogs(refreshedLogs);
+      setHasMore(hasMoreData);
+      setCursor(nextCursor);
     } catch (error) {
-      console.log("Error refreshing data: ", error);
-      setHasMore(false);
+      console.error("Error refreshing logs:", error);
     } finally {
       setRefreshing(false);
     }
   }, [refetch]);
 
   const renderLogItem = ({ item }: { item: Section }) => {
-    console.log("item:", item);
+    // console.log("item:", item);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
@@ -475,7 +480,7 @@ const LogsScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             bg="$neutralWhite"
           >
-            <HStack space="sm" paddingHorizontal={20} paddingVertical={15} >
+            <HStack space="sm" paddingHorizontal={20} paddingVertical={15}>
               <Tab
                 text="All"
                 isFocused={currentFilter === "All"}
@@ -519,11 +524,11 @@ const LogsScreen: React.FC = () => {
             data={sectionedLogs}
             keyExtractor={(item, index) => item.log_timestamp + index}
             renderItem={renderLogItem}
-            onEndReached={loadMoreLogs}
+            // onEndReached={loadMoreLogs}
             onEndReachedThreshold={0.1}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
+            // refreshControl={
+            //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            // }
             ListFooterComponent={() => <View h={30} />}
             contentContainerStyle={{ paddingTop: HEADER_HIGHT }}
             onScroll={Animated.event(

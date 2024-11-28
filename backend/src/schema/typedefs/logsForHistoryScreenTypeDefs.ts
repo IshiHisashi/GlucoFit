@@ -23,7 +23,7 @@ export const logsForHistoryScreenTypeDefs = gql`
   type CombinedLogsResponse {
     logs: [LogEntry!]!
     hasMoreData: Boolean!
-    nextCursor: Date!
+    nextCursor: Date
   }
 
   type Query {
