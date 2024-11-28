@@ -11,20 +11,28 @@ const logsForHistoryScreenResolvers = {
         user_id,
         goBackTillThisDate,
         latestDate,
-      }: { user_id: string; goBackTillThisDate: any; latestDate: any }
+        limit = 7,
+        cursor,
+      }: {
+        user_id: string;
+        goBackTillThisDate?: any;
+        latestDate?: any;
+        limit?: number;
+        cursor?: any;
+      }
     ) => {
       const queryArgs = {
         user_id,
         log_timestamp: {
           $gt: new Date(goBackTillThisDate),
-          $lte: new Date(latestDate),
+          $lt: cursor ? new Date(cursor) : new Date(latestDate),
         },
       };
       const queryArgsForDietLogs = {
         userID: user_id.toString(),
         log_timestamp: {
           $gt: new Date(goBackTillThisDate),
-          $lte: new Date(latestDate),
+          $lt: cursor ? new Date(cursor) : new Date(latestDate),
         },
       };
 
@@ -42,8 +50,6 @@ const logsForHistoryScreenResolvers = {
             .populate("user_id")
             .exec(),
         ]);
-
-      console.log("diet logs", dietLogs);
 
       // Combine and sort all logs
       const allLogs = [
@@ -86,12 +92,18 @@ const logsForHistoryScreenResolvers = {
         // .filter((log) => log.id != null)
         .sort((a: any, b: any) => b.log_timestamp - a.log_timestamp);
 
-      const hasMoreData = allLogs.length > 0;
+      const hasMoreData = allLogs.length > limit;
+
+      const paginatedLogs = allLogs.slice(0, limit);
+      const nextCursor =
+        paginatedLogs.length > 0
+          ? paginatedLogs[paginatedLogs.length - 1].log_timestamp
+          : null;
 
       return {
-        logs: allLogs,
+        logs: paginatedLogs,
         hasMoreData,
-        nextLatestDate: goBackTillThisDate,
+        nextCursor,
       };
     },
   },
