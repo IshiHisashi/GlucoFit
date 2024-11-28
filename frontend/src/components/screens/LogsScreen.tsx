@@ -153,7 +153,8 @@ const GET_AVERAGE_BSL_FOR_X = gql`
 const LogsScreen: React.FC = () => {
   const navigation = useNavigation<LogsScreenNavigationProp>();
   const { userId } = useContext(AuthContext);
-  const numPagenation = 7;
+  const numPagenation = 9;
+  const flatListRef = useRef<FlatList>(null);
 
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -184,45 +185,8 @@ const LogsScreen: React.FC = () => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [sectionedLogs, setSectionedLogs] = useState<Section[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
-
-  // MAY NOT NEED-------
   const [hasMore, setHasMore] = useState(true);
   const [currentFilter, setCurrentFilter] = useState<FilterType>("All");
-  // -------------------
-
-  // const { data, loading, refetch, fetchMore } = useQuery(GET_COMBINED_LOGS, {
-  //   variables: {
-  //     userId,
-  //     goBackTillThisDate: new Date(
-  //       new Date().getTime() - 30 * 24 * 60 * 60 * 1000
-  //     ).toISOString(),
-  //     latestDate: new Date().toISOString(),
-  //     cursor: null,
-  //     limit: 7,
-  //   },
-  //   onCompleted: (data) => {
-  //     console.log(data);
-  //     if (!data?.getCombinedLogsByDateRange) return;
-  //     const {
-  //       logs: fetchedLogs,
-  //       hasMoreData,
-  //       nextCursor,
-  //     } = data.getCombinedLogsByDateRange;
-
-  //     if (nextCursor) {
-  //       setLogs((prevLogs) => {
-  //         const newLogs = fetchedLogs.filter(
-  //           (log: any) => !prevLogs.some((prev) => prev.id === log.id)
-  //         );
-  //         if (newLogs.length === 0) return prevLogs;
-  //         return [...prevLogs, ...newLogs];
-  //       });
-
-  //       setHasMore((prev) => (prev !== hasMoreData ? hasMoreData : prev));
-  //       setCursor((prev) => (prev !== nextCursor ? nextCursor : prev));
-  //     }
-  //   },
-  // });
 
   const [fetchLogs, { data, loading, error, fetchMore }] =
     useLazyQuery(GET_COMBINED_LOGS);
@@ -255,10 +219,12 @@ const LogsScreen: React.FC = () => {
       .catch((err) => console.error("Error fetching logs:", err));
   }, [userId]);
 
-  const fetchMoreLogs = () => {
+  const fetchMoreLogs = async () => {
     if (!hasMore || loading) return;
 
-    fetchMore({
+    const currentOffset = scrollY.__getValue();
+
+    await fetchMore({
       variables: {
         userId,
         goBackTillThisDate: new Date(
@@ -285,6 +251,12 @@ const LogsScreen: React.FC = () => {
         ]);
         setHasMore(hasMoreData);
         setCursor(nextCursor);
+        setTimeout(() => {
+          flatListRef.current?.scrollToOffset({
+            offset: currentOffset,
+            animated: false,
+          });
+        }, 50);
       },
     });
   };
@@ -589,8 +561,9 @@ const LogsScreen: React.FC = () => {
 
         {sectionedLogs.length > 0 ? (
           <AnimatedFlatList
+            ref={flatListRef}
             data={sectionedLogs}
-            keyExtractor={(item, index) => item.log_timestamp + index}
+            keyExtractor={(item: any, index) => `${item.title}-${index}`}
             renderItem={renderLogItem}
             onEndReached={fetchMoreLogs}
             onEndReachedThreshold={0.1}
@@ -603,6 +576,9 @@ const LogsScreen: React.FC = () => {
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],
               { useNativeDriver: true }
             )}
+            maintainVisibleContentPosition={{
+              minIndexForVisible: 0,
+            }}
           />
         ) : loading ? (
           <Spinner size="large" />
