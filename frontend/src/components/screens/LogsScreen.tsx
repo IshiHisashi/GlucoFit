@@ -155,6 +155,7 @@ const LogsScreen: React.FC = () => {
   const { userId } = useContext(AuthContext);
   const numPagenation = 9;
   const flatListRef = useRef<FlatList>(null);
+  const logsRef = useRef<Log[]>([]);
 
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -243,12 +244,13 @@ const LogsScreen: React.FC = () => {
           nextCursor,
         } = fetchMoreResult.getCombinedLogsByDateRange;
 
-        setLogs((prevLogs) => [
-          ...prevLogs,
-          ...newLogs.filter(
-            (log: any) => !prevLogs.some((prevLog) => prevLog.id === log.id)
-          ),
-        ]);
+        const uniqueLogs = newLogs.filter(
+          (log: any) =>
+            !logsRef.current.some((existingLog) => existingLog.id === log.id)
+        );
+        logsRef.current = [...logsRef.current, ...uniqueLogs];
+
+        setLogs([...logs, ...uniqueLogs]);
         setHasMore(hasMoreData);
         setCursor(nextCursor);
         setTimeout(() => {
@@ -264,6 +266,35 @@ const LogsScreen: React.FC = () => {
   const { data: bslForXData } = useQuery(GET_AVERAGE_BSL_FOR_X, {
     variables: { userId: userId },
   });
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    await fetchLogs({
+      variables: {
+        userId,
+        goBackTillThisDate: new Date(
+          Date.now() - 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        latestDate: new Date().toISOString(),
+        cursor: null, // Reset to fetch from the beginning
+        limit: numPagenation,
+      },
+    }).then((response) => {
+      const {
+        logs: refreshedLogs,
+        hasMoreData,
+        nextCursor,
+      } = response.data.getCombinedLogsByDateRange;
+      if (JSON.stringify(refreshedLogs) !== JSON.stringify(logsRef.current)) {
+        logsRef.current = refreshedLogs;
+        setLogs(refreshedLogs);
+      }
+      setHasMore(hasMoreData);
+      setCursor(nextCursor);
+    });
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (logs) {
@@ -390,18 +421,19 @@ const LogsScreen: React.FC = () => {
 
       sections.forEach((obj) => {
         obj.data.sort((obj1, obj2) => {
-          if (new Date(obj1.log_timestamp) < new Date(obj2.log_timestamp)) {
-            return -1;
+          if (new Date(obj1.log_timestamp) > new Date(obj2.log_timestamp)) {
+            return -1; // Newest first
           } else if (
-            new Date(obj1.log_timestamp) > new Date(obj2.log_timestamp)
+            new Date(obj1.log_timestamp) < new Date(obj2.log_timestamp)
           ) {
-            return 1;
+            return 1; // Older last
           } else {
             return 0;
           }
         });
       });
 
+      // Sort sections by date (newest date first)
       setSectionedLogs(
         sections.sort((obj1, obj2) => {
           if (new Date(obj1.title) > new Date(obj2.title)) {
@@ -415,32 +447,6 @@ const LogsScreen: React.FC = () => {
       );
     }
   }, [logs, bslForXData?.getAverageBslXAxisValue, navigation, currentFilter]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-
-    await fetchLogs({
-      variables: {
-        userId,
-        goBackTillThisDate: new Date(
-          Date.now() - 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        latestDate: new Date().toISOString(),
-        cursor: null, // Reset to fetch from the beginning
-        limit: 5,
-      },
-    }).then((response) => {
-      const {
-        logs: refreshedLogs,
-        hasMoreData,
-        nextCursor,
-      } = response.data.getCombinedLogsByDateRange;
-      setLogs(refreshedLogs);
-      setHasMore(hasMoreData);
-      setCursor(nextCursor);
-    });
-    setRefreshing(false);
-  };
 
   const renderLogItem = ({ item }: { item: Section }) => {
     const today = new Date();
@@ -537,7 +543,7 @@ const LogsScreen: React.FC = () => {
             keyExtractor={(item: any, index) => `${item.title}-${index}`}
             renderItem={renderLogItem}
             onEndReached={fetchMoreLogs}
-            onEndReachedThreshold={0.1}
+            // onEndReachedThreshold={0.01}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
