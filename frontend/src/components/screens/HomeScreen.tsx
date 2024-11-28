@@ -567,8 +567,10 @@ const HomeScreen: React.FC = () => {
   // Just share functionality
   const onShare = async () => {
     try {
+      const badge = route.params?.badges[currentModalIndex];
+
       const result = await Share.share({
-        message: "You will be able to share things from hereeee!",
+        message: `I've finally unlocked ${badge?.badge_name} badge! #GlucoFit #Diabetes`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

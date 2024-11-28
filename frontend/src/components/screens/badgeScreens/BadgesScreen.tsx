@@ -65,6 +65,10 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
     }, [refetch])
   );
 
+  useEffect(() => {
+    console.log(selectedBadge);
+  }, [selectedBadge])
+
   const [loadStreakData, { data: streakData }] = useLazyQuery(
     QUERY_FOR_STREAK_STARTER,
     { variables: { userId, withThreshold: false } }
@@ -180,9 +184,18 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
 
   const onShare = async () => {
     try {
-      const result = await Share.share({
-        message: "You will be able to share things from hereeee!",
-      });
+      const badge = badgeData.find(item => item.badgeId.id === selectedBadge);
+
+      const result = await Share.share(
+        badge?.achieved?
+          {
+            message: `I've finally unlocked ${badge?.badgeId.badge_name} badge! #GlucoFit #Diabetes`,
+          }
+        :
+          {
+            message: `I'm working so hard to get this ${badge?.badgeId.badge_name} badge! Let's support each other! #GlucoFit #Diabetes`,
+          }
+      );
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
@@ -433,7 +446,7 @@ const BadgesScreen: React.FC<badgeScreenTypes> = ({ setBackGroundTinted }) => {
                     isDisabled={false}
                     onPress={() => onShare()}
                     iconLeft={ShareCustom}
-                    style={{ width: 347, height: 52, marginTop: 12 }}
+                    style={{ width: 347, height: 52, marginTop: 20 }}
                   />
                 </Center>
               );
