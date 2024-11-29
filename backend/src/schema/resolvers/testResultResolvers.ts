@@ -445,12 +445,14 @@ const testResultsResolvers = {
         bsl,
         note,
         time_period,
+        log_timestamp,
         confirmed,
       }: {
         user_id: string;
         bsl: number;
         note: string;
         time_period: string;
+        log_timestamp?: Date;
         confirmed: boolean;
       }
     ): Promise<TestResultResponse> => {
@@ -459,7 +461,7 @@ const testResultsResolvers = {
           user_id,
           bsl,
           note: { note_description: note },
-          log_timestamp: new Date(),
+          log_timestamp: log_timestamp || new Date(),
           time_period,
           confirmed,
         });

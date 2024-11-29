@@ -101,12 +101,14 @@ const activityLogsResolvers = {
         activityType,
         duration,
         time_period,
+        log_timestamp,
       }: {
         user_id: string;
         footsteps: number;
-        activityType: 'Walking' | 'Running' | 'Cycling' | 'Others';
+        activityType: "Walking" | "Running" | "Cycling" | "Others";
         duration: number;
         time_period: string;
+        log_timestamp: Date;
       }
     ): Promise<IBadges | null> => {
       // Create a new activity log
@@ -117,7 +119,7 @@ const activityLogsResolvers = {
           activityType,
           duration,
           time_period,
-          log_timestamp: new Date(),
+          log_timestamp,
         });
         await newActivityLog.save();
         // See if user's badges have
