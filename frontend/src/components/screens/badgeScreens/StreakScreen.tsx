@@ -5,6 +5,7 @@ import CalenderStreak from "../../organisms/CalenderStreak";
 import ProgressBudge from "../../organisms/ProgressBudge";
 import { Image } from "@gluestack-ui/themed";
 import { Animated, StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
 
 interface StreakScreenProps {
   changeScreen: () => void;
@@ -37,7 +38,7 @@ const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(scale, {
-          toValue: 1.2, // Scale up
+          toValue: 1.1, // Scale up
           duration: 1500,
           useNativeDriver: true,
         }),
@@ -67,16 +68,17 @@ const StreakScreen: React.FC<StreakScreenProps> = ({ changeScreen }) => {
                   : { backgroundColor: "#FFEDE9" },
             ]}
           />
-          <Image
+          <LottieView
             source={
               streakGood
-                ? require("../../../../assets/glucoFaces/glucoSmile.png")
+                ? require("../../animations/glucofit icon flat - happy.json")
                 : streakMid
-                  ? require("../../../../assets/glucoFaces/glucoNeutral.png")
-                  : require("../../../../assets/glucoFaces/glucoFrowned.png")
+                  ? require("../../animations/glucofit icon flat -neutral.json")
+                  : require("../../animations/glucofit icon flat-sad.json")
             }
-            alt="icon-face"
-            style={styles.image}
+            autoPlay
+            loop={false}
+            style={{ width: 200, height: 200 }}
           />
         </View>
         <Text fontSize={28} fontFamily="$bold" color="black">

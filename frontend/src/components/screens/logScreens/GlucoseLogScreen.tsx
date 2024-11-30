@@ -14,6 +14,7 @@ import { HeaderWithBackButton } from "../../headers/HeaderWithBackButton";
 import InputFieldForBsl from "../../atoms/InputFieldForBsl";
 import LogsTable from "../../organisms/LogsTable";
 import { AuthContext } from "../../../context/AuthContext";
+import LottieView from "lottie-react-native";
 
 const CREATE_TEST_RESULT_WITH_INSIGHTS = gql`
   mutation Mutation(
@@ -335,7 +336,7 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
     const pulse = Animated.loop(
       Animated.sequence([
         Animated.timing(scale, {
-          toValue: 1.2, // Scale up
+          toValue: 1.1, // Scale up
           duration: 1500,
           useNativeDriver: true,
         }),
@@ -379,16 +380,17 @@ const GlucoseLogScreen: React.FC<Props> = ({ route }) => {
                       : { backgroundColor: "#FFEDE9" },
                 ]}
               />
-              <Image
+              <LottieView
                 source={
                   bslGood
-                    ? require("../../../../assets/glucoFaces/glucoSmile.png")
+                    ? require("../../animations/glucofit icon flat - happy.json")
                     : bslMid
-                      ? require("../../../../assets/glucoFaces/glucoNeutral.png")
-                      : require("../../../../assets/glucoFaces/glucoFrowned.png")
+                      ? require("../../animations/glucofit icon flat -neutral.json")
+                      : require("../../animations/glucofit icon flat-sad.json")
                 }
-                alt="Glucofit smily face"
-                style={styles.image}
+                autoPlay
+                loop={false}
+                style={{ width: 200, height: 200 }}
               />
             </View>
 
