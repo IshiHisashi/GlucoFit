@@ -20,7 +20,7 @@ type AuthProviderProps = {
 
 const client = new ApolloClient({
   // uri: "https://backend.glucofit.ca/graphql",
-  uri: "http://10.128.204.183:3000/graphql",
+  uri: "http://10.128.208.235:3000/graphql",
   cache: new InMemoryCache(),
 });
 
