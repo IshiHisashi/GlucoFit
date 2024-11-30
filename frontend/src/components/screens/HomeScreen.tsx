@@ -816,8 +816,8 @@ const HomeScreen: React.FC = () => {
                     bslResultsAndAverageData.getTestResultsAndAverageForToday
                       .testResults
                   }
-                  bslMax={Number(userData.getUser.maximum_bsl.toFixed(1))}
-                  bslMin={Number(userData.getUser.minimum_bsl.toFixed(1))}
+                  bslMax={Number(userData?.getUser?.maximum_bsl.toFixed(1))}
+                  bslMin={Number(userData?.getUser?.minimum_bsl.toFixed(1))}
                 />
               )}
             </VStack>

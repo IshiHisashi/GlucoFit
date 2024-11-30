@@ -42,7 +42,11 @@ const colorDefault = "#000000"; // for custom one
 const sizeDefault = 24; // for custom one
 const strokeWidth = 0.1;
 
-export const AnalysisLight: FC = (props: SvgProps) => (
+export const AnalysisLight: FC<IconProps> = ({
+  color = colorLight,
+  size = sizeDefault,
+  ...props
+}) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}

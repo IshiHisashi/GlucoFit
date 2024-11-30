@@ -2,22 +2,28 @@ import { User, IUser } from "../../model/User";
 import { generateToken } from "../../auth/auth";
 import { Badges } from "../../model/Badges";
 import { verifyToken } from "../../auth/auth";
-import bcrypt from "bcrypt";
 
 const userResolvers = {
   Query: {
-    getUser: async (
-      _: any,
-      { id }: { id: string }
-      // { user }: any
-    ): Promise<IUser | null> => {
-      // if (!user) {
-      //   throw new Error("You must be logged in to view this data");
-      // }
+    getUser: async (_: any, { id }: { id: string }): Promise<IUser | null> => {
       return await User.findById(id);
     },
     getUsers: async (): Promise<IUser[]> => {
       return await User.find();
+    },
+    currentUser: async (_: any, __: any, context: any) => {
+      const { user } = context;
+      if (!user) {
+        throw new Error("Not authenticated");
+      }
+      const userRecord = await User.findById(user.userId);
+      if (!userRecord) {
+        throw new Error("User not found");
+      }
+      return {
+        id: userRecord._id,
+        has_onboarded: userRecord.has_onboarded,
+      };
     },
     getUserBadge: async (
       _: any,
@@ -27,7 +33,8 @@ const userResolvers = {
       return await User.findById(id).populate({
         path: "badges.badgeId",
         model: Badges,
-        select: "_id badge_name badge_desc badge_image_address criteria locked unlocked",
+        select:
+          "_id badge_name badge_desc badge_image_address criteria locked unlocked",
       });
     },
     getUserOnProgressBadge: async (
@@ -38,7 +45,8 @@ const userResolvers = {
         .populate({
           path: "badges.badgeId",
           model: Badges,
-          select: "_id badge_name badge_desc badge_image_address criteria locked unlocked",
+          select:
+            "_id badge_name badge_desc badge_image_address criteria locked unlocked",
           match: {},
         })
         .then((user) => {

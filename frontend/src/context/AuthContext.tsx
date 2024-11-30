@@ -1,10 +1,8 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken, saveToken, deleteToken } from "../utils/utilAuth";
-import { jwtDecode } from "jwt-decode";
-import { useQuery } from "@apollo/client";
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import { GET_USER_HAS_ONBOARDED } from "../utils/query/onboardingQuery";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { GET_CURRENT_USER } from "../utils/query/authQuery";
 
 type AuthContextProps = {
   userToken: string | null;
@@ -21,7 +19,8 @@ type AuthProviderProps = {
 };
 
 const client = new ApolloClient({
-  uri: "https://backend.glucofit.ca/graphql",
+  // uri: "https://backend.glucofit.ca/graphql",
+  uri: "http://10.128.208.235:3000/graphql",
   cache: new InMemoryCache(),
 });
 
@@ -41,6 +40,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [shouldCheckOnboarding, setShouldCheckOnboarding] = useState(false);
 
+  const fetchCurrentUser = async (token: string): Promise<any | null> => {
+    try {
+      const { data } = await client.query({
+        query: GET_CURRENT_USER,
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
+      return data.currentUser;
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Fetch token from storage on app load
     const loadAuthData = async () => {
@@ -51,63 +67,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (token) {
         setUserToken(token);
-
-        // Decode the token to extract userId
-        try {
-          const decodedToken: any = jwtDecode(token);
-          const id = decodedToken.userId;
-          console.log("decoded", id);
-          if (id) {
-            setUserId(id);
-          }
-        } catch (error) {
-          console.error("Failed to decode token", error);
+        const currentUser = await fetchCurrentUser(token);
+        if (currentUser?.id) {
+          setUserId(currentUser.id);
         }
+
         if (onboardingStatus !== "true") {
-          setShouldCheckOnboarding(true);
+          setShouldCheckOnboarding(false);
         } else {
           setHasCompletedOnboarding(true);
         }
       }
-      console.log("onboarding : ", onboardingStatus);
       if (onboardingStatus === "true") setHasCompletedOnboarding(true);
     };
     loadAuthData();
   }, []);
 
-  const fetchUserOnboardingStatus = async (id: string) => {
-    try {
-      const { data } = await client.query({
-        query: GET_USER_HAS_ONBOARDED,
-        variables: { id },
-      });
-      return data.getUser.has_onboarded;
-    } catch (error) {
-      console.error("Error fetching onboarding status:", error);
-      return false;
-    }
-  };
-
   const LogIn = async (token: string) => {
-    console.log("login executed");
     await saveToken("accessToken", token);
     setUserToken(token);
 
-    // Decode the token to extract userId and check onboarding status
-    try {
-      const decodedToken: any = jwtDecode(token);
-      const id = decodedToken.userId;
-      if (id) {
-        setUserId(id);
-        const hasOnboarded = await fetchUserOnboardingStatus(id);
-        console.log("hasOnboarded", hasOnboarded);
-        if (hasOnboarded) {
-          setHasCompletedOnboarding(true);
-          await AsyncStorage.setItem("hasCompletedOnboarding", "true");
-        }
-      }
-    } catch (error) {
-      console.error("Failed to decode token or fetch onboarding status", error);
+    const currentUser = await fetchCurrentUser(token);
+    if (currentUser?.id) {
+      setUserId(currentUser.id);
+    }
+
+    const hasOnboarded = currentUser.has_onboarded;
+    if (hasOnboarded) {
+      setHasCompletedOnboarding(true);
+      await AsyncStorage.setItem("hasCompletedOnboarding", "true");
     }
   };
 
