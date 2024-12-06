@@ -877,7 +877,7 @@ const HomeScreen: React.FC = () => {
             </VStack>
           </VStack>
         )}
-        <View h={100} />
+        <View h={40} />
       </ScrollView>
     </SafeAreaView>
   );
