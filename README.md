@@ -24,46 +24,39 @@
 
 [![](https://img.youtube.com/vi/QoHt4UhI6Jk/0.jpg)](https://www.youtube.com/watch?v=QoHt4UhI6Jk)
 
-### Screenshots(Desktop)
+### Screenshots
 <table>
   <thead>
-    <th>Landing page</th>
-    <th>Dashboard</th>
-    <th>Inventory management</th>
-    <th>Purchase</th>
-    <th>Sale</th>
-    <th>Finance management</th>
-
+    <th>Home screen</th>
+    <th>Auto logging_1</th>
+    <th>Auto logging_2</th>
+    <th>Auto logging_3</th>
   </thead>
   <tr>
-    <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/landing.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/dashboard.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/inventory.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/purchase.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/sale.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/finance.png width=150/></td>
+    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/home.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_1.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_2.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_3.png width=150/></td>
   </tr>
 </table>
 
-### Screenshots(Mobile)
 <table>
   <thead>
-    <th>Landing page</th>
-    <th>Dashboard</th>
-    <th>Inventory management</th>
-    <th>Purchase</th>
-    <th>Sale</th>
-    <th>Finance management</th>
+    <th>blood glucose log</th>
+    <th>Insight</th>
+    <th>Gamification_badge</th>
+    <th>Gamification_streak</th>
   </thead>
   <tr>
-    <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/landing_m.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/dashboard_m.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/inventory_m.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/purchase_m.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/sale_m.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/CocoTrade/blob/development/frontend/public/readme-imgs/finance_m.png width=150/></td>
+    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/bslLog.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/insight.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/badge.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/streak.png width=150/></td>
   </tr>
 </table>
+
+
+
 
 ## Directory Structure
 <table>
@@ -72,59 +65,33 @@
     <th>Description</th>
   </thead>
   <tr>
-    <td><a target="_blank" href=https://github.com/IshiHisashi/CocoTrade/tree/development/frontend>Frontend</td>
-    <td>This represents interface for users, which is formed by React.js</td>
+    <td><a target="_blank" href=https://github.com/IshiHisashi/GlucoFit/tree/development/frontend>Frontend</td>
+    <td>This represents interface for users, which is formed by React Native and TypeScript</td>
   </tr>
   <tr>
-    <td><a target="_blank" href=https://github.com/IshiHisashi/CocoTrade/tree/development/backend>Backend</td>
-    <td>This facilitates server side such as structuring of RESTful API endpoints, connection with database and scraping </td>
+    <td><a target="_blank" href=https://github.com/IshiHisashi/GlucoFit/tree/development/backend>Backend</td>
+    <td>This facilitates server side such as structuring of GraphQL APIs, connection with database</td>
   </tr>
 </table>
 
-## How to Use the app
-### Quick start | Live site
-<p>You can access from <a target="_blank" href=https://cocotrade.net>Here</a></p>
-<p>Then, please create your account or try this sample account</p>
-<pre>
-  <code>
-    Email : test001@gmail.com
-    Password : 123456
-  </code>
-</pre>
-
-
 ## Teck Stack
-<p>This application is nicely developed based on MERN stack</p>
+<p>This application is nicely developed based on React Native on frontend and node.js & Express.js on backend.</p>
 <h3>Frontend</h3>
 <p> 
   <img style="margin-right: 300;" src="https://github.com/tandpfun/skill-icons/blob/main/icons/React-Dark.svg" alt="React.js" width="40" height="40"/>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Vite-Dark.svg" alt="Vite" width="40" height="40"/> 
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/TypeScript.svg" alt="TS" width="40" height="40"/> 
   <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/TailwindCSS-Dark.svg" alt="Tailwind" width="40" height="40"/> 
 </p>
 <h3>Backend</h3>
   <p>  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/NodeJS-Dark.svg" alt="Node.js" width="40" height="40"/>
   <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/ExpressJS-Dark.svg" alt="Express.js" width="40" height="40"/>
+     <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/TypeScript.svg" alt="TS" width="40" height="40"/> 
   <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/MongoDB.svg" alt="MongoDB" width="40" height="40"/>
-  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Firebase-Dark.svg" alt="firebase" width="40" height="40"/>
+  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/GraphQL-Light.svg" alt="graphql" width="40" height="40"/>
   </p>
-  <h3>Hosting</h3>
-  <p>  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/Vercel-Dark.svg" alt="Vercel" width="40" height="40"/>
+  <h3>Server Hosting</h3>
+  <p>  <img src="https://github.com/tandpfun/skill-icons/blob/main/icons/AWS-Light.svg" alt="AWS" width="40" height="40"/>
   </p>
-<h3>Third party resources</h3>
-  <table>
-    <thead>
-      <th>Resource</th>
-      <th>Desctiprion</th>
-    </thead>
-    <tr>
-      <td>Palm market price </td>
-      <td>To retrieve palm oil market price (done by web scraping)</td>
-    </tr>
-    <tr>
-      <td>Exchange rate</td>
-      <td>To convert to PHP from USD by real-time exchange rate</td>
-    </tr>
-  </table>
 
 ## Authors
 <table>
@@ -134,29 +101,30 @@
     <th>Git account</th>
     <th>Role</th>
   </thead>
-  <tr>
-    <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Ishi_prof.png width=50></td>
-    <td>Hisashi Ishihara</td>
-    <td><a target="_blank" href=https://github.com/IshiHisashi>@IshiHisashi</td>
-      <td>Frontend | Landing page, Finance page <br> Backend | API for cash management and Purchase editing, deployement to vercel </td>
+    <tr>
+    <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Aki_prof.png width=50></td>
+    <td>Akifumi Hayashi</td>
+    <td><a target="_blank" href=https://github.com/Akiodesukedo>@Akiodesukedo</td>
+  <td>Frontend developer<br>Realize bluetooth connection between React Native and 3rd party device, UI for the gamification feature, and set up AWS instance</td>
   </tr>
   <tr>
     <td><img  target="_blank"src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Prathibha_prof.png width=50></td>
     <td>Pratibha Wijetunga</td>
     <td><a target="_blank" href=https://github.com/shehani-wijetunga>@shehani-wijetunga</td>
-      <td>Frontend | Purchase page, Sales page <br> Backend | API for new sales and purchase log, authentication</td>
+      <td>Backend Developer<br>Create GraphQL APIs for logging, insights. Implement nginx and pm2 to stabilize AWS EC2 instance</td>
   </tr>
   <tr>
     <td><img  target="_blank"src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Sacha_prof.png width=50></td>
     <td>Sachi Asano</td>
     <td><a href=https://github.com/c-est-sa>@c-est-sa</td>
-      <td>Frontend | Dashboard page, Onbording screens <br> Backend | API for user and market price, 3rd party resource such as web scraping, API</td>
+      <td>Frontend developer<br>Develop UI for home screen, insight and all of the common UI components and set up CICD pipeline</td>
   </tr>
-  <tr>
-    <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Aki_prof.png width=50></td>
-    <td>Akifumi Hayashi</td>
-    <td><a target="_blank" href=https://github.com/Akiodesukedo>@Akiodesukedo</td>
-  <td>Frontend | Inventory page <br> Backend | API for Inventory and Sales editing </td>
+
+ <tr>
+    <td><img src=https://github.com/IshiHisashi/Stash-Away/blob/main/UserEnd/images/Ishi_prof.png width=50></td>
+    <td>Hisashi Ishihara</td>
+    <td><a target="_blank" href=https://github.com/IshiHisashi>@IshiHisashi</td>
+      <td>Fullstack developer<br>Authentication and onboarding process (incl. UI), create GraphQL APIs for streak calculation</td>
   </tr>
 </table>
 
