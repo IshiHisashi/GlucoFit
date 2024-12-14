@@ -36,10 +36,10 @@
     <th>Auto logging_3</th>
   </thead>
   <tr>
-    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/home.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_1.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_2.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/autolog_3.png width=150/></td>
+    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/home.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/autolog_1.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/autolog_2.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/autolog_3.png width=150/></td>
   </tr>
 </table>
 
@@ -51,10 +51,10 @@
     <th>Gamification_streak</th>
   </thead>
   <tr>
-    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/bslLog.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/insight.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/badge.png width=150/></td>
-       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/readme/frontend/assets/readmeImages/streak.png width=150/></td>
+    <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/bslLog.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/insight.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/badge.png width=150/></td>
+       <td valign="top"><img src=https://github.com/IshiHisashi/GlucoFit/blob/development/frontend/assets/readmeImages/streak.png width=150/></td>
   </tr>
 </table>
 
