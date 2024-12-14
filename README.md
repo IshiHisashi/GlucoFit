@@ -18,9 +18,12 @@
   <li>Gamification</li>
 </ul>
 
-## Demo
-### Video
-<p>(Please click below thumbnail then you'll be navigated to youtube link)</p>
+## Movies
+### Trailer (45sec)
+[![](https://img.youtube.com/vi/Z2I7CddKxww/0.jpg)](https://www.youtube.com/watch?v=Z2I7CddKxww)
+
+### Demo (5mins)
+<p>!!For those who are sensitive to blood, please be careful for watching!!</p>
 
 [![](https://img.youtube.com/vi/QoHt4UhI6Jk/0.jpg)](https://www.youtube.com/watch?v=QoHt4UhI6Jk)
 
