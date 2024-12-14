@@ -18,6 +18,9 @@
   <li>Gamification</li>
 </ul>
 
+### Landing Page & Proposal
+  <p><a target="_blank" href=https://glucofit.ca/>https://glucofit.ca/</p>
+
 ## Movies
 ### Trailer (45sec)
 [![](https://img.youtube.com/vi/Z2I7CddKxww/0.jpg)](https://www.youtube.com/watch?v=Z2I7CddKxww)
